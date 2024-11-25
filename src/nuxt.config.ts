@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     'nuxt-typed-router',
     '@nuxtjs/color-mode',
     '@nuxt/image',
+    '@nuxt/icon',
   ],
 
   shadcn: {

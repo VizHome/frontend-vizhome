@@ -15,10 +15,9 @@
       </div>
       <div class="flex justify-center items-center space-x-2">
         <NuxtLink to="/render">
-          <Button>
-            <Icon name="mdi:creation-outline" class="w-5 h-5" />
-            View now
-          </Button>    
+            <GradientButton :border-radius="12" :border-width="2" class="text-white font-semibold">
+              View now ✨
+            </GradientButton>  
         </NuxtLink>
 
         <NuxtLink to="/auth">
@@ -34,52 +33,58 @@
       <div class="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
         <div class="lg:w-1/3">
           <a rel="noopener noreferrer" href="#" class="flex justify-center space-x-3 lg:justify-start">
-            <span class="text-lg font-bold">Viz.</span>
+            <span class="text-3xl font-bold">Viz.</span>
           </a>
         </div>
         <div class="grid grid-cols-2 text-sm gap-x-3 gap-y-8 lg:w-2/3 sm:grid-cols-4">
           <div class="space-y-3">
-            <h3 class="tracking-wide uppercase">Product</h3>
+            <h3 class="tracking-wide uppercase font-semibold">Product</h3>
             <ul class="space-y-1">
               <li>
-                <a rel="noopener noreferrer" href="#">Models</a>
+                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">Models</a>
               </li>
               <li>
-                <a rel="noopener noreferrer" href="#">Pricing</a>
+                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">Pricing</a>
               </li>
               <li>
-                <a rel="noopener noreferrer" href="#">Contact</a>
+                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">Contact</a>
               </li>
               <li>
-                <a rel="noopener noreferrer" href="#">FAQ</a>
+                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">FAQ</a>
               </li>
             </ul>
           </div>
           <div class="space-y-3">
-            <h3 class="tracking-wide uppercase ">Company</h3>
+            <h3 class="tracking-wide uppercase font-semibold">Company</h3>
             <ul class="space-y-1">
               <li>
-                <a rel="noopener noreferrer" href="#">Privacy</a>
+                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">Privacy</a>
               </li>
               <li>
-                <a rel="noopener noreferrer" href="#">Terms of Service</a>
+                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">Terms of Service</a>
               </li>
             </ul>
           </div>
           <div class="space-y-3">
-            <h3 class="uppercase ">Developers</h3>
+            <h3 class="uppercase font-semibold">Developers</h3>
             <ul class="space-y-1">
               <li>
-                <a rel="noopener noreferrer" href="#">API</a>
+                <a rel="noopener noreferrer" href="#" class="flex items-center space-x-1 hover:font-semibold">
+                  <Icon name="material-symbols-light:arrow-outward-rounded" class="w-4 h-4" />
+                  <span>API</span>
+                </a>
               </li>
               <li>
-                <a rel="noopener noreferrer" href="#">Documentation</a>
+                <a rel="noopener noreferrer" href="#" class="flex items-center space-x-1 hover:font-semibold">
+                  <Icon name="material-symbols-light:arrow-outward-rounded" class="w-4 h-4" />
+                  <span>Documentation</span>
+                </a>
               </li>
             </ul>
           </div>
           <div>
             <div class="flex justify-start space-x-3">
-              <a rel="noopener noreferrer" href="https://discord.gg/nXwJPMenUC" title="Facebook" class="flex items-center p-1">
+              <a rel="noopener noreferrer" href="https://discord.gg/nXwJPMenUC" class="flex items-center p-1 hover:animate-bounce">
                 <Icon name="line-md:discord" class="w-5 h-5" />
               </a>
             </div>
@@ -92,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-
+import GradientButton from '@/components/inspira-ui/gradient-button/GradientButton.vue';
 const items = [
   { name: 'Models', ref: '/about' },
   { name: 'Prices', ref: '/prices' },

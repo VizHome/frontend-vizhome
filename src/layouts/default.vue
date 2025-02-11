@@ -1,33 +1,54 @@
 <template>
   <div>
-    <nav class="py-2 px-3 flex justify-between items-center">
-      <div class="flex justify-center items-center">
-        <NuxtLink to="/">
-          <strong class="text-3xl">Viz.</strong>
-        </NuxtLink>
-      </div>
-      <div class="flex justify-center items-center space-x-4">
-        <NuxtLink v-for="item in items" :to="item.ref">
-          <Button variant="ghost">
-            {{ item.name }}
-          </Button>
-        </NuxtLink>
-      </div>
-      <div class="flex justify-center items-center space-x-2">
-        <NuxtLink to="/render">
-            <GradientButton :border-radius="12" :border-width="2" class="text-white font-semibold">
-              View now ✨
-            </GradientButton>  
-        </NuxtLink>
-
-        <NuxtLink to="/auth">
-          <Button>
-            <Icon name="mdi:login" class="w-5 h-5" />
-            Login
-          </Button>
-        </NuxtLink>
-      </div>
-    </nav>
+    <header class="fixe sticky top-0 z-50 bg-background/80 backdrop-blur-lg">
+      <nav class="flex flex-col items-center justify-between px-4 py-2 lg:flex-row">
+        <div class="flex justify-center items-center">
+          <NuxtLink to="/">
+            <strong class="ml-3 text-3xl">Viz.</strong>
+          </NuxtLink>
+        </div>
+        <div class="flex justify-center items-center space-x-4">
+          <NuxtLink v-for="item in items" :to="item.ref">
+            <Button variant="ghost" class="font-normal hover:font-semibold">
+              {{ item.name }}
+            </Button>
+          </NuxtLink>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button variant="ghost" class="font-normal hover:font-semibold">
+                Help
+                <Icon name="line-md:chevron-down" class="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem class="font-normal hover:font-semibold">
+                FAQ
+              </DropdownMenuItem>
+              <DropdownMenuItem class="font-normal hover:font-semibold">
+                Support
+              </DropdownMenuItem>
+              <DropdownMenuItem class="font-normal hover:font-semibold">
+                Contact
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div class="flex justify-center items-center space-x-1">
+          <NuxtLink to="/auth">
+            <Button>
+              Sign In
+            </Button>
+          </NuxtLink>
+          <NuxtLink to="https://github.com/VizHome" rel="noopener noreferrer" external>
+            <Button variant="ghost" size="icon">
+              <Icon name="line-md:github" class="w-5 h-5" />
+            </Button>
+          </NuxtLink>
+          <ButtonTheme />
+        </div>
+      </nav>
+    </header>
+    
     <slot />
     <footer class="px-4 divide-y">
       <div class="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
@@ -41,16 +62,16 @@
             <h3 class="tracking-wide uppercase font-semibold">Product</h3>
             <ul class="space-y-1">
               <li>
-                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">Models</a>
+                <a rel="noopener noreferrer" href="/about" class="hover:font-semibold">Models</a>
               </li>
               <li>
-                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">Pricing</a>
+                <a rel="noopener noreferrer" href="/prices" class="hover:font-semibold">Pricing</a>
               </li>
               <li>
-                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">Contact</a>
+                <a rel="noopener noreferrer" href="/contact" class="hover:font-semibold">Contact</a>
               </li>
               <li>
-                <a rel="noopener noreferrer" href="#" class="hover:font-semibold">FAQ</a>
+                <a rel="noopener noreferrer" href="/faq" class="hover:font-semibold">FAQ</a>
               </li>
             </ul>
           </div>
@@ -84,24 +105,34 @@
           </div>
           <div>
             <div class="flex justify-start space-x-3">
-              <a rel="noopener noreferrer" href="https://discord.gg/nXwJPMenUC" class="flex items-center p-1 hover:animate-bounce">
-                <Icon name="line-md:discord" class="w-5 h-5" />
+              <a rel="noopener noreferrer" href="https://discord.gg/nXwJPMenUC" class="flex items-center">
+                <Icon name="line-md:discord" class="w-5 h-5 hover:animate-bounce" />
+              </a>
+              <a rel="noopener noreferrer" href="https://github.com/VizHome" class="flex items-center">
+                <Icon name="line-md:github" class="w-5 h-5 hover:animate-bounce" />
               </a>
             </div>
           </div>
         </div>
       </div>
-      <div class="py-6 text-sm text-center">© 2024-2025 VizHome. All rights reserved.</div>
+      <div class="py-6 text-sm text-center">© 2024-{{ years }} VizHome. All rights reserved.❤️</div>
     </footer>
   </div>
 </template>
 
 <script lang="ts" setup>
-import GradientButton from '@/components/inspira-ui/gradient-button/GradientButton.vue';
+import ButtonTheme from '@/components/vizhome/theme/ButtonTheme.vue';
+
+// Declare the current year
+const date = new Date;
+const years = date.getFullYear();
+
+// Import the Button component
 const items = [
+  { name: 'Discover', ref: '/' },
+  { name: 'Demo', ref: '/demo' },
   { name: 'Models', ref: '/about' },
   { name: 'Prices', ref: '/prices' },
-  { name: 'Documentation', ref: '/docs' },
-  { name: 'Contact', ref: '/contact' },
 ]
+
 </script>

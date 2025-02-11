@@ -28,31 +28,31 @@
       </div>
     </section>
 
-    <section class="py-20 relative">
+    <section class="h-screen py-20 relative">
       <div class="container mx-auto px-6">
         <h2 class="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-white to-purple-400 bg-clip-text text-transparent">
-          Une Révolution dans la Conception Architecturale
+          A Revolution in Architectural Design
         </h2>
         <div class="grid md:grid-cols-3 gap-8">
-          <i-card v-for="feature in features" :key="feature.title" 
+          <Card v-for="feature in features" :key="feature.title" 
             class="backdrop-blur-lg bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300">
             <div class="p-6">
-              <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center mb-6">
-                <i-icon :name="feature.icon" size="24" />
+              <div class="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center mb-6">
+                <Icon :name="feature.icon" size="24" />
               </div>
               <h3 class="text-xl font-bold mb-3">{{ feature.title }}</h3>
-              <p class="text-gray-400">{{ feature.description }}</p>
+              <p>{{ feature.description }}</p>
             </div>
-          </i-card>
+          </Card>
         </div>
       </div>
     </section>
 
 
-    <section class="py-20 relative bg-gradient-to-b from-transparent via-purple-900/20 to-transparent">
-      <div class="">
+    <section class="h-screen py-20 relative bg-gradient-to-b from-transparent via-purple-900/20 to-transparent">
+      <div>
         <h2 class="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-white to-purple-400 bg-clip-text text-transparent">
-          Ils Nous Font Confiance
+          They trust us
         </h2>
         <div class="relative flex h-[500px] flex-col items-center justify-center overflow-hidden">
           <!-- First Marquee -->
@@ -86,22 +86,21 @@
           <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-3xl"></div>
           <div class="relative p-12 text-center">
             <h2 class="text-4xl font-bold mb-6 bg-gradient-to-r from-white to-purple-400 bg-clip-text text-transparent">
-              Prêt à Révolutionner Votre Workflow ?
+              Ready to Revolutionise Your Workflow?
             </h2>
             <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Rejoignez des milliers d'architectes qui transforment déjà leur vision en réalité avec ArchVision AI.
+              Join thousands of architects who are already turning their vision into reality with Vizhome.
             </p>
-            <i-button size="lg">
-              Commencer Gratuitement
-            </i-button>
+            <Button size="lg">
+              Get started for free
+            </Button>
           </div>
         </div>
       </div>
+      <div>
+        <StaticLogoCloud :logos title="Sponsored By" />
+      </div>
     </section>
-
-    <div>
-      <StaticLogoCloud :logos title="Sponsored By" />
-    </div>
   </div>
 </template>
 
@@ -254,95 +253,36 @@ const secondRow = ref(reviews.slice(reviews.length / 2));
 
 const features = [
   {
-    icon: 'zap',
-    title: 'Génération Instantanée',
-    description: 'Transformez vos images en modèles 3D en quelques secondes grâce à notre IA avancée.'
+    icon: 'line-md:speed-loop',
+    title: 'Rapid Generation',
+    description: 'Instantly transform an image into a realistic 3D model using our AI-based rendering engine.'
   },
   {
-    icon: 'target',
-    title: 'Précision Exceptionnelle',
-    description: 'Obtenez des modèles 3D précis avec des dimensions et des proportions parfaites.'
+    icon: 'line-md:link',
+    title: 'Environmental Integration',
+    description: 'Place your architectural models directly in their natural environment for realistic and immersive renderings.'
   },
   {
-    icon: 'refresh-cw',
-    title: 'Export Flexible',
-    description: 'Exportez vos modèles dans tous les formats courants de l industrie.'
+    icon: 'line-md:computer',
+    title: 'Apply materials',
+    description: 'Easily add wood cladding, plaster and other realistic textures to your buildings for optimal rendering.'
+  },
+  {
+    icon: 'line-md:circle-to-confirm-circle-transition',
+    title: 'Add Contextual Elements',
+    description: 'Enrich your scenes with cars, trees and people for a livelier, more dynamic visualisation.',
+  },
+  {
+    icon: 'material-symbols-light:3d-rotation',
+    title: '3D Visualisation and Manipulation',
+    description: 'Interact with your models in real time, adjust perspectives and explore every detail from every angle.'
+  },
+  {
+    icon: 'line-md:cloud-alt',
+    title: 'Easy Export and Share',
+    description: "Export your renderings in high quality and share them with your colleagues or clients in just a few clicks."
   }
-]
+];
+
 
 </script>
-
-<!-- 
-<script setup>
-const features = [
-  {
-    icon: 'zap',
-    title: 'Génération Instantanée',
-    description: 'Transformez vos images en modèles 3D en quelques secondes grâce à notre IA avancée.'
-  },
-  {
-    icon: 'target',
-    title: 'Précision Exceptionnelle',
-    description: 'Obtenez des modèles 3D précis avec des dimensions et des proportions parfaites.'
-  },
-  {
-    icon: 'refresh-cw',
-    title: 'Export Flexible',
-    description: 'Exportez vos modèles dans tous les formats courants de l industrie.'
-  }
-]
-
-const testimonials = [
-  {
-    initial: 'ML',
-    name: 'Marie Laurent',
-    role: 'Architecte Senior',
-    quote: 'ArchVision AI a transformé notre façon de travailler. La précision et la rapidité sont impressionnantes.'
-  },
-  {
-    initial: 'TD',
-    name: 'Thomas Dubois',
-    role: 'Designer d\'Intérieur',
-    quote: 'Un outil révolutionnaire qui nous fait gagner des heures de modélisation.'
-  },
-  {
-    initial: 'SC',
-    name: 'Sophie Cohen',
-    role: 'Directrice de Projet',
-    quote: 'La qualité des modèles générés dépasse toutes nos attentes. Un must-have.'
-  }
-]
-</script>
-
-<style>
-.bg-grid-white\/5 {
-  background-size: 40px 40px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-}
-
-.animate-fade-in {
-  animation: fadeIn 1s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Ajout d'un effet de hover élégant sur les cartes */
-.i-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.i-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
-}
-</style> -->

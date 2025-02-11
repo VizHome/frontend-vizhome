@@ -33,18 +33,20 @@
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div class="flex justify-center items-center space-x-1">
+        <div class="flex justify-center items-center space-x-3">
+          <ButtonTheme />
+        
+          <NuxtLink to="/auth">
+            <Button variant="secondary">
+              Get started for free
+            </Button>
+          </NuxtLink>
+
           <NuxtLink to="/auth">
             <Button>
               Sign In
             </Button>
           </NuxtLink>
-          <NuxtLink to="https://github.com/VizHome" rel="noopener noreferrer" external>
-            <Button variant="ghost" size="icon">
-              <Icon name="line-md:github" class="w-5 h-5" />
-            </Button>
-          </NuxtLink>
-          <ButtonTheme />
         </div>
       </nav>
     </header>

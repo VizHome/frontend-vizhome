@@ -392,6 +392,13 @@
             </CardFooter>
           </Card>
         </div>
+        <div class="mt-10 text-center">
+          <NuxtLink to="/testimonials">
+            <Button as-child>
+              Voir tous les témoignages
+            </Button>
+          </NuxtLink>
+        </div>
       </div>
     </section>
 
@@ -532,7 +539,7 @@
         </div>
         <div class="mt-10 text-center">
           <Button variant="link" as-child>
-            <NuxtLink to="/marketing/pricing">
+            <NuxtLink to="/pricing">
               Voir tous les détails de tarification
             </NuxtLink>
           </Button>

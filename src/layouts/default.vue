@@ -106,20 +106,50 @@
                     </NuxtLink>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <NuxtLink to="/about">
-                      <NavigationMenuLink
-                        class="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
-                        À propos
-                      </NavigationMenuLink>
-                    </NuxtLink>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <NuxtLink to="/contact">
-                      <NavigationMenuLink
-                        class="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
-                        Contact
-                      </NavigationMenuLink>
-                    </NuxtLink>
+                    <NavigationMenuTrigger>À propos</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div class="w-[200px] p-3 space-y-2">
+                        <NavigationMenuLink asChild>
+                          <NuxtLink to="/about"
+                            class="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div class="text-sm font-medium leading-none">À propos</div>
+                            <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+                              Notre entreprise et notre mission
+                            </p>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                        
+                        <NavigationMenuLink asChild>
+                          <NuxtLink to="/testimonials"
+                            class="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div class="text-sm font-medium leading-none">Témoignages</div>
+                            <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+                              Ce que disent nos clients
+                            </p>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                        
+                        <NavigationMenuLink asChild>
+                          <NuxtLink to="/faq"
+                            class="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div class="text-sm font-medium leading-none">FAQ</div>
+                            <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+                              Questions fréquemment posées
+                            </p>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                        
+                        <NavigationMenuLink asChild>
+                          <NuxtLink to="/contact"
+                            class="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div class="text-sm font-medium leading-none">Contact</div>
+                            <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+                              Nous contacter pour toute question
+                            </p>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </div>
+                    </NavigationMenuContent>
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>

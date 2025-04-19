@@ -15,61 +15,77 @@
                   <NavigationMenuItem>
                     <NavigationMenuTrigger>Fonctionnalités</NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <div class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/features/auto-3d"
-                            class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Génération 3D automatique</div>
-                            <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Transformez instantanément vos photos en modèles 3D détaillés
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/features/materials"
-                            class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Bibliothèque de matériaux</div>
-                            <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Plus de 10 000 matériaux photoréalistes pour vos projets
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/features/360-views"
-                            class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Vues 360° immersives</div>
-                            <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Créez des visites virtuelles interactives et captivantes
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/features/intelligent-lighting"
-                            class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Éclairage intelligent</div>
-                            <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Simulation d'éclairage réaliste pour des rendus époustouflants
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/features/collaboration"
-                            class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Partage et collaboration</div>
-                            <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Travaillez en équipe et partagez facilement vos projets
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/features/mobile-apps"
-                            class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Applications mobiles</div>
-                            <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Emportez VizHome partout avec nos apps iOS et Android
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
+                      <div class="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px]">
+                        <div class="col-span-full mb-2">
+                          <NavigationMenuLink asChild>
+                            <NuxtLink to="/features"
+                              class="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground bg-muted/50">
+                              <div class="text-sm font-medium leading-none mb-1">Toutes nos fonctionnalités</div>
+                              <p class="text-sm leading-snug text-muted-foreground">
+                                Découvrez l'ensemble des capacités de VizHome pour vos projets
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+                        </div>
+
+                        <Separator class="col-span-full my-1" />
+
+                        <div class="col-span-full grid md:grid-cols-2 gap-3">
+                          <NavigationMenuLink asChild>
+                            <NuxtLink to="/features/auto-3d"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">Génération 3D automatique</div>
+                              <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                Transformez instantanément vos photos en modèles 3D détaillés
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+                          <NavigationMenuLink asChild>
+                            <NuxtLink to="/features/materials"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">Bibliothèque de matériaux</div>
+                              <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                Plus de 10 000 matériaux photoréalistes pour vos projets
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+                          <NavigationMenuLink asChild>
+                            <NuxtLink to="/features/360-views"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">Vues 360° immersives</div>
+                              <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                Créez des visites virtuelles interactives et captivantes
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+                          <NavigationMenuLink asChild>
+                            <NuxtLink to="/features/intelligent-lighting"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">Éclairage intelligent</div>
+                              <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                Simulation d'éclairage réaliste pour des rendus époustouflants
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+                          <NavigationMenuLink asChild>
+                            <NuxtLink to="/features/collaboration"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">Partage et collaboration</div>
+                              <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                Travaillez en équipe et partagez facilement vos projets
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+                          <NavigationMenuLink asChild>
+                            <NuxtLink to="/features/mobile-apps"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">Applications mobiles</div>
+                              <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                Emportez VizHome partout avec nos apps iOS et Android
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+                        </div>
                       </div>
                     </NavigationMenuContent>
                   </NavigationMenuItem>

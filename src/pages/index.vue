@@ -6,7 +6,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div class="space-y-6">
             <Badge class="mb-4">Innovation Architecturale</Badge>
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <h1
+              class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               Vos espaces transformés par l'IA
             </h1>
             <p class="text-xl text-muted-foreground max-w-md">
@@ -15,7 +16,7 @@
             <div class="flex flex-col sm:flex-row gap-4 pt-4">
               <NuxtLink to="/auth/register">
                 <Button size="lg">
-                    Commencer gratuitement
+                  Commencer gratuitement
                 </Button>
               </NuxtLink>
               <NuxtLink to="/features">
@@ -57,7 +58,7 @@
     <section class="py-16 bg-muted/30 h-screen">
       <div class="container mx-auto px-4">
         <h2 class="text-3xl font-bold text-center mb-16">Nos valeurs</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <Card class="text-center">
             <CardHeader class="pb-2">
               <div class="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
@@ -66,7 +67,8 @@
             </CardHeader>
             <CardContent>
               <h3 class="text-lg font-semibold mb-2">Innovation</h3>
-              <p class="text-sm text-muted-foreground">Technologie de pointe pour révolutionner la visualisation architecturale</p>
+              <p class="text-sm text-muted-foreground">Technologie de pointe pour révolutionner la visualisation
+                architecturale</p>
             </CardContent>
           </Card>
           <Card class="text-center">
@@ -110,7 +112,42 @@
             </CardHeader>
             <CardContent>
               <h3 class="text-lg font-semibold mb-2">Écoresponsabilité</h3>
-              <p class="text-sm text-muted-foreground">Optimisation des ressources pour un impact environnemental réduit</p>
+              <p class="text-sm text-muted-foreground">Optimisation des ressources pour un impact environnemental réduit
+              </p>
+            </CardContent>
+          </Card>
+          <Card class="text-center">
+            <CardHeader class="pb-2">
+              <div class="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                <HeartIcon class="h-6 w-6 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <h3 class="text-lg font-semibold mb-2">Humanité</h3>
+              <p class="text-sm text-muted-foreground">Technologie au service de l'humain, jamais l'inverse</p>
+            </CardContent>
+          </Card>
+          <Card class="text-center">
+            <CardHeader class="pb-2">
+              <div class="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                <HandshakeIcon class="h-6 w-6 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <h3 class="text-lg font-semibold mb-2">Collaboration</h3>
+              <p class="text-sm text-muted-foreground">Co-création avec nos clients pour des solutions sur mesure</p>
+            </CardContent>
+          </Card>
+          <Card class="text-center">
+            <CardHeader class="pb-2">
+              <div class="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                <BarChartIcon class="h-6 w-6 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <h3 class="text-lg font-semibold mb-2">Excellence</h3>
+              <p class="text-sm text-muted-foreground">Recherche constante du meilleur niveau de qualité dans chaque
+                projet</p>
             </CardContent>
           </Card>
         </div>
@@ -132,7 +169,8 @@
             </CardHeader>
             <CardContent>
               <p class="text-muted-foreground">
-                Transformez n'importe quelle photo d'intérieur en modèle 3D texturé en quelques secondes, sans compétences techniques.
+                Transformez n'importe quelle photo d'intérieur en modèle 3D texturé en quelques secondes, sans
+                compétences techniques.
               </p>
             </CardContent>
             <CardFooter>
@@ -149,7 +187,8 @@
             </CardHeader>
             <CardContent>
               <p class="text-muted-foreground">
-                Notre IA analyse profondément vos espaces pour une reconstruction fidèle de la géométrie, des textures et de l'éclairage.
+                Notre IA analyse profondément vos espaces pour une reconstruction fidèle de la géométrie, des textures
+                et de l'éclairage.
               </p>
             </CardContent>
             <CardFooter>
@@ -166,7 +205,8 @@
             </CardHeader>
             <CardContent>
               <p class="text-muted-foreground">
-                Accédez à des milliers de matériaux photoréalistes pour personnaliser vos rendus avec une précision inégalée.
+                Accédez à des milliers de matériaux photoréalistes pour personnaliser vos rendus avec une précision
+                inégalée.
               </p>
             </CardContent>
             <CardFooter>
@@ -183,7 +223,8 @@
             </CardHeader>
             <CardContent>
               <p class="text-muted-foreground">
-                Créez des visites virtuelles immersives à 360° pour une exploration interactive de vos espaces remodélisés.
+                Créez des visites virtuelles immersives à 360° pour une exploration interactive de vos espaces
+                remodélisés.
               </p>
             </CardContent>
             <CardFooter>
@@ -200,7 +241,8 @@
             </CardHeader>
             <CardContent>
               <p class="text-muted-foreground">
-                Présentez vos projets sur n'importe quel appareil, du smartphone à la réalité virtuelle pour une immersion totale.
+                Présentez vos projets sur n'importe quel appareil, du smartphone à la réalité virtuelle pour une
+                immersion totale.
               </p>
             </CardContent>
             <CardFooter>
@@ -217,7 +259,8 @@
             </CardHeader>
             <CardContent>
               <p class="text-muted-foreground">
-                Exportez vos créations dans tous les formats standards de l'industrie pour une utilisation immédiate dans vos projets.
+                Exportez vos créations dans tous les formats standards de l'industrie pour une utilisation immédiate
+                dans vos projets.
               </p>
             </CardContent>
             <CardFooter>
@@ -236,7 +279,8 @@
       <div class="container mx-auto px-4">
         <div class="text-center max-w-2xl mx-auto mb-16">
           <h2 class="text-3xl font-bold mb-4">Comparatif avec la concurrence</h2>
-          <p class="text-muted-foreground">Découvrez pourquoi VizHome est leader sur le marché de la visualisation 3D</p>
+          <p class="text-muted-foreground">Découvrez pourquoi VizHome est leader sur le marché de la visualisation 3D
+          </p>
         </div>
         <div class="overflow-x-auto">
           <Table>
@@ -252,10 +296,18 @@
             <TableBody>
               <TableRow>
                 <TableCell class="font-medium">Génération 3D automatique</TableCell>
-                <TableCell class="text-center"><CheckIcon class="mx-auto h-5 w-5 text-primary" /></TableCell>
-                <TableCell class="text-center"><CheckIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
-                <TableCell class="text-center"><XIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
-                <TableCell class="text-center"><CheckIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
+                <TableCell class="text-center">
+                  <CheckIcon class="mx-auto h-5 w-5 text-primary" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <CheckIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <XIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <CheckIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell class="font-medium">Qualité du rendu</TableCell>
@@ -266,17 +318,26 @@
               </TableRow>
               <TableRow>
                 <TableCell class="font-medium">Temps de génération</TableCell>
-                <TableCell class="text-center">< 30 sec</TableCell>
-                <TableCell class="text-center">2-5 min</TableCell>
-                <TableCell class="text-center">1-2 min</TableCell>
-                <TableCell class="text-center">5-10 min</TableCell>
+                <TableCell class="text-center">
+                  < 30 sec</TableCell>
+                    <TableCell class="text-center">2-5 min</TableCell>
+                    <TableCell class="text-center">1-2 min</TableCell>
+                    <TableCell class="text-center">5-10 min</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell class="font-medium">Vues 360°</TableCell>
-                <TableCell class="text-center"><CheckIcon class="mx-auto h-5 w-5 text-primary" /></TableCell>
-                <TableCell class="text-center"><XIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
-                <TableCell class="text-center"><CheckIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
-                <TableCell class="text-center"><XIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
+                <TableCell class="text-center">
+                  <CheckIcon class="mx-auto h-5 w-5 text-primary" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <XIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <CheckIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <XIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell class="font-medium">Bibliothèque de matériaux</TableCell>
@@ -287,17 +348,33 @@
               </TableRow>
               <TableRow>
                 <TableCell class="font-medium">Intégration VR</TableCell>
-                <TableCell class="text-center"><CheckIcon class="mx-auto h-5 w-5 text-primary" /></TableCell>
-                <TableCell class="text-center"><XIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
-                <TableCell class="text-center"><XIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
-                <TableCell class="text-center"><XIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
+                <TableCell class="text-center">
+                  <CheckIcon class="mx-auto h-5 w-5 text-primary" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <XIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <XIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <XIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell class="font-medium">API pour développeurs</TableCell>
-                <TableCell class="text-center"><CheckIcon class="mx-auto h-5 w-5 text-primary" /></TableCell>
-                <TableCell class="text-center"><XIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
-                <TableCell class="text-center"><CheckIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
-                <TableCell class="text-center"><XIcon class="mx-auto h-5 w-5 text-muted-foreground" /></TableCell>
+                <TableCell class="text-center">
+                  <CheckIcon class="mx-auto h-5 w-5 text-primary" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <XIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <CheckIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
+                <TableCell class="text-center">
+                  <XIcon class="mx-auto h-5 w-5 text-muted-foreground" />
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -327,7 +404,9 @@
               </div>
             </CardHeader>
             <CardContent>
-              <p class="italic text-muted-foreground">"VizHome a révolutionné ma façon de présenter mes projets à mes clients. En quelques secondes, je transforme une simple photo en visualisation 3D complète. Le gain de temps est incroyable et mes clients sont impressionnés par le réalisme des rendus."</p>
+              <p class="italic text-muted-foreground">"VizHome a révolutionné ma façon de présenter mes projets à mes
+                clients. En quelques secondes, je transforme une simple photo en visualisation 3D complète. Le gain de
+                temps est incroyable et mes clients sont impressionnés par le réalisme des rendus."</p>
             </CardContent>
             <CardFooter>
               <div class="flex text-primary">
@@ -353,7 +432,10 @@
               </div>
             </CardHeader>
             <CardContent>
-              <p class="italic text-muted-foreground">"Grâce à VizHome, nous pouvons montrer à nos acheteurs potentiels à quoi ressemblera exactement leur futur appartement, même avant le début des travaux. La possibilité de personnaliser les matériaux et l'éclairage en temps réel a considérablement augmenté notre taux de conversion."</p>
+              <p class="italic text-muted-foreground">"Grâce à VizHome, nous pouvons montrer à nos acheteurs potentiels
+                à quoi ressemblera exactement leur futur appartement, même avant le début des travaux. La possibilité de
+                personnaliser les matériaux et l'éclairage en temps réel a considérablement augmenté notre taux de
+                conversion."</p>
             </CardContent>
             <CardFooter>
               <div class="flex text-primary">
@@ -379,7 +461,10 @@
               </div>
             </CardHeader>
             <CardContent>
-              <p class="italic text-muted-foreground">"L'application est incroyablement intuitive. Les rendus 360° m'ont permis de faire visiter virtuellement des projets à des clients internationaux qui ne pouvaient pas se déplacer. Le support technique est également très réactif, une vraie valeur ajoutée pour mon studio."</p>
+              <p class="italic text-muted-foreground">"L'application est incroyablement intuitive. Les rendus 360° m'ont
+                permis de faire visiter virtuellement des projets à des clients internationaux qui ne pouvaient pas se
+                déplacer. Le support technique est également très réactif, une vraie valeur ajoutée pour mon studio."
+              </p>
             </CardContent>
             <CardFooter>
               <div class="flex text-primary">
@@ -553,7 +638,8 @@
         <div class="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 md:p-12 lg:p-16 text-center">
           <div class="max-w-2xl mx-auto">
             <h2 class="text-3xl font-bold mb-4">Prêt à transformer vos espaces ?</h2>
-            <p class="text-muted-foreground mb-8">Commencez dès aujourd'hui avec notre offre gratuite et découvrez la puissance de la visualisation 3D par IA.</p>
+            <p class="text-muted-foreground mb-8">Commencez dès aujourd'hui avec notre offre gratuite et découvrez la
+              puissance de la visualisation 3D par IA.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" as-child>
                 <NuxtLink to="/auth/register">
@@ -574,12 +660,12 @@
 </template>
 
 <script setup lang="ts">
-import { LightbulbIcon, UsersIcon, PaletteIcon, ShieldIcon, LeafIcon, ChevronRightIcon, CheckIcon, XIcon, StarIcon } from 'lucide-vue-next'
+import { LightbulbIcon, UsersIcon, PaletteIcon, ShieldIcon, LeafIcon, ChevronRightIcon, CheckIcon, XIcon, StarIcon, HeartIcon, HandshakeIcon, BarChartIcon } from 'lucide-vue-next'
 </script>
 
 <style scoped>
 .bg-grid-pattern {
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(var(--primary-rgb), 0.1) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(var(--primary-rgb), 0.1) 1px, transparent 1px);
   background-size: 30px 30px;

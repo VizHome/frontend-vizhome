@@ -17,38 +17,56 @@
                     <NavigationMenuContent>
                       <div class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                         <NavigationMenuLink asChild>
-                          <NuxtLink to="/features"
+                          <NuxtLink to="/features/auto-3d"
                             class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">IA & 3D</div>
+                            <div class="text-sm font-medium leading-none">Génération 3D automatique</div>
                             <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Génération de visualisations architecturales par intelligence artificielle
+                              Transformez instantanément vos photos en modèles 3D détaillés
                             </p>
                           </NuxtLink>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
-                          <NuxtLink to="/features"
+                          <NuxtLink to="/features/materials"
                             class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Rendu réaliste</div>
+                            <div class="text-sm font-medium leading-none">Bibliothèque de matériaux</div>
                             <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Visuels photoréalistes avec matériaux et éclairages avancés
+                              Plus de 10 000 matériaux photoréalistes pour vos projets
                             </p>
                           </NuxtLink>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
-                          <NuxtLink to="/features"
+                          <NuxtLink to="/features/360-views"
                             class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Vues 360°</div>
+                            <div class="text-sm font-medium leading-none">Vues 360° immersives</div>
                             <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Exploration immersive de vos projets en réalité virtuelle
+                              Créez des visites virtuelles interactives et captivantes
                             </p>
                           </NuxtLink>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
-                          <NuxtLink to="/features"
+                          <NuxtLink to="/features/intelligent-lighting"
                             class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Mobile & VR</div>
+                            <div class="text-sm font-medium leading-none">Éclairage intelligent</div>
                             <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Compatibilité multiplateforme pour une expérience optimale
+                              Simulation d'éclairage réaliste pour des rendus époustouflants
+                            </p>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <NuxtLink to="/features/collaboration"
+                            class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div class="text-sm font-medium leading-none">Partage et collaboration</div>
+                            <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Travaillez en équipe et partagez facilement vos projets
+                            </p>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <NuxtLink to="/features/mobile-apps"
+                            class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div class="text-sm font-medium leading-none">Applications mobiles</div>
+                            <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Emportez VizHome partout avec nos apps iOS et Android
                             </p>
                           </NuxtLink>
                         </NavigationMenuLink>
@@ -173,16 +191,16 @@
             <h3 class="font-semibold text-lg mb-3">Produit</h3>
             <ul class="space-y-2">
               <li>
-                <NuxtLink to="/features"
-                  class="text-muted-foreground hover:text-foreground transition-colors">Fonctionnalités</NuxtLink>
+                <NuxtLink to="/features" class="text-muted-foreground hover:text-foreground transition-colors">
+                  Fonctionnalités</NuxtLink>
               </li>
               <li>
                 <NuxtLink to="/pricing" class="text-muted-foreground hover:text-foreground transition-colors">
                   Tarifs</NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/testimonials"
-                  class="text-muted-foreground hover:text-foreground transition-colors">Témoignages</NuxtLink>
+                <NuxtLink to="/testimonials" class="text-muted-foreground hover:text-foreground transition-colors">
+                  Témoignages</NuxtLink>
               </li>
               <li>
                 <NuxtLink to="/faq" class="text-muted-foreground hover:text-foreground transition-colors">FAQ
@@ -193,13 +211,39 @@
           <div>
             <h3 class="font-semibold text-lg mb-3">Légal</h3>
             <ul class="space-y-2">
-              <li><NuxtLink to="/legal/terms-of-use" class="text-muted-foreground hover:text-foreground transition-colors">Conditions d'utilisation</NuxtLink></li>
-              <li><NuxtLink to="/legal/privacy-policy" class="text-muted-foreground hover:text-foreground transition-colors">Politique de confidentialité</NuxtLink></li>
-              <li><NuxtLink to="/legal/cookie-policy" class="text-muted-foreground hover:text-foreground transition-colors">Politique de cookies</NuxtLink></li>
-              <li><NuxtLink to="/legal/data-processing" class="text-muted-foreground hover:text-foreground transition-colors">Traitement des données</NuxtLink></li>
-              <li><NuxtLink to="/legal/responsible-use-policy" class="text-muted-foreground hover:text-foreground transition-colors">Charte d'utilisation</NuxtLink></li>
-              <li><NuxtLink to="/legal/specific-service-terms" class="text-muted-foreground hover:text-foreground transition-colors">Conditions des services</NuxtLink></li>
-              <li><NuxtLink to="/legal/refund-cancellation-policy" class="text-muted-foreground hover:text-foreground transition-colors">Remboursement & annulation</NuxtLink></li>
+              <li>
+                <NuxtLink to="/legal/terms-of-use"
+                  class="text-muted-foreground hover:text-foreground transition-colors">Conditions d'utilisation
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/legal/privacy-policy"
+                  class="text-muted-foreground hover:text-foreground transition-colors">Politique de confidentialité
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/legal/cookie-policy"
+                  class="text-muted-foreground hover:text-foreground transition-colors">Politique de cookies</NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/legal/data-processing"
+                  class="text-muted-foreground hover:text-foreground transition-colors">Traitement des données
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/legal/responsible-use-policy"
+                  class="text-muted-foreground hover:text-foreground transition-colors">Charte d'utilisation</NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/legal/specific-service-terms"
+                  class="text-muted-foreground hover:text-foreground transition-colors">Conditions des services
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/legal/refund-cancellation-policy"
+                  class="text-muted-foreground hover:text-foreground transition-colors">Remboursement & annulation
+                </NuxtLink>
+              </li>
             </ul>
           </div>
           <div>

@@ -1,22 +1,42 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-export default defineNuxtConfig({
-  compatibilityDate: '2024-04-03',
-  devtools: {
-    enabled: true,
+import tailwindcss from '@tailwindcss/vite'
 
+export default defineNuxtConfig({
+  // Compatibility date
+  compatibilityDate: '2024-11-01',
+
+  // Devtools
+  devtools: { 
+    enabled: true,
     timeline: {
       enabled: true,
     },
   },
+
+  // Modules
   modules: [
-    '@nuxtjs/tailwindcss',
-    'shadcn-nuxt',
-    'nuxt-typed-router',
-    '@nuxtjs/color-mode',
-    '@nuxt/image',
+    '@nuxt/eslint',
     '@nuxt/icon',
+    '@nuxt/image',
+    '@nuxt/scripts',
+    '@nuxt/test-utils',
+    'shadcn-nuxt',
+    '@nuxtjs/color-mode',
+    'nuxt-typed-router',
+    '@vueuse/nuxt'
   ],
 
+  // Configs CSS
+  css: ['~/assets/css/tailwind.css'],
+
+  // Vite config
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
+  },
+
+  // Shadcn
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -29,6 +49,7 @@ export default defineNuxtConfig({
     componentDir: './components/ui'
   },
 
+  // Color mode
   colorMode:{
     fallback:'light',
     preference:'system',

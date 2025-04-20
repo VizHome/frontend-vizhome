@@ -165,7 +165,7 @@
                 <Button>Essayer gratuitement</Button>
               </NuxtLink>
             </div>
-            <!-- <Sheet>
+            <Sheet>
               <SheetTrigger class="block md:hidden">
                 <Button variant="ghost" size="icon">
                   <MenuIcon class="h-5 w-5" />
@@ -177,10 +177,10 @@
                   <SheetDescription>Une solution d'intégration 3D architecturale par IA</SheetDescription>
                 </SheetHeader>
                 <div class="grid gap-4 py-4">
-                  <NuxtLink to="/marketing/features" @click="$emit('close')">
+                  <NuxtLink to="/features" @click="$emit('close')">
                     <Button variant="ghost" class="w-full justify-start">Fonctionnalités</Button>
                   </NuxtLink>
-                  <NuxtLink to="/marketing/pricing" @click="$emit('close')">
+                  <NuxtLink to="/pricing" @click="$emit('close')">
                     <Button variant="ghost" class="w-full justify-start">Tarifs</Button>
                   </NuxtLink>
                   <NuxtLink to="/docs" @click="$emit('close')">
@@ -198,7 +198,7 @@
                   </NuxtLink>
                 </div>
               </SheetContent>
-            </Sheet> -->
+            </Sheet>
           </div>
         </nav>
       </div>

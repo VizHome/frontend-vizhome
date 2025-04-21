@@ -17,7 +17,7 @@
                     <NavigationMenuContent>
                       <div class="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px]">
                         <div class="col-span-full mb-2">
-                          <NavigationMenuLink asChild>
+                          <NavigationMenuLink as-child>
                             <NuxtLink to="/features"
                               class="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground bg-muted/50">
                               <div class="text-sm font-medium leading-none mb-1">Toutes nos fonctionnalités</div>
@@ -31,7 +31,7 @@
                         <Separator class="col-span-full my-1" />
 
                         <div class="col-span-full grid md:grid-cols-2 gap-3">
-                          <NavigationMenuLink asChild>
+                          <NavigationMenuLink as-child>
                             <NuxtLink to="/features/auto-3d"
                               class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                               <div class="text-sm font-medium leading-none">Génération 3D automatique</div>
@@ -40,7 +40,7 @@
                               </p>
                             </NuxtLink>
                           </NavigationMenuLink>
-                          <NavigationMenuLink asChild>
+                          <NavigationMenuLink as-child>
                             <NuxtLink to="/features/materials"
                               class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                               <div class="text-sm font-medium leading-none">Bibliothèque de matériaux</div>
@@ -49,7 +49,7 @@
                               </p>
                             </NuxtLink>
                           </NavigationMenuLink>
-                          <NavigationMenuLink asChild>
+                          <NavigationMenuLink as-child>
                             <NuxtLink to="/features/360-views"
                               class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                               <div class="text-sm font-medium leading-none">Vues 360° immersives</div>
@@ -58,7 +58,7 @@
                               </p>
                             </NuxtLink>
                           </NavigationMenuLink>
-                          <NavigationMenuLink asChild>
+                          <NavigationMenuLink as-child>
                             <NuxtLink to="/features/intelligent-lighting"
                               class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                               <div class="text-sm font-medium leading-none">Éclairage intelligent</div>
@@ -67,7 +67,7 @@
                               </p>
                             </NuxtLink>
                           </NavigationMenuLink>
-                          <NavigationMenuLink asChild>
+                          <NavigationMenuLink as-child>
                             <NuxtLink to="/features/collaboration"
                               class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                               <div class="text-sm font-medium leading-none">Partage et collaboration</div>
@@ -76,7 +76,7 @@
                               </p>
                             </NuxtLink>
                           </NavigationMenuLink>
-                          <NavigationMenuLink asChild>
+                          <NavigationMenuLink as-child>
                             <NuxtLink to="/features/mobile-apps"
                               class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                               <div class="text-sm font-medium leading-none">Applications mobiles</div>
@@ -89,6 +89,70 @@
                       </div>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
+
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger>À propos</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div class="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px]">
+                        <div class="col-span-full mb-2">
+                          <NavigationMenuLink as-child>
+                            <NuxtLink to="/about"
+                              class="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground bg-muted/50">
+                              <div class="text-sm font-medium leading-none mb-1">À propos de VizHome</div>
+                              <p class="text-sm leading-snug text-muted-foreground">
+                                Notre entreprise, notre mission et notre vision
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+                        </div>
+
+                        <Separator class="col-span-full my-1" />
+
+                        <div class="grid grid-cols-2 gap-3">
+                          <NavigationMenuLink as-child>
+                            <NuxtLink to="/contact"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">Contact</div>
+                              <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+                                Nous contacter pour toute question
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+
+                          <NavigationMenuLink as-child>
+                            <NuxtLink to="/faq"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">FAQ</div>
+                              <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+                                Questions fréquemment posées
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+
+                          <NavigationMenuLink as-child>
+                            <NuxtLink to="/testimonials"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">Témoignages</div>
+                              <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+                                Ce que disent nos clients
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+
+                          <NavigationMenuLink as-child>
+                            <NuxtLink to="/"
+                              class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div class="text-sm font-medium leading-none">Blog</div>
+                              <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+                                Articles et actualités
+                              </p>
+                            </NuxtLink>
+                          </NavigationMenuLink>
+                        </div>
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+
                   <NavigationMenuItem>
                     <NuxtLink to="/pricing">
                       <NavigationMenuLink
@@ -104,52 +168,6 @@
                         Documentation
                       </NavigationMenuLink>
                     </NuxtLink>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger>À propos</NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <div class="w-[200px] p-3 space-y-2">
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/about"
-                            class="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">À propos</div>
-                            <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
-                              Notre entreprise et notre mission
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                        
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/testimonials"
-                            class="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Témoignages</div>
-                            <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
-                              Ce que disent nos clients
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                        
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/faq"
-                            class="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">FAQ</div>
-                            <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
-                              Questions fréquemment posées
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                        
-                        <NavigationMenuLink asChild>
-                          <NuxtLink to="/contact"
-                            class="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div class="text-sm font-medium leading-none">Contact</div>
-                            <p class="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
-                              Nous contacter pour toute question
-                            </p>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                      </div>
-                    </NavigationMenuContent>
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
@@ -171,31 +189,136 @@
                   <MenuIcon class="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
-                <SheetHeader>
+              <SheetContent side="right" class="px-0">
+                <SheetHeader class="px-4">
                   <SheetTitle>VizHome</SheetTitle>
                   <SheetDescription>Une solution d'intégration 3D architecturale par IA</SheetDescription>
                 </SheetHeader>
-                <div class="grid gap-4 py-4">
-                  <NuxtLink to="/features" @click="$emit('close')">
-                    <Button variant="ghost" class="w-full justify-start">Fonctionnalités</Button>
-                  </NuxtLink>
-                  <NuxtLink to="/pricing" @click="$emit('close')">
-                    <Button variant="ghost" class="w-full justify-start">Tarifs</Button>
-                  </NuxtLink>
-                  <NuxtLink to="/docs" @click="$emit('close')">
-                    <Button variant="ghost" class="w-full justify-start">Documentation</Button>
-                  </NuxtLink>
-                  <NuxtLink to="/contact" @click="$emit('close')">
-                    <Button variant="ghost" class="w-full justify-start">Contact</Button>
-                  </NuxtLink>
-                  <Separator />
-                  <NuxtLink to="/auth/login" @click="$emit('close')">
-                    <Button variant="ghost" class="w-full justify-start">Connexion</Button>
-                  </NuxtLink>
-                  <NuxtLink to="/auth/register" @click="$emit('close')">
-                    <Button class="w-full">Essayer gratuitement</Button>
-                  </NuxtLink>
+
+                <div class="py-4">
+                  <h3 class="px-4 mb-2 text-sm font-medium text-muted-foreground">Navigation</h3>
+
+                  <div class="space-y-px">
+                    <NuxtLink to="/" @click="$emit('close')">
+                      <div class="px-4 py-3 hover:bg-accent flex items-center">
+                        <HomeIcon class="h-4 w-4 mr-2" />
+                        Accueil
+                      </div>
+                    </NuxtLink>
+
+                    <div class="collapsible">
+                      <div class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-accent"
+                        @click="openFonctionnalites = !openFonctionnalites">
+                        <div class="flex items-center">
+                          <PuzzleIcon class="h-4 w-4 mr-2" />
+                          Fonctionnalités
+                        </div>
+                        <ChevronDown class="h-4 w-4" :class="{ 'transform rotate-180': openFonctionnalites }" />
+                      </div>
+                      <div v-if="openFonctionnalites" class="bg-muted/20">
+                        <NuxtLink to="/features" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Toutes les fonctionnalités</div>
+                        </NuxtLink>
+                        <NuxtLink to="/features/auto-3d" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Génération 3D</div>
+                        </NuxtLink>
+                        <NuxtLink to="/features/materials" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Matériaux</div>
+                        </NuxtLink>
+                        <NuxtLink to="/features/360-views" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Vues 360°</div>
+                        </NuxtLink>
+                        <NuxtLink to="/features/intelligent-lighting" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Éclairage intelligent</div>
+                        </NuxtLink>
+                        <NuxtLink to="/features/collaboration" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Collaboration</div>
+                        </NuxtLink>
+                        <NuxtLink to="/features/mobile-apps" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Applications mobiles</div>
+                        </NuxtLink>
+                      </div>
+                    </div>
+
+                    <div class="collapsible">
+                      <div class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-accent"
+                        @click="openAPropos = !openAPropos">
+                        <div class="flex items-center">
+                          <InfoIcon class="h-4 w-4 mr-2" />
+                          À propos
+                        </div>
+                        <ChevronDown class="h-4 w-4" :class="{ 'transform rotate-180': openAPropos }" />
+                      </div>
+                      <div v-if="openAPropos" class="bg-muted/20">
+                        <NuxtLink to="/about" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">À propos de nous</div>
+                        </NuxtLink>
+                        <NuxtLink to="/about#team" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Notre équipe</div>
+                        </NuxtLink>
+                        <NuxtLink to="/testimonials" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Témoignages</div>
+                        </NuxtLink>
+                        <NuxtLink to="/faq" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">FAQ</div>
+                        </NuxtLink>
+                        <NuxtLink to="/contact" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Contact</div>
+                        </NuxtLink>
+                        <NuxtLink to="/" @click="$emit('close')">
+                          <div class="px-8 py-3 hover:bg-accent">Blog</div>
+                        </NuxtLink>
+                      </div>
+                    </div>
+
+                    <NuxtLink to="/pricing" @click="$emit('close')">
+                      <div class="px-4 py-3 hover:bg-accent flex items-center">
+                        <TagIcon class="h-4 w-4 mr-2" />
+                        Tarifs
+                      </div>
+                    </NuxtLink>
+
+                    <NuxtLink to="/docs" @click="$emit('close')">
+                      <div class="px-4 py-3 hover:bg-accent flex items-center">
+                        <FileTextIcon class="h-4 w-4 mr-2" />
+                        Documentation
+                      </div>
+                    </NuxtLink>
+                  </div>
+
+                  <div class="mt-6">
+                    <h3 class="px-4 mb-2 text-sm font-medium text-muted-foreground">Compte</h3>
+
+                    <div class="space-y-px">
+                      <NuxtLink to="/auth/login" @click="$emit('close')">
+                        <div class="px-4 py-3 hover:bg-accent flex items-center">
+                          <UserIcon class="h-4 w-4 mr-2" />
+                          Connexion
+                        </div>
+                      </NuxtLink>
+                    </div>
+                  </div>
+
+                  <div class="px-4 pt-4">
+                    <NuxtLink to="/auth/register" @click="$emit('close')">
+                      <Button class="w-full">Essayer gratuitement</Button>
+                    </NuxtLink>
+                  </div>
+
+                  <div class="mt-8 flex justify-center space-x-4">
+                    <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
+                      <LinkedinIcon class="h-5 w-5" />
+                    </a>
+                    <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
+                      <TwitterIcon class="h-5 w-5" />
+                    </a>
+                    <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
+                      <GithubIcon class="h-5 w-5" />
+                    </a>
+                    <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
+                      <InstagramIcon class="h-5 w-5" />
+                    </a>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -317,5 +440,9 @@
 </template>
 
 <script setup lang="ts">
-import { MenuIcon, LinkedinIcon, TwitterIcon, GithubIcon, InstagramIcon } from 'lucide-vue-next'
+import { MenuIcon, LinkedinIcon, TwitterIcon, GithubIcon, InstagramIcon, ChevronDown, HomeIcon, PuzzleIcon, InfoIcon, TagIcon, FileTextIcon, UserIcon } from 'lucide-vue-next'
+import { ref } from 'vue'
+
+const openFonctionnalites = ref(false)
+const openAPropos = ref(false)
 </script>

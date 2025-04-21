@@ -1,5 +1,6 @@
 <template>
-    <div :class="[
+    <div
+:class="[
         'fixed inset-y-0 left-0 z-50 w-72 border-r bg-background transition-transform lg:static lg:block',
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     ]">
@@ -23,19 +24,22 @@
                         <h4 class="mb-2 text-sm font-semibold">Introduction</h4>
                         <ul class="space-y-2">
                             <li>
-                                <NuxtLink to="/docs"
+                                <NuxtLink
+to="/docs"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Démarrage rapide
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs"
+                                <NuxtLink
+to="/docs"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Installation
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs"
+                                <NuxtLink
+to="/docs"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Architecture
                                 </NuxtLink>
@@ -51,37 +55,43 @@
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs/api"
+                                <NuxtLink
+to="/docs/api"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Authentification
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs/api"
+                                <NuxtLink
+to="/docs/api"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Projets
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs/api"
+                                <NuxtLink
+to="/docs/api"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Rendus
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs/api"
+                                <NuxtLink
+to="/docs/api"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Modèles 3D
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs/api"
+                                <NuxtLink
+to="/docs/api"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Matériaux
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs/api"
+                                <NuxtLink
+to="/docs/api"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Webhooks
                                 </NuxtLink>
@@ -92,19 +102,22 @@
                         <h4 class="mb-2 text-sm font-semibold">SDK</h4>
                         <ul class="space-y-2">
                             <li>
-                                <NuxtLink to="/docs/api"
+                                <NuxtLink
+to="/docs/api"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     JavaScript
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs/api"
+                                <NuxtLink
+to="/docs/api"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Python
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs/api"
+                                <NuxtLink
+to="/docs/api"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     PHP
                                 </NuxtLink>
@@ -115,19 +128,22 @@
                         <h4 class="mb-2 text-sm font-semibold">Ressources</h4>
                         <ul class="space-y-2">
                             <li>
-                                <NuxtLink to="/docs"
+                                <NuxtLink
+to="/docs"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Exemples
                                 </NuxtLink>
                             </li>
                             <li>
-                                <NuxtLink to="/docs"
+                                <NuxtLink
+to="/docs"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     Tutoriels
                                 </NuxtLink>
                             </li>
                             <li>
-                                <a href="https://github.com/vizhome" target="_blank"
+                                <a
+href="https://github.com/vizhome" target="_blank"
                                     class="block text-sm text-muted-foreground hover:text-foreground transition-colors">
                                     GitHub
                                 </a>
@@ -144,10 +160,10 @@
 import { XIcon } from 'lucide-vue-next'
 
 defineProps({
-    isOpen: {
-        type: Boolean,
-        default: false
-    }
+  isOpen: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 defineEmits(['close'])

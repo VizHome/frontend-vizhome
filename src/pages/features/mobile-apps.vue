@@ -27,10 +27,12 @@
                         </div>
                     </div>
                     <div class="relative">
-                        <img src="/images/generate/image_generate.png" alt="Applications mobiles"
-                            class="rounded-lg shadow-xl" />
-                        <img src="/images/generate/image_generate.png" alt="App mobile détail"
-                            class="absolute -bottom-8 -left-8 w-2/3 rounded-lg shadow-xl border-4 border-background" />
+                        <img
+src="/images/generate/image_generate.png" alt="Applications mobiles"
+                            class="rounded-lg shadow-xl" >
+                        <img
+src="/images/generate/image_generate.png" alt="App mobile détail"
+                            class="absolute -bottom-8 -left-8 w-2/3 rounded-lg shadow-xl border-4 border-background" >
                     </div>
                 </div>
             </div>
@@ -114,59 +116,59 @@
                             Notre application mobile a été conçue pour être facile à utiliser, même en déplacement, avec
                             une interface claire et des contrôles tactiles intuitifs.
                         </p>
-                        <Tabs defaultValue="projects" className="w-full">
-                            <TabsList className="grid w-full grid-cols-3">
+                        <Tabs default-value="projects" class-name="w-full">
+                            <TabsList class-name="grid w-full grid-cols-3">
                                 <TabsTrigger value="projects">Projets</TabsTrigger>
                                 <TabsTrigger value="edit">Édition</TabsTrigger>
                                 <TabsTrigger value="share">Partage</TabsTrigger>
                             </TabsList>
-                            <TabsContent value="projects" className="space-y-4 mt-4">
+                            <TabsContent value="projects" class-name="space-y-4 mt-4">
                                 <h3 className="font-medium">Gestion de projets simplifiée</h3>
                                 <ul className="space-y-2">
                                     <li className="flex items-start gap-2">
-                                        <CheckIcon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                        <CheckIcon class-name="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                                         <span>Affichage en grille ou en liste de tous vos projets</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <CheckIcon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                        <CheckIcon class-name="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                                         <span>Filtres intelligents par date, type ou statut</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <CheckIcon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                        <CheckIcon class-name="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                                         <span>Accès rapide aux projets récents ou favoris</span>
                                     </li>
                                 </ul>
                             </TabsContent>
-                            <TabsContent value="edit" className="space-y-4 mt-4">
+                            <TabsContent value="edit" class-name="space-y-4 mt-4">
                                 <h3 className="font-medium">Outils d'édition tactiles</h3>
                                 <ul className="space-y-2">
                                     <li className="flex items-start gap-2">
-                                        <CheckIcon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                        <CheckIcon class-name="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                                         <span>Modification des matériaux par simple tapotement</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <CheckIcon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                        <CheckIcon class-name="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                                         <span>Contrôles de rotation et de zoom intuitifs</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <CheckIcon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                        <CheckIcon class-name="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                                         <span>Réglage de l'éclairage avec des gestes simples</span>
                                     </li>
                                 </ul>
                             </TabsContent>
-                            <TabsContent value="share" className="space-y-4 mt-4">
+                            <TabsContent value="share" class-name="space-y-4 mt-4">
                                 <h3 className="font-medium">Options de partage flexibles</h3>
                                 <ul className="space-y-2">
                                     <li className="flex items-start gap-2">
-                                        <CheckIcon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                        <CheckIcon class-name="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                                         <span>Partage direct via messagerie, email ou réseaux sociaux</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <CheckIcon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                        <CheckIcon class-name="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                                         <span>Génération de liens de visualisation sécurisés</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <CheckIcon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                        <CheckIcon class-name="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                                         <span>Export d'images haute résolution en un clic</span>
                                     </li>
                                 </ul>
@@ -178,20 +180,23 @@
                             <CarouselContent>
                                 <CarouselItem>
                                     <div class="p-1">
-                                        <img src="/images/generate/image_generate.png" alt="Interface projets"
-                                            class="rounded-xl shadow-lg" />
+                                        <img
+src="/images/generate/image_generate.png" alt="Interface projets"
+                                            class="rounded-xl shadow-lg" >
                                     </div>
                                 </CarouselItem>
                                 <CarouselItem>
                                     <div class="p-1">
-                                        <img src="/images/generate/image_generate.png" alt="Interface édition"
-                                            class="rounded-xl shadow-lg" />
+                                        <img
+src="/images/generate/image_generate.png" alt="Interface édition"
+                                            class="rounded-xl shadow-lg" >
                                     </div>
                                 </CarouselItem>
                                 <CarouselItem>
                                     <div class="p-1">
-                                        <img src="/images/generate/image_generate.png" alt="Interface partage"
-                                            class="rounded-xl shadow-lg" />
+                                        <img
+src="/images/generate/image_generate.png" alt="Interface partage"
+                                            class="rounded-xl shadow-lg" >
                                     </div>
                                 </CarouselItem>
                             </CarouselContent>
@@ -213,8 +218,9 @@
 
                 <div class="max-w-5xl mx-auto">
                     <div class="relative aspect-video rounded-lg overflow-hidden">
-                        <img src="/images/generate/image_generate.png" alt="Réalité augmentée"
-                            class="w-full h-full object-cover" />
+                        <img
+src="/images/generate/image_generate.png" alt="Réalité augmentée"
+                            class="w-full h-full object-cover" >
                         <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
                             <Button variant="secondary" size="icon" class="rounded-full h-16 w-16">
                                 <Play class="h-8 w-8" />
@@ -382,23 +388,23 @@ import { AppleIcon, SmartphoneIcon, CameraIcon, CloudIcon, NotebookIcon, CheckIc
 
 // Composant personnalisé pour l'icône 3D du smartphone
 const Smartphone3dIcon = defineComponent({
-    setup() {
-        return () => h('svg', {
-            xmlns: 'http://www.w3.org/2000/svg',
-            width: '24',
-            height: '24',
-            viewBox: '0 0 24 24',
-            fill: 'none',
-            stroke: 'currentColor',
-            strokeWidth: '2',
-            strokeLinecap: 'round',
-            strokeLinejoin: 'round'
-        }, [
-            h('rect', { x: '5', y: '2', width: '14', height: '20', rx: '2', ry: '2' }),
-            h('path', { d: 'M12 18h.01' }),
-            h('path', { d: 'M8 6h8' }),
-            h('path', { d: 'M10 10l2 2 2-2' })
-        ])
-    }
+  setup() {
+    return () => h('svg', {
+      xmlns: 'http://www.w3.org/2000/svg',
+      width: '24',
+      height: '24',
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      strokeWidth: '2',
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+    }, [
+      h('rect', { x: '5', y: '2', width: '14', height: '20', rx: '2', ry: '2' }),
+      h('path', { d: 'M12 18h.01' }),
+      h('path', { d: 'M8 6h8' }),
+      h('path', { d: 'M10 10l2 2 2-2' }),
+    ])
+  },
 })
 </script>

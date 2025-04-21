@@ -27,7 +27,7 @@
                         </p>
                     </div>
 
-                    <Tabs defaultValue="rest">
+                    <Tabs default-value="rest">
                         <TabsList>
                             <TabsTrigger value="rest">REST API</TabsTrigger>
                             <TabsTrigger value="sdk">SDK JavaScript</TabsTrigger>
@@ -277,13 +277,13 @@ import DocsSidebar from '@/components/DocsSidebar.vue'
 const isSidebarOpen = ref(false)
 
 const toggleSidebar = () => {
-    isSidebarOpen.value = !isSidebarOpen.value
+  isSidebarOpen.value = !isSidebarOpen.value
 }
 
 const closeSidebar = () => {
-    isSidebarOpen.value = false
+  isSidebarOpen.value = false
 }
 definePageMeta({
-  layout: 'none'
+  layout: 'none',
 })
 </script>

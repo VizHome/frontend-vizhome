@@ -18,8 +18,9 @@
                         </Button>
                     </div>
                     <div class="relative aspect-video rounded-lg overflow-hidden shadow-xl">
-                        <img src="/images/generate/image_generate.png" alt="Éclairage intelligent"
-                            class="object-cover w-full h-full" />
+                        <img
+src="/images/generate/image_generate.png" alt="Éclairage intelligent"
+                            class="object-cover w-full h-full" >
                     </div>
                 </div>
             </div>
@@ -36,8 +37,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                     <Card class="overflow-hidden">
                         <div class="aspect-video">
-                            <img src="/images/generate/image_generate.png" alt="Éclairage naturel"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Éclairage naturel"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardContent class="p-4">
                             <h3 class="font-medium mb-2">Éclairage naturel</h3>
@@ -50,8 +52,9 @@
 
                     <Card class="overflow-hidden">
                         <div class="aspect-video">
-                            <img src="/images/generate/image_generate.png" alt="Éclairage artificiel"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Éclairage artificiel"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardContent class="p-4">
                             <h3 class="font-medium mb-2">Éclairage artificiel</h3>
@@ -64,8 +67,9 @@
 
                     <Card class="overflow-hidden">
                         <div class="aspect-video">
-                            <img src="/images/generate/image_generate.png" alt="Éclairage d'ambiance"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Éclairage d'ambiance"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardContent class="p-4">
                             <h3 class="font-medium mb-2">Éclairage d'ambiance</h3>
@@ -121,8 +125,9 @@
                         </Accordion>
                     </div>
                     <div class="relative">
-                        <img src="/images/generate/image_generate.png" alt="Technologie d'éclairage"
-                            class="rounded-lg shadow-lg" />
+                        <img
+src="/images/generate/image_generate.png" alt="Technologie d'éclairage"
+                            class="rounded-lg shadow-lg" >
                         <div class="absolute -bottom-4 -right-4 bg-background rounded-lg p-4 shadow-lg border">
                             <h3 class="text-sm font-medium mb-1">Performance optimisée</h3>
                             <p class="text-xs text-muted-foreground">Rendu en temps réel grâce à notre IA</p>
@@ -144,12 +149,14 @@
                 <div class="max-w-3xl mx-auto">
                     <div class="relative aspect-[4/3] bg-muted rounded-lg overflow-hidden">
                         <div class="absolute inset-0" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%)">
-                            <img src="/images/generate/image_generate.png" alt="Avant l'éclairage"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Avant l'éclairage"
+                                class="w-full h-full object-cover" >
                         </div>
                         <div class="absolute inset-0">
-                            <img src="/images/generate/image_generate.png" alt="Après l'éclairage"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Après l'éclairage"
+                                class="w-full h-full object-cover" >
                         </div>
 
                         <!-- Slider vertical -->

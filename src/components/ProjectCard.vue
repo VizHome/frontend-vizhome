@@ -1,8 +1,9 @@
 <template>
     <Card class="overflow-hidden group">
         <div class="aspect-video relative overflow-hidden">
-            <img :src="project.thumbnail" :alt="project.title"
-                class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
+            <img
+:src="project.thumbnail" :alt="project.title"
+                class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" >
             <div
                 class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                 <div class="flex gap-2">
@@ -22,7 +23,7 @@
             <div class="flex justify-between items-start">
                 <CardTitle class="text-base">{{ project.title }}</CardTitle>
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger as-child>
                         <Button variant="ghost" size="icon" class="h-8 w-8">
                             <MoreVerticalIcon class="h-4 w-4" />
                         </Button>
@@ -66,26 +67,26 @@
 import { PencilIcon, EyeIcon, Share2Icon, MoreVerticalIcon, CopyIcon, TrashIcon, ImageIcon } from 'lucide-vue-next'
 
 const props = defineProps({
-    project: {
-        type: Object,
-        required: true
-    }
+  project: {
+    type: Object,
+    required: true,
+  },
 })
 
 const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffTime = Math.abs(now.getTime() - date.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffTime = Math.abs(now.getTime() - date.getTime())
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-    if (diffDays === 0) {
-        return "aujourd'hui"
-    } else if (diffDays === 1) {
-        return "hier"
-    } else if (diffDays < 7) {
-        return `il y a ${diffDays} jours`
-    } else {
-        return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-    }
+  if (diffDays === 0) {
+    return 'aujourd\'hui'
+  } else if (diffDays === 1) {
+    return 'hier'
+  } else if (diffDays < 7) {
+    return `il y a ${diffDays} jours`
+  } else {
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+  }
 }
 </script>

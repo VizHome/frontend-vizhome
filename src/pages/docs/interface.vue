@@ -67,7 +67,7 @@
             </h2>
             <Card class="mb-6">
               <div class="aspect-video relative bg-muted">
-                <img src="/images/docs/projet_1.png" alt="Tableau de bord VizHome" class="object-cover w-full h-full rounded-t-lg" />
+                <img src="/images/docs/projet_1.png" alt="Tableau de bord VizHome" class="object-cover w-full h-full rounded-t-lg" >
               </div>
               <CardContent class="pt-6">
                 <p class="mb-4">
@@ -113,7 +113,7 @@
             </h2>
             <Card class="mb-6">
               <div class="aspect-video relative bg-muted">
-                <img src="/images/docs/projet_1.png" alt="Gestion des projets VizHome" class="object-cover w-full h-full rounded-t-lg" />
+                <img src="/images/docs/projet_1.png" alt="Gestion des projets VizHome" class="object-cover w-full h-full rounded-t-lg" >
               </div>
               <CardContent class="pt-6">
                 <p class="mb-4">
@@ -165,7 +165,7 @@
             </h2>
             <Card class="mb-6">
               <div class="aspect-video relative bg-muted">
-                <img src="/images/docs/projet_1.png" alt="Éditeur 3D VizHome" class="object-cover w-full h-full rounded-t-lg" />
+                <img src="/images/docs/projet_1.png" alt="Éditeur 3D VizHome" class="object-cover w-full h-full rounded-t-lg" >
               </div>
               <CardContent class="pt-6">
                 <p class="mb-4">
@@ -344,7 +344,7 @@
                 </p>
                 
                 <h3 class="text-lg font-medium mb-2">Options disponibles</h3>
-                <Tabs defaultValue="profile">
+                <Tabs default-value="profile">
                   <TabsList>
                     <TabsTrigger value="profile">Profil</TabsTrigger>
                     <TabsTrigger value="appearance">Apparence</TabsTrigger>
@@ -546,9 +546,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { MenuIcon, ChevronRightIcon, ArrowRightIcon, ArrowLeftIcon, Circle, LayoutDashboardIcon, 
-         FolderIcon, CubeIcon, SettingsIcon, MousePointerIcon, MoveIcon, PaintbrushIcon, SunIcon,
-         InfoIcon, ArmchairIcon, LampIcon, UtensilsIcon, ShowerHeadIcon, FlowerIcon, TreePineIcon,
-         UploadCloudIcon, KeyboardIcon, PencilIcon } from 'lucide-vue-next'
+  FolderIcon, CubeIcon, SettingsIcon, MousePointerIcon, MoveIcon, PaintbrushIcon, SunIcon,
+  InfoIcon, ArmchairIcon, LampIcon, UtensilsIcon, ShowerHeadIcon, FlowerIcon, TreePineIcon,
+  UploadCloudIcon, KeyboardIcon, PencilIcon } from 'lucide-vue-next'
 import DocsSidebar from '@/components/DocsSidebar.vue'
 
 const isSidebarOpen = ref(false)
@@ -562,6 +562,6 @@ const closeSidebar = () => {
 }
 
 definePageMeta({
-  layout: 'none'
+  layout: 'none',
 })
 </script>

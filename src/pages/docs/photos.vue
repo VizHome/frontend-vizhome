@@ -261,8 +261,9 @@
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                         <div class="border rounded-lg p-4">
                                             <div class="aspect-video bg-muted rounded mb-3 overflow-hidden">
-                                                <img src="/images/docs/projet_1.png" alt="Photo depuis les coins"
-                                                    class="w-full h-full object-cover" />
+                                                <img
+src="/images/docs/projet_1.png" alt="Photo depuis les coins"
+                                                    class="w-full h-full object-cover" >
                                             </div>
                                             <h4 class="font-medium mb-1">Coins de la pièce</h4>
                                             <p class="text-xs text-muted-foreground">
@@ -271,8 +272,9 @@
                                         </div>
                                         <div class="border rounded-lg p-4">
                                             <div class="aspect-video bg-muted rounded mb-3 overflow-hidden">
-                                                <img src="/images/docs/projet_1.png" alt="Photo depuis le centre"
-                                                    class="w-full h-full object-cover" />
+                                                <img
+src="/images/docs/projet_1.png" alt="Photo depuis le centre"
+                                                    class="w-full h-full object-cover" >
                                             </div>
                                             <h4 class="font-medium mb-1">Centre de la pièce</h4>
                                             <p class="text-xs text-muted-foreground">
@@ -281,8 +283,9 @@
                                         </div>
                                         <div class="border rounded-lg p-4">
                                             <div class="aspect-video bg-muted rounded mb-3 overflow-hidden">
-                                                <img src="/images/docs/projet_1.png" alt="Photos de détails"
-                                                    class="w-full h-full object-cover" />
+                                                <img
+src="/images/docs/projet_1.png" alt="Photos de détails"
+                                                    class="w-full h-full object-cover" >
                                             </div>
                                             <h4 class="font-medium mb-1">Détails importants</h4>
                                             <p class="text-xs text-muted-foreground">
@@ -376,8 +379,9 @@
                                         <div class="space-y-4">
                                             <div>
                                                 <div class="aspect-video bg-muted rounded overflow-hidden mb-2">
-                                                    <img src="/images/docs/projet_1.png" alt="Bon exemple 1"
-                                                        class="w-full h-full object-cover" />
+                                                    <img
+src="/images/docs/projet_1.png" alt="Bon exemple 1"
+                                                        class="w-full h-full object-cover" >
                                                 </div>
                                                 <p class="text-sm text-muted-foreground">
                                                     ✓ Bonne luminosité, angle large captant une grande partie de la
@@ -386,8 +390,9 @@
                                             </div>
                                             <div>
                                                 <div class="aspect-video bg-muted rounded overflow-hidden mb-2">
-                                                    <img src="/images/docs/projet_1.png" alt="Bon exemple 2"
-                                                        class="w-full h-full object-cover" />
+                                                    <img
+src="/images/docs/projet_1.png" alt="Bon exemple 2"
+                                                        class="w-full h-full object-cover" >
                                                 </div>
                                                 <p class="text-sm text-muted-foreground">
                                                     ✓ Espace rangé, éclairage homogène, bonne netteté
@@ -400,8 +405,9 @@
                                         <div class="space-y-4">
                                             <div>
                                                 <div class="aspect-video bg-muted rounded overflow-hidden mb-2">
-                                                    <img src="/images/docs/projet_1.png" alt="Mauvais exemple 1"
-                                                        class="w-full h-full object-cover" />
+                                                    <img
+src="/images/docs/projet_1.png" alt="Mauvais exemple 1"
+                                                        class="w-full h-full object-cover" >
                                                 </div>
                                                 <p class="text-sm text-muted-foreground">
                                                     ✗ Surexposition par la fenêtre, espace trop encombré
@@ -409,8 +415,9 @@
                                             </div>
                                             <div>
                                                 <div class="aspect-video bg-muted rounded overflow-hidden mb-2">
-                                                    <img src="/images/docs/projet_1.png" alt="Mauvais exemple 2"
-                                                        class="w-full h-full object-cover" />
+                                                    <img
+src="/images/docs/projet_1.png" alt="Mauvais exemple 2"
+                                                        class="w-full h-full object-cover" >
                                                 </div>
                                                 <p class="text-sm text-muted-foreground">
                                                     ✗ Photo floue, éclairage insuffisant, angle trop serré
@@ -456,22 +463,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
-    MenuIcon, ChevronRightIcon, ArrowRightIcon, ArrowLeftIcon, Circle, SunIcon,
-    FocusIcon, LayoutGridIcon, CheckIcon, ThumbsUpIcon, ThumbsDownIcon, InfoIcon
+  MenuIcon, ChevronRightIcon, ArrowRightIcon, ArrowLeftIcon, Circle, SunIcon,
+  FocusIcon, LayoutGridIcon, CheckIcon, ThumbsUpIcon, ThumbsDownIcon, InfoIcon,
 } from 'lucide-vue-next'
 import DocsSidebar from '@/components/DocsSidebar.vue'
 
 const isSidebarOpen = ref(false)
 
 const toggleSidebar = () => {
-    isSidebarOpen.value = !isSidebarOpen.value
+  isSidebarOpen.value = !isSidebarOpen.value
 }
 
 const closeSidebar = () => {
-    isSidebarOpen.value = false
+  isSidebarOpen.value = false
 }
 
 definePageMeta({
-  layout: 'none'
+  layout: 'none',
 })
 </script>

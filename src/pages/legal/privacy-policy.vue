@@ -122,7 +122,8 @@
         </div>
 
         <p class="text-center mb-6">
-          Pour exercer vos droits, contactez-nous à <a href="mailto:privacy@vizhome.com"
+          Pour exercer vos droits, contactez-nous à <a
+href="mailto:privacy@vizhome.com"
             class="text-primary hover:underline">privacy@vizhome.com</a>.
         </p>
 

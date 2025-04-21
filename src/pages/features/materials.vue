@@ -18,8 +18,9 @@
                         </Button>
                     </div>
                     <div class="relative aspect-video rounded-lg overflow-hidden shadow-xl">
-                        <img src="/images/generate/image_generate.png" alt="Bibliothèque de matériaux"
-                            class="object-cover w-full h-full" />
+                        <img
+src="/images/generate/image_generate.png" alt="Bibliothèque de matériaux"
+                            class="object-cover w-full h-full" >
                     </div>
                 </div>
             </div>
@@ -36,7 +37,7 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                     <Card class="overflow-hidden">
                         <div class="aspect-square">
-                            <img src="/images/generate/image_generate.png" alt="Bois" class="w-full h-full object-cover" />
+                            <img src="/images/generate/image_generate.png" alt="Bois" class="w-full h-full object-cover" >
                         </div>
                         <CardFooter class="p-3">
                             <h3 class="font-medium text-center w-full">Bois</h3>
@@ -44,8 +45,9 @@
                     </Card>
                     <Card class="overflow-hidden">
                         <div class="aspect-square">
-                            <img src="/images/generate/image_generate.png" alt="Pierre"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Pierre"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardFooter class="p-3">
                             <h3 class="font-medium text-center w-full">Pierre</h3>
@@ -53,7 +55,7 @@
                     </Card>
                     <Card class="overflow-hidden">
                         <div class="aspect-square">
-                            <img src="/images/generate/image_generate.png" alt="Métal" class="w-full h-full object-cover" />
+                            <img src="/images/generate/image_generate.png" alt="Métal" class="w-full h-full object-cover" >
                         </div>
                         <CardFooter class="p-3">
                             <h3 class="font-medium text-center w-full">Métal</h3>
@@ -61,8 +63,9 @@
                     </Card>
                     <Card class="overflow-hidden">
                         <div class="aspect-square">
-                            <img src="/images/generate/image_generate.png" alt="Tissus"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Tissus"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardFooter class="p-3">
                             <h3 class="font-medium text-center w-full">Tissus</h3>
@@ -70,8 +73,9 @@
                     </Card>
                     <Card class="overflow-hidden">
                         <div class="aspect-square">
-                            <img src="/images/generate/image_generate.png" alt="Céramique"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Céramique"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardFooter class="p-3">
                             <h3 class="font-medium text-center w-full">Céramique</h3>
@@ -79,7 +83,7 @@
                     </Card>
                     <Card class="overflow-hidden">
                         <div class="aspect-square">
-                            <img src="/images/generate/image_generate.png" alt="Verre" class="w-full h-full object-cover" />
+                            <img src="/images/generate/image_generate.png" alt="Verre" class="w-full h-full object-cover" >
                         </div>
                         <CardFooter class="p-3">
                             <h3 class="font-medium text-center w-full">Verre</h3>
@@ -209,8 +213,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
                     <Card class="overflow-hidden">
                         <div class="aspect-video">
-                            <img src="/images/generate/image_generate.png" alt="Style Moderne"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Style Moderne"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardContent class="p-4">
                             <h3 class="font-medium mb-1">Moderne Minimaliste</h3>
@@ -220,8 +225,9 @@
 
                     <Card class="overflow-hidden">
                         <div class="aspect-video">
-                            <img src="/images/generate/image_generate.png" alt="Style Industriel"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Style Industriel"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardContent class="p-4">
                             <h3 class="font-medium mb-1">Industriel Brut</h3>
@@ -231,8 +237,9 @@
 
                     <Card class="overflow-hidden">
                         <div class="aspect-video">
-                            <img src="/images/generate/image_generate.png" alt="Style Scandinave"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Style Scandinave"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardContent class="p-4">
                             <h3 class="font-medium mb-1">Scandinave Épuré</h3>
@@ -242,8 +249,9 @@
 
                     <Card class="overflow-hidden">
                         <div class="aspect-video">
-                            <img src="/images/generate/image_generate.png" alt="Style Classique"
-                                class="w-full h-full object-cover" />
+                            <img
+src="/images/generate/image_generate.png" alt="Style Classique"
+                                class="w-full h-full object-cover" >
                         </div>
                         <CardContent class="p-4">
                             <h3 class="font-medium mb-1">Classique Élégant</h3>

@@ -17,7 +17,7 @@
             </Button>
           </div>
           <div class="relative aspect-video rounded-lg overflow-hidden shadow-xl">
-            <img src="/images/generate/image_generate.png" alt="Vues 360° immersives" class="object-cover w-full h-full" />
+            <img src="/images/generate/image_generate.png" alt="Vues 360° immersives" class="object-cover w-full h-full" >
             <div class="absolute inset-0 flex items-center justify-center">
               <Button variant="secondary" size="icon" class="rounded-full h-16 w-16">
                 <Play class="h-8 w-8" />
@@ -86,8 +86,8 @@
           Explorez nos exemples de visites virtuelles 360° et découvrez la puissance de l'immersion
         </p>
         
-        <Tabs defaultValue="apartment" className="max-w-5xl mx-auto">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+        <Tabs default-value="apartment" class-name="max-w-5xl mx-auto">
+          <TabsList class-name="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="apartment">Appartement</TabsTrigger>
             <TabsTrigger value="office">Bureau</TabsTrigger>
             <TabsTrigger value="retail">Boutique</TabsTrigger>
@@ -95,7 +95,7 @@
           
           <TabsContent value="apartment">
             <div class="aspect-[16/9] w-full bg-black rounded-lg overflow-hidden relative">
-              <img src="/images/generate/image_generate.png" alt="Visite 360° d'appartement" class="w-full h-full object-cover opacity-90" />
+              <img src="/images/generate/image_generate.png" alt="Visite 360° d'appartement" class="w-full h-full object-cover opacity-90" >
               <!-- Interface de navigation 360° simulée -->
               <div class="absolute bottom-4 left-0 right-0 flex justify-center">
                 <div class="bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">
@@ -143,7 +143,7 @@
           
           <TabsContent value="office">
             <div class="aspect-[16/9] w-full bg-black rounded-lg overflow-hidden relative">
-              <img src="/images/generate/image_generate.png" alt="Visite 360° de bureau" class="w-full h-full object-cover opacity-90" />
+              <img src="/images/generate/image_generate.png" alt="Visite 360° de bureau" class="w-full h-full object-cover opacity-90" >
               <!-- Interface de navigation 360° simulée (similaire) -->
               <div class="absolute bottom-4 left-0 right-0 flex justify-center">
                 <div class="bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">
@@ -180,7 +180,7 @@
           
           <TabsContent value="retail">
             <div class="aspect-[16/9] w-full bg-black rounded-lg overflow-hidden relative">
-              <img src="/images/generate/image_generate.png" alt="Visite 360° de boutique" class="w-full h-full object-cover opacity-90" />
+              <img src="/images/generate/image_generate.png" alt="Visite 360° de boutique" class="w-full h-full object-cover opacity-90" >
               <!-- Interface de navigation 360° simulée (similaire) -->
               <div class="absolute bottom-4 left-0 right-0 flex justify-center">
                 <div class="bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">

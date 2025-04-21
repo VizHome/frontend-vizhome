@@ -160,7 +160,7 @@
 <script setup lang="ts">
 import {
   Cpu, AlertOctagonIcon, Code, FileWarningIcon, CopyrightIcon,
-  ShieldOffIcon, FileEditIcon, MessageSquareIcon
+  ShieldOffIcon, FileEditIcon, MessageSquareIcon,
 } from 'lucide-vue-next'
 </script>
 

@@ -11,26 +11,26 @@
 
       <Card>
         <CardContent class="pt-6">
-          <form @submit.prevent="handleSubmit" class="space-y-4">
+          <form class="space-y-4" @submit.prevent="handleSubmit">
             <div class="grid grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label for="firstName">Prénom</Label>
-                <Input id="firstName" placeholder="Jean" v-model="firstName" />
+                <Input id="firstName" v-model="firstName" placeholder="Jean" />
               </div>
               <div class="space-y-2">
                 <Label for="lastName">Nom</Label>
-                <Input id="lastName" placeholder="Dupont" v-model="lastName" />
+                <Input id="lastName" v-model="lastName" placeholder="Dupont" />
               </div>
             </div>
 
             <div class="space-y-2">
               <Label for="email">Email</Label>
-              <Input id="email" type="email" placeholder="nom@exemple.fr" v-model="email" />
+              <Input id="email" v-model="email" type="email" placeholder="nom@exemple.fr" />
             </div>
 
             <div class="space-y-2">
               <Label for="password">Mot de passe</Label>
-              <Input id="password" type="password" placeholder="••••••••" v-model="password" />
+              <Input id="password" v-model="password" type="password" placeholder="••••••••" />
               <p class="text-xs text-muted-foreground">
                 Au moins 8 caractères incluant une majuscule, un chiffre et un caractère spécial
               </p>
@@ -38,7 +38,7 @@
 
             <div class="space-y-2">
               <Label for="confirmPassword">Confirmer le mot de passe</Label>
-              <Input id="confirmPassword" type="password" placeholder="••••••••" v-model="confirmPassword" />
+              <Input id="confirmPassword" v-model="confirmPassword" type="password" placeholder="••••••••" />
             </div>
 
             <div class="space-y-4">
@@ -46,7 +46,8 @@
                 <Checkbox id="terms" v-model:checked="acceptTerms" />
                 <label for="terms" class="text-sm leading-tight cursor-pointer">
                   J'accepte les <NuxtLink to="/legal/terms-of-use" class="text-primary hover:underline">conditions
-                    d'utilisation</NuxtLink> et la <NuxtLink to="/legal/privacy-policy"
+                    d'utilisation</NuxtLink> et la <NuxtLink
+to="/legal/privacy-policy"
                     class="text-primary hover:underline">politique de confidentialité</NuxtLink>
                 </label>
               </div>
@@ -64,7 +65,7 @@
 
           <div class="relative my-6">
             <div class="absolute inset-0 flex items-center">
-              <span class="w-full border-t"></span>
+              <span class="w-full border-t"/>
             </div>
             <div class="relative flex justify-center text-xs uppercase">
               <span class="bg-card px-2 text-muted-foreground">
@@ -129,14 +130,14 @@ const handleSubmit = () => {
     firstName: firstName.value,
     lastName: lastName.value,
     email: email.value,
-    newsletter: acceptNewsletter.value
+    newsletter: acceptNewsletter.value,
   })
 
   // Ici vous implémenteriez la logique d'inscription
 }
 
 definePageMeta({
-  layout: 'none'
+  layout: 'none',
 })
 </script>
 

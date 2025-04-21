@@ -11,15 +11,15 @@
           <div class="bg-card border rounded-lg p-1 inline-flex">
             <Button 
               :variant="billingCycle === 'monthly' ? 'default' : 'ghost'"
-              @click="billingCycle = 'monthly'" 
-              class="rounded-md"
+              class="rounded-md" 
+              @click="billingCycle = 'monthly'"
             >
               Mensuel
             </Button>
             <Button 
               :variant="billingCycle === 'yearly' ? 'default' : 'ghost'"
-              @click="billingCycle = 'yearly'" 
-              class="rounded-md"
+              class="rounded-md" 
+              @click="billingCycle = 'yearly'"
             >
               Annuel <Badge variant="outline" class="ml-2">-20%</Badge>
             </Button>

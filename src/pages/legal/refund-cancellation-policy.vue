@@ -170,7 +170,7 @@
 <script setup lang="ts">
 import {
   UserMinusIcon, CalendarIcon, BanknoteIcon, ClockIcon, CreditCardIcon,
-  PercentIcon, AlertTriangleIcon, MailQuestionIcon, InfoIcon
+  PercentIcon, AlertTriangleIcon, MailQuestionIcon, InfoIcon,
 } from 'lucide-vue-next'
 </script>
 

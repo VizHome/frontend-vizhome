@@ -80,7 +80,8 @@
           </CardContent>
           <CardFooter>
             <p class="text-sm text-muted-foreground">
-              Pour exercer vos droits, contactez-nous à <a href="mailto:privacy@vizhome.com"
+              Pour exercer vos droits, contactez-nous à <a
+href="mailto:privacy@vizhome.com"
                 class="text-primary hover:underline">privacy@vizhome.com</a>.
             </p>
           </CardFooter>
@@ -190,7 +191,8 @@
 
         <h2 class="text-xl font-bold mt-8 mb-4">Contact</h2>
         <p>
-          Pour toute question relative au traitement des données, contactez-nous à <a href="mailto:privacy@vizhome.com"
+          Pour toute question relative au traitement des données, contactez-nous à <a
+href="mailto:privacy@vizhome.com"
             class="text-primary hover:underline">privacy@vizhome.com</a>.
         </p>
       </div>

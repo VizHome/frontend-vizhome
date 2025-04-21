@@ -146,7 +146,8 @@
 
         <h2 class="text-xl font-bold mt-8 mb-4">Contact</h2>
         <p>
-          Pour toute question ou signalement, contactez-nous à <a href="mailto:support@vizhome.com"
+          Pour toute question ou signalement, contactez-nous à <a
+href="mailto:support@vizhome.com"
             class="text-primary hover:underline">support@vizhome.com</a>.
         </p>
       </div>
@@ -170,7 +171,7 @@
 <script setup lang="ts">
 import {
   ShieldIcon, UserIcon, BanIcon, ImageIcon, HeartOffIcon, BugIcon, LockIcon,
-  AlertTriangleIcon, UserXIcon, BadgeAlertIcon
+  AlertTriangleIcon, UserXIcon, BadgeAlertIcon,
 } from 'lucide-vue-next'
 </script>
 

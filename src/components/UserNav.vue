@@ -8,7 +8,7 @@
                 </Avatar>
             </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent class="w-56" align="end" forceMount>
+        <DropdownMenuContent class="w-56" align="end" force-mount>
             <DropdownMenuLabel class="font-normal">
                 <div class="flex flex-col space-y-1">
                     <p class="text-sm font-medium leading-none">Jean Dupont</p>

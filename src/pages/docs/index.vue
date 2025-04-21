@@ -45,7 +45,7 @@
           <div>
             <h2 class="text-2xl font-bold mb-4">Démarrage rapide</h2>
             <Card>
-              <CardContent className="py-10 px-10">
+              <CardContent class-name="py-10 px-10">
                 <div class="grid gap-6 pt-5">
                   <div class="flex items-start gap-4">
                     <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -201,7 +201,7 @@
             <div class="grid gap-4 md:grid-cols-2">
               <Card>
                 <div class="aspect-video relative bg-muted">
-                  <img src="/images/docs/projet_1.png" alt="Tutoriel d'introduction" class="object-cover w-full h-full" />
+                  <img src="/images/docs/projet_1.png" alt="Tutoriel d'introduction" class="object-cover w-full h-full" >
                   <div class="absolute inset-0 flex items-center justify-center">
                     <Button size="icon" variant="secondary" class="rounded-full h-14 w-14">
                       <PlayIcon class="h-6 w-6" />
@@ -215,7 +215,7 @@
               </Card>
               <Card>
                 <div class="aspect-video relative bg-muted">
-                  <img src="/images/docs/projet_2.png" alt="Tutoriel matériaux" class="object-cover w-full h-full" />
+                  <img src="/images/docs/projet_2.png" alt="Tutoriel matériaux" class="object-cover w-full h-full" >
                   <div class="absolute inset-0 flex items-center justify-center">
                     <Button size="icon" variant="secondary" class="rounded-full h-14 w-14">
                       <PlayIcon class="h-6 w-6" />
@@ -384,6 +384,6 @@ const closeSidebar = () => {
 }
 
 definePageMeta({
-  layout: 'none'
+  layout: 'none',
 })
 </script>

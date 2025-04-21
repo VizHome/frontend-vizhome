@@ -43,7 +43,7 @@
             </div>
           </div>
           <div class="bg-card border rounded-lg shadow-sm p-6">
-            <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors }">
+            <Form v-slot="{ errors }" :validation-schema="schema" @submit="onSubmit">
               <div class="space-y-4">
                 <div>
                   <Label for="name">Nom</Label>
@@ -150,8 +150,7 @@
             style="border:0;" 
             allowfullscreen="" 
             loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
+            referrerpolicy="no-referrer-when-downgrade"/>
         </div>
       </div>
     </section>
@@ -168,7 +167,7 @@ const schema = yup.object({
   email: yup.string().required('L\'email est requis').email('Email invalide'),
   subject: yup.string().required('Veuillez sélectionner un sujet'),
   message: yup.string().required('Le message est requis').min(20, 'Le message doit contenir au moins 20 caractères'),
-  privacy: yup.boolean().required('Vous devez accepter la politique de confidentialité').oneOf([true], 'Vous devez accepter la politique de confidentialité')
+  privacy: yup.boolean().required('Vous devez accepter la politique de confidentialité').oneOf([true], 'Vous devez accepter la politique de confidentialité'),
 })
 
 const onSubmit = (values) => {

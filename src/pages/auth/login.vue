@@ -11,10 +11,10 @@
 
       <Card>
         <CardContent class="pt-6">
-          <form @submit.prevent="handleSubmit" class="space-y-4">
+          <form class="space-y-4" @submit.prevent="handleSubmit">
             <div class="space-y-2">
               <Label for="email">Email</Label>
-              <Input id="email" type="email" placeholder="nom@exemple.fr" v-model="email" />
+              <Input id="email" v-model="email" type="email" placeholder="nom@exemple.fr" />
             </div>
 
             <div class="space-y-2">
@@ -24,7 +24,7 @@
                   Mot de passe oublié?
                 </NuxtLink>
               </div>
-              <Input id="password" type="password" placeholder="••••••••" v-model="password" />
+              <Input id="password" v-model="password" type="password" placeholder="••••••••" />
             </div>
 
             <div class="flex items-center space-x-2">
@@ -39,7 +39,7 @@
 
           <div class="relative my-6">
             <div class="absolute inset-0 flex items-center">
-              <span class="w-full border-t"></span>
+              <span class="w-full border-t"/>
             </div>
             <div class="relative flex justify-center text-xs uppercase">
               <span class="bg-card px-2 text-muted-foreground">
@@ -89,7 +89,7 @@ const handleSubmit = () => {
   // Ici vous implémenteriez la logique d'authentification
 }
 definePageMeta({
-  layout: 'none'
+  layout: 'none',
 })
 
 </script>

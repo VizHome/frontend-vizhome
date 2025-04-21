@@ -17,7 +17,7 @@
 defineProps({
   items: {
     type: Array as () => Array<{ question: string, answer: string }>,
-    required: true
-  }
+    required: true,
+  },
 })
 </script>

@@ -18,8 +18,9 @@
                         </Button>
                     </div>
                     <div class="relative aspect-video rounded-lg overflow-hidden shadow-xl">
-                        <img src="/images/generate/image_generate.png" alt="Génération 3D automatique"
-                            class="object-cover w-full h-full" />
+                        <img
+src="/images/generate/image_generate.png" alt="Génération 3D automatique"
+                            class="object-cover w-full h-full" >
                     </div>
                 </div>
             </div>
@@ -145,28 +146,30 @@
                     Voyez la différence entre les photos originales et les rendus 3D générés par notre IA
                 </p>
 
-                <Tabs defaultValue="example1" className="max-w-5xl mx-auto">
-                    <TabsList className="grid w-full grid-cols-3">
+                <Tabs default-value="example1" class-name="max-w-5xl mx-auto">
+                    <TabsList class-name="grid w-full grid-cols-3">
                         <TabsTrigger value="example1">Salon</TabsTrigger>
                         <TabsTrigger value="example2">Cuisine</TabsTrigger>
                         <TabsTrigger value="example3">Salle de bain</TabsTrigger>
                     </TabsList>
                     <TabsContent value="example1">
                         <Card>
-                            <CardContent className="p-0">
+                            <CardContent class-name="p-0">
                                 <div className="grid grid-cols-1 md:grid-cols-2">
                                     <div className="p-4 border-r border-b md:border-b-0">
                                         <h3 className="font-medium mb-2 text-center">Photo originale</h3>
                                         <div className="aspect-video rounded-md overflow-hidden">
-                                            <img src="/images/generate/image_generate.png" alt="Salon avant"
-                                                className="w-full h-full object-cover" />
+                                            <img
+src="/images/generate/image_generate.png" alt="Salon avant"
+                                                className="w-full h-full object-cover" >
                                         </div>
                                     </div>
                                     <div className="p-4 border-b md:border-b-0">
                                         <h3 className="font-medium mb-2 text-center">Rendu 3D généré</h3>
                                         <div className="aspect-video rounded-md overflow-hidden">
-                                            <img src="/images/generate/image_generate.png" alt="Salon après"
-                                                className="w-full h-full object-cover" />
+                                            <img
+src="/images/generate/image_generate.png" alt="Salon après"
+                                                className="w-full h-full object-cover" >
                                         </div>
                                     </div>
                                 </div>
@@ -180,20 +183,22 @@
                     </TabsContent>
                     <TabsContent value="example2">
                         <Card>
-                            <CardContent className="p-0">
+                            <CardContent class-name="p-0">
                                 <div className="grid grid-cols-1 md:grid-cols-2">
                                     <div className="p-4 border-r border-b md:border-b-0">
                                         <h3 className="font-medium mb-2 text-center">Photo originale</h3>
                                         <div className="aspect-video rounded-md overflow-hidden">
-                                            <img src="/images/generate/image_generate.png" alt="Cuisine avant"
-                                                className="w-full h-full object-cover" />
+                                            <img
+src="/images/generate/image_generate.png" alt="Cuisine avant"
+                                                className="w-full h-full object-cover" >
                                         </div>
                                     </div>
                                     <div className="p-4 border-b md:border-b-0">
                                         <h3 className="font-medium mb-2 text-center">Rendu 3D généré</h3>
                                         <div className="aspect-video rounded-md overflow-hidden">
-                                            <img src="/images/generate/image_generate.png" alt="Cuisine après"
-                                                className="w-full h-full object-cover" />
+                                            <img
+src="/images/generate/image_generate.png" alt="Cuisine après"
+                                                className="w-full h-full object-cover" >
                                         </div>
                                     </div>
                                 </div>
@@ -206,20 +211,22 @@
                     </TabsContent>
                     <TabsContent value="example3">
                         <Card>
-                            <CardContent className="p-0">
+                            <CardContent class-name="p-0">
                                 <div className="grid grid-cols-1 md:grid-cols-2">
                                     <div className="p-4 border-r border-b md:border-b-0">
                                         <h3 className="font-medium mb-2 text-center">Photo originale</h3>
                                         <div className="aspect-video rounded-md overflow-hidden">
-                                            <img src="/images/generate/image_generate.png" alt="Salle de bain avant"
-                                                className="w-full h-full object-cover" />
+                                            <img
+src="/images/generate/image_generate.png" alt="Salle de bain avant"
+                                                className="w-full h-full object-cover" >
                                         </div>
                                     </div>
                                     <div className="p-4 border-b md:border-b-0">
                                         <h3 className="font-medium mb-2 text-center">Rendu 3D généré</h3>
                                         <div className="aspect-video rounded-md overflow-hidden">
-                                            <img src="/images/generate/image_generate.png" alt="Salle de bain après"
-                                                className="w-full h-full object-cover" />
+                                            <img
+src="/images/generate/image_generate.png" alt="Salle de bain après"
+                                                className="w-full h-full object-cover" >
                                         </div>
                                     </div>
                                 </div>

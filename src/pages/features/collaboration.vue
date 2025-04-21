@@ -17,7 +17,7 @@
             </Button>
           </div>
           <div class="relative aspect-video rounded-lg overflow-hidden shadow-xl">
-            <img src="/images/generate/image_generate.png" alt="Partage et collaboration" class="object-cover w-full h-full" />
+            <img src="/images/generate/image_generate.png" alt="Partage et collaboration" class="object-cover w-full h-full" >
           </div>
         </div>
       </div>
@@ -83,7 +83,7 @@
         
         <div class="relative max-w-5xl mx-auto">
           <!-- Ligne de temps -->
-          <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-primary/20 hidden md:block"></div>
+          <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-primary/20 hidden md:block"/>
           
           <!-- Étapes -->
           <div class="space-y-12">
@@ -98,7 +98,7 @@
                 <div class="md:absolute md:-left-6 w-12 h-12 rounded-full bg-primary/10 border-4 border-background flex items-center justify-center">
                   <UserPlusIcon class="h-5 w-5 text-primary" />
                 </div>
-                <img src="/images/generate/image_generate.png" alt="Inviter des collaborateurs" class="rounded-lg shadow-md md:ml-8" />
+                <img src="/images/generate/image_generate.png" alt="Inviter des collaborateurs" class="rounded-lg shadow-md md:ml-8" >
               </div>
             </div>
             
@@ -107,7 +107,7 @@
                 <div class="md:absolute md:-right-6 w-12 h-12 rounded-full bg-primary/10 border-4 border-background flex items-center justify-center">
                   <PencilRulerIcon class="h-5 w-5 text-primary" />
                 </div>
-                <img src="/images/generate/image_generate.png" alt="Modifier ensemble" class="rounded-lg shadow-md md:mr-8" />
+                <img src="/images/generate/image_generate.png" alt="Modifier ensemble" class="rounded-lg shadow-md md:mr-8" >
               </div>
               <div>
                 <h3 class="text-xl font-medium mb-2">Modifiez en temps réel</h3>
@@ -128,7 +128,7 @@
                 <div class="md:absolute md:-left-6 w-12 h-12 rounded-full bg-primary/10 border-4 border-background flex items-center justify-center">
                   <MessageSquareIcon class="h-5 w-5 text-primary" />
                 </div>
-                <img src="/images/generate/image_generate.png" alt="Commenter et annoter" class="rounded-lg shadow-md md:ml-8" />
+                <img src="/images/generate/image_generate.png" alt="Commenter et annoter" class="rounded-lg shadow-md md:ml-8" >
               </div>
             </div>
             
@@ -137,7 +137,7 @@
                 <div class="md:absolute md:-right-6 w-12 h-12 rounded-full bg-primary/10 border-4 border-background flex items-center justify-center">
                   <Share2Icon class="h-5 w-5 text-primary" />
                 </div>
-                <img src="/images/generate/image_generate.png" alt="Partager avec les clients" class="rounded-lg shadow-md md:mr-8" />
+                <img src="/images/generate/image_generate.png" alt="Partager avec les clients" class="rounded-lg shadow-md md:mr-8" >
               </div>
               <div>
                 <h3 class="text-xl font-medium mb-2">Partagez avec les clients</h3>
@@ -273,22 +273,22 @@
         
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 max-w-5xl mx-auto">
           <div class="bg-background rounded-lg p-4 flex items-center justify-center shadow-sm">
-            <img src="/images/generate/image_generate.png" alt="Slack" class="h-10" />
+            <img src="/images/generate/image_generate.png" alt="Slack" class="h-10" >
           </div>
           <div class="bg-background rounded-lg p-4 flex items-center justify-center shadow-sm">
-            <img src="/images/generate/image_generate.png" alt="Trello" class="h-10" />
+            <img src="/images/generate/image_generate.png" alt="Trello" class="h-10" >
           </div>
           <div class="bg-background rounded-lg p-4 flex items-center justify-center shadow-sm">
-            <img src="/images/generate/image_generate.png" alt="Asana" class="h-10" />
+            <img src="/images/generate/image_generate.png" alt="Asana" class="h-10" >
           </div>
           <div class="bg-background rounded-lg p-4 flex items-center justify-center shadow-sm">
-            <img src="/images/generate/image_generate.png" alt="Google Drive" class="h-10" />
+            <img src="/images/generate/image_generate.png" alt="Google Drive" class="h-10" >
           </div>
           <div class="bg-background rounded-lg p-4 flex items-center justify-center shadow-sm">
-            <img src="/images/generate/image_generate.png" alt="Dropbox" class="h-10" />
+            <img src="/images/generate/image_generate.png" alt="Dropbox" class="h-10" >
           </div>
           <div class="bg-background rounded-lg p-4 flex items-center justify-center shadow-sm">
-            <img src="/images/generate/image_generate.png" alt="Microsoft Teams" class="h-10" />
+            <img src="/images/generate/image_generate.png" alt="Microsoft Teams" class="h-10" >
           </div>
         </div>
         

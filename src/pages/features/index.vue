@@ -24,8 +24,9 @@
           </div>
           <div
             class="relative aspect-video bg-gradient-to-tr from-primary/5 to-primary/10 rounded-lg overflow-hidden shadow-xl">
-            <img src="/images/docs/projet_1.png" alt="Interface VizHome"
-              class="object-cover w-full h-full mix-blend-overlay" />
+            <img
+src="/images/docs/projet_1.png" alt="Interface VizHome"
+              class="object-cover w-full h-full mix-blend-overlay" >
             <div class="absolute inset-0 bg-background/10 backdrop-blur-sm flex items-center justify-center">
               <div class="bg-background/80 backdrop-blur-md rounded-lg p-6 shadow-lg max-w-xs">
                 <div class="flex items-center gap-3 mb-3">
@@ -65,8 +66,9 @@
               </CardDescription>
             </CardHeader>
             <div class="px-6">
-              <img src="/images/docs/projet_1.png" alt="Génération 3D automatique"
-                class="rounded-lg h-48 w-full object-cover" />
+              <img
+src="/images/docs/projet_1.png" alt="Génération 3D automatique"
+                class="rounded-lg h-48 w-full object-cover" >
             </div>
             <CardContent class="pt-6">
               <p class="text-muted-foreground">
@@ -93,8 +95,9 @@
               </CardDescription>
             </CardHeader>
             <div class="px-6">
-              <img src="/images/docs/projet_1.png" alt="Bibliothèque de matériaux"
-                class="rounded-lg h-48 w-full object-cover" />
+              <img
+src="/images/docs/projet_1.png" alt="Bibliothèque de matériaux"
+                class="rounded-lg h-48 w-full object-cover" >
             </div>
             <CardContent class="pt-6">
               <p class="text-muted-foreground">
@@ -121,8 +124,9 @@
               </CardDescription>
             </CardHeader>
             <div class="px-6">
-              <img src="/images/docs/projet_1.png" alt="Vues 360° immersives"
-                class="rounded-lg h-48 w-full object-cover" />
+              <img
+src="/images/docs/projet_1.png" alt="Vues 360° immersives"
+                class="rounded-lg h-48 w-full object-cover" >
             </div>
             <CardContent class="pt-6">
               <p class="text-muted-foreground">
@@ -149,8 +153,9 @@
               </CardDescription>
             </CardHeader>
             <div class="px-6">
-              <img src="/images/docs/projet_1.png" alt="Éclairage intelligent"
-                class="rounded-lg h-48 w-full object-cover" />
+              <img
+src="/images/docs/projet_1.png" alt="Éclairage intelligent"
+                class="rounded-lg h-48 w-full object-cover" >
             </div>
             <CardContent class="pt-6">
               <p class="text-muted-foreground">
@@ -177,8 +182,9 @@
               </CardDescription>
             </CardHeader>
             <div class="px-6">
-              <img src="/images/docs/projet_1.png" alt="Partage et collaboration"
-                class="rounded-lg h-48 w-full object-cover" />
+              <img
+src="/images/docs/projet_1.png" alt="Partage et collaboration"
+                class="rounded-lg h-48 w-full object-cover" >
             </div>
             <CardContent class="pt-6">
               <p class="text-muted-foreground">
@@ -205,8 +211,9 @@
               </CardDescription>
             </CardHeader>
             <div class="px-6">
-              <img src="/images/docs/projet_1.png" alt="Applications mobiles"
-                class="rounded-lg h-48 w-full object-cover" />
+              <img
+src="/images/docs/projet_1.png" alt="Applications mobiles"
+                class="rounded-lg h-48 w-full object-cover" >
             </div>
             <CardContent class="pt-6">
               <p class="text-muted-foreground">
@@ -273,8 +280,9 @@
 
           <div class="relative">
             <div class="bg-gradient-to-tr from-primary/5 to-primary/10 rounded-xl p-6">
-              <img src="/images/docs/projet_1.png" alt="Technologie IA VizHome"
-                class="rounded-lg shadow-lg w-full" />
+              <img
+src="/images/docs/projet_1.png" alt="Technologie IA VizHome"
+                class="rounded-lg shadow-lg w-full" >
             </div>
 
             <div class="absolute -bottom-6 -left-6 bg-background rounded-lg shadow-lg p-4 border">
@@ -395,19 +403,20 @@
           Comment nos clients utilisent VizHome dans leur domaine
         </p>
 
-        <Tabs defaultValue="architecture" className="w-full max-w-4xl mx-auto">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs default-value="architecture" class-name="w-full max-w-4xl mx-auto">
+          <TabsList class-name="grid w-full grid-cols-4">
             <TabsTrigger value="architecture">Architecture</TabsTrigger>
             <TabsTrigger value="immobilier">Immobilier</TabsTrigger>
             <TabsTrigger value="design">Design d'intérieur</TabsTrigger>
             <TabsTrigger value="ecommerce">E-commerce</TabsTrigger>
           </TabsList>
-          <TabsContent value="architecture" className="mt-6">
+          <TabsContent value="architecture" class-name="mt-6">
             <Card>
               <div className="md:flex">
                 <div className="md:w-1/2">
-                  <img src="/images/docs/projet_1.png" alt="Cas d'utilisation architecture"
-                    className="h-full w-full object-cover" />
+                  <img
+src="/images/docs/projet_1.png" alt="Cas d'utilisation architecture"
+                    className="h-full w-full object-cover" >
                 </div>
                 <div className="md:w-1/2 p-6">
                   <h3 className="text-xl font-bold mb-3">Pour les architectes</h3>
@@ -418,15 +427,15 @@
                   </p>
                   <div className="space-y-2">
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Présentation de concepts en temps réel lors des réunions clients</p>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Exploration rapide de multiples options de design</p>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Intégration avec les logiciels de CAO existants</p>
                     </div>
                   </div>
@@ -434,12 +443,13 @@
               </div>
             </Card>
           </TabsContent>
-          <TabsContent value="immobilier" className="mt-6">
+          <TabsContent value="immobilier" class-name="mt-6">
             <Card>
               <div className="md:flex">
                 <div className="md:w-1/2">
-                  <img src="/images/docs/projet_1.png" alt="Cas d'utilisation immobilier"
-                    className="h-full w-full object-cover" />
+                  <img
+src="/images/docs/projet_1.png" alt="Cas d'utilisation immobilier"
+                    className="h-full w-full object-cover" >
                 </div>
                 <div className="md:w-1/2 p-6">
                   <h3 className="text-xl font-bold mb-3">Pour les professionnels de l'immobilier</h3>
@@ -449,15 +459,15 @@
                   </p>
                   <div className="space-y-2">
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Visualisation de biens en construction ou sur plan</p>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Staging virtuel de propriétés vides</p>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Création de visites virtuelles 360° pour les plateformes d'annonces</p>
                     </div>
                   </div>
@@ -465,12 +475,13 @@
               </div>
             </Card>
           </TabsContent>
-          <TabsContent value="design" className="mt-6">
+          <TabsContent value="design" class-name="mt-6">
             <Card>
               <div className="md:flex">
                 <div className="md:w-1/2">
-                  <img src="/images/docs/projet_1.png" alt="Cas d'utilisation design d'intérieur"
-                    className="h-full w-full object-cover" />
+                  <img
+src="/images/docs/projet_1.png" alt="Cas d'utilisation design d'intérieur"
+                    className="h-full w-full object-cover" >
                 </div>
                 <div className="md:w-1/2 p-6">
                   <h3 className="text-xl font-bold mb-3">Pour les designers d'intérieur</h3>
@@ -481,15 +492,15 @@
                   </p>
                   <div className="space-y-2">
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Expérimentation avec différentes palettes de couleurs et matériaux</p>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Visualisation de meubles et d'accessoires dans l'espace réel</p>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Présentation de concepts multiples aux clients pour faciliter la décision
                       </p>
                     </div>
@@ -498,12 +509,13 @@
               </div>
             </Card>
           </TabsContent>
-          <TabsContent value="ecommerce" className="mt-6">
+          <TabsContent value="ecommerce" class-name="mt-6">
             <Card>
               <div className="md:flex">
                 <div className="md:w-1/2">
-                  <img src="/images/docs/projet_1.png" alt="Cas d'utilisation e-commerce"
-                    className="h-full w-full object-cover" />
+                  <img
+src="/images/docs/projet_1.png" alt="Cas d'utilisation e-commerce"
+                    className="h-full w-full object-cover" >
                 </div>
                 <div className="md:w-1/2 p-6">
                   <h3 className="text-xl font-bold mb-3">Pour l'e-commerce</h3>
@@ -514,15 +526,15 @@
                   </p>
                   <div className="space-y-2">
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Création de catalogues virtuels avec des produits en contexte</p>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Fonctionnalité "voir dans votre espace" pour les sites web</p>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <CheckCircleIcon class-name="h-5 w-5 text-primary mt-0.5" />
                       <p className="text-sm">Génération automatisée de visuels pour les campagnes marketing</p>
                     </div>
                   </div>
@@ -565,7 +577,7 @@
 import {
   ChevronRightIcon, ImageIcon, PaintbrushIcon, EyeIcon, SunIcon, Share2Icon,
   SmartphoneIcon, BrainIcon, BoltIcon, MousePointerClickIcon, ImagePlusIcon, CloudIcon,
-  CodeIcon, CheckCircleIcon, SparklesIcon
+  CodeIcon, CheckCircleIcon, SparklesIcon,
 } from 'lucide-vue-next'
 </script>
 

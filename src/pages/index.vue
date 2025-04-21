@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="relative overflow-hidden h-screen">
-      <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div class="absolute inset-0 bg-grid-pattern opacity-5"/>
       <div class="container mx-auto px-4 py-20 md:py-32">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div class="space-y-6">
@@ -47,8 +47,8 @@
             </div>
           </div>
           <div class="relative aspect-video rounded-lg overflow-hidden shadow-2xl">
-            <img src="/images/generate/image_generate.png" alt="Rendu 3D par IA" class="object-cover w-full h-full" />
-            <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent"></div>
+            <img src="/images/generate/image_generate.png" alt="Rendu 3D par IA" class="object-cover w-full h-full" >
+            <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent"/>
           </div>
         </div>
       </div>

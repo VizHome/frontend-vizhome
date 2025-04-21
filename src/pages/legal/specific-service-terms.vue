@@ -169,7 +169,8 @@
 
         <h2 class="text-xl font-bold mt-8 mb-4">Contact</h2>
         <p>
-          Pour toute question sur ces conditions spécifiques, contactez-nous à <a href="mailto:support@vizhome.com"
+          Pour toute question sur ces conditions spécifiques, contactez-nous à <a
+href="mailto:support@vizhome.com"
             class="text-primary hover:underline">support@vizhome.com</a>.
         </p>
       </div>

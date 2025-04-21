@@ -23,7 +23,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
     'nuxt-typed-router',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
   ],
 
   // Configs CSS
@@ -46,13 +46,13 @@ export default defineNuxtConfig({
      * Directory that the component lives in.
      * @default "./components/ui"
      */
-    componentDir: './components/ui'
+    componentDir: './components/ui',
   },
 
   // Color mode
   colorMode:{
     fallback:'light',
     preference:'system',
-    classSuffix:''
-  }
+    classSuffix:'',
+  },
 })

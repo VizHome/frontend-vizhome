@@ -46,7 +46,8 @@
             <div
               class="text-center bg-card rounded-lg p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 hover:bg-card/80">
               <div class="relative w-32 h-32 mx-auto mb-4">
-                <img src="/images/teams/profile_luca.jpg" alt="Lucas Messina"
+                <img
+src="/images/teams/profile_luca.jpg" alt="Lucas Messina"
                   class="rounded-full object-cover w-full h-full border-2 border-primary/10 group-hover:border-primary transition-all">
                 <div class="absolute bottom-0 right-0 bg-primary rounded-full p-1.5">
                   <BuildingIcon class="h-4 w-4 text-secondary" />
@@ -72,7 +73,8 @@
             <div
               class="text-center bg-card rounded-lg p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 hover:bg-card/80">
               <div class="relative w-32 h-32 mx-auto mb-4">
-                <img src="/images/teams/profile_thibaut.jpg" alt="Thibaut Maurras"
+                <img
+src="/images/teams/profile_thibaut.jpg" alt="Thibaut Maurras"
                   class="rounded-full object-cover w-full h-full border-2 border-primary/10 group-hover:border-primary transition-all">
                 <div class="absolute bottom-0 right-0 bg-primary rounded-full p-1.5">
                   <CodeIcon class="h-4 w-4 text-secondary" />
@@ -98,7 +100,8 @@
             <div
               class="text-center bg-card rounded-lg p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 hover:bg-card/80">
               <div class="relative w-32 h-32 mx-auto mb-4">
-                <img src="/images/teams/profile_nathan.jpeg" alt="Nathan Marques Da Fontes"
+                <img
+src="/images/teams/profile_nathan.jpeg" alt="Nathan Marques Da Fontes"
                   class="rounded-full object-cover w-full h-full border-2 border-primary/10 group-hover:border-primary transition-all">
                 <div class="absolute bottom-0 right-0 bg-primary rounded-full p-1.5">
                   <BrainCircuitIcon class="h-4 w-4 text-secondary" />
@@ -125,7 +128,8 @@
             <div
               class="text-center bg-card rounded-lg p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 hover:bg-card/80">
               <div class="relative w-32 h-32 mx-auto mb-4">
-                <img src="/images/teams/profile_kortos.jpg" alt="Korto Grinda"
+                <img
+src="/images/teams/profile_kortos.jpg" alt="Korto Grinda"
                   class="rounded-full object-cover w-full h-full border-2 border-primary/10 group-hover:border-primary transition-all">
                 <div class="absolute bottom-0 right-0 bg-primary rounded-full p-1.5">
                   <BrainCircuitIcon class="h-4 w-4 text-secondary" />
@@ -177,12 +181,12 @@
             </div>
           </div>
           <div class="relative">
-            <div class="absolute -inset-4 bg-primary/5 rounded-xl -rotate-2"></div>
-            <div class="absolute -inset-4 bg-primary/5 rounded-xl rotate-2"></div>
+            <div class="absolute -inset-4 bg-primary/5 rounded-xl -rotate-2"/>
+            <div class="absolute -inset-4 bg-primary/5 rounded-xl rotate-2"/>
             <img
               src="https://images.unsplash.com/photo-1664575599736-c5197c684172?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
               alt="L'histoire de VizHome"
-              class="relative rounded-lg shadow-md w-full h-auto aspect-video object-cover" />
+              class="relative rounded-lg shadow-md w-full h-auto aspect-video object-cover" >
           </div>
         </div>
       </div>
@@ -199,30 +203,33 @@
         <div class="flex flex-wrap justify-center items-center gap-12">
           <div
             class="w-32 h-16 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 flex items-center justify-center">
-            <img src="https://companieslogo.com/img/orig/ADSK-7966e9ee.png?t=1633504999" alt="Partenaire 1"
-              class="max-h-full max-w-full" />
+            <img
+src="https://companieslogo.com/img/orig/ADSK-7966e9ee.png?t=1633504999" alt="Partenaire 1"
+              class="max-h-full max-w-full" >
           </div>
           <div
             class="w-32 h-16 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 flex items-center justify-center">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Blender_logo_no_text.svg/2503px-Blender_logo_no_text.svg.png"
-              alt="Partenaire 2" class="max-h-full max-w-full" />
+              alt="Partenaire 2" class="max-h-full max-w-full" >
           </div>
           <div
             class="w-32 h-16 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 flex items-center justify-center">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Logo_Unity.svg/1200px-Logo_Unity.svg.png"
-              alt="Partenaire 3" class="max-h-full max-w-full" />
+              alt="Partenaire 3" class="max-h-full max-w-full" >
           </div>
           <div
             class="w-32 h-16 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 flex items-center justify-center">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Nvidia_logo.svg" alt="Partenaire 4"
-              class="max-h-full max-w-full" />
+            <img
+src="https://upload.wikimedia.org/wikipedia/commons/2/21/Nvidia_logo.svg" alt="Partenaire 4"
+              class="max-h-full max-w-full" >
           </div>
           <div
             class="w-32 h-16 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 flex items-center justify-center">
-            <img src="https://logos-world.net/wp-content/uploads/2020/11/Adobe-Logo.png" alt="Partenaire 5"
-              class="max-h-full max-w-full" />
+            <img
+src="https://logos-world.net/wp-content/uploads/2020/11/Adobe-Logo.png" alt="Partenaire 5"
+              class="max-h-full max-w-full" >
           </div>
         </div>
       </div>
@@ -255,7 +262,7 @@
 import {
   LightbulbIcon, UsersIcon, CodeIcon, BuildingIcon,
   BrainCircuitIcon, LinkedinIcon, TwitterIcon, GithubIcon,
-  ShieldCheckIcon, ShieldIcon, FileTextIcon
+  ShieldCheckIcon, ShieldIcon, FileTextIcon,
 } from 'lucide-vue-next'
 </script>
 

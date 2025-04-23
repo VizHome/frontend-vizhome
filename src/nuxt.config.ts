@@ -6,11 +6,25 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
 
   // Devtools
-  devtools: { 
+  devtools: {
     enabled: true,
     timeline: {
       enabled: true,
     },
+  },
+
+  // App config
+  app: {
+    head: {
+      title: 'VizHome',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Application VizHome' },
+      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    },
+    pageTransition: { name: 'page', mode: 'out-in' },
   },
 
   // Modules
@@ -31,9 +45,7 @@ export default defineNuxtConfig({
 
   // Vite config
   vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+    plugins: [tailwindcss()],
   },
 
   // Shadcn
@@ -50,9 +62,21 @@ export default defineNuxtConfig({
   },
 
   // Color mode
-  colorMode:{
-    fallback:'light',
-    preference:'system',
-    classSuffix:'',
+  colorMode: {
+    fallback: 'light',
+    preference: 'system',
+    classSuffix: '',
+  },
+
+  // Runtime config
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3000',
+    },
+  },
+
+  // Typescript
+  typescript: {
+    strict: true,
   },
 })

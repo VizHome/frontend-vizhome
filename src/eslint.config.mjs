@@ -17,5 +17,5 @@ export default withNuxt({
     'comma-dangle': ['error', 'always-multiline'],
     'arrow-parens': ['error', 'always'],
   },
-  ignores: ['node_modules', '.nuxt', 'dist', '.output'],
+  ignores: ['node_modules', '.nuxt', 'dist', '.output','components/ui'],
 })

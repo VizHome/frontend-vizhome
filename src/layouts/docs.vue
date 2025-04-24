@@ -58,37 +58,37 @@
                                     </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/docs/api"
+                                    <NuxtLink to="/docs/api/authentification"
                                         class="block text-sm text-muted-foreground hover:text-foreground transition-colors -ml-px pl-3 border-l border-transparent hover:border-primary">
                                         Authentification
                                     </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/docs/api"
+                                    <NuxtLink to="/docs/api/projets"
                                         class="block text-sm text-muted-foreground hover:text-foreground transition-colors -ml-px pl-3 border-l border-transparent hover:border-primary">
                                         Projets
                                     </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/docs/api"
+                                    <NuxtLink to="/docs/api/rendus"
                                         class="block text-sm text-muted-foreground hover:text-foreground transition-colors -ml-px pl-3 border-l border-transparent hover:border-primary">
                                         Rendus
                                     </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/docs/api"
+                                    <NuxtLink to="/docs/api/modeles-3d"
                                         class="block text-sm text-muted-foreground hover:text-foreground transition-colors -ml-px pl-3 border-l border-transparent hover:border-primary">
                                         Modèles 3D
                                     </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/docs/api"
+                                    <NuxtLink to="/docs/api/materiaux"
                                         class="block text-sm text-muted-foreground hover:text-foreground transition-colors -ml-px pl-3 border-l border-transparent hover:border-primary">
                                         Matériaux
                                     </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/docs/api"
+                                    <NuxtLink to="/docs/api/webhooks"
                                         class="block text-sm text-muted-foreground hover:text-foreground transition-colors -ml-px pl-3 border-l border-transparent hover:border-primary">
                                         Webhooks
                                     </NuxtLink>

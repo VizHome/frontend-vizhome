@@ -41,7 +41,7 @@
       </h2>
       <Card class="mb-6">
         <div class="aspect-video relative bg-muted">
-          <img src="/images/docs/projet_1.png" alt="Tableau de bord VizHome"
+          <img src="/images/generate/image_generate.png" alt="Tableau de bord VizHome"
             class="object-cover w-full h-full rounded-t-lg">
         </div>
         <CardContent class="pt-6">
@@ -92,7 +92,7 @@
       </h2>
       <Card class="mb-6">
         <div class="aspect-video relative bg-muted">
-          <img src="/images/docs/projet_1.png" alt="Gestion des projets VizHome"
+          <img src="/images/generate/image_generate.png" alt="Gestion des projets VizHome"
             class="object-cover w-full h-full rounded-t-lg">
         </div>
         <CardContent class="pt-6">
@@ -151,7 +151,7 @@
       </h2>
       <Card class="mb-6">
         <div class="aspect-video relative bg-muted">
-          <img src="/images/docs/projet_1.png" alt="Éditeur 3D VizHome" class="object-cover w-full h-full rounded-t-lg">
+          <img src="/images/generate/image_generate.png" alt="Éditeur 3D VizHome" class="object-cover w-full h-full rounded-t-lg">
         </div>
         <CardContent class="pt-6">
           <p class="mb-4">

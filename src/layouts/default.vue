@@ -4,7 +4,7 @@
       <div class="container mx-auto">
         <nav class="flex items-center justify-between h-16">
           <div class="flex items-center gap-6">
-            <NuxtLink to="/" class="flex items-center">
+            <NuxtLink to="/" class="hidden lg:flex items-center">
               <span
                 class="font-bold text-2xl bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent">Viz<span
                   class="text-primary">Home</span></span>
@@ -173,7 +173,10 @@
               </NavigationMenu>
             </div>
           </div>
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+              <LanguageSwitcher />
+            </div>
             <ModeToggle />
             <div class="hidden md:flex items-center gap-2">
               <NuxtLink to="/auth/login">
@@ -312,11 +315,8 @@
                     <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
                       <TwitterIcon class="h-5 w-5" />
                     </a>
-                    <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
+                    <a href="https://github.com/vizhome" class="text-muted-foreground hover:text-foreground transition-colors">
                       <GithubIcon class="h-5 w-5" />
-                    </a>
-                    <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
-                      <InstagramIcon class="h-5 w-5" />
                     </a>
                   </div>
                 </div>
@@ -405,17 +405,18 @@
                 <NuxtLink to="/docs" class="text-muted-foreground hover:text-foreground transition-colors">
                   <span>
                     Documentation
-                  </span> 
+                  </span>
                   <span class="text-(--ui-text-dimmed) inline-block">
                     <ArrowUpRight class="size-3" />
                   </span>
                 </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/docs/api" class="text-muted-foreground hover:text-foreground transition-colors flex item-center">
+                <NuxtLink to="/docs/api"
+                  class="text-muted-foreground hover:text-foreground transition-colors flex item-center">
                   <span>
                     API
-                  </span> 
+                  </span>
                   <span class="text-(--ui-text-dimmed) inline-block">
                     <ArrowUpRight class="size-3" />
                   </span>
@@ -478,6 +479,7 @@
 <script setup lang="ts">
 import { MenuIcon, LinkedinIcon, TwitterIcon, GithubIcon, InstagramIcon, ChevronDown, HomeIcon, PuzzleIcon, InfoIcon, TagIcon, FileTextIcon, UserIcon, ArrowUpRight } from 'lucide-vue-next'
 import { ref } from 'vue'
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 
 const openFonctionnalites = ref(false)
 const openAPropos = ref(false)

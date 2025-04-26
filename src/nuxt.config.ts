@@ -38,6 +38,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'nuxt-typed-router',
     '@vueuse/nuxt',
+    '@nuxtjs/i18n',
   ],
 
   // Configs CSS

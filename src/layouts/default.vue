@@ -334,105 +334,141 @@
     <footer class="border-t">
       <div class="container mx-auto py-12 px-4">
         <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
-          <div class="md:col-span-2">
+          <div class="md:col-span-1">
             <NuxtLink to="/" class="inline-block mb-4">
               <span class="font-bold text-2xl">Viz<span class="text-primary">Home</span></span>
             </NuxtLink>
-            <p class="text-muted-foreground max-w-md">
-              Solution SaaS d'intégration 3D architecturale par IA offrant des rendus photoréalistes pour vos projets.
+            <p class="text-muted-foreground max-w-md mb-4">
+              Solution d'intégration 3D architecturale par IA pour des rendus photoréalistes.
             </p>
-            <div class="flex items-center gap-4 mt-6">
-              <Button variant="ghost" size="icon" aria-label="LinkedIn">
-                <LinkedinIcon class="h-5 w-5" />
+            <div class="flex items-center gap-3 mt-4">
+              <Button variant="outline" size="icon" aria-label="LinkedIn">
+                <LinkedinIcon class="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" aria-label="Twitter">
-                <TwitterIcon class="h-5 w-5" />
+              <Button variant="outline" size="icon" aria-label="Twitter">
+                <TwitterIcon class="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" aria-label="GitHub">
-                <GithubIcon class="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" aria-label="Instagram">
-                <InstagramIcon class="h-5 w-5" />
-              </Button>
+              <a href="https://github.com/vizhome" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" size="icon" aria-label="GitHub">
+                  <GithubIcon class="h-4 w-4" />
+                </Button>
+              </a>
             </div>
           </div>
+
           <div>
-            <h3 class="font-semibold text-lg mb-3">Produit</h3>
-            <ul class="space-y-2">
+            <h3 class="font-medium text-base mb-3">Produit</h3>
+            <ul class="space-y-2 text-sm">
               <li>
                 <NuxtLink to="/features" class="text-muted-foreground hover:text-foreground transition-colors">
-                  Fonctionnalités</NuxtLink>
+                  Fonctionnalités
+                </NuxtLink>
               </li>
               <li>
                 <NuxtLink to="/pricing" class="text-muted-foreground hover:text-foreground transition-colors">
-                  Tarifs</NuxtLink>
+                  Tarifs
+                </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/testimonials" class="text-muted-foreground hover:text-foreground transition-colors">
-                  Témoignages</NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/faq" class="text-muted-foreground hover:text-foreground transition-colors">FAQ
+                <NuxtLink to="/faq" class="text-muted-foreground hover:text-foreground transition-colors">
+                  FAQ
                 </NuxtLink>
               </li>
             </ul>
           </div>
+
           <div>
-            <h3 class="font-semibold text-lg mb-3">Légal</h3>
-            <ul class="space-y-2">
+            <h3 class="font-medium text-base mb-3">Entreprise</h3>
+            <ul class="space-y-2 text-sm">
+              <li>
+                <NuxtLink to="/about" class="text-muted-foreground hover:text-foreground transition-colors">
+                  À propos
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/contact" class="text-muted-foreground hover:text-foreground transition-colors">
+                  Contact
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/testimonials" class="text-muted-foreground hover:text-foreground transition-colors">
+                  Témoignages
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-medium text-base mb-3">Ressources</h3>
+            <ul class="space-y-2 text-sm">
+              <li>
+                <NuxtLink to="/docs" class="text-muted-foreground hover:text-foreground transition-colors">
+                  <span>
+                    Documentation
+                  </span> 
+                  <span class="text-(--ui-text-dimmed) inline-block">
+                    <ArrowUpRight class="size-3" />
+                  </span>
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/docs/api" class="text-muted-foreground hover:text-foreground transition-colors flex item-center">
+                  <span>
+                    API
+                  </span> 
+                  <span class="text-(--ui-text-dimmed) inline-block">
+                    <ArrowUpRight class="size-3" />
+                  </span>
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-medium text-base mb-3">Légal</h3>
+            <ul class="space-y-2 text-sm">
               <li>
                 <NuxtLink to="/legal/terms-of-use"
-                  class="text-muted-foreground hover:text-foreground transition-colors">Conditions d'utilisation
+                  class="text-muted-foreground hover:text-foreground transition-colors">
+                  Conditions d'utilisation
                 </NuxtLink>
               </li>
               <li>
                 <NuxtLink to="/legal/privacy-policy"
-                  class="text-muted-foreground hover:text-foreground transition-colors">Politique de confidentialité
+                  class="text-muted-foreground hover:text-foreground transition-colors">
+                  Politique de confidentialité
                 </NuxtLink>
               </li>
               <li>
                 <NuxtLink to="/legal/cookie-policy"
-                  class="text-muted-foreground hover:text-foreground transition-colors">Politique de cookies</NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/legal/data-processing"
-                  class="text-muted-foreground hover:text-foreground transition-colors">Traitement des données
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/legal/responsible-use-policy"
-                  class="text-muted-foreground hover:text-foreground transition-colors">Charte d'utilisation</NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/legal/specific-service-terms"
-                  class="text-muted-foreground hover:text-foreground transition-colors">Conditions des services
+                  class="text-muted-foreground hover:text-foreground transition-colors">
+                  Politique de cookies
                 </NuxtLink>
               </li>
               <li>
                 <NuxtLink to="/legal/refund-cancellation-policy"
-                  class="text-muted-foreground hover:text-foreground transition-colors">Remboursement & annulation
+                  class="text-muted-foreground hover:text-foreground transition-colors">
+                  Remboursement et annulation
                 </NuxtLink>
               </li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="font-semibold text-lg mb-3">Développeurs</h3>
-            <ul class="space-y-2">
-              <li>
-                <NuxtLink to="/docs" class="text-muted-foreground hover:text-foreground transition-colors">Documentation
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/docs/api" class="text-muted-foreground hover:text-foreground transition-colors">API
-                </NuxtLink>
-              </li>
-              <li><a href="https://github.com/vizhome" target="_blank" rel="noopener noreferrer"
-                  class="text-muted-foreground hover:text-foreground transition-colors">GitHub</a></li>
             </ul>
           </div>
         </div>
-        <div class="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>© {{ new Date().getFullYear() }} VizHome. Tous droits réservés.</p>
+
+        <div
+          class="mt-10 pt-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <p>© 2024-{{ new Date().getFullYear() }} VizHome - Tous droits réservés.</p>
+          <div class="flex items-center gap-4">
+            <NuxtLink to="/legal/terms-of-use" class="hover:text-foreground transition-colors">
+              Conditions
+            </NuxtLink>
+            <NuxtLink to="/legal/privacy-policy" class="hover:text-foreground transition-colors">
+              Confidentialité
+            </NuxtLink>
+            <NuxtLink to="/legal/cookie-policy" class="hover:text-foreground transition-colors">
+              Cookies
+            </NuxtLink>
+          </div>
         </div>
       </div>
     </footer>
@@ -440,7 +476,7 @@
 </template>
 
 <script setup lang="ts">
-import { MenuIcon, LinkedinIcon, TwitterIcon, GithubIcon, InstagramIcon, ChevronDown, HomeIcon, PuzzleIcon, InfoIcon, TagIcon, FileTextIcon, UserIcon } from 'lucide-vue-next'
+import { MenuIcon, LinkedinIcon, TwitterIcon, GithubIcon, InstagramIcon, ChevronDown, HomeIcon, PuzzleIcon, InfoIcon, TagIcon, FileTextIcon, UserIcon, ArrowUpRight } from 'lucide-vue-next'
 import { ref } from 'vue'
 
 const openFonctionnalites = ref(false)

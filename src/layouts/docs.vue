@@ -166,7 +166,7 @@
                 </div>
             </header>
 
-            <main class="container max-w-4xl py-6 px-4 md:py-12">
+            <main class="container max-w-5xl py-6 px-4 md:py-12 mx-auto flex flex-col items-center">
                 <!-- Slot pour le contenu de la page -->
                 <slot />
             </main>
@@ -174,7 +174,8 @@
 
         <!-- Overlay mobile - apparaît seulement quand le menu est ouvert sur mobile -->
         <div v-if="isSidebarOpen" class="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm lg:hidden"
-            @click="toggleSidebar"></div>
+            @click="toggleSidebar">
+        </div>
     </div>
 </template>
 

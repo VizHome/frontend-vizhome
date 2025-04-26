@@ -545,7 +545,7 @@
         <div>
             <h2 class="text-2xl font-bold mb-4">Pages associées</h2>
             <div class="grid gap-4 md:grid-cols-3">
-                <NuxtLink to="/docs/modeles-3d">
+                <NuxtLink to="/docs/api/modeles-3d">
                     <Card class="h-full transition-all hover:shadow-md">
                         <CardHeader>
                             <CardTitle class="text-base">Modèles 3D</CardTitle>
@@ -558,7 +558,7 @@
                         </CardContent>
                     </Card>
                 </NuxtLink>
-                <NuxtLink to="/docs/rendus">
+                <NuxtLink to="/docs/api/rendus">
                     <Card class="h-full transition-all hover:shadow-md">
                         <CardHeader>
                             <CardTitle class="text-base">Rendus</CardTitle>
@@ -571,7 +571,7 @@
                         </CardContent>
                     </Card>
                 </NuxtLink>
-                <NuxtLink to="/docs/projets">
+                <NuxtLink to="/docs/api/projets">
                     <Card class="h-full transition-all hover:shadow-md">
                         <CardHeader>
                             <CardTitle class="text-base">Projets</CardTitle>

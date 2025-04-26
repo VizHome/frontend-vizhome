@@ -201,7 +201,7 @@
     </section>
 
     <!-- Tableau comparatif détaillé -->
-    <section class="py-12 bg-muted/30">
+    <section class="py-12 bg-muted/30 h-screen">
       <div class="container mx-auto px-4">
         <h2 class="text-2xl font-bold mb-8 text-center">Comparaison détaillée des fonctionnalités</h2>
         <div class="overflow-x-auto">

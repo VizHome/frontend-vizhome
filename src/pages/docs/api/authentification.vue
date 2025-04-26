@@ -33,7 +33,7 @@
                         <div class="border rounded-lg p-4">
                             <div class="flex items-start gap-4">
                                 <div
-                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    class="flex h-10 w-15 items-center justify-center rounded-full bg-primary/10 text-primary">
                                     <MailIcon class="h-5 w-5" />
                                 </div>
                                 <div>
@@ -51,7 +51,7 @@
                         <div class="border rounded-lg p-4">
                             <div class="flex items-start gap-4">
                                 <div
-                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    class="flex h-10 w-15 items-center justify-center rounded-full bg-primary/10 text-primary">
                                     <ShieldCheckIcon class="h-5 w-5" />
                                 </div>
                                 <div>
@@ -68,7 +68,7 @@
                         <div class="border rounded-lg p-4">
                             <div class="flex items-start gap-4">
                                 <div
-                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    class="flex h-10 w-15 items-center justify-center rounded-full bg-primary/10 text-primary">
                                     <KeyIcon class="h-5 w-5" />
                                 </div>
                                 <div>
@@ -85,7 +85,7 @@
                         <div class="border rounded-lg p-4">
                             <div class="flex items-start gap-4">
                                 <div
-                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    class="flex h-10 w-15 items-center justify-center rounded-full bg-primary/10 text-primary">
                                     <GlobeIcon class="h-5 w-5" />
                                 </div>
                                 <div>
@@ -102,7 +102,7 @@
                         <div class="border rounded-lg p-4">
                             <div class="flex items-start gap-4">
                                 <div
-                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    class="flex h-10 w-15 items-center justify-center rounded-full bg-primary/10 text-primary">
                                     <ScanFaceIcon class="h-5 w-5" />
                                 </div>
                                 <div>
@@ -619,7 +619,7 @@
                         </CardContent>
                     </Card>
                 </NuxtLink>
-                <NuxtLink to="/docs/projets">
+                <NuxtLink to="/docs/api/projets">
                     <Card class="h-full transition-all hover:shadow-md">
                         <CardHeader>
                             <CardTitle class="text-base">Projets</CardTitle>
@@ -632,7 +632,7 @@
                         </CardContent>
                     </Card>
                 </NuxtLink>
-                <NuxtLink to="/docs/webhooks">
+                <NuxtLink to="/docs/api/webhooks">
                     <Card class="h-full transition-all hover:shadow-md">
                         <CardHeader>
                             <CardTitle class="text-base">Webhooks</CardTitle>

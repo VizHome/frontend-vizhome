@@ -1,6 +1,7 @@
 <template>
   <div>
-    <!-- En-tête -->
+    <div class="h-screen">
+            <!-- En-tête -->
     <section class="pt-16 pb-12 bg-muted/30">
       <div class="container mx-auto px-4 text-center">
         <h1 class="text-4xl font-bold mb-4">Questions fréquentes</h1>
@@ -77,6 +78,7 @@
       </div>
     </section>
 
+    </div>
     <!-- Contact -->
     <section class="py-12 bg-muted/30">
       <div class="container mx-auto px-4 text-center">

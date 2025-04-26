@@ -253,7 +253,7 @@
     <!-- Bibliothèque de modèles -->
     <div id="models" class="scroll-mt-20">
       <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-        <CubeIcon class="h-5 w-5 text-primary" />
+        <Box class="h-5 w-5 text-primary" />
         Bibliothèque de modèles
       </h2>
       <Card class="mb-6">
@@ -539,7 +539,7 @@
 <script setup lang="ts">
 import {
   ArrowRightIcon, ArrowLeftIcon, Circle, LayoutDashboardIcon,
-  FolderIcon, CubeIcon, SettingsIcon, MousePointerIcon, MoveIcon, PaintbrushIcon, SunIcon,
+  FolderIcon, Box, SettingsIcon, MousePointerIcon, MoveIcon, PaintbrushIcon, SunIcon,
   InfoIcon, ArmchairIcon, LampIcon, UtensilsIcon, ShowerHeadIcon, FlowerIcon, TreePineIcon,
   UploadCloudIcon, KeyboardIcon, PencilIcon
 } from 'lucide-vue-next'

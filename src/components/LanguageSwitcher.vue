@@ -25,6 +25,21 @@
                         <span>Español</span>
                         <CheckIcon v-if="currentLanguage === 'es'" class="h-4 w-4 ml-auto" />
                     </DropdownMenuItem>
+                    <DropdownMenuItem @click="changeLanguage('de')" class="flex items-center gap-2 cursor-pointer">
+                        <span class="h-4 w-4 text-sm flex items-center justify-center">🇩🇪</span>
+                        <span>Deutsch</span>
+                        <CheckIcon v-if="currentLanguage === 'de'" class="h-4 w-4 ml-auto" />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="changeLanguage('it')" class="flex items-center gap-2 cursor-pointer">
+                        <span class="h-4 w-4 text-sm flex items-center justify-center">🇮🇹</span>
+                        <span>Italiano</span>
+                        <CheckIcon v-if="currentLanguage === 'it'" class="h-4 w-4 ml-auto" />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="changeLanguage('pt')" class="flex items-center gap-2 cursor-pointer">
+                        <span class="h-4 w-4 text-sm flex items-center justify-center">🇵🇹</span>
+                        <span>Português</span>
+                        <CheckIcon v-if="currentLanguage === 'pt'" class="h-4 w-4 ml-auto" />
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
@@ -66,6 +81,27 @@
                             <span>Español</span>
                             <CheckIcon v-if="currentLanguage === 'es'" class="h-4 w-4 ml-auto" />
                         </Button>
+
+                        <Button @click="changeLanguage('de')" variant="ghost" class="justify-start gap-2"
+                            :class="{ 'bg-accent': currentLanguage === 'de' }">
+                            <span class="h-5 w-5 flex items-center justify-center">🇩🇪</span>
+                            <span>Deutsch</span>
+                            <CheckIcon v-if="currentLanguage === 'de'" class="h-4 w-4 ml-auto" />
+                        </Button>
+
+                        <Button @click="changeLanguage('it')" variant="ghost" class="justify-start gap-2"
+                            :class="{ 'bg-accent': currentLanguage === 'it' }">
+                            <span class="h-5 w-5 flex items-center justify-center">🇮🇹</span>
+                            <span>Italiano</span>
+                            <CheckIcon v-if="currentLanguage === 'it'" class="h-4 w-4 ml-auto" />
+                        </Button>
+
+                        <Button @click="changeLanguage('pt')" variant="ghost" class="justify-start gap-2"
+                            :class="{ 'bg-accent': currentLanguage === 'pt' }">
+                            <span class="h-5 w-5 flex items-center justify-center">🇵🇹</span>
+                            <span>Português</span>
+                            <CheckIcon v-if="currentLanguage === 'pt'" class="h-4 w-4 ml-auto" />
+                        </Button>
                     </div>
                 </DialogContent>
             </Dialog>
@@ -99,14 +135,17 @@ import { Button } from '@/components/ui/button'
 const languages = {
     fr: { code: 'fr', label: 'FR', name: 'Français', flag: '🇫🇷' },
     en: { code: 'en', label: 'EN', name: 'English', flag: '🇬🇧' },
-    es: { code: 'es', label: 'ES', name: 'Español', flag: '🇪🇸' }
+    es: { code: 'es', label: 'ES', name: 'Español', flag: '🇪🇸' },
+    de: { code: 'de', label: 'DE', name: 'Deutsch', flag: '🇩🇪' },
+    it: { code: 'it', label: 'IT', name: 'Italiano', flag: '🇮🇹' },
+    pt: { code: 'pt', label: 'PT', name: 'Português', flag: '🇵🇹' },
 }
 
 const currentLanguage = useLocalStorage('language', 'fr')
 const isMobileMenuOpen = ref(false)
 
 const displayLanguage = computed(() => {
-    return languages[currentLanguage.value]?.label || 'FR'
+    return languages[currentLanguage.value as keyof typeof languages]?.label || 'FR'
 })
 
 function changeLanguage(lang: string) {

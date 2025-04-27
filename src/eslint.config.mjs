@@ -13,7 +13,7 @@ export default withNuxt({
     'no-unused-vars': 'warn',
     semi: ['error', 'never'],
     quotes: ['error', 'single'],
-    indent: ['error', 2],
+    indent: ['error', 4],
     'comma-dangle': ['error', 'always-multiline'],
     'arrow-parens': ['error', 'always'],
   },

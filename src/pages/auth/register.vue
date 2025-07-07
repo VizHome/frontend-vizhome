@@ -1,14 +1,20 @@
 <template>
   <div class="min-h-screen flex flex-col lg:flex-row">
     <!-- Section visuelle à gauche (visible uniquement sur desktop) -->
-    <div
-      class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary/90 to-primary-foreground/90 relative overflow-hidden">
-      <div class="absolute inset-0 bg-pattern opacity-10"></div>
-      <div class="relative z-10 flex flex-col justify-center items-center px-12 text-white">
-        <div class="max-w-md mx-auto text-center">
-          <h1 class="text-4xl font-bold mb-6">Rejoignez VizHome</h1>
-          <p class="text-xl mb-8">Créez des visualisations 3D en quelques clics</p>
-        </div>
+    <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+      <div class="relative grid w-full place-content-center overflow-hidden">
+        <p
+          class="z-10 whitespace-pre-wrap text-center text-5xl font-medium tracking-tighter text-black dark:text-white"
+        >
+            Rejoins nous sur VizHome
+        </p>
+
+        <InteractiveGridPattern
+          :class="[
+            '[mask-image:radial-gradient(550px_circle_at_center,white,transparent)]',
+            'inset-0 h-[300%] skew-y-12',
+          ]"
+        />
       </div>
     </div>
 
@@ -291,7 +297,20 @@ const PasswordStrength = defineComponent({
 </script>
 
 <style scoped>
-.bg-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+:root {
+  --animate-aurora: aurora 60s linear infinite;
+}
+
+@keyframes aurora {
+  from {
+    background-position:
+      50% 50%,
+      50% 50%;
+  }
+  to {
+    background-position:
+      350% 50%,
+      350% 50%;
+  }
 }
 </style>

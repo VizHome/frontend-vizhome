@@ -1,104 +1,379 @@
 <template>
   <div class="render-container">
     <canvas ref="canvasRef" class="render-canvas"></canvas>
-    <div class="controls">
-      <div class="controls-section">
-        <h3>Vue</h3>
-        <button @click="resetCamera">Réinitialiser la vue</button>
-        <button @click="toggleWireframe">{{ wireframe ? 'Solide' : 'Filaire' }}</button>
-        <button @click="toggleFullscreen">Plein écran</button>
-        <button @click="captureScreenshot">Capture d'écran</button>
+
+    <!-- Menu latéral avec shadcn-vue -->
+    <div :class="['sidebar', { 'sidebar-collapsed': isMenuCollapsed }]">
+      <!-- En-tête du menu -->
+      <div class="sidebar-header">
+        <div v-if="!isMenuCollapsed" class="sidebar-title">
+          <h2 class="text-xl font-semibold bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent">
+            VizHome
+          </h2>
+          <p class="text-sm text-muted-foreground">Rendu 3D interactif</p>
+        </div>
+        <Button @click="toggleMenu" variant="ghost" size="sm" class="h-8 w-8 p-0">
+          <ChevronLeft v-if="!isMenuCollapsed" class="h-4 w-4" />
+          <ChevronRight v-else class="h-4 w-4" />
+        </Button>
       </div>
 
-      <div class="controls-section">
-        <h3>Éclairage</h3>
-        <button @click="toggleDayNight">{{ isDay ? 'Mode Nuit' : 'Mode Jour' }}</button>
-        <div class="slider-group">
-          <label>Intensité lumière</label>
-          <input type="range" min="0" max="2" step="0.1" v-model="lightIntensity" @input="updateLighting">
-        </div>
-        <div class="slider-group">
-          <label>Angle du soleil</label>
-          <input type="range" min="0" max="360" step="1" v-model="sunAngle" @input="updateSunPosition">
-        </div>
-      </div>
+      <!-- Contenu du menu -->
+      <ScrollArea class="flex-1 px-2">
+        <!-- Section Vue -->
+        <Collapsible v-model:open="activeSections.view" class="space-y-2">
+          <CollapsibleTrigger as-child>
+            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
+              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
+              <div class="flex items-center gap-2">
+                <Eye class="h-4 w-4" />
+                <span v-if="!isMenuCollapsed">Vue</span>
+              </div>
+              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-1">
+            <Button @click="resetCamera" variant="ghost" size="sm" class="w-full justify-start">
+              <RotateCcw class="h-4 w-4 mr-2" />
+              Réinitialiser la vue
+            </Button>
+            <Button @click="toggleWireframe" variant="ghost" size="sm" class="w-full justify-start">
+              <Grid3x3 class="h-4 w-4 mr-2" />
+              {{ wireframe ? 'Solide' : 'Filaire' }}
+            </Button>
+            <Button @click="toggleFullscreen" variant="ghost" size="sm" class="w-full justify-start">
+              <Maximize class="h-4 w-4 mr-2" />
+              Plein écran
+            </Button>
+            <Button @click="captureScreenshot" variant="ghost" size="sm" class="w-full justify-start">
+              <Camera class="h-4 w-4 mr-2" />
+              Capture d'écran
+            </Button>
+          </CollapsibleContent>
+        </Collapsible>
 
-      <div class="controls-section">
-        <h3>Couleurs</h3>
-        <div class="color-group">
-          <label>Murs</label>
-          <input type="color" v-model="wallColor" @change="updateColors">
-        </div>
-        <div class="color-group">
-          <label>Toit</label>
-          <input type="color" v-model="roofColor" @change="updateColors">
-        </div>
-        <div class="color-group">
-          <label>Porte</label>
-          <input type="color" v-model="doorColor" @change="updateColors">
-        </div>
-        <div class="color-group">
-          <label>Sol</label>
-          <input type="color" v-model="groundColor" @change="updateColors">
-        </div>
-      </div>
+        <!-- Section Éclairage -->
+        <Collapsible v-model:open="activeSections.lighting" class="space-y-2">
+          <CollapsibleTrigger as-child>
+            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
+              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
+              <div class="flex items-center gap-2">
+                <Sun class="h-4 w-4" />
+                <span v-if="!isMenuCollapsed">Éclairage</span>
+              </div>
+              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
+            <Button @click="toggleDayNight" variant="ghost" size="sm" class="w-full justify-start">
+              <Moon v-if="isDay" class="h-4 w-4 mr-2" />
+              <Sun v-else class="h-4 w-4 mr-2" />
+              {{ isDay ? 'Mode Nuit' : 'Mode Jour' }}
+            </Button>
 
-      <div class="controls-section">
-        <h3>Éléments</h3>
-        <button @click="toggleTrees">{{ showTrees ? 'Masquer' : 'Afficher' }} arbres</button>
-        <button @click="toggleFence">{{ showFence ? 'Masquer' : 'Afficher' }} clôture</button>
-        <button @click="addRandomCloud">Ajouter nuage</button>
-        <button @click="toggleGarden">{{ showGarden ? 'Masquer' : 'Afficher' }} jardin</button>
-        <button @click="togglePath">{{ showPath ? 'Masquer' : 'Afficher' }} chemin</button>
-      </div>
+            <Card class="p-3">
+              <div class="space-y-2">
+                <Label class="flex items-center gap-2 text-sm">
+                  <Lightbulb class="h-4 w-4" />
+                  Intensité lumière
+                </Label>
+                <Slider :min="0" :max="2" :step="0.1" v-model="lightIntensity" @update:model-value="updateLighting"
+                  class="w-full" />
+                <div class="text-center text-xs text-muted-foreground">{{ lightIntensity[0] }}</div>
+              </div>
+            </Card>
 
-      <div class="controls-section">
-        <h3>Météo & Effets</h3>
-        <button @click="toggleRain">{{ isRaining ? 'Arrêter' : 'Démarrer' }} pluie</button>
-        <button @click="toggleSnow">{{ isSnowing ? 'Arrêter' : 'Démarrer' }} neige</button>
-        <button @click="toggleFog">{{ showFog ? 'Masquer' : 'Afficher' }} brouillard</button>
-        <button @click="addFireflies">Ajouter lucioles</button>
-        <button @click="toggleSmoke">{{ showSmoke ? 'Arrêter' : 'Démarrer' }} fumée</button>
-      </div>
+            <Card class="p-3">
+              <div class="space-y-2">
+                <Label class="flex items-center gap-2 text-sm">
+                  <Sun class="h-4 w-4" />
+                  Angle du soleil
+                </Label>
+                <Slider :min="0" :max="360" :step="1" v-model="sunAngle" @update:model-value="updateSunPosition"
+                  class="w-full" />
+                <div class="text-center text-xs text-muted-foreground">{{ sunAngle[0] }}°</div>
+              </div>
+            </Card>
+          </CollapsibleContent>
+        </Collapsible>
 
-      <div class="controls-section">
-        <h3>Animations</h3>
-        <button @click="toggleDoorAnimation">{{ doorOpen ? 'Fermer' : 'Ouvrir' }} porte</button>
-        <button @click="toggleTreeAnimation">{{ treeAnimation ? 'Arrêter' : 'Démarrer' }} vent</button>
-        <button @click="toggleRotateHouse">{{ rotateHouse ? 'Arrêter' : 'Démarrer' }} rotation</button>
-        <div class="slider-group">
-          <label>Vitesse animation</label>
-          <input type="range" min="0.1" max="3" step="0.1" v-model="animationSpeed">
-        </div>
-      </div>
+        <!-- Section Couleurs -->
+        <Collapsible v-model:open="activeSections.colors" class="space-y-2">
+          <CollapsibleTrigger as-child>
+            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
+              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
+              <div class="flex items-center gap-2">
+                <Palette class="h-4 w-4" />
+                <span v-if="!isMenuCollapsed">Couleurs</span>
+              </div>
+              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
+            <Card class="p-3">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <Label class="flex items-center gap-2 text-sm">
+                    <Home class="h-4 w-4" />
+                    Murs
+                  </Label>
+                  <Input type="color" v-model="wallColor" @change="updateColors" class="w-12 h-8 p-0 border-0" />
+                </div>
+                <div class="flex items-center justify-between">
+                  <Label class="flex items-center gap-2 text-sm">
+                    <Triangle class="h-4 w-4" />
+                    Toit
+                  </Label>
+                  <Input type="color" v-model="roofColor" @change="updateColors" class="w-12 h-8 p-0 border-0" />
+                </div>
+                <div class="flex items-center justify-between">
+                  <Label class="flex items-center gap-2 text-sm">
+                    <DoorOpen class="h-4 w-4" />
+                    Porte
+                  </Label>
+                  <Input type="color" v-model="doorColor" @change="updateColors" class="w-12 h-8 p-0 border-0" />
+                </div>
+                <div class="flex items-center justify-between">
+                  <Label class="flex items-center gap-2 text-sm">
+                    <Mountain class="h-4 w-4" />
+                    Sol
+                  </Label>
+                  <Input type="color" v-model="groundColor" @change="updateColors" class="w-12 h-8 p-0 border-0" />
+                </div>
+              </div>
+            </Card>
+          </CollapsibleContent>
+        </Collapsible>
 
-      <div class="controls-section">
-        <h3>Audio</h3>
-        <button @click="toggleAmbientSound">{{ ambientSound ? 'Arrêter' : 'Démarrer' }} sons ambiants</button>
-        <div class="slider-group">
-          <label>Volume</label>
-          <input type="range" min="0" max="1" step="0.1" v-model="audioVolume" @input="updateAudioVolume">
-        </div>
-      </div>
+        <!-- Section Éléments -->
+        <Collapsible v-model:open="activeSections.elements" class="space-y-2">
+          <CollapsibleTrigger as-child>
+            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
+              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
+              <div class="flex items-center gap-2">
+                <Trees class="h-4 w-4" />
+                <span v-if="!isMenuCollapsed">Éléments</span>
+              </div>
+              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-1">
+            <Button @click="toggleTrees" :variant="showTrees ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <TreePine class="h-4 w-4 mr-2" />
+              {{ showTrees ? 'Masquer' : 'Afficher' }} arbres
+            </Button>
+            <Button @click="toggleFence" :variant="showFence ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <Fence class="h-4 w-4 mr-2" />
+              {{ showFence ? 'Masquer' : 'Afficher' }} clôture
+            </Button>
+            <Button @click="addRandomCloud" variant="ghost" size="sm" class="w-full justify-start">
+              <Cloud class="h-4 w-4 mr-2" />
+              Ajouter nuage
+            </Button>
+            <Button @click="toggleGarden" :variant="showGarden ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <Flower2 class="h-4 w-4 mr-2" />
+              {{ showGarden ? 'Masquer' : 'Afficher' }} jardin
+            </Button>
+            <Button @click="togglePath" :variant="showPath ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <Footprints class="h-4 w-4 mr-2" />
+              {{ showPath ? 'Masquer' : 'Afficher' }} chemin
+            </Button>
+          </CollapsibleContent>
+        </Collapsible>
 
-      <div class="controls-section">
-        <h3>Saisons</h3>
-        <select v-model="currentSeason" @change="changeSeason">
-          <option value="spring">Printemps</option>
-          <option value="summer">Été</option>
-          <option value="autumn">Automne</option>
-          <option value="winter">Hiver</option>
-        </select>
-      </div>
+        <!-- Section Météo & Effets -->
+        <Collapsible v-model:open="activeSections.weather" class="space-y-2">
+          <CollapsibleTrigger as-child>
+            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
+              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
+              <div class="flex items-center gap-2">
+                <CloudRain class="h-4 w-4" />
+                <span v-if="!isMenuCollapsed">Météo & Effets</span>
+              </div>
+              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-1">
+            <Button @click="toggleRain" :variant="isRaining ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <CloudRain class="h-4 w-4 mr-2" />
+              {{ isRaining ? 'Arrêter' : 'Démarrer' }} pluie
+            </Button>
+            <Button @click="toggleSnow" :variant="isSnowing ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <Snowflake class="h-4 w-4 mr-2" />
+              {{ isSnowing ? 'Arrêter' : 'Démarrer' }} neige
+            </Button>
+            <Button @click="toggleFog" :variant="showFog ? 'default' : 'ghost'" size="sm" class="w-full justify-start">
+              <CloudFog class="h-4 w-4 mr-2" />
+              {{ showFog ? 'Masquer' : 'Afficher' }} brouillard
+            </Button>
+            <Button @click="addFireflies" variant="ghost" size="sm" class="w-full justify-start">
+              <Sparkles class="h-4 w-4 mr-2" />
+              Ajouter lucioles
+            </Button>
+            <Button @click="toggleSmoke" :variant="showSmoke ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <Flame class="h-4 w-4 mr-2" />
+              {{ showSmoke ? 'Arrêter' : 'Démarrer' }} fumée
+            </Button>
+          </CollapsibleContent>
+        </Collapsible>
 
-      <div class="info-panel">
-        <h4>Informations</h4>
-        <p>FPS: {{ fps }}</p>
-        <p>Triangles: {{ triangleCount }}</p>
-        <p>Saison: {{ currentSeason }}</p>
-        <p>Météo: {{ currentWeather }}</p>
+        <!-- Section Animations -->
+        <Collapsible v-model:open="activeSections.animations" class="space-y-2">
+          <CollapsibleTrigger as-child>
+            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
+              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
+              <div class="flex items-center gap-2">
+                <Play class="h-4 w-4" />
+                <span v-if="!isMenuCollapsed">Animations</span>
+              </div>
+              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
+            <Button @click="toggleDoorAnimation" :variant="doorOpen ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <DoorOpen class="h-4 w-4 mr-2" />
+              {{ doorOpen ? 'Fermer' : 'Ouvrir' }} porte
+            </Button>
+            <Button @click="toggleTreeAnimation" :variant="treeAnimation ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <Wind class="h-4 w-4 mr-2" />
+              {{ treeAnimation ? 'Arrêter' : 'Démarrer' }} vent
+            </Button>
+            <Button @click="toggleRotateHouse" :variant="rotateHouse ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <RotateCw class="h-4 w-4 mr-2" />
+              {{ rotateHouse ? 'Arrêter' : 'Démarrer' }} rotation
+            </Button>
+
+            <Card class="p-3">
+              <div class="space-y-2">
+                <Label class="flex items-center gap-2 text-sm">
+                  <Gauge class="h-4 w-4" />
+                  Vitesse animation
+                </Label>
+                <Slider :min="0.1" :max="3" :step="0.1" v-model="animationSpeedArray" class="w-full" />
+                <div class="text-center text-xs text-muted-foreground">{{ animationSpeedArray[0] }}x</div>
+              </div>
+            </Card>
+          </CollapsibleContent>
+        </Collapsible>
+
+        <!-- Section Audio -->
+        <Collapsible v-model:open="activeSections.audio" class="space-y-2">
+          <CollapsibleTrigger as-child>
+            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
+              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
+              <div class="flex items-center gap-2">
+                <Volume2 class="h-4 w-4" />
+                <span v-if="!isMenuCollapsed">Audio</span>
+              </div>
+              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
+            <Button @click="toggleAmbientSound" :variant="ambientSound ? 'default' : 'ghost'" size="sm"
+              class="w-full justify-start">
+              <Volume2 v-if="ambientSound" class="h-4 w-4 mr-2" />
+              <VolumeX v-else class="h-4 w-4 mr-2" />
+              {{ ambientSound ? 'Arrêter' : 'Démarrer' }} sons ambiants
+            </Button>
+
+            <Card class="p-3">
+              <div class="space-y-2">
+                <Label class="flex items-center gap-2 text-sm">
+                  <Volume1 class="h-4 w-4" />
+                  Volume
+                </Label>
+                <Slider :min="0" :max="1" :step="0.1" v-model="audioVolumeArray" @update:model-value="updateAudioVolume"
+                  class="w-full" />
+                <div class="text-center text-xs text-muted-foreground">{{ Math.round(audioVolumeArray[0] * 100) }}%
+                </div>
+              </div>
+            </Card>
+          </CollapsibleContent>
+        </Collapsible>
+
+        <!-- Section Saisons -->
+        <Collapsible v-model:open="activeSections.seasons" class="space-y-2">
+          <CollapsibleTrigger as-child>
+            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
+              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
+              <div class="flex items-center gap-2">
+                <Calendar class="h-4 w-4" />
+                <span v-if="!isMenuCollapsed">Saisons</span>
+              </div>
+              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
+            <Select v-model="currentSeason" @update:model-value="changeSeason">
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Choisir une saison" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="spring">🌸 Printemps</SelectItem>
+                <SelectItem value="summer">☀️ Été</SelectItem>
+                <SelectItem value="autumn">🍂 Automne</SelectItem>
+                <SelectItem value="winter">❄️ Hiver</SelectItem>
+              </SelectContent>
+            </Select>
+          </CollapsibleContent>
+        </Collapsible>
+      </ScrollArea>
+
+      <!-- Panneau d'informations -->
+      <div v-if="!isMenuCollapsed" class="p-4 border-t">
+        <Card class="p-3">
+          <div class="flex items-center gap-2 mb-3">
+            <Info class="h-4 w-4 text-orange-500" />
+            <h4 class="text-sm font-semibold text-orange-500">Informations</h4>
+          </div>
+          <div class="space-y-2 text-xs text-muted-foreground">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <Zap class="h-3 w-3" />
+                <span>FPS:</span>
+              </div>
+              <Badge variant="secondary">{{ fps }}</Badge>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <Triangle class="h-3 w-3" />
+                <span>Triangles:</span>
+              </div>
+              <Badge variant="secondary">{{ triangleCount }}</Badge>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <Calendar class="h-3 w-3" />
+                <span>Saison:</span>
+              </div>
+              <Badge variant="outline">{{ currentSeason }}</Badge>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <Cloud class="h-3 w-3" />
+                <span>Météo:</span>
+              </div>
+              <Badge variant="outline">{{ currentWeather }}</Badge>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
+
+    <!-- Bouton de réduction rapide quand le menu est fermé -->
+    <!-- <Button v-if="isMenuCollapsed" @click="toggleMenu" class="fixed top-4 left-4 z-40 h-12 w-12 p-0" size="icon">
+      <Menu class="h-5 w-5" />
+    </Button> -->
   </div>
 </template>
 
@@ -106,6 +381,13 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import {
+  Eye, ChevronDown, ChevronLeft, ChevronRight, RotateCcw, Grid3x3, Maximize, Camera,
+  Sun, Moon, Lightbulb, Palette, Home, Triangle, DoorOpen, Mountain, Trees, TreePine,
+  Fence, Flower2, Footprints, CloudRain, Snowflake, CloudFog, Sparkles,
+  Flame, Play, Wind, RotateCw, Gauge, Volume2, VolumeX, Volume1, Calendar, Info,
+  Zap, Cloud, Menu
+} from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'none',
@@ -124,8 +406,8 @@ let ambientLight: THREE.AmbientLight
 // Variables réactives pour les contrôles
 const wireframe = ref(false)
 const isDay = ref(true)
-const lightIntensity = ref(0.8)
-const sunAngle = ref(45)
+const lightIntensity = ref([0.8])
+const sunAngle = ref([45])
 const wallColor = ref('#F5DEB3')
 const roofColor = ref('#8B4513')
 const doorColor = ref('#654321')
@@ -143,14 +425,38 @@ const showSmoke = ref(false)
 const doorOpen = ref(false)
 const treeAnimation = ref(false)
 const rotateHouse = ref(false)
-const animationSpeed = ref(1)
+const animationSpeedArray = ref([1])
 const ambientSound = ref(false)
-const audioVolume = ref(0.5)
+const audioVolumeArray = ref([0.5])
 const currentSeason = ref('spring')
 
 // Variables pour les stats
 const fps = ref(0)
 const triangleCount = ref(0)
+
+// Variables pour le menu
+const isMenuCollapsed = ref(false)
+const activeSections = ref({
+  view: true,
+  lighting: false,
+  colors: false,
+  elements: false,
+  weather: false,
+  animations: false,
+  audio: false,
+  seasons: false
+})
+
+// Computed properties pour la compatibilité
+const animationSpeed = computed({
+  get: () => animationSpeedArray.value[0],
+  set: (val) => animationSpeedArray.value = [val]
+})
+
+const audioVolume = computed({
+  get: () => audioVolumeArray.value[0],
+  set: (val) => audioVolumeArray.value = [val]
+})
 
 // Groupes pour les éléments
 let treesGroup: THREE.Group
@@ -161,14 +467,10 @@ let pathGroup: THREE.Group
 let particleSystem: THREE.Points
 let firefliesGroup: THREE.Group
 let smokeGroup: THREE.Group
-
-// Variables pour les animations
 let doorGroup: THREE.Group
 let clock: THREE.Clock
 let raindropVelocities: number[] = []
 let snowflakeVelocities: number[] = []
-
-// Variables audio
 let audioContext: AudioContext
 let audioBuffer: AudioBuffer
 let audioSource: AudioBufferSourceNode
@@ -180,6 +482,11 @@ const currentWeather = computed(() => {
   if (showFog.value) return 'Brouillard'
   return 'Ensoleillé'
 })
+
+// Nouvelles fonctions pour le menu
+const toggleMenu = () => {
+  isMenuCollapsed.value = !isMenuCollapsed.value
+}
 
 onMounted(() => {
   if (typeof window !== 'undefined') {
@@ -206,11 +513,9 @@ onUnmounted(() => {
 })
 
 const initThreeJS = () => {
-  // Scène
   scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x87CEEB) // Couleur ciel
+  scene.background = new THREE.Color(0x87CEEB)
 
-  // Caméra
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -219,22 +524,19 @@ const initThreeJS = () => {
   )
   camera.position.set(10, 8, 10)
 
-  // Renderer
   renderer = new THREE.WebGLRenderer({
     canvas: canvasRef.value!,
     antialias: true,
-    preserveDrawingBuffer: true // Pour les captures d'écran
+    preserveDrawingBuffer: true
   })
   renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
-  // Contrôles
   controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
   controls.dampingFactor = 0.1
 
-  // Éclairage
   ambientLight = new THREE.AmbientLight(0xffffff, 0.4)
   scene.add(ambientLight)
 
@@ -245,7 +547,6 @@ const initThreeJS = () => {
   directionalLight.shadow.mapSize.height = 2048
   scene.add(directionalLight)
 
-  // Sol
   const groundGeometry = new THREE.PlaneGeometry(30, 30)
   const groundMaterial = new THREE.MeshLambertMaterial({ color: groundColor.value })
   const ground = new THREE.Mesh(groundGeometry, groundMaterial)
@@ -254,7 +555,6 @@ const initThreeJS = () => {
   ground.name = 'ground'
   scene.add(ground)
 
-  // Horloge pour les animations
   clock = new THREE.Clock()
 }
 
@@ -588,12 +888,6 @@ const captureScreenshot = () => {
   link.click()
 }
 
-const updateSunPosition = () => {
-  const angle = (sunAngle.value * Math.PI) / 180
-  directionalLight.position.x = Math.cos(angle) * 20
-  directionalLight.position.z = Math.sin(angle) * 20
-}
-
 const toggleRain = () => {
   isRaining.value = !isRaining.value
   if (isRaining.value) {
@@ -695,10 +989,6 @@ const toggleAmbientSound = () => {
   }
 }
 
-const updateAudioVolume = () => {
-  // Mettre à jour le volume audio
-}
-
 const changeSeason = () => {
   const seasons = {
     spring: { treeColor: 0x90EE90, groundColor: 0x90EE90, skyColor: 0x87CEEB },
@@ -759,7 +1049,7 @@ const toggleDayNight = () => {
 }
 
 const updateLighting = () => {
-  directionalLight.intensity = parseFloat(lightIntensity.value)
+  directionalLight.intensity = lightIntensity.value[0]
 }
 
 const updateColors = () => {
@@ -930,120 +1220,54 @@ const setupResizeHandler = () => {
   height: 100%;
 }
 
-.controls {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.9);
-  padding: 20px;
-  border-radius: 10px;
-  color: white;
-  max-height: 80vh;
-  overflow-y: auto;
-  min-width: 280px;
-  backdrop-filter: blur(10px);
+/* Sidebar moderne */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 100vh;
+  background: hsl(var(--background)) / 0.95;
+  backdrop-filter: blur(16px);
+  border-right: 1px solid hsl(var(--border));
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.controls-section {
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.controls-section:last-child {
-  border-bottom: none;
-}
-
-.controls-section h3 {
-  margin: 0 0 10px 0;
-  color: #3498db;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.controls button {
-  padding: 8px 16px;
-  background: linear-gradient(45deg, #3498db, #2980b9);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 12px;
-  margin: 2px;
-  transition: all 0.3s;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.controls button:hover {
-  background: linear-gradient(45deg, #2980b9, #1f618d);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.controls button:active {
-  transform: translateY(0);
-}
-
-.slider-group,
-.color-group {
-  margin: 8px 0;
-}
-
-.slider-group label,
-.color-group label {
-  display: block;
-  font-size: 12px;
-  margin-bottom: 5px;
-  color: #ecf0f1;
-}
-
-.slider-group input[type="range"] {
-  width: 100%;
-  margin: 5px 0;
-}
-
-.color-group input[type="color"] {
+.sidebar-collapsed {
   width: 60px;
-  height: 30px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.controls select {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 12px;
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+  min-height: 80px;
 }
 
-.controls select option {
-  background: #2c3e50;
-  color: white;
+.sidebar-title h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
-.info-panel {
-  margin-top: 20px;
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  font-size: 11px;
+.sidebar-title p {
+  margin: 0;
+  font-size: 0.75rem;
 }
 
-.info-panel h4 {
-  margin: 0 0 10px 0;
-  color: #e74c3c;
-  font-size: 12px;
-}
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 280px;
+  }
 
-.info-panel p {
-  margin: 5px 0;
-  color: #bdc3c7;
+  .sidebar-collapsed {
+    width: 50px;
+  }
 }
 </style>

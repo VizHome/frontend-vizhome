@@ -716,7 +716,24 @@ onUnmounted(() => {
 
 const initThreeJS = () => {
   scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x87CEEB)
+  
+  // Créer un dégradé gris vers blanc en arrière-plan
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')!
+  canvas.width = 512
+  canvas.height = 512
+  
+  // Créer le dégradé vertical
+  const gradient = context.createLinearGradient(0, 0, 0, canvas.height)
+  gradient.addColorStop(0, '#ffffff') // Blanc en haut
+  gradient.addColorStop(1, '#808080') // Gris en bas
+  
+  context.fillStyle = gradient
+  context.fillRect(0, 0, canvas.width, canvas.height)
+  
+  // Appliquer le dégradé comme texture de fond
+  const texture = new THREE.CanvasTexture(canvas)
+  scene.background = texture
 
   // Obtenir les dimensions initiales du conteneur
   const container = canvasRef.value?.parentElement
@@ -733,7 +750,7 @@ const initThreeJS = () => {
   })
 
   renderer.setSize(width, height, false)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Optimisation performance
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
@@ -1193,16 +1210,85 @@ const toggleAmbientSound = () => {
   }
 }
 
+// Modifier la fonction toggleDayNight pour conserver le dégradé
+const toggleDayNight = () => {
+  isDay.value = !isDay.value
+  
+  // Créer un nouveau dégradé selon le mode jour/nuit
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')!
+  canvas.width = 512
+  canvas.height = 512
+  
+  const gradient = context.createLinearGradient(0, 0, 0, canvas.height)
+  
+  if (isDay.value) {
+    // Mode jour : blanc vers gris clair
+    gradient.addColorStop(0, '#ffffff') // Blanc en haut
+    gradient.addColorStop(1, '#808080') // Gris en bas
+    ambientLight.intensity = 0.4
+    directionalLight.color.setHex(0xffffff)
+  } else {
+    // Mode nuit : gris foncé vers noir
+    gradient.addColorStop(0, '#404040') // Gris foncé en haut
+    gradient.addColorStop(1, '#000000') // Noir en bas
+    ambientLight.intensity = 0.1
+    directionalLight.color.setHex(0x4169E1)
+  }
+  
+  context.fillStyle = gradient
+  context.fillRect(0, 0, canvas.width, canvas.height)
+  
+  const texture = new THREE.CanvasTexture(canvas)
+  scene.background = texture
+}
+
+// Modifier la fonction changeSeason pour des dégradés saisonniers
 const changeSeason = () => {
   const seasons = {
-    spring: { treeColor: 0x90EE90, groundColor: 0x90EE90, skyColor: 0x87CEEB },
-    summer: { treeColor: 0x228B22, groundColor: 0x32CD32, skyColor: 0x87CEEB },
-    autumn: { treeColor: 0xFFA500, groundColor: 0xDAA520, skyColor: 0x87CEEB },
-    winter: { treeColor: 0x708090, groundColor: 0xE0E0E0, skyColor: 0x778899 }
+    spring: { 
+      treeColor: 0x90EE90, 
+      groundColor: 0x90EE90, 
+      gradientTop: '#e6f3ff', // Bleu clair
+      gradientBottom: '#b3d9ff' // Bleu plus foncé
+    },
+    summer: { 
+      treeColor: 0x228B22, 
+      groundColor: 0x32CD32, 
+      gradientTop: '#ffffff', // Blanc
+      gradientBottom: '#87ceeb' // Bleu ciel
+    },
+    autumn: { 
+      treeColor: 0xFFA500, 
+      groundColor: 0xDAA520, 
+      gradientTop: '#fff8dc', // Blanc cassé
+      gradientBottom: '#daa520' // Or
+    },
+    winter: { 
+      treeColor: 0x708090, 
+      groundColor: 0xE0E0E0, 
+      gradientTop: '#f0f8ff', // Bleu très pâle
+      gradientBottom: '#778899' // Gris bleuté
+    }
   }
 
   const season = seasons[currentSeason.value]
-  scene.background = new THREE.Color(season.skyColor)
+  
+  // Créer le dégradé saisonnier
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')!
+  canvas.width = 512
+  canvas.height = 512
+  
+  const gradient = context.createLinearGradient(0, 0, 0, canvas.height)
+  gradient.addColorStop(0, season.gradientTop)
+  gradient.addColorStop(1, season.gradientBottom)
+  
+  context.fillStyle = gradient
+  context.fillRect(0, 0, canvas.width, canvas.height)
+  
+  const texture = new THREE.CanvasTexture(canvas)
+  scene.background = texture
 
   // Mettre à jour les couleurs des arbres
   treesGroup.traverse((child) => {
@@ -1219,16 +1305,6 @@ const changeSeason = () => {
   })
 }
 
-const toggleGarden = () => {
-  showGarden.value = !showGarden.value
-  gardenGroup.visible = showGarden.value
-}
-
-const togglePath = () => {
-  showPath.value = !showPath.value
-  pathGroup.visible = showPath.value
-}
-
 // Fonctions de contrôle existantes
 const toggleWireframe = () => {
   wireframe.value = !wireframe.value
@@ -1237,19 +1313,6 @@ const toggleWireframe = () => {
       child.material.wireframe = wireframe.value
     }
   })
-}
-
-const toggleDayNight = () => {
-  isDay.value = !isDay.value
-  if (isDay.value) {
-    scene.background = new THREE.Color(0x87CEEB)
-    ambientLight.intensity = 0.4
-    directionalLight.color.setHex(0xffffff)
-  } else {
-    scene.background = new THREE.Color(0x191970)
-    ambientLight.intensity = 0.1
-    directionalLight.color.setHex(0x4169E1)
-  }
 }
 
 const updateLighting = () => {

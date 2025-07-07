@@ -2,378 +2,390 @@
   <div class="render-container">
     <canvas ref="canvasRef" class="render-canvas"></canvas>
 
-    <!-- Menu latéral avec shadcn-vue -->
-    <div :class="['sidebar', { 'sidebar-collapsed': isMenuCollapsed }]">
-      <!-- En-tête du menu -->
-      <div class="sidebar-header">
-        <div v-if="!isMenuCollapsed" class="sidebar-title">
-          <h2 class="text-xl font-semibold bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent">
-            VizHome
-          </h2>
-          <p class="text-sm text-muted-foreground">Rendu 3D interactif</p>
-        </div>
-        <Button @click="toggleMenu" variant="ghost" size="sm" class="h-8 w-8 p-0">
-          <ChevronLeft v-if="!isMenuCollapsed" class="h-4 w-4" />
-          <ChevronRight v-else class="h-4 w-4" />
-        </Button>
-      </div>
-
-      <!-- Contenu du menu -->
-      <ScrollArea class="flex-1 px-2">
-        <!-- Section Vue -->
-        <Collapsible v-model:open="activeSections.view" class="space-y-2">
-          <CollapsibleTrigger as-child>
-            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
-              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
-              <div class="flex items-center gap-2">
-                <Eye class="h-4 w-4" />
-                <span v-if="!isMenuCollapsed">Vue</span>
-              </div>
-              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-1">
-            <Button @click="resetCamera" variant="ghost" size="sm" class="w-full justify-start">
-              <RotateCcw class="h-4 w-4 mr-2" />
-              Réinitialiser la vue
-            </Button>
-            <Button @click="toggleWireframe" variant="ghost" size="sm" class="w-full justify-start">
-              <Grid3x3 class="h-4 w-4 mr-2" />
-              {{ wireframe ? 'Solide' : 'Filaire' }}
-            </Button>
-            <Button @click="toggleFullscreen" variant="ghost" size="sm" class="w-full justify-start">
-              <Maximize class="h-4 w-4 mr-2" />
-              Plein écran
-            </Button>
-            <Button @click="captureScreenshot" variant="ghost" size="sm" class="w-full justify-start">
-              <Camera class="h-4 w-4 mr-2" />
-              Capture d'écran
-            </Button>
-          </CollapsibleContent>
-        </Collapsible>
-
-        <!-- Section Éclairage -->
-        <Collapsible v-model:open="activeSections.lighting" class="space-y-2">
-          <CollapsibleTrigger as-child>
-            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
-              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
-              <div class="flex items-center gap-2">
-                <Sun class="h-4 w-4" />
-                <span v-if="!isMenuCollapsed">Éclairage</span>
-              </div>
-              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
-            <Button @click="toggleDayNight" variant="ghost" size="sm" class="w-full justify-start">
-              <Moon v-if="isDay" class="h-4 w-4 mr-2" />
-              <Sun v-else class="h-4 w-4 mr-2" />
-              {{ isDay ? 'Mode Nuit' : 'Mode Jour' }}
-            </Button>
-
-            <Card class="p-3">
-              <div class="space-y-2">
-                <Label class="flex items-center gap-2 text-sm">
-                  <Lightbulb class="h-4 w-4" />
-                  Intensité lumière
-                </Label>
-                <Slider :min="0" :max="2" :step="0.1" v-model="lightIntensity" @update:model-value="updateLighting"
-                  class="w-full" />
-                <div class="text-center text-xs text-muted-foreground">{{ lightIntensity[0] }}</div>
-              </div>
-            </Card>
-
-            <Card class="p-3">
-              <div class="space-y-2">
-                <Label class="flex items-center gap-2 text-sm">
-                  <Sun class="h-4 w-4" />
-                  Angle du soleil
-                </Label>
-                <Slider :min="0" :max="360" :step="1" v-model="sunAngle" @update:model-value="updateSunPosition"
-                  class="w-full" />
-                <div class="text-center text-xs text-muted-foreground">{{ sunAngle[0] }}°</div>
-              </div>
-            </Card>
-          </CollapsibleContent>
-        </Collapsible>
-
-        <!-- Section Couleurs -->
-        <Collapsible v-model:open="activeSections.colors" class="space-y-2">
-          <CollapsibleTrigger as-child>
-            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
-              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
-              <div class="flex items-center gap-2">
-                <Palette class="h-4 w-4" />
-                <span v-if="!isMenuCollapsed">Couleurs</span>
-              </div>
-              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
-            <Card class="p-3">
-              <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                  <Label class="flex items-center gap-2 text-sm">
-                    <Home class="h-4 w-4" />
-                    Murs
-                  </Label>
-                  <Input type="color" v-model="wallColor" @change="updateColors" class="w-12 h-8 p-0 border-0" />
+    <!-- Sidebar avec shadcn-vue -->
+    <SidebarProvider :default-open="true">
+      <Sidebar side="left" variant="sidebar" collapsible="icon">
+        <!-- En-tête du menu -->
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton class="px-2">
+                <div class="flex items-center gap-2">
+                  <div
+                    class="h-8 w-8 bg-gradient-to-r from-primary to-primary-foreground rounded-lg flex items-center justify-center">
+                    <span class="text-sm font-bold text-primary-foreground">VH</span>
+                  </div>
+                  <div class="group-data-[collapsible=icon]:hidden">
+                    <p class="text-sm font-semibold">VizHome</p>
+                    <p class="text-xs text-muted-foreground">Rendu 3D interactif</p>
+                  </div>
                 </div>
-                <div class="flex items-center justify-between">
-                  <Label class="flex items-center gap-2 text-sm">
-                    <Triangle class="h-4 w-4" />
-                    Toit
-                  </Label>
-                  <Input type="color" v-model="roofColor" @change="updateColors" class="w-12 h-8 p-0 border-0" />
-                </div>
-                <div class="flex items-center justify-between">
-                  <Label class="flex items-center gap-2 text-sm">
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+
+        <!-- Contenu du menu -->
+        <SidebarContent>
+          <!-- Section Vue -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Eye class="h-4 w-4" />
+              Vue
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="resetCamera">
+                    <RotateCcw class="h-4 w-4" />
+                    <span>Réinitialiser la vue</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleWireframe">
+                    <Grid3x3 class="h-4 w-4" />
+                    <span>{{ wireframe ? 'Solide' : 'Filaire' }}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleFullscreen">
+                    <Maximize class="h-4 w-4" />
+                    <span>Plein écran</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="captureScreenshot">
+                    <Camera class="h-4 w-4" />
+                    <span>Capture d'écran</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Section Éclairage -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Sun class="h-4 w-4" />
+              Éclairage
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleDayNight">
+                    <Moon v-if="isDay" class="h-4 w-4" />
+                    <Sun v-else class="h-4 w-4" />
+                    <span>{{ isDay ? 'Mode Nuit' : 'Mode Jour' }}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden">
+                    <Label class="flex items-center gap-2 text-xs">
+                      <Lightbulb class="h-3 w-3" />
+                      Intensité lumière
+                    </Label>
+                    <Slider :min="0" :max="2" :step="0.1" v-model="lightIntensity" @update:model-value="updateLighting"
+                      class="w-full" />
+                    <div class="text-center text-xs text-muted-foreground">{{ lightIntensity[0] }}</div>
+                  </div>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden">
+                    <Label class="flex items-center gap-2 text-xs">
+                      <Sun class="h-3 w-3" />
+                      Angle du soleil
+                    </Label>
+                    <Slider :min="0" :max="360" :step="1" v-model="sunAngle" @update:model-value="updateSunPosition"
+                      class="w-full" />
+                    <div class="text-center text-xs text-muted-foreground">{{ sunAngle[0] }}°</div>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Section Couleurs -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Palette class="h-4 w-4" />
+              Couleurs
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 space-y-3 group-data-[collapsible=icon]:hidden">
+                    <div class="flex items-center justify-between">
+                      <Label class="flex items-center gap-2 text-xs">
+                        <Home class="h-3 w-3" />
+                        Murs
+                      </Label>
+                      <Input type="color" v-model="wallColor" @change="updateColors" class="w-8 h-6 p-0 border-0" />
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <Label class="flex items-center gap-2 text-xs">
+                        <Triangle class="h-3 w-3" />
+                        Toit
+                      </Label>
+                      <Input type="color" v-model="roofColor" @change="updateColors" class="w-8 h-6 p-0 border-0" />
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <Label class="flex items-center gap-2 text-xs">
+                        <DoorOpen class="h-3 w-3" />
+                        Porte
+                      </Label>
+                      <Input type="color" v-model="doorColor" @change="updateColors" class="w-8 h-6 p-0 border-0" />
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <Label class="flex items-center gap-2 text-xs">
+                        <Mountain class="h-3 w-3" />
+                        Sol
+                      </Label>
+                      <Input type="color" v-model="groundColor" @change="updateColors" class="w-8 h-6 p-0 border-0" />
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Section Éléments -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Trees class="h-4 w-4" />
+              Éléments
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleTrees" :variant="showTrees ? 'default' : 'outline'">
+                    <TreePine class="h-4 w-4" />
+                    <span>{{ showTrees ? 'Masquer' : 'Afficher' }} arbres</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleFence" :variant="showFence ? 'default' : 'outline'">
+                    <Fence class="h-4 w-4" />
+                    <span>{{ showFence ? 'Masquer' : 'Afficher' }} clôture</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="addRandomCloud">
+                    <Cloud class="h-4 w-4" />
+                    <span>Ajouter nuage</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleGarden" :variant="showGarden ? 'default' : 'outline'">
+                    <Flower2 class="h-4 w-4" />
+                    <span>{{ showGarden ? 'Masquer' : 'Afficher' }} jardin</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="togglePath" :variant="showPath ? 'default' : 'outline'">
+                    <Footprints class="h-4 w-4" />
+                    <span>{{ showPath ? 'Masquer' : 'Afficher' }} chemin</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Section Météo & Effets -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <CloudRain class="h-4 w-4" />
+              Météo & Effets
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleRain" :variant="isRaining ? 'default' : 'outline'">
+                    <CloudRain class="h-4 w-4" />
+                    <span>{{ isRaining ? 'Arrêter' : 'Démarrer' }} pluie</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleSnow" :variant="isSnowing ? 'default' : 'outline'">
+                    <Snowflake class="h-4 w-4" />
+                    <span>{{ isSnowing ? 'Arrêter' : 'Démarrer' }} neige</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleFog" :variant="showFog ? 'default' : 'outline'">
+                    <CloudFog class="h-4 w-4" />
+                    <span>{{ showFog ? 'Masquer' : 'Afficher' }} brouillard</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="addFireflies">
+                    <Sparkles class="h-4 w-4" />
+                    <span>Ajouter lucioles</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleSmoke" :variant="showSmoke ? 'default' : 'outline'">
+                    <Flame class="h-4 w-4" />
+                    <span>{{ showSmoke ? 'Arrêter' : 'Démarrer' }} fumée</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Section Animations -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Play class="h-4 w-4" />
+              Animations
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleDoorAnimation" :variant="doorOpen ? 'default' : 'outline'">
                     <DoorOpen class="h-4 w-4" />
-                    Porte
-                  </Label>
-                  <Input type="color" v-model="doorColor" @change="updateColors" class="w-12 h-8 p-0 border-0" />
+                    <span>{{ doorOpen ? 'Fermer' : 'Ouvrir' }} porte</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleTreeAnimation" :variant="treeAnimation ? 'default' : 'outline'">
+                    <Wind class="h-4 w-4" />
+                    <span>{{ treeAnimation ? 'Arrêter' : 'Démarrer' }} vent</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleRotateHouse" :variant="rotateHouse ? 'default' : 'outline'">
+                    <RotateCw class="h-4 w-4" />
+                    <span>{{ rotateHouse ? 'Arrêter' : 'Démarrer' }} rotation</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden">
+                    <Label class="flex items-center gap-2 text-xs">
+                      <Gauge class="h-3 w-3" />
+                      Vitesse animation
+                    </Label>
+                    <Slider :min="0.1" :max="3" :step="0.1" v-model="animationSpeedArray" class="w-full" />
+                    <div class="text-center text-xs text-muted-foreground">{{ animationSpeedArray[0] }}x</div>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Section Audio -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Volume2 class="h-4 w-4" />
+              Audio
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleAmbientSound" :variant="ambientSound ? 'default' : 'outline'">
+                    <Volume2 v-if="ambientSound" class="h-4 w-4" />
+                    <VolumeX v-else class="h-4 w-4" />
+                    <span>{{ ambientSound ? 'Arrêter' : 'Démarrer' }} sons ambiants</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden">
+                    <Label class="flex items-center gap-2 text-xs">
+                      <Volume1 class="h-3 w-3" />
+                      Volume
+                    </Label>
+                    <Slider :min="0" :max="1" :step="0.1" v-model="audioVolumeArray"
+                      @update:model-value="updateAudioVolume" class="w-full" />
+                    <div class="text-center text-xs text-muted-foreground">{{ Math.round(audioVolumeArray[0] * 100) }}%
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Section Saisons -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Calendar class="h-4 w-4" />
+              Saisons
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
+                    <Select v-model="currentSeason" @update:model-value="changeSeason">
+                      <SelectTrigger class="w-full">
+                        <SelectValue placeholder="Choisir une saison" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="spring">🌸 Printemps</SelectItem>
+                        <SelectItem value="summer">☀️ Été</SelectItem>
+                        <SelectItem value="autumn">🍂 Automne</SelectItem>
+                        <SelectItem value="winter">❄️ Hiver</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+
+        <!-- Panneau d'informations -->
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
+                <div class="flex items-center gap-2 mb-3">
+                  <Info class="h-4 w-4 text-orange-500" />
+                  <h4 class="text-sm font-semibold text-orange-500">Informations</h4>
                 </div>
-                <div class="flex items-center justify-between">
-                  <Label class="flex items-center gap-2 text-sm">
-                    <Mountain class="h-4 w-4" />
-                    Sol
-                  </Label>
-                  <Input type="color" v-model="groundColor" @change="updateColors" class="w-12 h-8 p-0 border-0" />
-                </div>
-              </div>
-            </Card>
-          </CollapsibleContent>
-        </Collapsible>
-
-        <!-- Section Éléments -->
-        <Collapsible v-model:open="activeSections.elements" class="space-y-2">
-          <CollapsibleTrigger as-child>
-            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
-              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
-              <div class="flex items-center gap-2">
-                <Trees class="h-4 w-4" />
-                <span v-if="!isMenuCollapsed">Éléments</span>
-              </div>
-              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-1">
-            <Button @click="toggleTrees" :variant="showTrees ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <TreePine class="h-4 w-4 mr-2" />
-              {{ showTrees ? 'Masquer' : 'Afficher' }} arbres
-            </Button>
-            <Button @click="toggleFence" :variant="showFence ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <Fence class="h-4 w-4 mr-2" />
-              {{ showFence ? 'Masquer' : 'Afficher' }} clôture
-            </Button>
-            <Button @click="addRandomCloud" variant="ghost" size="sm" class="w-full justify-start">
-              <Cloud class="h-4 w-4 mr-2" />
-              Ajouter nuage
-            </Button>
-            <Button @click="toggleGarden" :variant="showGarden ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <Flower2 class="h-4 w-4 mr-2" />
-              {{ showGarden ? 'Masquer' : 'Afficher' }} jardin
-            </Button>
-            <Button @click="togglePath" :variant="showPath ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <Footprints class="h-4 w-4 mr-2" />
-              {{ showPath ? 'Masquer' : 'Afficher' }} chemin
-            </Button>
-          </CollapsibleContent>
-        </Collapsible>
-
-        <!-- Section Météo & Effets -->
-        <Collapsible v-model:open="activeSections.weather" class="space-y-2">
-          <CollapsibleTrigger as-child>
-            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
-              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
-              <div class="flex items-center gap-2">
-                <CloudRain class="h-4 w-4" />
-                <span v-if="!isMenuCollapsed">Météo & Effets</span>
-              </div>
-              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-1">
-            <Button @click="toggleRain" :variant="isRaining ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <CloudRain class="h-4 w-4 mr-2" />
-              {{ isRaining ? 'Arrêter' : 'Démarrer' }} pluie
-            </Button>
-            <Button @click="toggleSnow" :variant="isSnowing ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <Snowflake class="h-4 w-4 mr-2" />
-              {{ isSnowing ? 'Arrêter' : 'Démarrer' }} neige
-            </Button>
-            <Button @click="toggleFog" :variant="showFog ? 'default' : 'ghost'" size="sm" class="w-full justify-start">
-              <CloudFog class="h-4 w-4 mr-2" />
-              {{ showFog ? 'Masquer' : 'Afficher' }} brouillard
-            </Button>
-            <Button @click="addFireflies" variant="ghost" size="sm" class="w-full justify-start">
-              <Sparkles class="h-4 w-4 mr-2" />
-              Ajouter lucioles
-            </Button>
-            <Button @click="toggleSmoke" :variant="showSmoke ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <Flame class="h-4 w-4 mr-2" />
-              {{ showSmoke ? 'Arrêter' : 'Démarrer' }} fumée
-            </Button>
-          </CollapsibleContent>
-        </Collapsible>
-
-        <!-- Section Animations -->
-        <Collapsible v-model:open="activeSections.animations" class="space-y-2">
-          <CollapsibleTrigger as-child>
-            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
-              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
-              <div class="flex items-center gap-2">
-                <Play class="h-4 w-4" />
-                <span v-if="!isMenuCollapsed">Animations</span>
-              </div>
-              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
-            <Button @click="toggleDoorAnimation" :variant="doorOpen ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <DoorOpen class="h-4 w-4 mr-2" />
-              {{ doorOpen ? 'Fermer' : 'Ouvrir' }} porte
-            </Button>
-            <Button @click="toggleTreeAnimation" :variant="treeAnimation ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <Wind class="h-4 w-4 mr-2" />
-              {{ treeAnimation ? 'Arrêter' : 'Démarrer' }} vent
-            </Button>
-            <Button @click="toggleRotateHouse" :variant="rotateHouse ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <RotateCw class="h-4 w-4 mr-2" />
-              {{ rotateHouse ? 'Arrêter' : 'Démarrer' }} rotation
-            </Button>
-
-            <Card class="p-3">
-              <div class="space-y-2">
-                <Label class="flex items-center gap-2 text-sm">
-                  <Gauge class="h-4 w-4" />
-                  Vitesse animation
-                </Label>
-                <Slider :min="0.1" :max="3" :step="0.1" v-model="animationSpeedArray" class="w-full" />
-                <div class="text-center text-xs text-muted-foreground">{{ animationSpeedArray[0] }}x</div>
-              </div>
-            </Card>
-          </CollapsibleContent>
-        </Collapsible>
-
-        <!-- Section Audio -->
-        <Collapsible v-model:open="activeSections.audio" class="space-y-2">
-          <CollapsibleTrigger as-child>
-            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
-              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
-              <div class="flex items-center gap-2">
-                <Volume2 class="h-4 w-4" />
-                <span v-if="!isMenuCollapsed">Audio</span>
-              </div>
-              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
-            <Button @click="toggleAmbientSound" :variant="ambientSound ? 'default' : 'ghost'" size="sm"
-              class="w-full justify-start">
-              <Volume2 v-if="ambientSound" class="h-4 w-4 mr-2" />
-              <VolumeX v-else class="h-4 w-4 mr-2" />
-              {{ ambientSound ? 'Arrêter' : 'Démarrer' }} sons ambiants
-            </Button>
-
-            <Card class="p-3">
-              <div class="space-y-2">
-                <Label class="flex items-center gap-2 text-sm">
-                  <Volume1 class="h-4 w-4" />
-                  Volume
-                </Label>
-                <Slider :min="0" :max="1" :step="0.1" v-model="audioVolumeArray" @update:model-value="updateAudioVolume"
-                  class="w-full" />
-                <div class="text-center text-xs text-muted-foreground">{{ Math.round(audioVolumeArray[0] * 100) }}%
+                <div class="space-y-2 text-xs text-muted-foreground">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <Zap class="h-3 w-3" />
+                      <span>FPS:</span>
+                    </div>
+                    <Badge variant="secondary">{{ fps }}</Badge>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <Triangle class="h-3 w-3" />
+                      <span>Triangles:</span>
+                    </div>
+                    <Badge variant="secondary">{{ triangleCount }}</Badge>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <Calendar class="h-3 w-3" />
+                      <span>Saison:</span>
+                    </div>
+                    <Badge variant="outline">{{ currentSeason }}</Badge>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <Cloud class="h-3 w-3" />
+                      <span>Météo:</span>
+                    </div>
+                    <Badge variant="outline">{{ currentWeather }}</Badge>
+                  </div>
                 </div>
               </div>
-            </Card>
-          </CollapsibleContent>
-        </Collapsible>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
 
-        <!-- Section Saisons -->
-        <Collapsible v-model:open="activeSections.seasons" class="space-y-2">
-          <CollapsibleTrigger as-child>
-            <Button variant="ghost" class="w-full justify-between px-3 py-2 h-auto"
-              :class="{ 'justify-center': isMenuCollapsed }" :disabled="isMenuCollapsed">
-              <div class="flex items-center gap-2">
-                <Calendar class="h-4 w-4" />
-                <span v-if="!isMenuCollapsed">Saisons</span>
-              </div>
-              <ChevronDown v-if="!isMenuCollapsed" class="h-4 w-4" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent v-if="!isMenuCollapsed" class="space-y-2">
-            <Select v-model="currentSeason" @update:model-value="changeSeason">
-              <SelectTrigger class="w-full">
-                <SelectValue placeholder="Choisir une saison" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="spring">🌸 Printemps</SelectItem>
-                <SelectItem value="summer">☀️ Été</SelectItem>
-                <SelectItem value="autumn">🍂 Automne</SelectItem>
-                <SelectItem value="winter">❄️ Hiver</SelectItem>
-              </SelectContent>
-            </Select>
-          </CollapsibleContent>
-        </Collapsible>
-      </ScrollArea>
+        <SidebarRail />
+      </Sidebar>
 
-      <!-- Panneau d'informations -->
-      <div v-if="!isMenuCollapsed" class="p-4 border-t">
-        <Card class="p-3">
-          <div class="flex items-center gap-2 mb-3">
-            <Info class="h-4 w-4 text-orange-500" />
-            <h4 class="text-sm font-semibold text-orange-500">Informations</h4>
-          </div>
-          <div class="space-y-2 text-xs text-muted-foreground">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <Zap class="h-3 w-3" />
-                <span>FPS:</span>
-              </div>
-              <Badge variant="secondary">{{ fps }}</Badge>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <Triangle class="h-3 w-3" />
-                <span>Triangles:</span>
-              </div>
-              <Badge variant="secondary">{{ triangleCount }}</Badge>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <Calendar class="h-3 w-3" />
-                <span>Saison:</span>
-              </div>
-              <Badge variant="outline">{{ currentSeason }}</Badge>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <Cloud class="h-3 w-3" />
-                <span>Météo:</span>
-              </div>
-              <Badge variant="outline">{{ currentWeather }}</Badge>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </div>
-
-    <!-- Bouton de réduction rapide quand le menu est fermé -->
-    <!-- <Button v-if="isMenuCollapsed" @click="toggleMenu" class="fixed top-4 left-4 z-40 h-12 w-12 p-0" size="icon">
-      <Menu class="h-5 w-5" />
-    </Button> -->
+      <!-- Zone de rendu 3D -->
+      <SidebarInset class="relative">
+        <!-- Bouton pour ouvrir/fermer la sidebar -->
+        <div class="absolute top-4 left-4 z-10">
+          <SidebarTrigger />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   </div>
 </template>
 
@@ -382,12 +394,16 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import {
-  Eye, ChevronDown, ChevronLeft, ChevronRight, RotateCcw, Grid3x3, Maximize, Camera,
-  Sun, Moon, Lightbulb, Palette, Home, Triangle, DoorOpen, Mountain, Trees, TreePine,
-  Fence, Flower2, Footprints, CloudRain, Snowflake, CloudFog, Sparkles,
-  Flame, Play, Wind, RotateCw, Gauge, Volume2, VolumeX, Volume1, Calendar, Info,
-  Zap, Cloud, Menu
+  Eye, RotateCcw, Grid3x3, Maximize, Camera, Sun, Moon, Lightbulb, Palette, Home, Triangle,
+  DoorOpen, Mountain, Trees, TreePine, Fence, Flower2, Footprints, CloudRain,
+  Snowflake, CloudFog, Sparkles, Flame, Play, Wind, RotateCw, Gauge, Volume2, VolumeX,
+  Volume1, Calendar, Info, Zap, Cloud
 } from 'lucide-vue-next'
+import {
+  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
+  SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+  SidebarProvider, SidebarRail, SidebarTrigger
+} from '@/components/ui/sidebar'
 
 definePageMeta({
   layout: 'none',
@@ -433,19 +449,6 @@ const currentSeason = ref('spring')
 // Variables pour les stats
 const fps = ref(0)
 const triangleCount = ref(0)
-
-// Variables pour le menu
-const isMenuCollapsed = ref(false)
-const activeSections = ref({
-  view: true,
-  lighting: false,
-  colors: false,
-  elements: false,
-  weather: false,
-  animations: false,
-  audio: false,
-  seasons: false
-})
 
 // Computed properties pour la compatibilité
 const animationSpeed = computed({
@@ -1052,6 +1055,16 @@ const updateLighting = () => {
   directionalLight.intensity = lightIntensity.value[0]
 }
 
+const updateSunPosition = () => {
+  const angle = (sunAngle.value[0] * Math.PI) / 180
+  directionalLight.position.x = Math.cos(angle) * 20
+  directionalLight.position.z = Math.sin(angle) * 20
+}
+
+const updateAudioVolume = () => {
+  // Mettre à jour le volume audio avec audioVolumeArray.value[0]
+}
+
 const updateColors = () => {
   house.traverse((child) => {
     if (child instanceof THREE.Mesh) {
@@ -1218,56 +1231,5 @@ const setupResizeHandler = () => {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-/* Sidebar moderne */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 320px;
-  height: 100vh;
-  background: hsl(var(--background)) / 0.95;
-  backdrop-filter: blur(16px);
-  border-right: 1px solid hsl(var(--border));
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.sidebar-collapsed {
-  width: 60px;
-}
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  border-bottom: 1px solid hsl(var(--border));
-  min-height: 80px;
-}
-
-.sidebar-title h2 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.sidebar-title p {
-  margin: 0;
-  font-size: 0.75rem;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 280px;
-  }
-
-  .sidebar-collapsed {
-    width: 50px;
-  }
 }
 </style>

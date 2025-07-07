@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from 'vue'
+import { reactiveOmit } from '@vueuse/core'
 import {
   MenubarContent,
   type MenubarContentProps,
   MenubarPortal,
   useForwardProps,
 } from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
+import { cn } from '@/lib/utils'
 
 const props = withDefaults(
   defineProps<MenubarContentProps & { class?: HTMLAttributes['class'] }>(),
@@ -17,11 +18,7 @@ const props = withDefaults(
   },
 )
 
-const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
-
-  return delegated
-})
+const delegatedProps = reactiveOmit(props, 'class')
 
 const forwardedProps = useForwardProps(delegatedProps)
 </script>

@@ -1,141 +1,225 @@
 // @ts-check
-import withNuxt from "./.nuxt/eslint.config.mjs";
+import withNuxt from './.nuxt/eslint.config.mjs'
 
-export default withNuxt({
-  rules: {
-    // Vue.js règles
-    "vue/multi-word-component-names": "error",
-    "vue/no-multiple-template-root": "off", // Vue 3 permet les fragments
-    "vue/attribute-hyphenation": ["error", "always"],
-    "vue/component-name-in-template-casing": ["error", "PascalCase"],
-    "vue/v-on-event-hyphenation": ["error", "always"],
-    "vue/custom-event-name-casing": ["error", "camelCase"],
-    "vue/define-macros-order": "error",
-    "vue/define-props-declaration": "error",
-    "vue/html-button-has-type": "error",
-    "vue/html-comment-content-spacing": "error",
-    "vue/no-boolean-default": "error",
-    "vue/no-duplicate-attr-inheritance": "error",
-    "vue/no-empty-component-block": "error",
-    "vue/no-multiple-objects-in-class": "error",
-    "vue/no-potential-component-option-typo": "error",
-    "vue/no-required-prop-with-default": "error",
-    "vue/no-static-inline-styles": "error",
-    "vue/no-this-in-before-route-enter": "error",
-    "vue/no-undef-components": "error",
-    "vue/no-undef-properties": "error",
-    "vue/no-unused-properties": "error",
-    "vue/no-unused-refs": "error",
-    "vue/no-useless-v-bind": "error",
-    "vue/padding-line-between-blocks": "error",
-    "vue/prefer-separate-static-class": "error",
-    "vue/prefer-true-attribute-shorthand": "error",
-    "vue/require-macro-variable-name": "error",
-    "vue/v-for-delimiter-style": "error",
-    "vue/valid-define-options": "error",
-
-    // JavaScript/TypeScript règles générales
-    "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
-    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
-    "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-    "prefer-const": "error",
-    "no-var": "error",
-    "object-shorthand": "error",
-    "prefer-template": "error",
-    "template-curly-spacing": "error",
-    "prefer-rest-params": "error",
-    "prefer-spread": "error",
-    "prefer-arrow-callback": "error",
-    "arrow-spacing": "error",
-    "generator-star-spacing": "error",
-
-    // Style de code
-    semi: ["error", "never"],
-    quotes: ["error", "single"],
-    indent: ["error", 2], // 2 espaces pour une meilleure lisibilité
-    "comma-dangle": ["error", "always-multiline"],
-    "arrow-parens": ["error", "always"],
-    "object-curly-spacing": ["error", "always"],
-    "array-bracket-spacing": ["error", "never"],
-    "key-spacing": ["error", { beforeColon: false, afterColon: true }],
-    "space-before-function-paren": [
-      "error",
-      {
-        anonymous: "always",
-        named: "never",
-        asyncArrow: "always",
-      },
+export default withNuxt(
+  // Configuration globale
+  {
+    // Fichiers à ignorer
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      '.nuxt/**',
+      '.output/**',
+      'coverage/**',
+      '*.min.js',
+      '*.d.ts',
+      'public/**',
+      'build/**',
+      'static/**',
     ],
-
-    // TypeScript règles (si disponibles)
-    "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
-    "@typescript-eslint/consistent-type-imports": "error",
-    "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
-    "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/prefer-nullish-coalescing": "error",
-    "@typescript-eslint/prefer-optional-chain": "error",
-
-    // Import/Export règles
-    "import/order": [
-      "error",
-      {
-        groups: [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index",
-        ],
-        "newlines-between": "always",
-        alphabetize: {
-          order: "asc",
-          caseInsensitive: true,
-        },
-      },
-    ],
-    "import/no-duplicates": "error",
-    "import/no-cycle": "error",
-
-    // Sécurité et qualité
-    eqeqeq: ["error", "always"],
-    curly: ["error", "all"],
-    "no-eval": "error",
-    "no-implied-eval": "error",
-    "no-new-func": "error",
-    "no-script-url": "error",
-    "no-self-compare": "error",
-    "no-sequences": "error",
-    "no-throw-literal": "error",
-    "no-unused-expressions": "error",
-    "no-useless-call": "error",
-    "no-useless-concat": "error",
-    "no-useless-return": "error",
-    radix: "error",
-
-    // Promesses et async/await
-    "prefer-promise-reject-errors": "error",
-    "require-await": "error",
-    "no-async-promise-executor": "error",
-    "no-await-in-loop": "warn",
-    "no-promise-executor-return": "error",
-
-    // Nuxt règles spécifiques
-    "nuxt/prefer-import-meta": "error",
   },
 
-  ignores: [
-    "node_modules",
-    ".nuxt",
-    "dist",
-    ".output",
-    "components/ui",
-    "coverage",
-    "*.min.js",
-    "public",
-    ".vscode",
-    ".idea",
-    "auto-imports.d.ts",
-    "components.d.ts",
-  ],
-});
+  // Configuration pour les fichiers TypeScript et Vue
+  {
+    files: ['**/*.{js,jsx,ts,tsx,vue}'],
+    rules: {
+      // Règles générales de qualité de code
+      'no-console': 'warn',
+      'no-debugger': 'warn',
+      'no-unused-vars': 'off', // Désactivé car géré par @typescript-eslint
+      'no-undef': 'off', // Désactivé car géré par TypeScript
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'object-shorthand': 'error',
+      'prefer-arrow-callback': 'error',
+      'arrow-spacing': 'error',
+      'comma-dangle': ['error', 'always-multiline'],
+      'quote-props': ['error', 'as-needed'],
+      quotes: ['error', 'single', { avoidEscape: true }],
+      semi: ['error', 'never'],
+      indent: ['error', 2],
+      'no-multiple-empty-lines': ['error', { max: 1 }],
+      'eol-last': 'error',
+      'no-trailing-spaces': 'error',
+
+      // Règles spécifiques à Vue
+      'vue/multi-word-component-names': 'off',
+      'vue/no-v-html': 'warn',
+      'vue/require-default-prop': 'off',
+      'vue/html-self-closing': [
+        'error',
+        {
+          html: {
+            void: 'always',
+            normal: 'always',
+            component: 'always',
+          },
+          svg: 'always',
+          math: 'always',
+        },
+      ],
+      'vue/max-attributes-per-line': [
+        'error',
+        {
+          singleline: 3,
+          multiline: 1,
+        },
+      ],
+      'vue/html-indent': ['error', 2],
+      'vue/script-indent': ['error', 2],
+      'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+      'vue/attribute-hyphenation': ['error', 'always'],
+      'vue/v-on-event-hyphenation': ['error', 'always'],
+      'vue/prop-name-casing': ['error', 'camelCase'],
+      'vue/custom-event-name-casing': ['error', 'camelCase'],
+      'vue/no-spaces-around-equal-signs-in-attribute': 'error',
+      'vue/mustache-interpolation-spacing': ['error', 'always'],
+      'vue/v-bind-style': ['error', 'shorthand'],
+      'vue/v-on-style': ['error', 'shorthand'],
+      'vue/order-in-components': 'error',
+      'vue/this-in-template': 'error',
+      'vue/no-unused-components': 'error',
+      'vue/no-unused-vars': 'error',
+      'vue/require-v-for-key': 'error',
+      'vue/no-use-v-if-with-v-for': 'error',
+      'vue/no-duplicate-attributes': 'error',
+      'vue/no-parsing-error': 'error',
+      'vue/no-reserved-keys': 'error',
+      'vue/valid-v-for': 'error',
+      'vue/valid-v-if': 'error',
+      'vue/valid-v-model': 'error',
+      'vue/valid-v-show': 'error',
+
+      // Règles TypeScript
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/prefer-as-const': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/ban-ts-comment': 'warn',
+      '@typescript-eslint/no-empty-function': 'warn',
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          prefer: 'type-imports',
+          fixStyle: 'inline-type-imports',
+        },
+      ],
+
+      // Règles d'importation
+      'import/order': [
+        'error',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+          ],
+          'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
+      'import/no-duplicates': 'error',
+      'import/no-unresolved': 'off', // Géré par TypeScript
+      'import/named': 'off', // Géré par TypeScript
+      'import/default': 'off', // Géré par TypeScript
+      'import/namespace': 'off', // Géré par TypeScript
+
+      // Règles de formatage
+      'object-curly-spacing': ['error', 'always'],
+      'array-bracket-spacing': ['error', 'never'],
+      'computed-property-spacing': ['error', 'never'],
+      'key-spacing': ['error', { beforeColon: false, afterColon: true }],
+      'comma-spacing': ['error', { before: false, after: true }],
+      'space-before-blocks': 'error',
+      'keyword-spacing': 'error',
+      'space-infix-ops': 'error',
+      'space-unary-ops': 'error',
+      'no-multi-spaces': 'error',
+      'block-spacing': 'error',
+      'brace-style': ['error', '1tbs', { allowSingleLine: true }],
+    },
+  },
+
+  // Configuration spécifique pour les fichiers Vue
+  {
+    files: ['**/*.vue'],
+    rules: {
+      // Règles spécifiques aux composants Vue
+      'vue/component-definition-name-casing': ['error', 'PascalCase'],
+      'vue/match-component-file-name': [
+        'error',
+        {
+          extensions: ['vue'],
+          shouldMatchCase: true,
+        },
+      ],
+      'vue/no-boolean-default': 'error',
+      'vue/no-duplicate-attr-inheritance': 'error',
+      'vue/no-empty-component-block': 'error',
+      'vue/no-multiple-objects-in-class': 'error',
+      'vue/no-potential-component-option-typo': 'error',
+      'vue/no-reserved-component-names': 'error',
+      'vue/no-template-target-blank': 'error',
+      'vue/no-useless-mustaches': 'error',
+      'vue/no-useless-v-bind': 'error',
+      'vue/padding-line-between-blocks': 'error',
+      'vue/prefer-separate-static-class': 'error',
+      'vue/prefer-true-attribute-shorthand': 'error',
+      'vue/v-for-delimiter-style': ['error', 'in'],
+      'vue/v-on-function-call': ['error', 'never'],
+      'vue/valid-next-tick': 'error',
+    },
+  },
+
+  // Configuration pour les fichiers de configuration
+  {
+    files: ['*.config.{js,ts,mjs}', '*.config.*.{js,ts,mjs}'],
+    rules: {
+      'no-console': 'off',
+      '@typescript-eslint/no-var-requires': 'off',
+      'import/no-default-export': 'off',
+    },
+  },
+
+  // Configuration pour les fichiers de test
+  {
+    files: ['**/*.test.{js,ts,vue}', '**/*.spec.{js,ts,vue}', '**/tests/**'],
+    rules: {
+      'no-console': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      'vue/one-component-per-file': 'off',
+    },
+  },
+
+  // Configuration pour les pages et layouts Nuxt
+  {
+    files: ['pages/**/*.vue', 'layouts/**/*.vue', 'error.vue'],
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
+  },
+
+  // Configuration pour les composables et utilitaires
+  {
+    files: [
+      'composables/**/*.{js,ts}',
+      'utils/**/*.{js,ts}',
+      'lib/**/*.{js,ts}',
+    ],
+    rules: {
+      'import/prefer-default-export': 'off',
+    },
+  }
+)

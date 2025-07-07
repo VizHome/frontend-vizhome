@@ -2,9 +2,7 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  // Compatibility date
-  compatibilityDate: '2024-11-01',
-
+  compatibilityDate: '2025-05-15',
   // Devtools
   devtools: {
     enabled: true,
@@ -27,19 +25,7 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
 
-  // Modules
-  modules: [
-    '@nuxt/eslint',
-    '@nuxt/icon',
-    '@nuxt/image',
-    '@nuxt/scripts',
-    '@nuxt/test-utils',
-    'shadcn-nuxt',
-    '@nuxtjs/color-mode',
-    'nuxt-typed-router',
-    '@vueuse/nuxt',
-    '@nuxtjs/i18n',
-  ],
+  modules: ['@nuxt/eslint', '@nuxt/test-utils', 'shadcn-nuxt', '@nuxtjs/color-mode'],
 
   // Configs CSS
   css: ['~/assets/css/tailwind.css'],
@@ -74,10 +60,5 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3000',
     },
-  },
-
-  // Typescript
-  typescript: {
-    strict: true,
   },
 })

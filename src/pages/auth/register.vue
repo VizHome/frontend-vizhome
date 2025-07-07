@@ -25,7 +25,7 @@
           <p class="text-muted-foreground">Commencez votre expérience de conception 3D</p>
         </div>
 
-        <Card class="border-muted/30 shadow-lg">
+        <Card class="shadow-xl">
           <CardContent class="pt-6">
             <form class="space-y-5" @submit.prevent="handleSubmit">
               <div class="grid grid-cols-2 gap-4">

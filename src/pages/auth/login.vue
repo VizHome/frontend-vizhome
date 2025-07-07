@@ -29,11 +29,9 @@
           <!-- Boutons de connexion sociale -->
           <div class="grid grid-cols-2 gap-4">
             <Button variant="outline" type="button" class="gap-2 h-11">
-              <Icon name="devicon:google" class="h-5 w-5" />
               <span>Google</span>
             </Button>
             <Button variant="outline" type="button" class="gap-2 h-11">
-              <GithubIcon class="h-5 w-5" />
               <span>GitHub</span>
             </Button>
           </div>
@@ -49,7 +47,7 @@
             </div>
           </div>
 
-          <Card class="border-muted/30">
+          <Card class="shadow-xl">
             <CardContent class="pt-6">
               <form class="space-y-5" @submit.prevent="handleSubmit">
                 <div class="space-y-2">

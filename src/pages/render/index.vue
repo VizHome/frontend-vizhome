@@ -4,7 +4,7 @@
 
     <!-- Sidebar avec shadcn-vue -->
     <SidebarProvider :default-open="true">
-      <Sidebar side="left" variant="sidebar" collapsible="icon">
+      <Sidebar side="left" variant="sidebar" collapsible="icon" class="custom-sidebar">
         <!-- En-tête du menu -->
         <SidebarHeader>
           <SidebarMenu>
@@ -25,8 +25,8 @@
           </SidebarMenu>
         </SidebarHeader>
 
-        <!-- Contenu du menu -->
-        <SidebarContent>
+        <!-- Contenu du menu avec scrollbar personnalisée -->
+        <SidebarContent class="custom-scroll">
           <!-- Section Vue -->
           <SidebarGroup>
             <SidebarGroupLabel>
@@ -379,10 +379,16 @@
       </Sidebar>
 
       <!-- Zone de rendu 3D -->
-      <SidebarInset class="relative">
-        <!-- Bouton pour ouvrir/fermer la sidebar -->
-        <div class="absolute top-4 left-4 z-10">
-          <SidebarTrigger />
+      <SidebarInset class="render-inset">
+        <!-- Contrôles de la sidebar avec boutons améliorés -->
+        <div class="absolute top-4 left-4 z-20 flex items-center gap-2">
+          <SidebarTrigger class="sidebar-trigger" />
+          <!-- Bouton pour basculer entre collapsed et expanded -->
+          <Button @click="toggleSidebarCollapse" variant="outline" size="icon" class="h-8 w-8 sidebar-control-btn"
+            :title="sidebarCollapsed ? 'Agrandir la sidebar' : 'Réduire la sidebar'">
+            <PanelLeftOpen v-if="sidebarCollapsed" class="h-4 w-4" />
+            <PanelLeftClose v-else class="h-4 w-4" />
+          </Button>
         </div>
       </SidebarInset>
     </SidebarProvider>
@@ -390,14 +396,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import {
   Eye, RotateCcw, Grid3x3, Maximize, Camera, Sun, Moon, Lightbulb, Palette, Home, Triangle,
   DoorOpen, Mountain, Trees, TreePine, Fence, Flower2, Footprints, CloudRain,
   Snowflake, CloudFog, Sparkles, Flame, Play, Wind, RotateCw, Gauge, Volume2, VolumeX,
-  Volume1, Calendar, Info, Zap, Cloud
+  Volume1, Calendar, Info, Zap, Cloud, PanelLeftOpen, PanelLeftClose
 } from 'lucide-vue-next'
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -410,6 +416,8 @@ definePageMeta({
 })
 
 const canvasRef = ref<HTMLCanvasElement>()
+const sidebarCollapsed = ref(false)
+
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 let renderer: THREE.WebGLRenderer
@@ -486,10 +494,39 @@ const currentWeather = computed(() => {
   return 'Ensoleillé'
 })
 
-// Nouvelles fonctions pour le menu
-const toggleMenu = () => {
-  isMenuCollapsed.value = !isMenuCollapsed.value
+// Nouvelle fonction pour contrôler la sidebar
+const toggleSidebarCollapse = () => {
+  sidebarCollapsed.value = !sidebarCollapsed.value
+  // Forcer le redimensionnement du canvas après un délai pour la transition
+  setTimeout(() => {
+    handleResize()
+  }, 300)
 }
+
+// Améliorer la gestion du redimensionnement
+const handleResize = () => {
+  if (!camera || !renderer || !canvasRef.value) return
+
+  // Obtenir les dimensions réelles du conteneur canvas
+  const container = canvasRef.value.parentElement
+  if (!container) return
+
+  const rect = container.getBoundingClientRect()
+  const width = rect.width
+  const height = rect.height
+
+  // Mettre à jour la caméra et le renderer avec les nouvelles dimensions
+  camera.aspect = width / height
+  camera.updateProjectionMatrix()
+  renderer.setSize(width, height, false) // false pour éviter de changer le style CSS
+}
+
+// Watcher pour surveiller les changements de taille de la sidebar
+watch(sidebarCollapsed, () => {
+  nextTick(() => {
+    handleResize()
+  })
+})
 
 onMounted(() => {
   if (typeof window !== 'undefined') {
@@ -519,12 +556,12 @@ const initThreeJS = () => {
   scene = new THREE.Scene()
   scene.background = new THREE.Color(0x87CEEB)
 
-  camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  )
+  // Obtenir les dimensions initiales du conteneur
+  const container = canvasRef.value?.parentElement
+  const width = container?.clientWidth || window.innerWidth
+  const height = container?.clientHeight || window.innerHeight
+
+  camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
   camera.position.set(10, 8, 10)
 
   renderer = new THREE.WebGLRenderer({
@@ -532,7 +569,9 @@ const initThreeJS = () => {
     antialias: true,
     preserveDrawingBuffer: true
   })
-  renderer.setSize(window.innerWidth, window.innerHeight)
+
+  renderer.setSize(width, height, false)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Optimisation performance
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
@@ -1202,20 +1241,30 @@ const resetCamera = () => {
 
 // Gestion du redimensionnement
 const setupResizeHandler = () => {
-  const handleResize = () => {
-    if (camera && renderer) {
-      camera.aspect = window.innerWidth / window.innerHeight
-      camera.updateProjectionMatrix()
-      renderer.setSize(window.innerWidth, window.innerHeight)
+  // Utiliser ResizeObserver pour une meilleure détection des changements
+  if (typeof ResizeObserver !== 'undefined' && canvasRef.value) {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === canvasRef.value?.parentElement) {
+          handleResize()
+        }
+      }
+    })
+
+    if (canvasRef.value.parentElement) {
+      resizeObserver.observe(canvasRef.value.parentElement)
     }
+
+    onUnmounted(() => {
+      resizeObserver.disconnect()
+    })
+  } else {
+    // Fallback pour les navigateurs qui ne supportent pas ResizeObserver
+    window.addEventListener('resize', handleResize)
+    onUnmounted(() => {
+      window.removeEventListener('resize', handleResize)
+    })
   }
-
-  window.addEventListener('resize', handleResize)
-
-  // Nettoyer l'event listener quand le composant est démonté
-  onUnmounted(() => {
-    window.removeEventListener('resize', handleResize)
-  })
 }
 </script>
 
@@ -1231,5 +1280,100 @@ const setupResizeHandler = () => {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.render-inset {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Personnalisation de la sidebar */
+.custom-sidebar {
+  border-right: 1px solid hsl(var(--border));
+  backdrop-filter: blur(8px);
+  background: hsl(var(--background) / 0.95);
+}
+
+/* Scrollbar personnalisée pour la sidebar */
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Styles pour les boutons de contrôle de la sidebar */
+.sidebar-trigger {
+  background: hsl(var(--background) / 0.9);
+  border: 1px solid hsl(var(--border));
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.sidebar-trigger:hover {
+  background: hsl(var(--accent));
+  border-color: hsl(var(--accent-foreground) / 0.2);
+}
+
+.sidebar-control-btn {
+  background: hsl(var(--background) / 0.9);
+  border: 1px solid hsl(var(--border));
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.sidebar-control-btn:hover {
+  background: hsl(var(--accent));
+  border-color: hsl(var(--accent-foreground) / 0.2);
+  transform: scale(1.05);
+}
+
+/* Amélioration des transitions */
+.custom-sidebar,
+.render-inset {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive - masquer les contrôles sur très petits écrans */
+@media (max-width: 480px) {
+  .sidebar-control-btn {
+    display: none;
+  }
+}
+
+/* Animation d'apparition des boutons */
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.sidebar-trigger,
+.sidebar-control-btn {
+  animation: slideInFromLeft 0.3s ease-out;
 }
 </style>

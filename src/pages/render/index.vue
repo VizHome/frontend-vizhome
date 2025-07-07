@@ -9,11 +9,10 @@
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton class="px-2">
+              <SidebarMenuButton>
                 <div class="flex items-center gap-2">
-                  <div
-                    class="h-8 w-8 bg-gradient-to-r from-primary to-primary-foreground rounded-lg flex items-center justify-center">
-                    <span class="text-sm font-bold text-primary-foreground">VH</span>
+                  <div class="rounded-lg flex items-center justify-center">
+                    <span class="text-sm font-bold">VH</span>
                   </div>
                   <div class="group-data-[collapsible=icon]:hidden">
                     <p class="text-sm font-semibold">VizHome</p>
@@ -30,7 +29,7 @@
           <!-- Section Vue -->
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Eye class="h-4 w-4" />
+              <Eye class="h-4 w-4 mr-1" />
               Vue
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -66,7 +65,7 @@
           <!-- Section Éclairage -->
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Sun class="h-4 w-4" />
+              <Sun class="h-4 w-4 mr-1" />
               Éclairage
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -107,7 +106,7 @@
           <!-- Section Couleurs -->
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Palette class="h-4 w-4" />
+              <Palette class="h-4 w-4 mr-1" />
               Couleurs
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -151,7 +150,7 @@
           <!-- Section Éléments -->
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Trees class="h-4 w-4" />
+              <Trees class="h-4 w-4 mr-1" />
               Éléments
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -193,7 +192,7 @@
           <!-- Section Météo & Effets -->
           <SidebarGroup>
             <SidebarGroupLabel>
-              <CloudRain class="h-4 w-4" />
+              <CloudRain class="h-4 w-4 mr-1" />
               Météo & Effets
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -235,7 +234,7 @@
           <!-- Section Animations -->
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Play class="h-4 w-4" />
+              <Play class="h-4 w-4 mr-1" />
               Animations
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -275,7 +274,7 @@
           <!-- Section Audio -->
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Volume2 class="h-4 w-4" />
+              <Volume2 class="h-4 w-4 mr-1" />
               Audio
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -306,7 +305,7 @@
           <!-- Section Saisons -->
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Calendar class="h-4 w-4" />
+              <Calendar class="h-4 w-4 mr-1" />
               Saisons
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -324,6 +323,129 @@
                         <SelectItem value="winter">❄️ Hiver</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Nouvelle section Modèles 3D -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Upload class="h-4 w-4 mr-1" />
+              Modèles 3D
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="importModel" :disabled="isLoadingModel">
+                    <Upload class="h-4 w-4" />
+                    <span>{{ isLoadingModel ? 'Chargement...' : 'Importer modèle' }}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                <!-- Message d'erreur -->
+                <SidebarMenuItem v-if="modelLoadError">
+                  <div class="px-2 py-2 text-xs text-red-500 group-data-[collapsible=icon]:hidden">
+                    {{ modelLoadError }}
+                  </div>
+                </SidebarMenuItem>
+
+                <!-- Liste des modèles importés -->
+                <SidebarMenuItem v-for="model in importedModels" :key="model.id">
+                  <div class="px-2 py-1 space-y-2 group-data-[collapsible=icon]:hidden">
+                    <div class="flex items-center justify-between">
+                      <Button @click="selectModel(model.id)" variant="ghost" size="sm"
+                        class="flex-1 justify-start text-xs" :class="{ 'bg-accent': selectedModelId === model.id }">
+                        <Move3d class="h-3 w-3 mr-1" />
+                        {{ model.name }}
+                      </Button>
+                      <Button @click="removeModel(model.id)" variant="ghost" size="sm"
+                        class="h-6 w-6 p-0 text-red-500 hover:text-red-700">
+                        <Trash2 class="h-3 w-3" />
+                      </Button>
+                    </div>
+
+                    <!-- Contrôles du modèle sélectionné -->
+                    <div v-if="selectedModelId === model.id" class="space-y-3 p-2 bg-accent/20 rounded">
+                      <!-- Position -->
+                      <div class="space-y-2">
+                        <Label class="flex items-center gap-2 text-xs">
+                          <Move3d class="h-3 w-3" />
+                          Position
+                        </Label>
+                        <div class="grid grid-cols-3 gap-1">
+                          <div class="text-center">
+                            <Label class="text-xs">X</Label>
+                            <Input type="number" :value="model.position.x"
+                              @input="updateModelPosition('x', parseFloat($event.target.value))" class="h-6 text-xs"
+                              step="0.1" />
+                          </div>
+                          <div class="text-center">
+                            <Label class="text-xs">Y</Label>
+                            <Input type="number" :value="model.position.y"
+                              @input="updateModelPosition('y', parseFloat($event.target.value))" class="h-6 text-xs"
+                              step="0.1" />
+                          </div>
+                          <div class="text-center">
+                            <Label class="text-xs">Z</Label>
+                            <Input type="number" :value="model.position.z"
+                              @input="updateModelPosition('z', parseFloat($event.target.value))" class="h-6 text-xs"
+                              step="0.1" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Rotation -->
+                      <div class="space-y-2">
+                        <Label class="flex items-center gap-2 text-xs">
+                          <Rotate3d class="h-3 w-3" />
+                          Rotation (°)
+                        </Label>
+                        <div class="grid grid-cols-3 gap-1">
+                          <div class="text-center">
+                            <Label class="text-xs">X</Label>
+                            <Input type="number" :value="Math.round(model.rotation.x * 180 / Math.PI)"
+                              @input="updateModelRotation('x', parseFloat($event.target.value))" class="h-6 text-xs" />
+                          </div>
+                          <div class="text-center">
+                            <Label class="text-xs">Y</Label>
+                            <Input type="number" :value="Math.round(model.rotation.y * 180 / Math.PI)"
+                              @input="updateModelRotation('y', parseFloat($event.target.value))" class="h-6 text-xs" />
+                          </div>
+                          <div class="text-center">
+                            <Label class="text-xs">Z</Label>
+                            <Input type="number" :value="Math.round(model.rotation.z * 180 / Math.PI)"
+                              @input="updateModelRotation('z', parseFloat($event.target.value))" class="h-6 text-xs" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Échelle -->
+                      <div class="space-y-2">
+                        <Label class="flex items-center gap-2 text-xs">
+                          <Scale class="h-3 w-3" />
+                          Échelle
+                        </Label>
+                        <Slider :min="0.1" :max="5" :step="0.1" :model-value="[model.scale.x]"
+                          @update:model-value="updateModelScale($event[0])" class="w-full" />
+                        <div class="text-center text-xs text-muted-foreground">{{ model.scale.x.toFixed(1) }}x</div>
+                      </div>
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+
+                <!-- Formats supportés -->
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
+                    <div class="text-xs text-muted-foreground">
+                      <p class="font-medium mb-1">Formats supportés:</p>
+                      <ul class="space-y-1">
+                        <li>• GLB/GLTF (recommandé)</li>
+                        <li>• OBJ</li>
+                        <li>• FBX</li>
+                      </ul>
+                    </div>
                   </div>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -396,20 +518,32 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import {
   Eye, RotateCcw, Grid3x3, Maximize, Camera, Sun, Moon, Lightbulb, Palette, Home, Triangle,
   DoorOpen, Mountain, Trees, TreePine, Fence, Flower2, Footprints, CloudRain,
   Snowflake, CloudFog, Sparkles, Flame, Play, Wind, RotateCw, Gauge, Volume2, VolumeX,
-  Volume1, Calendar, Info, Zap, Cloud, PanelLeftOpen, PanelLeftClose
+  Volume1, Calendar, Info, Zap, Cloud, PanelLeftOpen, PanelLeftClose,
+  Upload, Trash2, Rotate3d, Move3d, Scale
 } from 'lucide-vue-next'
+
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
   SidebarProvider, SidebarRail, SidebarTrigger
 } from '@/components/ui/sidebar'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Slider } from '@/components/ui/slider'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 
 definePageMeta({
   layout: 'none',
@@ -426,6 +560,25 @@ let animationId: number
 let house: THREE.Group
 let directionalLight: THREE.DirectionalLight
 let ambientLight: THREE.AmbientLight
+
+// Nouvelles variables pour les modèles 3D
+const importedModels = ref<Array<{
+  id: string
+  name: string
+  model: THREE.Group
+  position: { x: number, y: number, z: number }
+  rotation: { x: number, y: number, z: number }
+  scale: { x: number, y: number, z: number }
+}>>([])
+const selectedModelId = ref<string | null>(null)
+const isLoadingModel = ref(false)
+const modelLoadError = ref<string | null>(null)
+
+// Loaders pour différents formats
+let gltfLoader: GLTFLoader
+let objLoader: OBJLoader
+let fbxLoader: FBXLoader
+let dracoLoader: DRACOLoader
 
 // Variables réactives pour les contrôles
 const wireframe = ref(false)
@@ -497,28 +650,36 @@ const currentWeather = computed(() => {
 // Nouvelle fonction pour contrôler la sidebar
 const toggleSidebarCollapse = () => {
   sidebarCollapsed.value = !sidebarCollapsed.value
-  // Forcer le redimensionnement du canvas après un délai pour la transition
-  setTimeout(() => {
-    handleResize()
-  }, 300)
+  // Utiliser nextTick pour s'assurer que le DOM est mis à jour
+  nextTick(() => {
+    setTimeout(() => {
+      handleResize()
+    }, 350) // Délai légèrement plus long pour les transitions
+  })
 }
 
 // Améliorer la gestion du redimensionnement
 const handleResize = () => {
   if (!camera || !renderer || !canvasRef.value) return
 
-  // Obtenir les dimensions réelles du conteneur canvas
+  // Attendre que les transitions CSS soient terminées
   const container = canvasRef.value.parentElement
   if (!container) return
 
+  // Utiliser getBoundingClientRect pour obtenir les dimensions réelles
   const rect = container.getBoundingClientRect()
-  const width = rect.width
-  const height = rect.height
+  const width = Math.max(rect.width, 100) // Largeur minimale
+  const height = Math.max(rect.height, 100) // Hauteur minimale
 
-  // Mettre à jour la caméra et le renderer avec les nouvelles dimensions
-  camera.aspect = width / height
-  camera.updateProjectionMatrix()
-  renderer.setSize(width, height, false) // false pour éviter de changer le style CSS
+  // Vérifier que les dimensions sont valides
+  if (width > 0 && height > 0) {
+    camera.aspect = width / height
+    camera.updateProjectionMatrix()
+    renderer.setSize(width, height, false)
+
+    // Forcer un rendu pour éviter les artefacts
+    renderer.render(scene, camera)
+  }
 }
 
 // Watcher pour surveiller les changements de taille de la sidebar
@@ -531,6 +692,7 @@ watch(sidebarCollapsed, () => {
 onMounted(() => {
   if (typeof window !== 'undefined') {
     initThreeJS()
+    initLoaders()
     createHouse()
     createOptionalElements()
     setupAudio()
@@ -1266,6 +1428,211 @@ const setupResizeHandler = () => {
     })
   }
 }
+
+// Initialiser les loaders
+const initLoaders = () => {
+  // GLTF/GLB Loader avec compression Draco
+  dracoLoader = new DRACOLoader()
+  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
+
+  gltfLoader = new GLTFLoader()
+  gltfLoader.setDRACOLoader(dracoLoader)
+
+  // OBJ Loader
+  objLoader = new OBJLoader()
+
+  // FBX Loader
+  fbxLoader = new FBXLoader()
+}
+
+// Fonction pour importer un modèle 3D
+const importModel = () => {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.glb,.gltf,.obj,.fbx'
+  input.onchange = (event) => {
+    const file = (event.target as HTMLInputElement).files?.[0]
+    if (file) {
+      loadModelFromFile(file)
+    }
+  }
+  input.click()
+}
+
+// Charger un modèle depuis un fichier
+const loadModelFromFile = (file: File) => {
+  isLoadingModel.value = true
+  modelLoadError.value = null
+
+  const reader = new FileReader()
+  reader.onload = (event) => {
+    const arrayBuffer = event.target?.result as ArrayBuffer
+    const fileExtension = file.name.split('.').pop()?.toLowerCase()
+
+    switch (fileExtension) {
+      case 'glb':
+      case 'gltf':
+        loadGLTFModel(arrayBuffer, file.name)
+        break
+      case 'obj':
+        loadOBJModel(arrayBuffer, file.name)
+        break
+      case 'fbx':
+        loadFBXModel(arrayBuffer, file.name)
+        break
+      default:
+        modelLoadError.value = 'Format de fichier non supporté'
+        isLoadingModel.value = false
+    }
+  }
+
+  reader.readAsArrayBuffer(file)
+}
+
+// Charger un modèle GLTF/GLB
+const loadGLTFModel = (arrayBuffer: ArrayBuffer, fileName: string) => {
+  gltfLoader.parse(arrayBuffer, '', (gltf) => {
+    const model = gltf.scene
+    processLoadedModel(model, fileName)
+  }, (error) => {
+    console.error('Erreur lors du chargement GLTF:', error)
+    modelLoadError.value = 'Erreur lors du chargement du modèle GLTF'
+    isLoadingModel.value = false
+  })
+}
+
+// Charger un modèle OBJ
+const loadOBJModel = (arrayBuffer: ArrayBuffer, fileName: string) => {
+  try {
+    const text = new TextDecoder().decode(arrayBuffer)
+    const model = objLoader.parse(text)
+    processLoadedModel(model, fileName)
+  } catch (error) {
+    console.error('Erreur lors du chargement OBJ:', error)
+    modelLoadError.value = 'Erreur lors du chargement du modèle OBJ'
+    isLoadingModel.value = false
+  }
+}
+
+// Charger un modèle FBX
+const loadFBXModel = (arrayBuffer: ArrayBuffer, fileName: string) => {
+  try {
+    const model = fbxLoader.parse(arrayBuffer, '')
+    processLoadedModel(model, fileName)
+  } catch (error) {
+    console.error('Erreur lors du chargement FBX:', error)
+    modelLoadError.value = 'Erreur lors du chargement du modèle FBX'
+    isLoadingModel.value = false
+  }
+}
+
+// Traiter le modèle chargé
+const processLoadedModel = (model: THREE.Group, fileName: string) => {
+  const modelId = Date.now().toString()
+
+  // Normaliser la taille du modèle
+  const box = new THREE.Box3().setFromObject(model)
+  const size = box.getSize(new THREE.Vector3())
+  const maxSize = Math.max(size.x, size.y, size.z)
+  const scale = 3 / maxSize // Taille raisonnable
+
+  model.scale.setScalar(scale)
+
+  // Centrer le modèle
+  const center = box.getCenter(new THREE.Vector3())
+  model.position.sub(center.multiplyScalar(scale))
+  model.position.y = 0
+  model.position.x = 5 // Placer à côté de la maison
+  model.position.z = 5
+
+  // Activer les ombres
+  model.traverse((child) => {
+    if (child instanceof THREE.Mesh) {
+      child.castShadow = true
+      child.receiveShadow = true
+    }
+  })
+
+  scene.add(model)
+
+  // Ajouter à la liste des modèles
+  importedModels.value.push({
+    id: modelId,
+    name: fileName.split('.')[0],
+    model,
+    position: { x: model.position.x, y: model.position.y, z: model.position.z },
+    rotation: { x: model.rotation.x, y: model.rotation.y, z: model.rotation.z },
+    scale: { x: model.scale.x, y: model.scale.y, z: model.scale.z }
+  })
+
+  isLoadingModel.value = false
+  selectedModelId.value = modelId
+}
+
+// Supprimer un modèle
+const removeModel = (modelId: string) => {
+  const modelIndex = importedModels.value.findIndex(m => m.id === modelId)
+  if (modelIndex !== -1) {
+    const modelData = importedModels.value[modelIndex]
+    scene.remove(modelData.model)
+    importedModels.value.splice(modelIndex, 1)
+    if (selectedModelId.value === modelId) {
+      selectedModelId.value = null
+    }
+  }
+}
+
+// Sélectionner un modèle
+const selectModel = (modelId: string) => {
+  selectedModelId.value = selectedModelId.value === modelId ? null : modelId
+}
+
+// Obtenir le modèle sélectionné
+const selectedModel = computed(() => {
+  return importedModels.value.find(m => m.id === selectedModelId.value)
+})
+
+// Mettre à jour la position du modèle sélectionné
+const updateModelPosition = (axis: 'x' | 'y' | 'z', value: number) => {
+  const model = selectedModel.value
+  if (model) {
+    model.position[axis] = value
+    model.model.position[axis] = value
+  }
+}
+
+// Mettre à jour la rotation du modèle sélectionné
+const updateModelRotation = (axis: 'x' | 'y' | 'z', value: number) => {
+  const model = selectedModel.value
+  if (model) {
+    const radians = (value * Math.PI) / 180
+    model.rotation[axis] = radians
+    model.model.rotation[axis] = radians
+  }
+}
+
+// Mettre à jour l'échelle du modèle sélectionné
+const updateModelScale = (value: number) => {
+  const model = selectedModel.value
+  if (model) {
+    model.scale.x = value
+    model.scale.y = value
+    model.scale.z = value
+    model.model.scale.setScalar(value)
+  }
+}
+
+// Charger des modèles depuis des URLs (exemples)
+const loadExampleModels = () => {
+  const examples = [
+    {
+      name: 'Voiture',
+      url: 'https://threejs.org/examples/models/gltf/Poimandres.glb'
+    }
+  ]
+
+  // Cette fonction peut être étendue pour charger des modèles d'exemple
+}
 </script>
 
 <style scoped>
@@ -1278,8 +1645,11 @@ const setupResizeHandler = () => {
 
 .render-canvas {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  /* Éviter les problèmes de redimensionnement */
+  max-width: none;
+  max-height: none;
 }
 
 .render-inset {
@@ -1287,6 +1657,9 @@ const setupResizeHandler = () => {
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  /* Assurer que le conteneur prend toute la place disponible */
+  min-width: 0;
+  min-height: 0;
 }
 
 /* Personnalisation de la sidebar */
@@ -1294,62 +1667,62 @@ const setupResizeHandler = () => {
   border-right: 1px solid hsl(var(--border));
   backdrop-filter: blur(8px);
   background: hsl(var(--background) / 0.95);
+  /* Assurer que la sidebar ne déborde pas */
+  max-width: 100vw;
 }
 
 /* Scrollbar personnalisée pour la sidebar */
 .custom-scroll {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
+  /* Assurer un défilement fluide */
+  scroll-behavior: smooth;
 }
 
 .custom-scroll::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
+  /* Encore plus fine */
 }
 
 .custom-scroll::-webkit-scrollbar-track {
   background: transparent;
+  border-radius: 2px;
 }
 
 .custom-scroll::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
+  background-color: hsl(var(--muted-foreground) / 0.2);
+  border-radius: 2px;
+  transition: all 0.2s ease;
 }
 
 .custom-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--muted-foreground) / 0.5);
+  background-color: hsl(var(--muted-foreground) / 0.4);
+  width: 6px;
+  /* Légèrement plus large au hover */
 }
 
 /* Styles pour les boutons de contrôle de la sidebar */
-.sidebar-trigger {
-  background: hsl(var(--background) / 0.9);
-  border: 1px solid hsl(var(--border));
-  backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
-}
-
-.sidebar-trigger:hover {
-  background: hsl(var(--accent));
-  border-color: hsl(var(--accent-foreground) / 0.2);
-}
-
+.sidebar-trigger,
 .sidebar-control-btn {
-  background: hsl(var(--background) / 0.9);
+  background: hsl(var(--background) / 0.95);
   border: 1px solid hsl(var(--border));
-  backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
+  backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px hsl(var(--shadow) / 0.1);
 }
 
+.sidebar-trigger:hover,
 .sidebar-control-btn:hover {
   background: hsl(var(--accent));
   border-color: hsl(var(--accent-foreground) / 0.2);
-  transform: scale(1.05);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 12px hsl(var(--shadow) / 0.15);
 }
 
 /* Amélioration des transitions */
 .custom-sidebar,
 .render-inset {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Responsive - masquer les contrôles sur très petits écrans */
@@ -1359,21 +1732,38 @@ const setupResizeHandler = () => {
   }
 }
 
+@media (max-width: 768px) {
+  .sidebar-control-btn {
+    display: none;
+  }
+
+  .custom-sidebar {
+    max-width: 90vw;
+  }
+}
+
 /* Animation d'apparition des boutons */
 @keyframes slideInFromLeft {
   from {
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translateX(-20px) scale(0.95);
   }
 
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
   }
 }
 
 .sidebar-trigger,
 .sidebar-control-btn {
-  animation: slideInFromLeft 0.3s ease-out;
+  animation: slideInFromLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Éviter les problèmes de débordement sur les petits écrans */
+@media (max-height: 600px) {
+  .custom-scroll {
+    max-height: calc(100vh - 120px);
+  }
 }
 </style>

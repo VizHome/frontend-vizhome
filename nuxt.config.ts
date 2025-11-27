@@ -3,12 +3,25 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
+
+  // Future flags pour compatibilité
+  future: {
+    compatibilityVersion: 4,
+  },
+
   // Devtools
   devtools: {
     enabled: true,
     timeline: {
       enabled: true,
     },
+  },
+
+  // TypeScript configuration
+  typescript: {
+    strict: true,
+    typeCheck: false,
+    shim: false,
   },
 
   // App config
@@ -35,9 +48,44 @@ export default defineNuxtConfig({
   // Configs CSS
   css: ['~/assets/css/tailwind.css'],
 
+  // Performance optimizations
+  experimental: {
+    payloadExtraction: false,
+    viewTransition: true,
+    renderJsonPayloads: true,
+    typedPages: true,
+  },
+
   // Vite config
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Optimisation de build
+      cssCodeSplit: true,
+      minify: 'esbuild',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-vue': ['vue', 'vue-router'],
+            'vendor-ui': ['reka-ui'],
+          },
+        },
+      },
+    },
+    optimizeDeps: {
+      include: ['vue', 'vue-router', 'reka-ui'],
+    },
+  },
+
+  // Build configuration
+  build: {
+    transpile: ['three'],
+  },
+
+  // Nitro configuration (server)
+  nitro: {
+    compressPublicAssets: true,
+    minify: true,
   },
 
   // Shadcn
@@ -66,4 +114,31 @@ export default defineNuxtConfig({
       apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3000',
     },
   },
+
+  // ESLint configuration
+  eslint: {
+    config: {
+      standalone: true,
+    },
+  },
+
+  // Router options
+  router: {
+    options: {
+      strict: true,
+    },
+  },
+
+  // Import auto configuration
+  imports: {
+    dirs: ['composables/**', 'utils/**', 'lib/**'],
+  },
+
+  // Components auto-import
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ],
 })

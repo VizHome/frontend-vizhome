@@ -1,10 +1,15 @@
 <template>
   <div class="render-container">
-    <canvas ref="canvasRef" class="render-canvas"></canvas>
+    <canvas ref="canvasRef" class="render-canvas" />
 
     <!-- Sidebar avec shadcn-vue -->
     <SidebarProvider :default-open="true">
-      <Sidebar side="left" variant="sidebar" collapsible="icon" class="custom-sidebar">
+      <Sidebar
+        side="left"
+        variant="sidebar"
+        collapsible="icon"
+        class="custom-sidebar"
+      >
         <!-- En-tête du menu -->
         <SidebarHeader>
           <SidebarMenu>
@@ -16,7 +21,9 @@
                   </div>
                   <div class="group-data-[collapsible=icon]:hidden">
                     <p class="text-sm font-semibold">VizHome</p>
-                    <p class="text-xs text-muted-foreground">Rendu 3D interactif</p>
+                    <p class="text-xs text-muted-foreground">
+                      Rendu 3D interactif
+                    </p>
                   </div>
                 </div>
               </SidebarMenuButton>
@@ -78,25 +85,45 @@
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <div class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden">
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
                     <Label class="flex items-center gap-2 text-xs">
                       <Lightbulb class="h-3 w-3" />
                       Intensité lumière
                     </Label>
-                    <Slider :min="0" :max="2" :step="0.1" v-model="lightIntensity" @update:model-value="updateLighting"
-                      class="w-full" />
-                    <div class="text-center text-xs text-muted-foreground">{{ lightIntensity[0] }}</div>
+                    <Slider
+                      v-model="lightIntensity"
+                      :min="0"
+                      :max="2"
+                      :step="0.1"
+                      class="w-full"
+                      @update:model-value="updateLighting"
+                    />
+                    <div class="text-center text-xs text-muted-foreground">
+                      {{ lightIntensity[0] }}
+                    </div>
                   </div>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <div class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden">
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
                     <Label class="flex items-center gap-2 text-xs">
                       <Sun class="h-3 w-3" />
                       Angle du soleil
                     </Label>
-                    <Slider :min="0" :max="360" :step="1" v-model="sunAngle" @update:model-value="updateSunPosition"
-                      class="w-full" />
-                    <div class="text-center text-xs text-muted-foreground">{{ sunAngle[0] }}°</div>
+                    <Slider
+                      v-model="sunAngle"
+                      :min="0"
+                      :max="360"
+                      :step="1"
+                      class="w-full"
+                      @update:model-value="updateSunPosition"
+                    />
+                    <div class="text-center text-xs text-muted-foreground">
+                      {{ sunAngle[0] }}°
+                    </div>
                   </div>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -112,34 +139,56 @@
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <div class="px-2 py-2 space-y-3 group-data-[collapsible=icon]:hidden">
+                  <div
+                    class="px-2 py-2 space-y-3 group-data-[collapsible=icon]:hidden"
+                  >
                     <div class="flex items-center justify-between">
                       <Label class="flex items-center gap-2 text-xs">
                         <Home class="h-3 w-3" />
                         Murs
                       </Label>
-                      <Input type="color" v-model="wallColor" @change="updateColors" class="w-8 h-6 p-0 border-0" />
+                      <Input
+                        v-model="wallColor"
+                        type="color"
+                        class="w-8 h-6 p-0 border-0"
+                        @change="updateColors"
+                      />
                     </div>
                     <div class="flex items-center justify-between">
                       <Label class="flex items-center gap-2 text-xs">
                         <Triangle class="h-3 w-3" />
                         Toit
                       </Label>
-                      <Input type="color" v-model="roofColor" @change="updateColors" class="w-8 h-6 p-0 border-0" />
+                      <Input
+                        v-model="roofColor"
+                        type="color"
+                        class="w-8 h-6 p-0 border-0"
+                        @change="updateColors"
+                      />
                     </div>
                     <div class="flex items-center justify-between">
                       <Label class="flex items-center gap-2 text-xs">
                         <DoorOpen class="h-3 w-3" />
                         Porte
                       </Label>
-                      <Input type="color" v-model="doorColor" @change="updateColors" class="w-8 h-6 p-0 border-0" />
+                      <Input
+                        v-model="doorColor"
+                        type="color"
+                        class="w-8 h-6 p-0 border-0"
+                        @change="updateColors"
+                      />
                     </div>
                     <div class="flex items-center justify-between">
                       <Label class="flex items-center gap-2 text-xs">
                         <Mountain class="h-3 w-3" />
                         Sol
                       </Label>
-                      <Input type="color" v-model="groundColor" @change="updateColors" class="w-8 h-6 p-0 border-0" />
+                      <Input
+                        v-model="groundColor"
+                        type="color"
+                        class="w-8 h-6 p-0 border-0"
+                        @change="updateColors"
+                      />
                     </div>
                   </div>
                 </SidebarMenuItem>
@@ -156,15 +205,23 @@
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleTrees" :variant="showTrees ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="showTrees ? 'default' : 'outline'"
+                    @click="toggleTrees"
+                  >
                     <TreePine class="h-4 w-4" />
                     <span>{{ showTrees ? 'Masquer' : 'Afficher' }} arbres</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleFence" :variant="showFence ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="showFence ? 'default' : 'outline'"
+                    @click="toggleFence"
+                  >
                     <Fence class="h-4 w-4" />
-                    <span>{{ showFence ? 'Masquer' : 'Afficher' }} clôture</span>
+                    <span
+                      >{{ showFence ? 'Masquer' : 'Afficher' }} clôture</span
+                    >
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
@@ -174,13 +231,21 @@
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleGarden" :variant="showGarden ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="showGarden ? 'default' : 'outline'"
+                    @click="toggleGarden"
+                  >
                     <Flower2 class="h-4 w-4" />
-                    <span>{{ showGarden ? 'Masquer' : 'Afficher' }} jardin</span>
+                    <span
+                      >{{ showGarden ? 'Masquer' : 'Afficher' }} jardin</span
+                    >
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="togglePath" :variant="showPath ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="showPath ? 'default' : 'outline'"
+                    @click="togglePath"
+                  >
                     <Footprints class="h-4 w-4" />
                     <span>{{ showPath ? 'Masquer' : 'Afficher' }} chemin</span>
                   </SidebarMenuButton>
@@ -198,21 +263,32 @@
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleRain" :variant="isRaining ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="isRaining ? 'default' : 'outline'"
+                    @click="toggleRain"
+                  >
                     <CloudRain class="h-4 w-4" />
                     <span>{{ isRaining ? 'Arrêter' : 'Démarrer' }} pluie</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleSnow" :variant="isSnowing ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="isSnowing ? 'default' : 'outline'"
+                    @click="toggleSnow"
+                  >
                     <Snowflake class="h-4 w-4" />
                     <span>{{ isSnowing ? 'Arrêter' : 'Démarrer' }} neige</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleFog" :variant="showFog ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="showFog ? 'default' : 'outline'"
+                    @click="toggleFog"
+                  >
                     <CloudFog class="h-4 w-4" />
-                    <span>{{ showFog ? 'Masquer' : 'Afficher' }} brouillard</span>
+                    <span
+                      >{{ showFog ? 'Masquer' : 'Afficher' }} brouillard</span
+                    >
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
@@ -222,7 +298,10 @@
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleSmoke" :variant="showSmoke ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="showSmoke ? 'default' : 'outline'"
+                    @click="toggleSmoke"
+                  >
                     <Flame class="h-4 w-4" />
                     <span>{{ showSmoke ? 'Arrêter' : 'Démarrer' }} fumée</span>
                   </SidebarMenuButton>
@@ -240,31 +319,54 @@
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleDoorAnimation" :variant="doorOpen ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="doorOpen ? 'default' : 'outline'"
+                    @click="toggleDoorAnimation"
+                  >
                     <DoorOpen class="h-4 w-4" />
                     <span>{{ doorOpen ? 'Fermer' : 'Ouvrir' }} porte</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleTreeAnimation" :variant="treeAnimation ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="treeAnimation ? 'default' : 'outline'"
+                    @click="toggleTreeAnimation"
+                  >
                     <Wind class="h-4 w-4" />
-                    <span>{{ treeAnimation ? 'Arrêter' : 'Démarrer' }} vent</span>
+                    <span
+                      >{{ treeAnimation ? 'Arrêter' : 'Démarrer' }} vent</span
+                    >
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleRotateHouse" :variant="rotateHouse ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="rotateHouse ? 'default' : 'outline'"
+                    @click="toggleRotateHouse"
+                  >
                     <RotateCw class="h-4 w-4" />
-                    <span>{{ rotateHouse ? 'Arrêter' : 'Démarrer' }} rotation</span>
+                    <span
+                      >{{ rotateHouse ? 'Arrêter' : 'Démarrer' }} rotation</span
+                    >
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <div class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden">
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
                     <Label class="flex items-center gap-2 text-xs">
                       <Gauge class="h-3 w-3" />
                       Vitesse animation
                     </Label>
-                    <Slider :min="0.1" :max="3" :step="0.1" v-model="animationSpeedArray" class="w-full" />
-                    <div class="text-center text-xs text-muted-foreground">{{ animationSpeedArray[0] }}x</div>
+                    <Slider
+                      v-model="animationSpeedArray"
+                      :min="0.1"
+                      :max="3"
+                      :step="0.1"
+                      class="w-full"
+                    />
+                    <div class="text-center text-xs text-muted-foreground">
+                      {{ animationSpeedArray[0] }}x
+                    </div>
                   </div>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -280,21 +382,36 @@
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="toggleAmbientSound" :variant="ambientSound ? 'default' : 'outline'">
+                  <SidebarMenuButton
+                    :variant="ambientSound ? 'default' : 'outline'"
+                    @click="toggleAmbientSound"
+                  >
                     <Volume2 v-if="ambientSound" class="h-4 w-4" />
                     <VolumeX v-else class="h-4 w-4" />
-                    <span>{{ ambientSound ? 'Arrêter' : 'Démarrer' }} sons ambiants</span>
+                    <span
+                      >{{ ambientSound ? 'Arrêter' : 'Démarrer' }} sons
+                      ambiants</span
+                    >
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <div class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden">
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
                     <Label class="flex items-center gap-2 text-xs">
                       <Volume1 class="h-3 w-3" />
                       Volume
                     </Label>
-                    <Slider :min="0" :max="1" :step="0.1" v-model="audioVolumeArray"
-                      @update:model-value="updateAudioVolume" class="w-full" />
-                    <div class="text-center text-xs text-muted-foreground">{{ Math.round(audioVolumeArray[0] * 100) }}%
+                    <Slider
+                      v-model="audioVolumeArray"
+                      :min="0"
+                      :max="1"
+                      :step="0.1"
+                      class="w-full"
+                      @update:model-value="updateAudioVolume"
+                    />
+                    <div class="text-center text-xs text-muted-foreground">
+                      {{ Math.round(audioVolumeArray[0] * 100) }}%
                     </div>
                   </div>
                 </SidebarMenuItem>
@@ -312,7 +429,10 @@
               <SidebarMenu>
                 <SidebarMenuItem>
                   <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
-                    <Select v-model="currentSeason" @update:model-value="changeSeason">
+                    <Select
+                      v-model="currentSeason"
+                      @update:model-value="changeSeason"
+                    >
                       <SelectTrigger class="w-full">
                         <SelectValue placeholder="Choisir une saison" />
                       </SelectTrigger>
@@ -338,36 +458,60 @@
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton @click="importModel" :disabled="isLoadingModel">
+                  <SidebarMenuButton
+                    :disabled="isLoadingModel"
+                    @click="importModel"
+                  >
                     <Upload class="h-4 w-4" />
-                    <span>{{ isLoadingModel ? 'Chargement...' : 'Importer modèle' }}</span>
+                    <span>{{
+                      isLoadingModel ? 'Chargement...' : 'Importer modèle'
+                    }}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
 
                 <!-- Message d'erreur -->
                 <SidebarMenuItem v-if="modelLoadError">
-                  <div class="px-2 py-2 text-xs text-red-500 group-data-[collapsible=icon]:hidden">
+                  <div
+                    class="px-2 py-2 text-xs text-red-500 group-data-[collapsible=icon]:hidden"
+                  >
                     {{ modelLoadError }}
                   </div>
                 </SidebarMenuItem>
 
                 <!-- Liste des modèles importés -->
-                <SidebarMenuItem v-for="model in importedModels" :key="model.id">
-                  <div class="px-2 py-1 space-y-2 group-data-[collapsible=icon]:hidden">
+                <SidebarMenuItem
+                  v-for="model in importedModels"
+                  :key="model.id"
+                >
+                  <div
+                    class="px-2 py-1 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
                     <div class="flex items-center justify-between">
-                      <Button @click="selectModel(model.id)" variant="ghost" size="sm"
-                        class="flex-1 justify-start text-xs" :class="{ 'bg-accent': selectedModelId === model.id }">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        class="flex-1 justify-start text-xs"
+                        :class="{ 'bg-accent': selectedModelId === model.id }"
+                        @click="selectModel(model.id)"
+                      >
                         <Move3d class="h-3 w-3 mr-1" />
                         {{ model.name }}
                       </Button>
-                      <Button @click="removeModel(model.id)" variant="ghost" size="sm"
-                        class="h-6 w-6 p-0 text-red-500 hover:text-red-700">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        class="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                        @click="removeModel(model.id)"
+                      >
                         <Trash2 class="h-3 w-3" />
                       </Button>
                     </div>
 
                     <!-- Contrôles du modèle sélectionné -->
-                    <div v-if="selectedModelId === model.id" class="space-y-3 p-2 bg-accent/20 rounded">
+                    <div
+                      v-if="selectedModelId === model.id"
+                      class="space-y-3 p-2 bg-accent/20 rounded"
+                    >
                       <!-- Position -->
                       <div class="space-y-2">
                         <Label class="flex items-center gap-2 text-xs">
@@ -377,21 +521,48 @@
                         <div class="grid grid-cols-3 gap-1">
                           <div class="text-center">
                             <Label class="text-xs">X</Label>
-                            <Input type="number" :value="model.position.x"
-                              @input="updateModelPosition('x', parseFloat($event.target.value))" class="h-6 text-xs"
-                              step="0.1" />
+                            <Input
+                              type="number"
+                              :value="model.position.x"
+                              class="h-6 text-xs"
+                              step="0.1"
+                              @input="
+                                updateModelPosition(
+                                  'x',
+                                  parseFloat($event.target.value)
+                                )
+                              "
+                            />
                           </div>
                           <div class="text-center">
                             <Label class="text-xs">Y</Label>
-                            <Input type="number" :value="model.position.y"
-                              @input="updateModelPosition('y', parseFloat($event.target.value))" class="h-6 text-xs"
-                              step="0.1" />
+                            <Input
+                              type="number"
+                              :value="model.position.y"
+                              class="h-6 text-xs"
+                              step="0.1"
+                              @input="
+                                updateModelPosition(
+                                  'y',
+                                  parseFloat($event.target.value)
+                                )
+                              "
+                            />
                           </div>
                           <div class="text-center">
                             <Label class="text-xs">Z</Label>
-                            <Input type="number" :value="model.position.z"
-                              @input="updateModelPosition('z', parseFloat($event.target.value))" class="h-6 text-xs"
-                              step="0.1" />
+                            <Input
+                              type="number"
+                              :value="model.position.z"
+                              class="h-6 text-xs"
+                              step="0.1"
+                              @input="
+                                updateModelPosition(
+                                  'z',
+                                  parseFloat($event.target.value)
+                                )
+                              "
+                            />
                           </div>
                         </div>
                       </div>
@@ -405,18 +576,51 @@
                         <div class="grid grid-cols-3 gap-1">
                           <div class="text-center">
                             <Label class="text-xs">X</Label>
-                            <Input type="number" :value="Math.round(model.rotation.x * 180 / Math.PI)"
-                              @input="updateModelRotation('x', parseFloat($event.target.value))" class="h-6 text-xs" />
+                            <Input
+                              type="number"
+                              :value="
+                                Math.round((model.rotation.x * 180) / Math.PI)
+                              "
+                              class="h-6 text-xs"
+                              @input="
+                                updateModelRotation(
+                                  'x',
+                                  parseFloat($event.target.value)
+                                )
+                              "
+                            />
                           </div>
                           <div class="text-center">
                             <Label class="text-xs">Y</Label>
-                            <Input type="number" :value="Math.round(model.rotation.y * 180 / Math.PI)"
-                              @input="updateModelRotation('y', parseFloat($event.target.value))" class="h-6 text-xs" />
+                            <Input
+                              type="number"
+                              :value="
+                                Math.round((model.rotation.y * 180) / Math.PI)
+                              "
+                              class="h-6 text-xs"
+                              @input="
+                                updateModelRotation(
+                                  'y',
+                                  parseFloat($event.target.value)
+                                )
+                              "
+                            />
                           </div>
                           <div class="text-center">
                             <Label class="text-xs">Z</Label>
-                            <Input type="number" :value="Math.round(model.rotation.z * 180 / Math.PI)"
-                              @input="updateModelRotation('z', parseFloat($event.target.value))" class="h-6 text-xs" />
+                            <Input
+                              type="number"
+                              :value="
+                                Math.round((model.rotation.z * 180) / Math.PI)
+                              "
+                              class="h-6 text-xs"
+                              @input="
+                                updateModelRotation(
+                                  'z',
+                                  parseFloat($event.target.value)
+                                )
+                              "
+                            />
                           </div>
                         </div>
                       </div>
@@ -427,9 +631,17 @@
                           <Scale class="h-3 w-3" />
                           Échelle
                         </Label>
-                        <Slider :min="0.1" :max="5" :step="0.1" :model-value="[model.scale.x]"
-                          @update:model-value="updateModelScale($event[0])" class="w-full" />
-                        <div class="text-center text-xs text-muted-foreground">{{ model.scale.x.toFixed(1) }}x</div>
+                        <Slider
+                          :min="0.1"
+                          :max="5"
+                          :step="0.1"
+                          :model-value="[model.scale.x]"
+                          class="w-full"
+                          @update:model-value="updateModelScale($event[0])"
+                        />
+                        <div class="text-center text-xs text-muted-foreground">
+                          {{ model.scale.x.toFixed(1) }}x
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -460,7 +672,9 @@
               <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
                 <div class="flex items-center gap-2 mb-3">
                   <Info class="h-4 w-4 text-orange-500" />
-                  <h4 class="text-sm font-semibold text-orange-500">Informations</h4>
+                  <h4 class="text-sm font-semibold text-orange-500">
+                    Informations
+                  </h4>
                 </div>
                 <div class="space-y-2 text-xs text-muted-foreground">
                   <div class="flex items-center justify-between">
@@ -506,8 +720,15 @@
         <div class="absolute top-4 left-4 z-20 flex items-center gap-2">
           <SidebarTrigger class="sidebar-trigger" />
           <!-- Bouton pour basculer entre collapsed et expanded -->
-          <Button @click="toggleSidebarCollapse" variant="outline" size="icon" class="h-8 w-8 sidebar-control-btn"
-            :title="sidebarCollapsed ? 'Agrandir la sidebar' : 'Réduire la sidebar'">
+          <Button
+            variant="outline"
+            size="icon"
+            class="h-8 w-8 sidebar-control-btn"
+            :title="
+              sidebarCollapsed ? 'Agrandir la sidebar' : 'Réduire la sidebar'
+            "
+            @click="toggleSidebarCollapse"
+          >
             <PanelLeftOpen v-if="sidebarCollapsed" class="h-4 w-4" />
             <PanelLeftClose v-else class="h-4 w-4" />
           </Button>
@@ -518,32 +739,85 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
+import {
+  Eye,
+  RotateCcw,
+  Grid3x3,
+  Maximize,
+  Camera,
+  Sun,
+  Moon,
+  Lightbulb,
+  Palette,
+  Home,
+  Triangle,
+  DoorOpen,
+  Mountain,
+  Trees,
+  TreePine,
+  Fence,
+  Flower2,
+  Footprints,
+  CloudRain,
+  Snowflake,
+  CloudFog,
+  Sparkles,
+  Flame,
+  Play,
+  Wind,
+  RotateCw,
+  Gauge,
+  Volume2,
+  VolumeX,
+  Volume1,
+  Calendar,
+  Info,
+  Zap,
+  Cloud,
+  PanelLeftOpen,
+  PanelLeftClose,
+  Upload,
+  Trash2,
+  Rotate3d,
+  Move3d,
+  Scale,
+} from 'lucide-vue-next'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import {
-  Eye, RotateCcw, Grid3x3, Maximize, Camera, Sun, Moon, Lightbulb, Palette, Home, Triangle,
-  DoorOpen, Mountain, Trees, TreePine, Fence, Flower2, Footprints, CloudRain,
-  Snowflake, CloudFog, Sparkles, Flame, Play, Wind, RotateCw, Gauge, Volume2, VolumeX,
-  Volume1, Calendar, Info, Zap, Cloud, PanelLeftOpen, PanelLeftClose,
-  Upload, Trash2, Rotate3d, Move3d, Scale
-} from 'lucide-vue-next'
-
-import {
-  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
-  SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
-  SidebarProvider, SidebarRail, SidebarTrigger
-} from '@/components/ui/sidebar'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Slider } from '@/components/ui/slider'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
-import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
+
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
+import { Slider } from '@/components/ui/slider'
 
 definePageMeta({
   layout: 'none',
@@ -562,14 +836,16 @@ let directionalLight: THREE.DirectionalLight
 let ambientLight: THREE.AmbientLight
 
 // Nouvelles variables pour les modèles 3D
-const importedModels = ref<Array<{
-  id: string
-  name: string
-  model: THREE.Group
-  position: { x: number, y: number, z: number }
-  rotation: { x: number, y: number, z: number }
-  scale: { x: number, y: number, z: number }
-}>>([])
+const importedModels = ref<
+  Array<{
+    id: string
+    name: string
+    model: THREE.Group
+    position: { x: number; y: number; z: number }
+    rotation: { x: number; y: number; z: number }
+    scale: { x: number; y: number; z: number }
+  }>
+>([])
 const selectedModelId = ref<string | null>(null)
 const isLoadingModel = ref(false)
 const modelLoadError = ref<string | null>(null)
@@ -614,12 +890,12 @@ const triangleCount = ref(0)
 // Computed properties pour la compatibilité
 const animationSpeed = computed({
   get: () => animationSpeedArray.value[0],
-  set: (val) => animationSpeedArray.value = [val]
+  set: val => (animationSpeedArray.value = [val]),
 })
 
 const audioVolume = computed({
   get: () => audioVolumeArray.value[0],
-  set: (val) => audioVolumeArray.value = [val]
+  set: val => (audioVolumeArray.value = [val]),
 })
 
 // Groupes pour les éléments
@@ -716,21 +992,21 @@ onUnmounted(() => {
 
 const initThreeJS = () => {
   scene = new THREE.Scene()
-  
+
   // Créer un dégradé gris vers blanc en arrière-plan
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')!
   canvas.width = 512
   canvas.height = 512
-  
+
   // Créer le dégradé vertical
   const gradient = context.createLinearGradient(0, 0, 0, canvas.height)
   gradient.addColorStop(0, '#ffffff') // Blanc en haut
   gradient.addColorStop(1, '#808080') // Gris en bas
-  
+
   context.fillStyle = gradient
   context.fillRect(0, 0, canvas.width, canvas.height)
-  
+
   // Appliquer le dégradé comme texture de fond
   const texture = new THREE.CanvasTexture(canvas)
   scene.background = texture
@@ -746,7 +1022,7 @@ const initThreeJS = () => {
   renderer = new THREE.WebGLRenderer({
     canvas: canvasRef.value!,
     antialias: true,
-    preserveDrawingBuffer: true
+    preserveDrawingBuffer: true,
   })
 
   renderer.setSize(width, height, false)
@@ -769,7 +1045,9 @@ const initThreeJS = () => {
   scene.add(directionalLight)
 
   const groundGeometry = new THREE.PlaneGeometry(30, 30)
-  const groundMaterial = new THREE.MeshLambertMaterial({ color: groundColor.value })
+  const groundMaterial = new THREE.MeshLambertMaterial({
+    color: groundColor.value,
+  })
   const ground = new THREE.Mesh(groundGeometry, groundMaterial)
   ground.rotation.x = -Math.PI / 2
   ground.receiveShadow = true
@@ -812,7 +1090,7 @@ const createHouse = () => {
 
   // Poignée de porte
   const handleGeometry = new THREE.SphereGeometry(0.05, 8, 8)
-  const handleMaterial = new THREE.MeshLambertMaterial({ color: 0xFFD700 })
+  const handleMaterial = new THREE.MeshLambertMaterial({ color: 0xffd700 })
   const doorHandle = new THREE.Mesh(handleGeometry, handleMaterial)
   doorHandle.position.set(0.8, 1, 3.1)
   doorGroup.add(doorHandle)
@@ -822,7 +1100,7 @@ const createHouse = () => {
 
   // Fenêtres avec cadres
   const windowGeometry = new THREE.BoxGeometry(1, 1, 0.1)
-  const windowMaterial = new THREE.MeshLambertMaterial({ color: 0x87CEEB })
+  const windowMaterial = new THREE.MeshLambertMaterial({ color: 0x87ceeb })
   const frameGeometry = new THREE.BoxGeometry(1.1, 1.1, 0.05)
   const frameMaterial = new THREE.MeshLambertMaterial({ color: 0x654321 })
 
@@ -855,7 +1133,7 @@ const createHouse = () => {
 
   // Cheminée
   const chimneyGeometry = new THREE.BoxGeometry(0.8, 1.5, 0.8)
-  const chimneyMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 })
+  const chimneyMaterial = new THREE.MeshLambertMaterial({ color: 0x8b4513 })
   const chimney = new THREE.Mesh(chimneyGeometry, chimneyMaterial)
   chimney.position.set(1.5, 6.25, 1.5)
   chimney.castShadow = true
@@ -903,7 +1181,11 @@ const createOptionalElements = () => {
 
 const createTrees = () => {
   const positions = [
-    [-8, 0, -5], [8, 0, -8], [-10, 0, 5], [10, 0, 8], [5, 0, -10]
+    [-8, 0, -5],
+    [8, 0, -8],
+    [-10, 0, 5],
+    [10, 0, 8],
+    [5, 0, -10],
   ]
 
   positions.forEach(pos => {
@@ -911,7 +1193,7 @@ const createTrees = () => {
 
     // Tronc
     const trunkGeometry = new THREE.CylinderGeometry(0.2, 0.3, 2)
-    const trunkMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 })
+    const trunkMaterial = new THREE.MeshLambertMaterial({ color: 0x8b4513 })
     const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial)
     trunk.position.y = 1
     trunk.castShadow = true
@@ -919,7 +1201,7 @@ const createTrees = () => {
 
     // Feuillage
     const leavesGeometry = new THREE.SphereGeometry(1.5, 8, 8)
-    const leavesMaterial = new THREE.MeshLambertMaterial({ color: 0x228B22 })
+    const leavesMaterial = new THREE.MeshLambertMaterial({ color: 0x228b22 })
     const leaves = new THREE.Mesh(leavesGeometry, leavesMaterial)
     leaves.position.y = 2.5
     leaves.castShadow = true
@@ -939,7 +1221,8 @@ const createFence = () => {
   // Clôture autour de la maison
   for (let x = -12; x <= 12; x += postSpacing) {
     // Clôture avant et arrière
-    if (Math.abs(x) > 4) { // Laisser une ouverture devant la maison
+    if (Math.abs(x) > 4) {
+      // Laisser une ouverture devant la maison
       createFencePost(x, 0, -12, fenceHeight, fenceWidth)
       createFencePost(x, 0, 12, fenceHeight, fenceWidth)
     }
@@ -952,9 +1235,15 @@ const createFence = () => {
   }
 }
 
-const createFencePost = (x: number, y: number, z: number, height: number, width: number) => {
+const createFencePost = (
+  x: number,
+  y: number,
+  z: number,
+  height: number,
+  width: number
+) => {
   const postGeometry = new THREE.BoxGeometry(width, height, width)
-  const postMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 })
+  const postMaterial = new THREE.MeshLambertMaterial({ color: 0x8b4513 })
   const post = new THREE.Mesh(postGeometry, postMaterial)
   post.position.set(x, y + height / 2, z)
   post.castShadow = true
@@ -964,7 +1253,12 @@ const createFencePost = (x: number, y: number, z: number, height: number, width:
 const createGarden = () => {
   // Fleurs
   const flowerPositions = [
-    [-4, 0, -2], [-3, 0, -1], [-2, 0, -2], [4, 0, -1], [3, 0, -2], [2, 0, -1]
+    [-4, 0, -2],
+    [-3, 0, -1],
+    [-2, 0, -2],
+    [4, 0, -1],
+    [3, 0, -2],
+    [2, 0, -1],
   ]
 
   flowerPositions.forEach(pos => {
@@ -972,7 +1266,7 @@ const createGarden = () => {
 
     // Tige
     const stemGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.5)
-    const stemMaterial = new THREE.MeshLambertMaterial({ color: 0x228B22 })
+    const stemMaterial = new THREE.MeshLambertMaterial({ color: 0x228b22 })
     const stem = new THREE.Mesh(stemGeometry, stemMaterial)
     stem.position.y = 0.25
     flower.add(stem)
@@ -980,7 +1274,7 @@ const createGarden = () => {
     // Pétales
     const petalGeometry = new THREE.SphereGeometry(0.1, 6, 6)
     const petalMaterial = new THREE.MeshLambertMaterial({
-      color: Math.random() > 0.5 ? 0xFF69B4 : 0xFFD700
+      color: Math.random() > 0.5 ? 0xff69b4 : 0xffd700,
     })
     const petal = new THREE.Mesh(petalGeometry, petalMaterial)
     petal.position.y = 0.5
@@ -1018,7 +1312,7 @@ const createRainSystem = () => {
   }
 
   rainGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-  const rainMaterial = new THREE.PointsMaterial({ color: 0x87CEEB, size: 0.1 })
+  const rainMaterial = new THREE.PointsMaterial({ color: 0x87ceeb, size: 0.1 })
   particleSystem = new THREE.Points(rainGeometry, rainMaterial)
   scene.add(particleSystem)
 }
@@ -1073,13 +1367,13 @@ const setupPerformanceMonitor = () => {
     const now = performance.now()
 
     if (now - lastTime >= 1000) {
-      fps.value = Math.round(frameCount * 1000 / (now - lastTime))
+      fps.value = Math.round((frameCount * 1000) / (now - lastTime))
       frameCount = 0
       lastTime = now
 
       // Compter les triangles
       let triangles = 0
-      scene.traverse((child) => {
+      scene.traverse(child => {
         if (child instanceof THREE.Mesh) {
           triangles += child.geometry.attributes.position.count / 3
         }
@@ -1138,7 +1432,7 @@ const toggleSnow = () => {
 const toggleFog = () => {
   showFog.value = !showFog.value
   if (showFog.value) {
-    scene.fog = new THREE.Fog(0x87CEEB, 10, 50)
+    scene.fog = new THREE.Fog(0x87ceeb, 10, 50)
   } else {
     scene.fog = null
   }
@@ -1147,9 +1441,9 @@ const toggleFog = () => {
 const addFireflies = () => {
   const fireflyGeometry = new THREE.SphereGeometry(0.05, 8, 8)
   const fireflyMaterial = new THREE.MeshBasicMaterial({
-    color: 0xFFFF00,
+    color: 0xffff00,
     transparent: true,
-    opacity: 0.8
+    opacity: 0.8,
   })
 
   for (let i = 0; i < 10; i++) {
@@ -1177,7 +1471,7 @@ const createSmokeSystem = () => {
   const smokeMaterial = new THREE.MeshBasicMaterial({
     color: 0x666666,
     transparent: true,
-    opacity: 0.3
+    opacity: 0.3,
   })
 
   for (let i = 0; i < 5; i++) {
@@ -1213,15 +1507,15 @@ const toggleAmbientSound = () => {
 // Modifier la fonction toggleDayNight pour conserver le dégradé
 const toggleDayNight = () => {
   isDay.value = !isDay.value
-  
+
   // Créer un nouveau dégradé selon le mode jour/nuit
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')!
   canvas.width = 512
   canvas.height = 512
-  
+
   const gradient = context.createLinearGradient(0, 0, 0, canvas.height)
-  
+
   if (isDay.value) {
     // Mode jour : blanc vers gris clair
     gradient.addColorStop(0, '#ffffff') // Blanc en haut
@@ -1233,12 +1527,12 @@ const toggleDayNight = () => {
     gradient.addColorStop(0, '#404040') // Gris foncé en haut
     gradient.addColorStop(1, '#000000') // Noir en bas
     ambientLight.intensity = 0.1
-    directionalLight.color.setHex(0x4169E1)
+    directionalLight.color.setHex(0x4169e1)
   }
-  
+
   context.fillStyle = gradient
   context.fillRect(0, 0, canvas.width, canvas.height)
-  
+
   const texture = new THREE.CanvasTexture(canvas)
   scene.background = texture
 }
@@ -1246,59 +1540,59 @@ const toggleDayNight = () => {
 // Modifier la fonction changeSeason pour des dégradés saisonniers
 const changeSeason = () => {
   const seasons = {
-    spring: { 
-      treeColor: 0x90EE90, 
-      groundColor: 0x90EE90, 
+    spring: {
+      treeColor: 0x90ee90,
+      groundColor: 0x90ee90,
       gradientTop: '#e6f3ff', // Bleu clair
-      gradientBottom: '#b3d9ff' // Bleu plus foncé
+      gradientBottom: '#b3d9ff', // Bleu plus foncé
     },
-    summer: { 
-      treeColor: 0x228B22, 
-      groundColor: 0x32CD32, 
+    summer: {
+      treeColor: 0x228b22,
+      groundColor: 0x32cd32,
       gradientTop: '#ffffff', // Blanc
-      gradientBottom: '#87ceeb' // Bleu ciel
+      gradientBottom: '#87ceeb', // Bleu ciel
     },
-    autumn: { 
-      treeColor: 0xFFA500, 
-      groundColor: 0xDAA520, 
+    autumn: {
+      treeColor: 0xffa500,
+      groundColor: 0xdaa520,
       gradientTop: '#fff8dc', // Blanc cassé
-      gradientBottom: '#daa520' // Or
+      gradientBottom: '#daa520', // Or
     },
-    winter: { 
-      treeColor: 0x708090, 
-      groundColor: 0xE0E0E0, 
+    winter: {
+      treeColor: 0x708090,
+      groundColor: 0xe0e0e0,
       gradientTop: '#f0f8ff', // Bleu très pâle
-      gradientBottom: '#778899' // Gris bleuté
-    }
+      gradientBottom: '#778899', // Gris bleuté
+    },
   }
 
   const season = seasons[currentSeason.value]
-  
+
   // Créer le dégradé saisonnier
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')!
   canvas.width = 512
   canvas.height = 512
-  
+
   const gradient = context.createLinearGradient(0, 0, 0, canvas.height)
   gradient.addColorStop(0, season.gradientTop)
   gradient.addColorStop(1, season.gradientBottom)
-  
+
   context.fillStyle = gradient
   context.fillRect(0, 0, canvas.width, canvas.height)
-  
+
   const texture = new THREE.CanvasTexture(canvas)
   scene.background = texture
 
   // Mettre à jour les couleurs des arbres
-  treesGroup.traverse((child) => {
+  treesGroup.traverse(child => {
     if (child instanceof THREE.Mesh && child.name === 'leaves') {
       child.material.color.setHex(season.treeColor)
     }
   })
 
   // Mettre à jour la couleur du sol
-  scene.traverse((child) => {
+  scene.traverse(child => {
     if (child instanceof THREE.Mesh && child.name === 'ground') {
       child.material.color.setHex(season.groundColor)
     }
@@ -1308,7 +1602,7 @@ const changeSeason = () => {
 // Fonctions de contrôle existantes
 const toggleWireframe = () => {
   wireframe.value = !wireframe.value
-  house.traverse((child) => {
+  house.traverse(child => {
     if (child instanceof THREE.Mesh) {
       child.material.wireframe = wireframe.value
     }
@@ -1330,7 +1624,7 @@ const updateAudioVolume = () => {
 }
 
 const updateColors = () => {
-  house.traverse((child) => {
+  house.traverse(child => {
     if (child instanceof THREE.Mesh) {
       if (child.name === 'walls') {
         child.material.color.setStyle(wallColor.value)
@@ -1342,7 +1636,7 @@ const updateColors = () => {
     }
   })
 
-  scene.traverse((child) => {
+  scene.traverse(child => {
     if (child instanceof THREE.Mesh && child.name === 'ground') {
       child.material.color.setStyle(groundColor.value)
     }
@@ -1364,7 +1658,7 @@ const addRandomCloud = () => {
   const cloudMaterial = new THREE.MeshLambertMaterial({
     color: 0xffffff,
     transparent: true,
-    opacity: 0.8
+    opacity: 0.8,
   })
   const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial)
 
@@ -1392,7 +1686,10 @@ const animate = () => {
 
   // Animation de la porte
   if (doorOpen.value) {
-    doorGroup.rotation.y = Math.min(doorGroup.rotation.y + deltaTime * 2, Math.PI / 2)
+    doorGroup.rotation.y = Math.min(
+      doorGroup.rotation.y + deltaTime * 2,
+      Math.PI / 2
+    )
   } else {
     doorGroup.rotation.y = Math.max(doorGroup.rotation.y - deltaTime * 2, 0)
   }
@@ -1412,7 +1709,9 @@ const animate = () => {
   // Animation des particules
   if (particleSystem) {
     const positions = particleSystem.geometry.attributes.position.array
-    const velocities = isRaining.value ? raindropVelocities : snowflakeVelocities
+    const velocities = isRaining.value
+      ? raindropVelocities
+      : snowflakeVelocities
 
     for (let i = 0; i < positions.length; i += 3) {
       positions[i + 1] -= velocities[i / 3] * animationSpeed.value
@@ -1468,7 +1767,7 @@ const resetCamera = () => {
 const setupResizeHandler = () => {
   // Utiliser ResizeObserver pour une meilleure détection des changements
   if (typeof ResizeObserver !== 'undefined' && canvasRef.value) {
-    const resizeObserver = new ResizeObserver((entries) => {
+    const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         if (entry.target === canvasRef.value?.parentElement) {
           handleResize()
@@ -1496,7 +1795,9 @@ const setupResizeHandler = () => {
 const initLoaders = () => {
   // GLTF/GLB Loader avec compression Draco
   dracoLoader = new DRACOLoader()
-  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
+  dracoLoader.setDecoderPath(
+    'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+  )
 
   gltfLoader = new GLTFLoader()
   gltfLoader.setDRACOLoader(dracoLoader)
@@ -1513,7 +1814,7 @@ const importModel = () => {
   const input = document.createElement('input')
   input.type = 'file'
   input.accept = '.glb,.gltf,.obj,.fbx'
-  input.onchange = (event) => {
+  input.onchange = event => {
     const file = (event.target as HTMLInputElement).files?.[0]
     if (file) {
       loadModelFromFile(file)
@@ -1528,7 +1829,7 @@ const loadModelFromFile = (file: File) => {
   modelLoadError.value = null
 
   const reader = new FileReader()
-  reader.onload = (event) => {
+  reader.onload = event => {
     const arrayBuffer = event.target?.result as ArrayBuffer
     const fileExtension = file.name.split('.').pop()?.toLowerCase()
 
@@ -1554,14 +1855,19 @@ const loadModelFromFile = (file: File) => {
 
 // Charger un modèle GLTF/GLB
 const loadGLTFModel = (arrayBuffer: ArrayBuffer, fileName: string) => {
-  gltfLoader.parse(arrayBuffer, '', (gltf) => {
-    const model = gltf.scene
-    processLoadedModel(model, fileName)
-  }, (error) => {
-    console.error('Erreur lors du chargement GLTF:', error)
-    modelLoadError.value = 'Erreur lors du chargement du modèle GLTF'
-    isLoadingModel.value = false
-  })
+  gltfLoader.parse(
+    arrayBuffer,
+    '',
+    gltf => {
+      const model = gltf.scene
+      processLoadedModel(model, fileName)
+    },
+    error => {
+      console.error('Erreur lors du chargement GLTF:', error)
+      modelLoadError.value = 'Erreur lors du chargement du modèle GLTF'
+      isLoadingModel.value = false
+    }
+  )
 }
 
 // Charger un modèle OBJ
@@ -1609,7 +1915,7 @@ const processLoadedModel = (model: THREE.Group, fileName: string) => {
   model.position.z = 5
 
   // Activer les ombres
-  model.traverse((child) => {
+  model.traverse(child => {
     if (child instanceof THREE.Mesh) {
       child.castShadow = true
       child.receiveShadow = true
@@ -1625,7 +1931,7 @@ const processLoadedModel = (model: THREE.Group, fileName: string) => {
     model,
     position: { x: model.position.x, y: model.position.y, z: model.position.z },
     rotation: { x: model.rotation.x, y: model.rotation.y, z: model.rotation.z },
-    scale: { x: model.scale.x, y: model.scale.y, z: model.scale.z }
+    scale: { x: model.scale.x, y: model.scale.y, z: model.scale.z },
   })
 
   isLoadingModel.value = false
@@ -1690,8 +1996,8 @@ const loadExampleModels = () => {
   const examples = [
     {
       name: 'Voiture',
-      url: 'https://threejs.org/examples/models/gltf/Poimandres.glb'
-    }
+      url: 'https://threejs.org/examples/models/gltf/Poimandres.glb',
+    },
   ]
 
   // Cette fonction peut être étendue pour charger des modèles d'exemple

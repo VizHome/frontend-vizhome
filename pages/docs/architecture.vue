@@ -11,9 +11,10 @@
     <Card>
       <CardContent class="pt-6">
         <p>
-          VizHome est une plateforme cloud de visualisation 3D architecturale propulsée par l'IA. Cette page
-          présente l'architecture technique de notre solution pour vous aider à comprendre comment elle fonctionne
-          et comment l'intégrer avec vos systèmes existants.
+          VizHome est une plateforme cloud de visualisation 3D architecturale
+          propulsée par l'IA. Cette page présente l'architecture technique de
+          notre solution pour vous aider à comprendre comment elle fonctionne et
+          comment l'intégrer avec vos systèmes existants.
         </p>
       </CardContent>
     </Card>
@@ -24,42 +25,52 @@
       <Card>
         <CardContent class="pt-6">
           <div class="mb-6 overflow-x-auto">
-            <img src="/images/generate/image_generate.png" alt="Architecture VizHome" class="w-full max-w-4xl mx-auto" />
+            <img
+              src="/images/generate/image_generate.png"
+              alt="Architecture VizHome"
+              class="w-full max-w-4xl mx-auto"
+            />
           </div>
 
           <p class="mb-4">
-            L'architecture de VizHome est composée de plusieurs couches interconnectées :
+            L'architecture de VizHome est composée de plusieurs couches
+            interconnectées :
           </p>
 
           <div class="space-y-4">
             <div class="border-l-4 border-primary pl-4 py-2">
               <h3 class="font-medium">Frontend</h3>
               <p class="text-sm text-muted-foreground">
-                Applications web responsive et applications mobiles natives iOS/Android avec interface utilisateur intuitive.
+                Applications web responsive et applications mobiles natives
+                iOS/Android avec interface utilisateur intuitive.
               </p>
             </div>
             <div class="border-l-4 border-primary pl-4 py-2">
               <h3 class="font-medium">Backend API</h3>
               <p class="text-sm text-muted-foreground">
-                API REST sécurisée facilitant la communication entre les clients et les services.
+                API REST sécurisée facilitant la communication entre les clients
+                et les services.
               </p>
             </div>
             <div class="border-l-4 border-primary pl-4 py-2">
               <h3 class="font-medium">Moteur IA</h3>
               <p class="text-sm text-muted-foreground">
-                Ensemble de modèles de deep learning optimisés pour la reconstruction 3D, segmentation et génération de textures.
+                Ensemble de modèles de deep learning optimisés pour la
+                reconstruction 3D, segmentation et génération de textures.
               </p>
             </div>
             <div class="border-l-4 border-primary pl-4 py-2">
               <h3 class="font-medium">Pipeline de rendu</h3>
               <p class="text-sm text-muted-foreground">
-                Moteurs de rendu pour la génération d'images photoréalistes à partir des modèles 3D.
+                Moteurs de rendu pour la génération d'images photoréalistes à
+                partir des modèles 3D.
               </p>
             </div>
             <div class="border-l-4 border-primary pl-4 py-2">
               <h3 class="font-medium">Infrastructure cloud</h3>
               <p class="text-sm text-muted-foreground">
-                Serveurs scalables, stockage distribué et CDN pour une performance globale optimale.
+                Serveurs scalables, stockage distribué et CDN pour une
+                performance globale optimale.
               </p>
             </div>
           </div>
@@ -73,7 +84,8 @@
       <Card>
         <CardContent class="pt-6">
           <p class="mb-4">
-            L'interface utilisateur de VizHome a été conçue pour offrir une expérience fluide et intuitive sur tous les appareils.
+            L'interface utilisateur de VizHome a été conçue pour offrir une
+            expérience fluide et intuitive sur tous les appareils.
           </p>
 
           <div class="space-y-6">
@@ -87,25 +99,37 @@
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>Framework</strong> : Vue.js 3 avec Nuxt.js pour le rendu côté serveur</p>
+                      <p>
+                        <strong>Framework</strong> : Vue.js 3 avec Nuxt.js pour
+                        le rendu côté serveur
+                      </p>
                     </li>
                     <li class="flex items-start gap-2">
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>3D</strong> : Three.js pour la visualisation 3D interactive</p>
+                      <p>
+                        <strong>3D</strong> : Three.js pour la visualisation 3D
+                        interactive
+                      </p>
                     </li>
                     <li class="flex items-start gap-2">
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>UI</strong> : Tailwind CSS et bibliothèque de composants personnalisés</p>
+                      <p>
+                        <strong>UI</strong> : Tailwind CSS et bibliothèque de
+                        composants personnalisés
+                      </p>
                     </li>
                     <li class="flex items-start gap-2">
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>État</strong> : Pinia pour la gestion globale de l'état</p>
+                      <p>
+                        <strong>État</strong> : Pinia pour la gestion globale de
+                        l'état
+                      </p>
                     </li>
                   </ul>
                 </div>
@@ -116,25 +140,37 @@
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>PWA</strong> : Fonctionne comme application installable sur desktop</p>
+                      <p>
+                        <strong>PWA</strong> : Fonctionne comme application
+                        installable sur desktop
+                      </p>
                     </li>
                     <li class="flex items-start gap-2">
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>Responsive</strong> : Optimisée pour tous les appareils et tailles d'écran</p>
+                      <p>
+                        <strong>Responsive</strong> : Optimisée pour tous les
+                        appareils et tailles d'écran
+                      </p>
                     </li>
                     <li class="flex items-start gap-2">
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>Éditeur 3D</strong> : Interface glisser-déposer pour la personnalisation</p>
+                      <p>
+                        <strong>Éditeur 3D</strong> : Interface glisser-déposer
+                        pour la personnalisation
+                      </p>
                     </li>
                     <li class="flex items-start gap-2">
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>Mode hors-ligne</strong> : Accès limité aux projets téléchargés</p>
+                      <p>
+                        <strong>Mode hors-ligne</strong> : Accès limité aux
+                        projets téléchargés
+                      </p>
                     </li>
                   </ul>
                 </div>
@@ -168,7 +204,9 @@
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>Framework</strong> : Kotlin & Jetpack Compose</p>
+                      <p>
+                        <strong>Framework</strong> : Kotlin & Jetpack Compose
+                      </p>
                     </li>
                     <li class="flex items-start gap-2">
                       <div class="min-w-[20px] mt-1">
@@ -191,8 +229,8 @@
       <Card>
         <CardContent class="pt-6">
           <p class="mb-4">
-            Notre API backend est conçue comme une architecture orientée microservices qui facilite l'évolutivité
-            et la maintenance.
+            Notre API backend est conçue comme une architecture orientée
+            microservices qui facilite l'évolutivité et la maintenance.
           </p>
 
           <div class="space-y-6">
@@ -204,7 +242,8 @@
                     <CheckIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>Serveur</strong> : Node.js avec Express.js et TypeScript
+                    <strong>Serveur</strong> : Node.js avec Express.js et
+                    TypeScript
                   </div>
                 </li>
                 <li class="flex items-start gap-3">
@@ -212,7 +251,8 @@
                     <CheckIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>Base de données</strong> : MongoDB pour les données utilisateur et PostgreSQL pour les relations
+                    <strong>Base de données</strong> : MongoDB pour les données
+                    utilisateur et PostgreSQL pour les relations
                   </div>
                 </li>
                 <li class="flex items-start gap-3">
@@ -220,7 +260,8 @@
                     <CheckIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>Stockage</strong> : Amazon S3 pour les assets et fichiers utilisateur
+                    <strong>Stockage</strong> : Amazon S3 pour les assets et
+                    fichiers utilisateur
                   </div>
                 </li>
                 <li class="flex items-start gap-3">
@@ -228,7 +269,8 @@
                     <CheckIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>Authentication</strong> : JWT, OAuth 2.0 et support des identités fédérées
+                    <strong>Authentication</strong> : JWT, OAuth 2.0 et support
+                    des identités fédérées
                   </div>
                 </li>
                 <li class="flex items-start gap-3">
@@ -236,7 +278,8 @@
                     <CheckIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>Communication</strong> : RabbitMQ pour la messagerie asynchrone entre services
+                    <strong>Communication</strong> : RabbitMQ pour la messagerie
+                    asynchrone entre services
                   </div>
                 </li>
               </ul>
@@ -294,28 +337,41 @@
       <Card>
         <CardContent class="pt-6">
           <p class="mb-4">
-            Le cœur technologique de VizHome repose sur nos modèles d'intelligence artificielle spécialisés dans la
-            vision par ordinateur et la génération 3D.
+            Le cœur technologique de VizHome repose sur nos modèles
+            d'intelligence artificielle spécialisés dans la vision par
+            ordinateur et la génération 3D.
           </p>
 
           <div class="space-y-6">
             <div>
-              <h3 class="text-lg font-medium mb-2">Pipeline de traitement IA</h3>
+              <h3 class="text-lg font-medium mb-2">
+                Pipeline de traitement IA
+              </h3>
               <div class="mb-6 overflow-x-auto">
-                <div class="flex flex-nowrap gap-2 items-center justify-between mb-4">
-                  <div class="min-w-[160px] border rounded-lg p-3 text-center bg-background">
+                <div
+                  class="flex flex-nowrap gap-2 items-center justify-between mb-4"
+                >
+                  <div
+                    class="min-w-[160px] border rounded-lg p-3 text-center bg-background"
+                  >
                     <p class="font-medium">Upload photos</p>
                   </div>
                   <ArrowRightIcon class="h-5 w-5 text-muted-foreground" />
-                  <div class="min-w-[160px] border rounded-lg p-3 text-center bg-background">
+                  <div
+                    class="min-w-[160px] border rounded-lg p-3 text-center bg-background"
+                  >
                     <p class="font-medium">Analyse & segmentation</p>
                   </div>
                   <ArrowRightIcon class="h-5 w-5 text-muted-foreground" />
-                  <div class="min-w-[160px] border rounded-lg p-3 text-center bg-background">
+                  <div
+                    class="min-w-[160px] border rounded-lg p-3 text-center bg-background"
+                  >
                     <p class="font-medium">Reconstruction 3D</p>
                   </div>
                   <ArrowRightIcon class="h-5 w-5 text-muted-foreground" />
-                  <div class="min-w-[160px] border rounded-lg p-3 text-center bg-background">
+                  <div
+                    class="min-w-[160px] border rounded-lg p-3 text-center bg-background"
+                  >
                     <p class="font-medium">Texturing & matériaux</p>
                   </div>
                 </div>
@@ -331,19 +387,28 @@
                         <div class="min-w-[20px] mt-1">
                           <Circle class="h-2 w-2 fill-primary text-primary" />
                         </div>
-                        <p><strong>Segmentation</strong> : Réseaux U-Net pour identifier les surfaces et objets</p>
+                        <p>
+                          <strong>Segmentation</strong> : Réseaux U-Net pour
+                          identifier les surfaces et objets
+                        </p>
                       </li>
                       <li class="flex items-start gap-2">
                         <div class="min-w-[20px] mt-1">
                           <Circle class="h-2 w-2 fill-primary text-primary" />
                         </div>
-                        <p><strong>Structure from Motion</strong> : Reconstruction 3D à partir de plusieurs vues</p>
+                        <p>
+                          <strong>Structure from Motion</strong> :
+                          Reconstruction 3D à partir de plusieurs vues
+                        </p>
                       </li>
                       <li class="flex items-start gap-2">
                         <div class="min-w-[20px] mt-1">
                           <Circle class="h-2 w-2 fill-primary text-primary" />
                         </div>
-                        <p><strong>Transfert de style</strong> : Adaptation des matériaux sur nouvelles surfaces</p>
+                        <p>
+                          <strong>Transfert de style</strong> : Adaptation des
+                          matériaux sur nouvelles surfaces
+                        </p>
                       </li>
                     </ul>
                   </div>
@@ -354,19 +419,28 @@
                         <div class="min-w-[20px] mt-1">
                           <Circle class="h-2 w-2 fill-primary text-primary" />
                         </div>
-                        <p><strong>PyTorch</strong> : Principal framework pour nos modèles de deep learning</p>
+                        <p>
+                          <strong>PyTorch</strong> : Principal framework pour
+                          nos modèles de deep learning
+                        </p>
                       </li>
                       <li class="flex items-start gap-2">
                         <div class="min-w-[20px] mt-1">
                           <Circle class="h-2 w-2 fill-primary text-primary" />
                         </div>
-                        <p><strong>TensorFlow</strong> : Utilisé pour certains modèles déployés en production</p>
+                        <p>
+                          <strong>TensorFlow</strong> : Utilisé pour certains
+                          modèles déployés en production
+                        </p>
                       </li>
                       <li class="flex items-start gap-2">
                         <div class="min-w-[20px] mt-1">
                           <Circle class="h-2 w-2 fill-primary text-primary" />
                         </div>
-                        <p><strong>ONNX Runtime</strong> : Pour optimiser l'inférence sur différents appareils</p>
+                        <p>
+                          <strong>ONNX Runtime</strong> : Pour optimiser
+                          l'inférence sur différents appareils
+                        </p>
                       </li>
                     </ul>
                   </div>
@@ -379,7 +453,9 @@
             <InfoIcon class="h-4 w-4" />
             <AlertTitle>Intégration accélérée</AlertTitle>
             <AlertDescription>
-              Nos modèles sont optimisés pour l'inférence GPU sur notre infrastructure cloud, permettant de générer des modèles 3D complexes en quelques secondes à partir de photos standard.
+              Nos modèles sont optimisés pour l'inférence GPU sur notre
+              infrastructure cloud, permettant de générer des modèles 3D
+              complexes en quelques secondes à partir de photos standard.
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -392,19 +468,24 @@
       <Card>
         <CardContent class="pt-6">
           <p class="mb-4">
-            VizHome fonctionne sur une infrastructure cloud moderne conçue pour une haute disponibilité, une évolutivité à la demande et une sécurité robuste.
+            VizHome fonctionne sur une infrastructure cloud moderne conçue pour
+            une haute disponibilité, une évolutivité à la demande et une
+            sécurité robuste.
           </p>
 
           <div class="space-y-6">
             <div>
-              <h3 class="text-lg font-medium mb-2">Caractéristiques principales</h3>
+              <h3 class="text-lg font-medium mb-2">
+                Caractéristiques principales
+              </h3>
               <ul class="space-y-2">
                 <li class="flex items-start gap-3">
                   <div class="min-w-[20px] mt-1">
                     <ServerIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>Multi-cloud</strong> : Déployée sur AWS, GCP et Azure pour une redondance maximale
+                    <strong>Multi-cloud</strong> : Déployée sur AWS, GCP et
+                    Azure pour une redondance maximale
                   </div>
                 </li>
                 <li class="flex items-start gap-3">
@@ -412,7 +493,8 @@
                     <GlobeIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>Réseau global</strong> : Points de présence CDN dans 40+ régions pour un accès rapide
+                    <strong>Réseau global</strong> : Points de présence CDN dans
+                    40+ régions pour un accès rapide
                   </div>
                 </li>
                 <li class="flex items-start gap-3">
@@ -420,7 +502,8 @@
                     <ShieldIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>Sécurité</strong> : Chiffrement de bout en bout, conformité GDPR et certifications ISO 27001
+                    <strong>Sécurité</strong> : Chiffrement de bout en bout,
+                    conformité GDPR et certifications ISO 27001
                   </div>
                 </li>
                 <li class="flex items-start gap-3">
@@ -428,7 +511,8 @@
                     <RefreshCcwIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>SLA</strong> : Disponibilité garantie de 99.9% avec surveillance 24/7
+                    <strong>SLA</strong> : Disponibilité garantie de 99.9% avec
+                    surveillance 24/7
                   </div>
                 </li>
                 <li class="flex items-start gap-3">
@@ -436,29 +520,35 @@
                     <ScaleIcon class="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <strong>Scaling</strong> : Auto-scaling horizontal et vertical pour gérer les pics de demande
+                    <strong>Scaling</strong> : Auto-scaling horizontal et
+                    vertical pour gérer les pics de demande
                   </div>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 class="text-lg font-medium mb-2">Architecture de déploiement</h3>
-              <p class="mb-4">Nos composants sont déployés dans des conteneurs Docker orchestrés par Kubernetes :</p>
+              <h3 class="text-lg font-medium mb-2">
+                Architecture de déploiement
+              </h3>
+              <p class="mb-4">
+                Nos composants sont déployés dans des conteneurs Docker
+                orchestrés par Kubernetes :
+              </p>
               <div class="bg-muted rounded p-4 text-sm font-mono">
                 <p>├── Cluster Frontend (Stateless)</p>
-                <p>│   ├── Web App Servers</p>
-                <p>│   └── API Gateway</p>
+                <p>│ ├── Web App Servers</p>
+                <p>│ └── API Gateway</p>
                 <p>├── Cluster Backend (Stateful)</p>
-                <p>│   ├── Microservices</p>
-                <p>│   └── Message Queue</p>
+                <p>│ ├── Microservices</p>
+                <p>│ └── Message Queue</p>
                 <p>├── Cluster IA</p>
-                <p>│   ├── GPU Workers</p>
-                <p>│   └── Model Serving</p>
+                <p>│ ├── GPU Workers</p>
+                <p>│ └── Model Serving</p>
                 <p>└── Databases & Storage</p>
-                <p>    ├── MongoDB</p>
-                <p>    ├── PostgreSQL</p>
-                <p>    └── Object Storage</p>
+                <p>├── MongoDB</p>
+                <p>├── PostgreSQL</p>
+                <p>└── Object Storage</p>
               </div>
             </div>
           </div>
@@ -472,15 +562,17 @@
       <Card>
         <CardContent class="pt-6">
           <p class="mb-4">
-            VizHome peut être facilement intégré à vos systèmes existants via notre API et nos SDK. Nous supportons
-            également des intégrations directes avec des outils populaires d'architecture et de design.
+            VizHome peut être facilement intégré à vos systèmes existants via
+            notre API et nos SDK. Nous supportons également des intégrations
+            directes avec des outils populaires d'architecture et de design.
           </p>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div class="border rounded p-4">
               <h4 class="font-medium mb-1">AutoCAD / Revit</h4>
               <p class="text-sm text-muted-foreground">
-                Plugin pour importer/exporter des modèles entre VizHome et Autodesk
+                Plugin pour importer/exporter des modèles entre VizHome et
+                Autodesk
               </p>
             </div>
             <div class="border rounded p-4">
@@ -492,7 +584,8 @@
             <div class="border rounded p-4">
               <h4 class="font-medium mb-1">Unity / Unreal</h4>
               <p class="text-sm text-muted-foreground">
-                SDK pour intégrer les assets VizHome dans des expériences en temps réel
+                SDK pour intégrer les assets VizHome dans des expériences en
+                temps réel
               </p>
             </div>
             <div class="border rounded p-4">
@@ -518,17 +611,25 @@
           <div>
             <h3 class="text-lg font-medium mb-2">Webhooks</h3>
             <p class="mb-4">
-              Utilisez nos webhooks pour recevoir des notifications en temps réel lorsque des événements importants se produisent :
+              Utilisez nos webhooks pour recevoir des notifications en temps
+              réel lorsque des événements importants se produisent :
             </p>
             <div class="bg-muted rounded p-3 text-sm font-mono mb-4">
               <p>POST https://app.vizhome.fr/webhooks</p>
               <p>{</p>
-              <p>  "url": "https://votre-site.com/callback",</p>
-              <p>  "events": ["render.completed", "project.shared", "model.uploaded"]</p>
+              <p>"url": "https://votre-site.com/callback",</p>
+              <p>
+                "events": ["render.completed", "project.shared",
+                "model.uploaded"]
+              </p>
               <p>}</p>
             </div>
             <p>
-              Consultez notre <NuxtLink to="/docs/api" class="text-primary hover:underline">documentation API</NuxtLink> pour plus de détails sur les intégrations disponibles.
+              Consultez notre
+              <NuxtLink to="/docs/api" class="text-primary hover:underline"
+                >documentation API</NuxtLink
+              >
+              pour plus de détails sur les intégrations disponibles.
             </p>
           </div>
         </CardContent>
@@ -554,14 +655,21 @@
 </template>
 
 <script setup lang="ts">
-import { 
-  ArrowRightIcon, ArrowLeftIcon, Circle, CheckIcon, 
-  InfoIcon, ServerIcon, GlobeIcon, ShieldIcon,
-  RefreshCcwIcon, ScaleIcon
+import {
+  ArrowRightIcon,
+  ArrowLeftIcon,
+  Circle,
+  CheckIcon,
+  InfoIcon,
+  ServerIcon,
+  GlobeIcon,
+  ShieldIcon,
+  RefreshCcwIcon,
+  ScaleIcon,
 } from 'lucide-vue-next'
 
 // Définir le layout docs pour cette page
 definePageMeta({
   layout: 'docs',
 })
-</script> 
+</script>

@@ -1,7 +1,9 @@
 <template>
   <div class="py-16">
     <div class="container mx-auto px-4 max-w-4xl">
-      <h1 class="text-3xl font-bold mb-8 text-center">Charte d'Utilisation Responsable</h1>
+      <h1 class="text-3xl font-bold mb-8 text-center">
+        Charte d'Utilisation Responsable
+      </h1>
 
       <div class="prose prose-sm dark:prose-invert max-w-none">
         <div class="text-center mb-8">
@@ -11,8 +13,9 @@
 
         <h2 class="text-xl font-bold mt-8 mb-4">Introduction</h2>
         <p>
-          VizHome s'engage à offrir un environnement sûr et éthique pour ses utilisateurs. Cette charte définit les
-          règles d'utilisation de notre plateforme et de nos services.
+          VizHome s'engage à offrir un environnement sûr et éthique pour ses
+          utilisateurs. Cette charte définit les règles d'utilisation de notre
+          plateforme et de nos services.
         </p>
 
         <h2 class="text-xl font-bold mt-8 mb-4">Règles Générales</h2>
@@ -37,7 +40,10 @@
                 <div class="min-w-[24px]">
                   <BanIcon class="h-5 w-5 text-primary" />
                 </div>
-                <p>Ne pas partager ou publier de contenu offensant, illégal ou nuisible.</p>
+                <p>
+                  Ne pas partager ou publier de contenu offensant, illégal ou
+                  nuisible.
+                </p>
               </li>
             </ul>
           </CardContent>
@@ -53,28 +59,40 @@
                 <div class="min-w-[24px]">
                   <ImageIcon class="h-5 w-5" />
                 </div>
-                <p>Générer ou manipuler des images à des fins trompeuses ou illégales.</p>
+                <p>
+                  Générer ou manipuler des images à des fins trompeuses ou
+                  illégales.
+                </p>
               </li>
               <li class="flex items-start gap-3">
                 <div class="min-w-[24px]">
                   <HeartOffIcon class="h-5 w-5" />
                 </div>
-                <p>Utiliser VizHome pour promouvoir la haine, la discrimination ou la violence.</p>
+                <p>
+                  Utiliser VizHome pour promouvoir la haine, la discrimination
+                  ou la violence.
+                </p>
               </li>
               <li class="flex items-start gap-3">
                 <div class="min-w-[24px]">
                   <BugIcon class="h-5 w-5" />
                 </div>
-                <p>Téléverser des fichiers contenant des virus ou logiciels malveillants.</p>
+                <p>
+                  Téléverser des fichiers contenant des virus ou logiciels
+                  malveillants.
+                </p>
               </li>
             </ul>
           </AlertDescription>
         </Alert>
 
-        <h2 class="text-xl font-bold mt-8 mb-4">Protection des Données et Confidentialité</h2>
+        <h2 class="text-xl font-bold mt-8 mb-4">
+          Protection des Données et Confidentialité
+        </h2>
         <p>
-          Les utilisateurs doivent respecter les données personnelles d'autrui et ne pas collecter ou diffuser des
-          informations sensibles sans consentement.
+          Les utilisateurs doivent respecter les données personnelles d'autrui
+          et ne pas collecter ou diffuser des informations sensibles sans
+          consentement.
         </p>
 
         <Card class="bg-muted/40 mb-6">
@@ -84,8 +102,10 @@
                 <LockIcon class="h-5 w-5 text-primary" />
               </div>
               <p class="text-sm">
-                Le respect de la vie privée est une valeur fondamentale chez VizHome. Nous attendons de nos utilisateurs
-                qu'ils appliquent les mêmes standards élevés dans leur utilisation de notre plateforme.
+                Le respect de la vie privée est une valeur fondamentale chez
+                VizHome. Nous attendons de nos utilisateurs qu'ils appliquent
+                les mêmes standards élevés dans leur utilisation de notre
+                plateforme.
               </p>
             </div>
           </CardContent>
@@ -140,23 +160,24 @@
 
         <h2 class="text-xl font-bold mt-8 mb-4">Modifications de la Charte</h2>
         <p>
-          VizHome se réserve le droit de modifier cette charte afin de garantir un usage conforme à l'évolution des
-          technologies et réglementations.
+          VizHome se réserve le droit de modifier cette charte afin de garantir
+          un usage conforme à l'évolution des technologies et réglementations.
         </p>
 
         <h2 class="text-xl font-bold mt-8 mb-4">Contact</h2>
         <p>
-          Pour toute question ou signalement, contactez-nous à <a
-href="mailto:support@vizhome.com"
-            class="text-primary hover:underline">support@vizhome.com</a>.
+          Pour toute question ou signalement, contactez-nous à
+          <a
+            href="mailto:support@vizhome.com"
+            class="text-primary hover:underline"
+            >support@vizhome.com</a
+          >.
         </p>
       </div>
 
       <div class="mt-12 flex justify-center gap-4">
         <Button variant="outline" as-child>
-          <NuxtLink to="/legal/terms">
-            Conditions d'utilisation
-          </NuxtLink>
+          <NuxtLink to="/legal/terms"> Conditions d'utilisation </NuxtLink>
         </Button>
         <Button variant="outline" as-child>
           <NuxtLink to="/legal/privacy">
@@ -170,9 +191,15 @@ href="mailto:support@vizhome.com"
 
 <script setup lang="ts">
 import {
-  ShieldIcon, UserIcon, BanIcon, ImageIcon, HeartOffIcon, BugIcon, LockIcon,
-  AlertTriangleIcon, UserXIcon, BadgeAlertIcon,
+  ShieldIcon,
+  UserIcon,
+  BanIcon,
+  ImageIcon,
+  HeartOffIcon,
+  BugIcon,
+  LockIcon,
+  AlertTriangleIcon,
+  UserXIcon,
+  BadgeAlertIcon,
 } from 'lucide-vue-next'
 </script>
-
-<style scoped></style>

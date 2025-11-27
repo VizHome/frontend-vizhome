@@ -25,7 +25,12 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
 
-  modules: ['@nuxt/eslint', '@nuxt/test-utils', 'shadcn-nuxt', '@nuxtjs/color-mode'],
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/test-utils',
+    'shadcn-nuxt',
+    '@nuxtjs/color-mode',
+  ],
 
   // Configs CSS
   css: ['~/assets/css/tailwind.css'],

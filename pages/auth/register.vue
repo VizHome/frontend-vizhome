@@ -6,29 +6,31 @@
         <p
           class="z-10 whitespace-pre-wrap text-center text-5xl font-medium tracking-tighter text-black dark:text-white"
         >
-            Rejoins nous sur VizHome
+          Rejoins nous sur VizHome
         </p>
 
         <InteractiveGridPattern
-          :class="[
-            '[mask-image:radial-gradient(550px_circle_at_center,white,transparent)]',
-            'inset-0 h-[300%] skew-y-12',
-          ]"
+          class="[mask-image:radial-gradient(550px_circle_at_center,white,transparent)] inset-0 h-[300%] skew-y-12"
         />
       </div>
     </div>
 
     <!-- Formulaire d'inscription à droite -->
-    <div class="flex-1 flex flex-col justify-center items-center p-6 lg:p-12 bg-background">
+    <div
+      class="flex-1 flex flex-col justify-center items-center p-6 lg:p-12 bg-background"
+    >
       <div class="w-full max-w-md">
         <div class="text-center mb-8">
           <NuxtLink to="/" class="inline-block">
             <span
-              class="font-bold text-3xl bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent">Viz<span
-                class="text-primary">Home</span></span>
+              class="font-bold text-3xl bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent"
+              >Viz<span class="text-primary">Home</span></span
+            >
           </NuxtLink>
           <h2 class="text-2xl font-bold mt-6 mb-2">Créer un compte</h2>
-          <p class="text-muted-foreground">Commencez votre expérience de conception 3D</p>
+          <p class="text-muted-foreground">
+            Commencez votre expérience de conception 3D
+          </p>
         </div>
 
         <Card class="shadow-xl">
@@ -36,43 +38,102 @@
             <form class="space-y-5" @submit.prevent="handleSubmit">
               <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
-                  <Label for="firstName" class="text-sm font-medium">Prénom</Label>
-                  <Input id="firstName" v-model="firstName" type="text" placeholder="Jean"
-                    :class="{ 'ring-1 ring-destructive': formErrors.firstName }" />
-                  <p v-if="formErrors.firstName" class="text-xs text-destructive mt-1">{{ formErrors.firstName }}</p>
+                  <Label for="firstName" class="text-sm font-medium"
+                    >Prénom</Label
+                  >
+                  <Input
+                    id="firstName"
+                    v-model="firstName"
+                    type="text"
+                    placeholder="Jean"
+                    :class="{ 'ring-1 ring-destructive': formErrors.firstName }"
+                  />
+                  <p
+                    v-if="formErrors.firstName"
+                    class="text-xs text-destructive mt-1"
+                  >
+                    {{ formErrors.firstName }}
+                  </p>
                 </div>
 
                 <div class="space-y-2">
                   <Label for="lastName" class="text-sm font-medium">Nom</Label>
-                  <Input id="lastName" v-model="lastName" type="text" placeholder="Dupont"
-                    :class="{ 'ring-1 ring-destructive': formErrors.lastName }" />
-                  <p v-if="formErrors.lastName" class="text-xs text-destructive mt-1">{{ formErrors.lastName }}</p>
+                  <Input
+                    id="lastName"
+                    v-model="lastName"
+                    type="text"
+                    placeholder="Dupont"
+                    :class="{ 'ring-1 ring-destructive': formErrors.lastName }"
+                  />
+                  <p
+                    v-if="formErrors.lastName"
+                    class="text-xs text-destructive mt-1"
+                  >
+                    {{ formErrors.lastName }}
+                  </p>
                 </div>
               </div>
 
               <div class="space-y-2">
                 <Label for="email" class="text-sm font-medium">Email</Label>
                 <div class="relative">
-                  <MailIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input id="email" v-model="email" type="email" placeholder="votreemail@exemple.fr" class="pl-10"
-                    :class="{ 'ring-1 ring-destructive': formErrors.email }" />
+                  <MailIcon
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                  />
+                  <Input
+                    id="email"
+                    v-model="email"
+                    type="email"
+                    placeholder="votreemail@exemple.fr"
+                    class="pl-10"
+                    :class="{ 'ring-1 ring-destructive': formErrors.email }"
+                  />
                 </div>
-                <p v-if="formErrors.email" class="text-xs text-destructive mt-1">{{ formErrors.email }}</p>
+                <p
+                  v-if="formErrors.email"
+                  class="text-xs text-destructive mt-1"
+                >
+                  {{ formErrors.email }}
+                </p>
               </div>
 
               <div class="space-y-2">
-                <Label for="password" class="text-sm font-medium">Mot de passe</Label>
+                <Label for="password" class="text-sm font-medium"
+                  >Mot de passe</Label
+                >
                 <div class="relative">
-                  <LockIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input id="password" v-model="password" :type="showPassword ? 'text' : 'password'"
-                    placeholder="••••••••" class="pl-10" :class="{ 'ring-1 ring-destructive': formErrors.password }" />
-                  <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2"
-                    @click="showPassword = !showPassword">
-                    <EyeIcon v-if="!showPassword" class="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                    <EyeOffIcon v-else class="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                  <LockIcon
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                  />
+                  <Input
+                    id="password"
+                    v-model="password"
+                    :type="showPassword ? 'text' : 'password'"
+                    placeholder="••••••••"
+                    class="pl-10"
+                    :class="{ 'ring-1 ring-destructive': formErrors.password }"
+                  />
+                  <button
+                    type="button"
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    @click="showPassword = !showPassword"
+                  >
+                    <EyeIcon
+                      v-if="!showPassword"
+                      class="h-4 w-4 text-muted-foreground hover:text-foreground"
+                    />
+                    <EyeOffIcon
+                      v-else
+                      class="h-4 w-4 text-muted-foreground hover:text-foreground"
+                    />
                   </button>
                 </div>
-                <p v-if="formErrors.password" class="text-xs text-destructive mt-1">{{ formErrors.password }}</p>
+                <p
+                  v-if="formErrors.password"
+                  class="text-xs text-destructive mt-1"
+                >
+                  {{ formErrors.password }}
+                </p>
 
                 <div class="mt-1">
                   <PasswordStrength :password="password" />
@@ -80,37 +141,78 @@
               </div>
 
               <div class="space-y-2">
-                <Label for="confirmPassword" class="text-sm font-medium">Confirmer le mot de passe</Label>
+                <Label for="confirmPassword" class="text-sm font-medium"
+                  >Confirmer le mot de passe</Label
+                >
                 <div class="relative">
-                  <LockIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input id="confirmPassword" v-model="confirmPassword"
-                    :type="showConfirmPassword ? 'text' : 'password'" placeholder="••••••••" class="pl-10"
-                    :class="{ 'ring-1 ring-destructive': formErrors.confirmPassword }" />
-                  <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2"
-                    @click="showConfirmPassword = !showConfirmPassword">
-                    <EyeIcon v-if="!showConfirmPassword" class="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                    <EyeOffIcon v-else class="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                  <LockIcon
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                  />
+                  <Input
+                    id="confirmPassword"
+                    v-model="confirmPassword"
+                    :type="showConfirmPassword ? 'text' : 'password'"
+                    placeholder="••••••••"
+                    class="pl-10"
+                    :class="{
+                      'ring-1 ring-destructive': formErrors.confirmPassword,
+                    }"
+                  />
+                  <button
+                    type="button"
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    @click="showConfirmPassword = !showConfirmPassword"
+                  >
+                    <EyeIcon
+                      v-if="!showConfirmPassword"
+                      class="h-4 w-4 text-muted-foreground hover:text-foreground"
+                    />
+                    <EyeOffIcon
+                      v-else
+                      class="h-4 w-4 text-muted-foreground hover:text-foreground"
+                    />
                   </button>
                 </div>
-                <p v-if="formErrors.confirmPassword" class="text-xs text-destructive mt-1">{{ formErrors.confirmPassword
-                }}</p>
+                <p
+                  v-if="formErrors.confirmPassword"
+                  class="text-xs text-destructive mt-1"
+                >
+                  {{ formErrors.confirmPassword }}
+                </p>
               </div>
 
               <div class="flex items-center space-x-2">
-                <Checkbox id="terms" v-model:checked="acceptTerms"
-                  :class="{ 'ring-1 ring-destructive': formErrors.terms }" />
+                <Checkbox
+                  id="terms"
+                  v-model:checked="acceptTerms"
+                  :class="{ 'ring-1 ring-destructive': formErrors.terms }"
+                />
                 <label for="terms" class="text-sm leading-tight cursor-pointer">
                   J'accepte les
-                  <Button variant="link" class="p-0 h-auto text-primary" as-child>
-                    <NuxtLink :to="{ path: '/legal/terms-of-use' }">Conditions d'utilisation</NuxtLink>
+                  <Button
+                    variant="link"
+                    class="p-0 h-auto text-primary"
+                    as-child
+                  >
+                    <NuxtLink :to="{ path: '/legal/terms-of-use' }"
+                      >Conditions d'utilisation</NuxtLink
+                    >
                   </Button>
                   et la
-                  <Button variant="link" class="p-0 h-auto text-primary" as-child>
-                    <NuxtLink :to="{ path: '/legal/privacy-policy' }">Politique de confidentialité</NuxtLink>
+                  <Button
+                    variant="link"
+                    class="p-0 h-auto text-primary"
+                    as-child
+                  >
+                    <NuxtLink :to="{ path: '/legal/privacy-policy' }"
+                      >Politique de confidentialité</NuxtLink
+                    >
                   </Button>
                 </label>
               </div>
-              <p v-if="formErrors.terms" class="text-xs text-destructive mt-1">{{ formErrors.terms }}</p>
+              <p v-if="formErrors.terms" class="text-xs text-destructive mt-1">
+                {{ formErrors.terms }}
+              </p>
 
               <Button type="submit" class="w-full h-11">S'inscrire</Button>
             </form>
@@ -119,7 +221,10 @@
 
         <div class="text-center text-sm mt-6">
           <span class="text-muted-foreground">Vous avez déjà un compte?</span>
-          <NuxtLink to="/auth/login" class="text-primary hover:underline ml-1 font-medium">
+          <NuxtLink
+            to="/auth/login"
+            class="text-primary hover:underline ml-1 font-medium"
+          >
             Se connecter
           </NuxtLink>
         </div>
@@ -129,8 +234,17 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  MailIcon,
+  LockIcon,
+  EyeIcon,
+  EyeOffIcon,
+  RocketIcon,
+  PaletteIcon,
+  CloudIcon,
+  ShareIcon,
+} from 'lucide-vue-next'
 import { ref, reactive, computed } from 'vue'
-import { MailIcon, LockIcon, EyeIcon, EyeOffIcon, RocketIcon, PaletteIcon, CloudIcon, ShareIcon } from 'lucide-vue-next'
 
 // État du formulaire
 const firstName = ref('')
@@ -157,7 +271,7 @@ const validateForm = () => {
   let isValid = true
 
   // Réinitialiser les erreurs
-  Object.keys(formErrors).forEach((key) => {
+  Object.keys(formErrors).forEach(key => {
     formErrors[key as keyof typeof formErrors] = ''
   })
 
@@ -175,10 +289,10 @@ const validateForm = () => {
 
   // Email
   if (!email.value) {
-    formErrors.email = 'L\'email est requis'
+    formErrors.email = "L'email est requis"
     isValid = false
   } else if (!/^\S+@\S+\.\S+$/.test(email.value)) {
-    formErrors.email = 'Format d\'email invalide'
+    formErrors.email = "Format d'email invalide"
     isValid = false
   }
 
@@ -199,7 +313,7 @@ const validateForm = () => {
 
   // Conditions d'utilisation
   if (!acceptTerms.value) {
-    formErrors.terms = 'Vous devez accepter les conditions d\'utilisation'
+    formErrors.terms = "Vous devez accepter les conditions d'utilisation"
     isValid = false
   }
 

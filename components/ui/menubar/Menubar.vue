@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
 import { reactiveOmit } from '@vueuse/core'
 import {
   MenubarRoot,
@@ -7,9 +6,13 @@ import {
   type MenubarRootProps,
   useForwardPropsEmits,
 } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
+
 import { cn } from '@/lib/utils'
 
-const props = defineProps<MenubarRootProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  MenubarRootProps & { class?: HTMLAttributes['class'] }
+>()
 const emits = defineEmits<MenubarRootEmits>()
 
 const delegatedProps = reactiveOmit(props, 'class')
@@ -24,7 +27,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
     :class="
       cn(
         'bg-background flex h-9 items-center gap-1 rounded-md border p-1 shadow-xs',
-        props.class,
+        props.class
       )
     "
   >

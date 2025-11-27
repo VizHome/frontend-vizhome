@@ -1,7 +1,9 @@
 <template>
   <div class="py-16">
     <div class="container mx-auto px-4 max-w-4xl">
-      <h1 class="text-3xl font-bold mb-8 text-center">Politique de Confidentialité</h1>
+      <h1 class="text-3xl font-bold mb-8 text-center">
+        Politique de Confidentialité
+      </h1>
 
       <div class="prose prose-sm dark:prose-invert max-w-none">
         <div class="text-center mb-8">
@@ -11,11 +13,14 @@
 
         <h2 class="text-xl font-bold mt-8 mb-4">Introduction</h2>
         <p>
-          Chez VizHome, nous nous engageons à protéger votre vie privée. Cette politique de confidentialité explique
-          comment nous collectons, utilisons et protégeons vos informations personnelles.
+          Chez VizHome, nous nous engageons à protéger votre vie privée. Cette
+          politique de confidentialité explique comment nous collectons,
+          utilisons et protégeons vos informations personnelles.
         </p>
 
-        <h2 class="text-xl font-bold mt-8 mb-4">Utilisation des Informations</h2>
+        <h2 class="text-xl font-bold mt-8 mb-4">
+          Utilisation des Informations
+        </h2>
         <p>Nous utilisons vos informations pour :</p>
 
         <Card class="mb-6">
@@ -53,8 +58,9 @@
         <Alert class="mb-6">
           <AlertTitle>Important</AlertTitle>
           <AlertDescription>
-            Nous ne vendons ni ne louons vos données. Cependant, nous pouvons partager certaines informations uniquement
-            avec des autorités légales si requis par la loi.
+            Nous ne vendons ni ne louons vos données. Cependant, nous pouvons
+            partager certaines informations uniquement avec des autorités
+            légales si requis par la loi.
           </AlertDescription>
         </Alert>
 
@@ -67,8 +73,9 @@
             <div>
               <h3 class="font-medium mb-2">Mesures de sécurité</h3>
               <p>
-                Nous mettons en place des mesures de sécurité pour protéger vos informations contre tout accès non
-                autorisé, altération ou destruction.
+                Nous mettons en place des mesures de sécurité pour protéger vos
+                informations contre tout accès non autorisé, altération ou
+                destruction.
               </p>
             </div>
           </div>
@@ -101,7 +108,8 @@
             </CardHeader>
             <CardContent>
               <p class="text-sm text-muted-foreground">
-                Vous pouvez demander l'effacement de vos données ou vous opposer à leur traitement.
+                Vous pouvez demander l'effacement de vos données ou vous opposer
+                à leur traitement.
               </p>
             </CardContent>
           </Card>
@@ -122,15 +130,20 @@
         </div>
 
         <p class="text-center mb-6">
-          Pour exercer vos droits, contactez-nous à <a
-href="mailto:privacy@vizhome.com"
-            class="text-primary hover:underline">privacy@vizhome.com</a>.
+          Pour exercer vos droits, contactez-nous à
+          <a
+            href="mailto:privacy@vizhome.com"
+            class="text-primary hover:underline"
+            >privacy@vizhome.com</a
+          >.
         </p>
 
-        <h2 class="text-xl font-bold mt-8 mb-4">Modifications de la Politique</h2>
+        <h2 class="text-xl font-bold mt-8 mb-4">
+          Modifications de la Politique
+        </h2>
         <p>
-          Nous pouvons mettre à jour cette politique. Tout changement sera publié sur notre site et notifié si
-          nécessaire.
+          Nous pouvons mettre à jour cette politique. Tout changement sera
+          publié sur notre site et notifié si nécessaire.
         </p>
 
         <h2 class="text-xl font-bold mt-8 mb-4">Contact</h2>
@@ -140,22 +153,22 @@ href="mailto:privacy@vizhome.com"
             <h3 class="font-medium">Nous contacter</h3>
           </div>
           <p class="text-center">
-            Pour toute question concernant cette politique, contactez-nous à<br>
-            <a href="mailto:privacy@vizhome.com" class="text-primary hover:underline">privacy@vizhome.com</a>
+            Pour toute question concernant cette politique, contactez-nous à<br />
+            <a
+              href="mailto:privacy@vizhome.com"
+              class="text-primary hover:underline"
+              >privacy@vizhome.com</a
+            >
           </p>
         </div>
       </div>
 
       <div class="mt-12 flex flex-wrap justify-center gap-4">
         <Button variant="outline" as-child>
-          <NuxtLink to="/legal/terms">
-            Conditions d'utilisation
-          </NuxtLink>
+          <NuxtLink to="/legal/terms"> Conditions d'utilisation </NuxtLink>
         </Button>
         <Button variant="outline" as-child>
-          <NuxtLink to="/legal/cookie-policy">
-            Politique de Cookies
-          </NuxtLink>
+          <NuxtLink to="/legal/cookie-policy"> Politique de Cookies </NuxtLink>
         </Button>
         <Button variant="outline" as-child>
           <NuxtLink to="/legal/data-processing">
@@ -173,7 +186,14 @@ href="mailto:privacy@vizhome.com"
 </template>
 
 <script setup lang="ts">
-import { ServerIcon, MailIcon, ShieldIcon, ScaleIcon, LockIcon, FileSearchIcon, TrashIcon, DownloadIcon } from 'lucide-vue-next'
+import {
+  ServerIcon,
+  MailIcon,
+  ShieldIcon,
+  ScaleIcon,
+  LockIcon,
+  FileSearchIcon,
+  TrashIcon,
+  DownloadIcon,
+} from 'lucide-vue-next'
 </script>
-
-<style scoped></style>

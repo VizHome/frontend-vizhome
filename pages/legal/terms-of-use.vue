@@ -1,7 +1,9 @@
 <template>
   <div class="py-16">
     <div class="container mx-auto px-4 max-w-4xl">
-      <h1 class="text-3xl font-bold mb-8 text-center">Conditions d'utilisation</h1>
+      <h1 class="text-3xl font-bold mb-8 text-center">
+        Conditions d'utilisation
+      </h1>
 
       <div class="prose prose-sm dark:prose-invert max-w-none">
         <div class="text-center mb-8">
@@ -13,8 +15,9 @@
         <Alert class="mb-6">
           <AlertTitle>Important</AlertTitle>
           <AlertDescription>
-            En accédant ou en utilisant VizHome, vous acceptez d'être lié par ces Conditions d'utilisation. Si vous
-            n'êtes pas d'accord, veuillez ne pas utiliser nos services.
+            En accédant ou en utilisant VizHome, vous acceptez d'être lié par
+            ces Conditions d'utilisation. Si vous n'êtes pas d'accord, veuillez
+            ne pas utiliser nos services.
           </AlertDescription>
         </Alert>
 
@@ -27,18 +30,23 @@
               </div>
               <div>
                 <p>
-                  VizHome fournit un moteur de rendu basé sur l'IA conçu pour les architectes et les graphistes. Notre
-                  application permet aux utilisateurs d'intégrer des images architecturales dans des environnements
-                  naturels, d'appliquer des textures et d'ajouter des éléments contextuels.
+                  VizHome fournit un moteur de rendu basé sur l'IA conçu pour
+                  les architectes et les graphistes. Notre application permet
+                  aux utilisateurs d'intégrer des images architecturales dans
+                  des environnements naturels, d'appliquer des textures et
+                  d'ajouter des éléments contextuels.
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <h2 class="text-xl font-bold mt-8 mb-4">Responsabilités de l'Utilisateur</h2>
+        <h2 class="text-xl font-bold mt-8 mb-4">
+          Responsabilités de l'Utilisateur
+        </h2>
         <p>
-          Vous acceptez d'utiliser VizHome en conformité avec toutes les lois applicables. Vous ne devez pas :
+          Vous acceptez d'utiliser VizHome en conformité avec toutes les lois
+          applicables. Vous ne devez pas :
         </p>
 
         <div class="space-y-3 mb-6 mt-4">
@@ -46,14 +54,20 @@
             <div class="min-w-[24px]">
               <AlertOctagonIcon class="h-5 w-5 text-destructive" />
             </div>
-            <p>Utiliser la plateforme à des fins illégales, frauduleuses ou non autorisées.</p>
+            <p>
+              Utiliser la plateforme à des fins illégales, frauduleuses ou non
+              autorisées.
+            </p>
           </div>
 
           <div class="bg-destructive/10 rounded-lg p-4 flex items-start gap-3">
             <div class="min-w-[24px]">
               <Code class="h-5 w-5 text-destructive" />
             </div>
-            <p>Tenter d'inverser l'ingénierie, de copier ou de détourner notre technologie.</p>
+            <p>
+              Tenter d'inverser l'ingénierie, de copier ou de détourner notre
+              technologie.
+            </p>
           </div>
 
           <div class="bg-destructive/10 rounded-lg p-4 flex items-start gap-3">
@@ -71,13 +85,17 @@
               <CopyrightIcon class="h-5 w-5 text-primary" />
             </div>
             <p>
-              Tout le contenu, les logiciels et la technologie fournis par VizHome restent notre propriété exclusive.
-              Vous ne pouvez pas reproduire, distribuer ou modifier nos services sans autorisation écrite.
+              Tout le contenu, les logiciels et la technologie fournis par
+              VizHome restent notre propriété exclusive. Vous ne pouvez pas
+              reproduire, distribuer ou modifier nos services sans autorisation
+              écrite.
             </p>
           </div>
         </div>
 
-        <h2 class="text-xl font-bold mt-8 mb-4">Limitation de Responsabilité</h2>
+        <h2 class="text-xl font-bold mt-8 mb-4">
+          Limitation de Responsabilité
+        </h2>
         <Card class="mb-6 border-amber-200 dark:border-amber-800">
           <CardContent class="pt-6">
             <div class="flex items-start gap-3">
@@ -85,8 +103,9 @@
                 <ShieldOffIcon class="h-5 w-5 text-amber-500" />
               </div>
               <p>
-                VizHome est fourni "tel quel" sans garanties. Nous ne sommes pas responsables des dommages résultant de
-                l'utilisation de nos services.
+                VizHome est fourni "tel quel" sans garanties. Nous ne sommes pas
+                responsables des dommages résultant de l'utilisation de nos
+                services.
               </p>
             </div>
           </CardContent>
@@ -94,20 +113,24 @@
 
         <h2 class="text-xl font-bold mt-8 mb-4">Résiliation</h2>
         <p>
-          Nous pouvons suspendre ou résilier votre accès à VizHome si vous violez ces conditions ou si vous vous engagez
-          dans des activités interdites.
+          Nous pouvons suspendre ou résilier votre accès à VizHome si vous
+          violez ces conditions ou si vous vous engagez dans des activités
+          interdites.
         </p>
 
-        <h2 class="text-xl font-bold mt-8 mb-4">Modifications des Conditions</h2>
+        <h2 class="text-xl font-bold mt-8 mb-4">
+          Modifications des Conditions
+        </h2>
         <div class="bg-muted/30 rounded-lg p-6 mb-6">
           <div class="flex items-start gap-3">
             <div class="min-w-[24px]">
               <FileEditIcon class="h-5 w-5 text-primary" />
             </div>
             <p>
-              Nous nous réservons le droit de mettre à jour ces Conditions d'utilisation à tout moment, tout en
-              prévenant nos clients. La poursuite de l'utilisation de VizHome après des modifications signifie
-              l'acceptation des conditions mises à jour.
+              Nous nous réservons le droit de mettre à jour ces Conditions
+              d'utilisation à tout moment, tout en prévenant nos clients. La
+              poursuite de l'utilisation de VizHome après des modifications
+              signifie l'acceptation des conditions mises à jour.
             </p>
           </div>
         </div>
@@ -122,7 +145,8 @@
           </CardHeader>
           <CardContent class="text-center">
             <p class="mb-4">
-              Pour toute question concernant ces Conditions d'utilisation, contactez-nous à :
+              Pour toute question concernant ces Conditions d'utilisation,
+              contactez-nous à :
             </p>
             <Button variant="outline" as-child>
               <a href="mailto:support@vizhome.com">support@vizhome.com</a>
@@ -159,9 +183,13 @@
 
 <script setup lang="ts">
 import {
-  Cpu, AlertOctagonIcon, Code, FileWarningIcon, CopyrightIcon,
-  ShieldOffIcon, FileEditIcon, MessageSquareIcon,
+  Cpu,
+  AlertOctagonIcon,
+  Code,
+  FileWarningIcon,
+  CopyrightIcon,
+  ShieldOffIcon,
+  FileEditIcon,
+  MessageSquareIcon,
 } from 'lucide-vue-next'
 </script>
-
-<style scoped></style>

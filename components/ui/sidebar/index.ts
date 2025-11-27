@@ -1,6 +1,6 @@
 import type { VariantProps } from 'class-variance-authority'
-import type { HTMLAttributes } from 'vue'
 import { cva } from 'class-variance-authority'
+import type { HTMLAttributes } from 'vue'
 
 export interface SidebarProps {
   side?: 'left' | 'right'
@@ -54,7 +54,9 @@ export const sidebarMenuButtonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  },
+  }
 )
 
-export type SidebarMenuButtonVariants = VariantProps<typeof sidebarMenuButtonVariants>
+export type SidebarMenuButtonVariants = VariantProps<
+  typeof sidebarMenuButtonVariants
+>

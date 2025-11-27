@@ -11,9 +11,10 @@
     <Card>
       <CardContent class="pt-6">
         <p>
-          Le SDK Python VizHome vous permet d'intégrer nos services de visualisation 3D dans vos applications Python,
-          scripts d'automatisation et workflows de traitement. Idéal pour les intégrations serveur, l'analyse batch
-          et les pipelines CI/CD.
+          Le SDK Python VizHome vous permet d'intégrer nos services de
+          visualisation 3D dans vos applications Python, scripts
+          d'automatisation et workflows de traitement. Idéal pour les
+          intégrations serveur, l'analyse batch et les pipelines CI/CD.
         </p>
       </CardContent>
     </Card>
@@ -29,7 +30,11 @@
             <pre class="bg-muted text-sm rounded-md p-4 overflow-x-auto">
               <code>pip install vizhome-sdk</code>
             </pre>
-            <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+            <Button
+              size="sm"
+              variant="ghost"
+              class="absolute top-3 right-3 h-6 w-6 p-0"
+            >
               <ClipboardIcon class="h-3 w-3" />
               <span class="sr-only">Copier</span>
             </Button>
@@ -46,10 +51,12 @@
             <InfoIcon class="h-4 w-4" />
             <AlertTitle>Environnements virtuels</AlertTitle>
             <AlertDescription>
-              Nous recommandons d'utiliser un environnement virtuel pour isoler les dépendances de votre projet.
+              Nous recommandons d'utiliser un environnement virtuel pour isoler
+              les dépendances de votre projet.
               <div class="mt-2">
-                <code
-                  class="text-xs px-1 py-0.5 rounded bg-muted">python -m venv venv && source venv/bin/activate</code>
+                <code class="text-xs px-1 py-0.5 rounded bg-muted"
+                  >python -m venv venv && source venv/bin/activate</code
+                >
               </div>
             </AlertDescription>
           </Alert>
@@ -76,7 +83,11 @@ vizhome = VizHome(
 )
                 </code>
               </pre>
-              <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+              <Button
+                size="sm"
+                variant="ghost"
+                class="absolute top-3 right-3 h-6 w-6 p-0"
+              >
                 <ClipboardIcon class="h-3 w-3" />
                 <span class="sr-only">Copier</span>
               </Button>
@@ -97,7 +108,11 @@ print(project.created_at)
 print(project.thumbnail_url)
                 </code>
               </pre>
-              <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+              <Button
+                size="sm"
+                variant="ghost"
+                class="absolute top-3 right-3 h-6 w-6 p-0"
+              >
                 <ClipboardIcon class="h-3 w-3" />
                 <span class="sr-only">Copier</span>
               </Button>
@@ -127,7 +142,11 @@ print(f"Total: {pagination.total}")
 print(f"Pages: {pagination.total_pages}")
                 </code>
               </pre>
-              <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+              <Button
+                size="sm"
+                variant="ghost"
+                class="absolute top-3 right-3 h-6 w-6 p-0"
+              >
                 <ClipboardIcon class="h-3 w-3" />
                 <span class="sr-only">Copier</span>
               </Button>
@@ -143,7 +162,8 @@ print(f"Pages: {pagination.total_pages}")
       <Card>
         <CardContent class="pt-6">
           <p class="mb-4">
-            Le SDK Python est particulièrement adapté pour automatiser l'upload et le traitement d'images :
+            Le SDK Python est particulièrement adapté pour automatiser l'upload
+            et le traitement d'images :
           </p>
 
           <div class="relative mb-6">
@@ -163,7 +183,7 @@ project = vizhome.projects.create(
 
 # Chemin des images
 images_dir = "/chemin/vers/images/"
-image_files = [os.path.join(images_dir, f) for f in os.listdir(images_dir) 
+image_files = [os.path.join(images_dir, f) for f in os.listdir(images_dir)
                if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
 
 # Créer une session d'upload
@@ -198,15 +218,15 @@ finished = False
 while not finished:
     job_status = vizhome.processing.get_status(processing_job.id)
     print(f"Étape: {job_status.stage}, Progression: {job_status.percentage}%")
-    
+
     if job_status.stage == "completed":
         print("Modèle 3D prêt !")
         finished = True
-    
+
     if job_status.stage == "failed":
         print(f"Échec du traitement: {job_status.error}")
         finished = True
-    
+
     # Attendre avant la prochaine vérification
     import time
     time.sleep(5)
@@ -216,7 +236,11 @@ project = vizhome.projects.get(project.id)
 print(f"URL du modèle: {project.viewer_url}")
               </code>
             </pre>
-            <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+            <Button
+              size="sm"
+              variant="ghost"
+              class="absolute top-3 right-3 h-6 w-6 p-0"
+            >
               <ClipboardIcon class="h-3 w-3" />
               <span class="sr-only">Copier</span>
             </Button>
@@ -226,9 +250,10 @@ print(f"URL du modèle: {project.viewer_url}")
             <InfoIcon class="h-4 w-4" />
             <AlertTitle>Traitement asynchrone</AlertTitle>
             <AlertDescription>
-              Pour les workflows d'intégration continue, vous pouvez également utiliser les webhooks pour recevoir des
-              notifications
-              lorsque le traitement est terminé. Voir la section "Webhooks" pour plus d'informations.
+              Pour les workflows d'intégration continue, vous pouvez également
+              utiliser les webhooks pour recevoir des notifications lorsque le
+              traitement est terminé. Voir la section "Webhooks" pour plus
+              d'informations.
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -262,15 +287,19 @@ while True:
             vizhome.models.download_export(export_job.id, f)
         print("Téléchargement terminé!")
         break
-    
+
     if status.stage == "failed":
         print(f"Échec de l'export: {status.error}")
         break
-    
+
     time.sleep(2)
                   </code>
                 </pre>
-                <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  class="absolute top-3 right-3 h-6 w-6 p-0"
+                >
                   <ClipboardIcon class="h-3 w-3" />
                   <span class="sr-only">Copier</span>
                 </Button>
@@ -300,7 +329,11 @@ for hook in webhooks:
 vizhome.webhooks.delete(webhook.id)
                   </code>
                 </pre>
-                <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  class="absolute top-3 right-3 h-6 w-6 p-0"
+                >
                   <ClipboardIcon class="h-3 w-3" />
                   <span class="sr-only">Copier</span>
                 </Button>
@@ -318,10 +351,10 @@ from vizhome.async_client import AsyncVizHome
 async def main():
     # Initialiser le client asynchrone
     async_vizhome = AsyncVizHome(api_key="votre_cle_api")
-    
+
     # Créer plusieurs projets en parallèle
     project_names = ["Maison 1", "Maison 2", "Maison 3"]
-    
+
     async def create_project(name):
         project = await async_vizhome.projects.create(
             name=name,
@@ -329,17 +362,17 @@ async def main():
         )
         print(f"Projet créé: {project.id}")
         return project
-    
+
     # Exécuter les créations en parallèle
     projects = await asyncio.gather(
         *[create_project(name) for name in project_names]
     )
-    
+
     # Récupérer les détails de chaque projet
     for project in projects:
         details = await async_vizhome.projects.get(project.id)
         print(f"{details.name}: {details.created_at}")
-    
+
     # Fermer la session
     await async_vizhome.close()
 
@@ -347,7 +380,11 @@ async def main():
 asyncio.run(main())
                   </code>
                 </pre>
-                <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  class="absolute top-3 right-3 h-6 w-6 p-0"
+                >
                   <ClipboardIcon class="h-3 w-3" />
                   <span class="sr-only">Copier</span>
                 </Button>
@@ -360,7 +397,9 @@ asyncio.run(main())
 
     <!-- Intégration avec d'autres bibliothèques -->
     <div>
-      <h2 class="text-2xl font-bold mb-4">Intégration avec d'autres bibliothèques</h2>
+      <h2 class="text-2xl font-bold mb-4">
+        Intégration avec d'autres bibliothèques
+      </h2>
       <Card>
         <CardContent class="pt-6">
           <div class="space-y-6">
@@ -399,7 +438,11 @@ if "size_mb" in df.columns:
     print(f"\nTaille moyenne des projets: {df['size_mb'].mean():.2f} MB")
                   </code>
                 </pre>
-                <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  class="absolute top-3 right-3 h-6 w-6 p-0"
+                >
                   <ClipboardIcon class="h-3 w-3" />
                   <span class="sr-only">Copier</span>
                 </Button>
@@ -407,7 +450,9 @@ if "size_mb" in df.columns:
             </div>
 
             <div>
-              <h3 class="text-lg font-medium mb-2">TQDM (barre de progression)</h3>
+              <h3 class="text-lg font-medium mb-2">
+                TQDM (barre de progression)
+              </h3>
               <div class="relative">
                 <pre class="bg-muted text-sm rounded-md p-4 overflow-x-auto">
                   <code>
@@ -422,7 +467,7 @@ project = vizhome.projects.create(name="Projet avec barre de progression")
 
 # Préparer l'upload
 images_dir = "/chemin/vers/images/"
-image_files = [os.path.join(images_dir, f) for f in os.listdir(images_dir) 
+image_files = [os.path.join(images_dir, f) for f in os.listdir(images_dir)
                if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
 
 # Créer une session d'upload
@@ -455,26 +500,30 @@ with tqdm(total=100, desc="Traitement") as pbar:
     last_percentage = 0
     while True:
         status = vizhome.processing.get_status(processing_job.id)
-        
+
         # Mettre à jour la barre de progression
         delta = status.percentage - last_percentage
         if delta > 0:
             pbar.update(delta)
             last_percentage = status.percentage
-        
+
         if status.stage == "completed":
             pbar.update(100 - last_percentage)  # Compléter à 100%
             print("\nTraitement terminé!")
             break
-            
+
         if status.stage == "failed":
             print(f"\nÉchec du traitement: {status.error}")
             break
-            
+
         sleep(2)
                   </code>
                 </pre>
-                <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  class="absolute top-3 right-3 h-6 w-6 p-0"
+                >
                   <ClipboardIcon class="h-3 w-3" />
                   <span class="sr-only">Copier</span>
                 </Button>
@@ -491,7 +540,8 @@ with tqdm(total=100, desc="Traitement") as pbar:
       <Card>
         <CardContent class="pt-6">
           <p class="mb-4">
-            Scénario: Automatisation de la création de modèles 3D pour un catalogue d'immobilier
+            Scénario: Automatisation de la création de modèles 3D pour un
+            catalogue d'immobilier
           </p>
 
           <div class="relative mb-4">
@@ -532,23 +582,23 @@ for prop in properties:
         prop_id = prop['id']
         prop_name = prop['name']
         images_dir = os.path.join('photos', prop_id)
-        
+
         if not os.path.exists(images_dir):
             logger.warning(f"Dossier d'images non trouvé pour {prop_id}, passage au suivant")
             continue
-            
+
         # Récupérer les images
         image_files = [
             os.path.join(images_dir, f) for f in os.listdir(images_dir)
             if f.lower().endswith(('.png', '.jpg', '.jpeg'))
         ]
-        
+
         if len(image_files) < 20:
             logger.warning(f"Pas assez d'images pour {prop_id} ({len(image_files)}), minimum 20 requis")
             continue
-            
+
         logger.info(f"Traitement de '{prop_name}' avec {len(image_files)} images")
-        
+
         # Créer un nouveau projet
         project = vizhome.projects.create(
             name=prop_name,
@@ -561,15 +611,15 @@ for prop in properties:
                 "source": "batch_import"
             }
         )
-        
+
         logger.info(f"Projet créé avec ID: {project.id}")
-        
+
         # Créer une session d'upload
         upload_session = vizhome.uploads.create_session(
             project_id=project.id,
             file_count=len(image_files)
         )
-        
+
         # Uploader les images
         for i, image_file in enumerate(image_files):
             with open(image_file, 'rb') as f:
@@ -581,9 +631,9 @@ for prop in properties:
                 )
             if (i + 1) % 10 == 0:
                 logger.info(f"  {i+1}/{len(image_files)} images uploadées")
-        
+
         logger.info(f"Upload terminé, démarrage du traitement")
-        
+
         # Démarrer le traitement
         processing_job = vizhome.processing.start(
             project_id=project.id,
@@ -594,20 +644,24 @@ for prop in properties:
                 "optimize_for_web": True
             }
         )
-        
+
         # Enregistrer l'ID du job pour suivi ultérieur
         with open('processing_jobs.csv', 'a') as f:
             f.write(f"{datetime.now().isoformat()},{prop_id},{project.id},{processing_job.id}\n")
-        
+
         logger.info(f"Traitement lancé avec job ID: {processing_job.id}")
-        
+
     except Exception as e:
         logger.error(f"Erreur lors du traitement de {prop.get('id')}: {str(e)}")
 
 logger.info("Script terminé")
               </code>
             </pre>
-            <Button size="sm" variant="ghost" class="absolute top-3 right-3 h-6 w-6 p-0">
+            <Button
+              size="sm"
+              variant="ghost"
+              class="absolute top-3 right-3 h-6 w-6 p-0"
+            >
               <ClipboardIcon class="h-3 w-3" />
               <span class="sr-only">Copier</span>
             </Button>
@@ -617,8 +671,10 @@ logger.info("Script terminé")
             <InfoIcon class="h-4 w-4" />
             <AlertTitle>Script de vérification</AlertTitle>
             <AlertDescription>
-              Vous pouvez également créer un script séparé qui vérifie périodiquement le statut des jobs de traitement
-              en utilisant les IDs enregistrés dans processing_jobs.csv et qui notifie lorsque les modèles sont prêts.
+              Vous pouvez également créer un script séparé qui vérifie
+              périodiquement le statut des jobs de traitement en utilisant les
+              IDs enregistrés dans processing_jobs.csv et qui notifie lorsque
+              les modèles sont prêts.
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -645,8 +701,10 @@ logger.info("Script terminé")
 
 <script setup lang="ts">
 import {
-  ArrowRightIcon, ArrowLeftIcon,
-  InfoIcon, ClipboardIcon
+  ArrowRightIcon,
+  ArrowLeftIcon,
+  InfoIcon,
+  ClipboardIcon,
 } from 'lucide-vue-next'
 
 // Définir le layout docs pour cette page

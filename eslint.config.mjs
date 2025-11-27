@@ -1,5 +1,6 @@
 // @ts-check
 import withNuxt from './.nuxt/eslint.config.mjs'
+import prettierConfig from 'eslint-config-prettier'
 
 export default withNuxt(
   // Configuration globale
@@ -17,6 +18,11 @@ export default withNuxt(
       'build/**',
       'static/**',
     ],
+    rules: {
+      // Désactiver les règles dépréciées
+      'no-new-symbol': 'off',
+      '@typescript-eslint/no-var-requires': 'off',
+    },
   },
 
   // Configuration pour les fichiers TypeScript et Vue
@@ -32,48 +38,16 @@ export default withNuxt(
       'no-var': 'error',
       'object-shorthand': 'error',
       'prefer-arrow-callback': 'error',
-      'arrow-spacing': 'error',
-      'comma-dangle': ['error', 'always-multiline'],
-      'quote-props': ['error', 'as-needed'],
-      quotes: ['error', 'single', { avoidEscape: true }],
-      semi: ['error', 'never'],
-      indent: ['error', 2],
-      'no-multiple-empty-lines': ['error', { max: 1 }],
-      'eol-last': 'error',
-      'no-trailing-spaces': 'error',
 
-      // Règles spécifiques à Vue
+      // Règles spécifiques à Vue (sans conflits avec Prettier)
       'vue/multi-word-component-names': 'off',
       'vue/no-v-html': 'warn',
       'vue/require-default-prop': 'off',
-      'vue/html-self-closing': [
-        'error',
-        {
-          html: {
-            void: 'always',
-            normal: 'always',
-            component: 'always',
-          },
-          svg: 'always',
-          math: 'always',
-        },
-      ],
-      'vue/max-attributes-per-line': [
-        'error',
-        {
-          singleline: 3,
-          multiline: 1,
-        },
-      ],
-      'vue/html-indent': ['error', 2],
-      'vue/script-indent': ['error', 2],
       'vue/component-name-in-template-casing': ['error', 'PascalCase'],
       'vue/attribute-hyphenation': ['error', 'always'],
       'vue/v-on-event-hyphenation': ['error', 'always'],
       'vue/prop-name-casing': ['error', 'camelCase'],
       'vue/custom-event-name-casing': ['error', 'camelCase'],
-      'vue/no-spaces-around-equal-signs-in-attribute': 'error',
-      'vue/mustache-interpolation-spacing': ['error', 'always'],
       'vue/v-bind-style': ['error', 'shorthand'],
       'vue/v-on-style': ['error', 'shorthand'],
       'vue/order-in-components': 'error',
@@ -135,22 +109,11 @@ export default withNuxt(
       'import/named': 'off', // Géré par TypeScript
       'import/default': 'off', // Géré par TypeScript
       'import/namespace': 'off', // Géré par TypeScript
-
-      // Règles de formatage
-      'object-curly-spacing': ['error', 'always'],
-      'array-bracket-spacing': ['error', 'never'],
-      'computed-property-spacing': ['error', 'never'],
-      'key-spacing': ['error', { beforeColon: false, afterColon: true }],
-      'comma-spacing': ['error', { before: false, after: true }],
-      'space-before-blocks': 'error',
-      'keyword-spacing': 'error',
-      'space-infix-ops': 'error',
-      'space-unary-ops': 'error',
-      'no-multi-spaces': 'error',
-      'block-spacing': 'error',
-      'brace-style': ['error', '1tbs', { allowSingleLine: true }],
     },
   },
+
+  // Désactiver les règles ESLint qui entrent en conflit avec Prettier
+  prettierConfig,
 
   // Configuration spécifique pour les fichiers Vue
   {
@@ -174,11 +137,8 @@ export default withNuxt(
       'vue/no-template-target-blank': 'error',
       'vue/no-useless-mustaches': 'error',
       'vue/no-useless-v-bind': 'error',
-      'vue/padding-line-between-blocks': 'error',
       'vue/prefer-separate-static-class': 'error',
-      'vue/prefer-true-attribute-shorthand': 'error',
       'vue/v-for-delimiter-style': ['error', 'in'],
-      'vue/v-on-function-call': ['error', 'never'],
       'vue/valid-next-tick': 'error',
     },
   },
@@ -188,7 +148,6 @@ export default withNuxt(
     files: ['*.config.{js,ts,mjs}', '*.config.*.{js,ts,mjs}'],
     rules: {
       'no-console': 'off',
-      '@typescript-eslint/no-var-requires': 'off',
       'import/no-default-export': 'off',
     },
   },

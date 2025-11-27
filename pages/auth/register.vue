@@ -102,11 +102,11 @@
                 <label for="terms" class="text-sm leading-tight cursor-pointer">
                   J'accepte les
                   <Button variant="link" class="p-0 h-auto text-primary" as-child>
-                    <NuxtLink :to="{ path: '/legal/terms' }">Conditions d'utilisation</NuxtLink>
+                    <NuxtLink :to="{ path: '/legal/terms-of-use' }">Conditions d'utilisation</NuxtLink>
                   </Button>
                   et la
                   <Button variant="link" class="p-0 h-auto text-primary" as-child>
-                    <NuxtLink :to="{ path: '/legal/privacy' }">Politique de confidentialité</NuxtLink>
+                    <NuxtLink :to="{ path: '/legal/privacy-policy' }">Politique de confidentialité</NuxtLink>
                   </Button>
                 </label>
               </div>

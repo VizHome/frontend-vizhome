@@ -129,7 +129,7 @@ src="/images/teams/profile_nathan.jpeg" alt="Nathan Marques Da Fontes"
               class="text-center bg-card rounded-lg p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 hover:bg-card/80">
               <div class="relative w-32 h-32 mx-auto mb-4">
                 <img
-src="/images/teams/profile_kortos.jpg" alt="Korto Grinda"
+                  src="/images/teams/profile_kortos.jpg" alt="Korto Grinda"
                   class="rounded-full object-cover w-full h-full border-2 border-primary/10 group-hover:border-primary transition-all">
                 <div class="absolute bottom-0 right-0 bg-primary rounded-full p-1.5">
                   <BrainCircuitIcon class="h-4 w-4 text-secondary" />
@@ -139,6 +139,33 @@ src="/images/teams/profile_kortos.jpg" alt="Korto Grinda"
               <p class="text-sm text-muted-foreground mb-3">Stagiaire IA</p>
               <p class="text-sm text-muted-foreground hidden group-hover:block mb-3">
                 Jeune talent spécialisé dans les algorithmes d'IA et l'apprentissage automatique pour nos modèles 3D.
+              </p>
+              <div class="flex justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="#" class="text-muted-foreground hover:text-primary">
+                  <LinkedinIcon class="h-4 w-4" />
+                </a>
+                <a href="#" class="text-muted-foreground hover:text-primary">
+                  <GithubIcon class="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="group">
+            <div
+              class="text-center bg-card rounded-lg p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 hover:bg-card/80">
+              <div class="relative w-32 h-32 mx-auto mb-4">
+                <img
+                  src="/images/teams/profile_moad.jpg" alt="Maod Mabrouk"
+                  class="rounded-full object-cover w-full h-full border-2 border-primary/10 group-hover:border-primary transition-all">
+                <div class="absolute bottom-0 right-0 bg-primary rounded-full p-1.5">
+                  <BrainCircuitIcon class="h-4 w-4 text-secondary" />
+                </div>
+              </div>
+              <h3 class="font-medium text-lg">Maod Mabrouk</h3>
+              <p class="text-sm text-muted-foreground mb-3">Developpeur Full Stack</p>
+              <p class="text-sm text-muted-foreground hidden group-hover:block mb-3">
+                Passionné par le développement web et les technologies émergentes, il contribue activement à l'évolution
+                de notre plateforme.
               </p>
               <div class="flex justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                 <a href="#" class="text-muted-foreground hover:text-primary">

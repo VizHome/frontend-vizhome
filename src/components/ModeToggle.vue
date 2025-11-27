@@ -5,28 +5,16 @@
 </template>
 
 <script lang="ts" setup>
-import { Sun, Moon, Monitor } from 'lucide-vue-next'
+import { Sun, Moon } from 'lucide-vue-next'
 
 // Declare Color Mode
 const colorMode = useColorMode()
 
-
 const currentThemeIcon = computed(() => {
-  if (colorMode.preference === 'system') {
-    return Monitor
-  } else {
-    return colorMode.preference === 'dark'
-      ? Sun
-      : Moon
-  }
+  return colorMode.preference === 'dark' ? Sun : Moon
 })
 
 function toggleTheme() {
-  if (colorMode.preference === 'light') {
-    colorMode.preference = 'dark'
-  } else if (colorMode.preference === 'dark') {
-    colorMode.preference = 'light'
-  }
+  colorMode.preference = colorMode.preference === 'light' ? 'dark' : 'light'
 }
-
 </script>

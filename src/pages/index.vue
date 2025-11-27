@@ -14,16 +14,16 @@
               Générez des rendus 3D photoréalistes à partir de simples photos avec notre moteur d'IA avancé.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 pt-4">
-              <NuxtLink to="/auth/register">
-                <Button size="lg">
+              <Button size="lg" as-child>
+                <a to="/auth/register">
                   Commencer gratuitement
-                </Button>
-              </NuxtLink>
-              <NuxtLink to="/features">
-                <Button size="lg" variant="outline">
+                </a>
+              </Button>
+              <Button size="lg" variant="outline" as-child>
+                <a to="/features">
                   Découvrir les fonctionnalités
-                </Button>
-              </NuxtLink>
+                </a>
+              </Button>
             </div>
             <div class="flex items-center gap-4 pt-6">
               <div class="flex -space-x-2">
@@ -174,9 +174,11 @@
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="ghost" size="sm" class="gap-1">
-                En savoir plus
-                <ChevronRightIcon class="h-4 w-4" />
+              <Button variant="ghost" size="sm" class="gap-1" as-child>
+                <NuxtLink to="/features">
+                  En savoir plus
+                  <ChevronRightIcon class="h-4 w-4" />
+                </NuxtLink>
               </Button>
             </CardFooter>
           </Card>
@@ -192,9 +194,11 @@
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="ghost" size="sm" class="gap-1">
-                En savoir plus
-                <ChevronRightIcon class="h-4 w-4" />
+              <Button variant="ghost" size="sm" class="gap-1" as-child>
+                <NuxtLink to="/features">
+                  En savoir plus
+                  <ChevronRightIcon class="h-4 w-4" />
+                </NuxtLink>
               </Button>
             </CardFooter>
           </Card>
@@ -210,9 +214,11 @@
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="ghost" size="sm" class="gap-1">
-                En savoir plus
-                <ChevronRightIcon class="h-4 w-4" />
+              <Button variant="ghost" size="sm" class="gap-1" as-child>
+                <NuxtLink to="/features">
+                  En savoir plus
+                  <ChevronRightIcon class="h-4 w-4" />
+                </NuxtLink>
               </Button>
             </CardFooter>
           </Card>
@@ -228,9 +234,11 @@
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="ghost" size="sm" class="gap-1">
-                En savoir plus
-                <ChevronRightIcon class="h-4 w-4" />
+              <Button variant="ghost" size="sm" class="gap-1" as-child>
+                <NuxtLink to="/features">
+                  En savoir plus
+                  <ChevronRightIcon class="h-4 w-4" />
+                </NuxtLink>
               </Button>
             </CardFooter>
           </Card>
@@ -246,9 +254,11 @@
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="ghost" size="sm" class="gap-1">
-                En savoir plus
-                <ChevronRightIcon class="h-4 w-4" />
+              <Button variant="ghost" size="sm" class="gap-1" as-child>
+                <NuxtLink to="/features">
+                  En savoir plus
+                  <ChevronRightIcon class="h-4 w-4" />
+                </NuxtLink>
               </Button>
             </CardFooter>
           </Card>
@@ -264,9 +274,11 @@
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="ghost" size="sm" class="gap-1">
-                En savoir plus
-                <ChevronRightIcon class="h-4 w-4" />
+              <Button variant="ghost" size="sm" class="gap-1" as-child>
+                <NuxtLink to="/features">
+                  En savoir plus
+                  <ChevronRightIcon class="h-4 w-4" />
+                </NuxtLink>
               </Button>
             </CardFooter>
           </Card>
@@ -478,11 +490,11 @@
           </Card>
         </div>
         <div class="mt-10 text-center">
-          <NuxtLink to="/testimonials">
-            <Button as-child>
+          <Button as-child>
+            <NuxtLink to="/testimonials">
               Voir tous les témoignages
-            </Button>
-          </NuxtLink>
+            </NuxtLink>
+          </Button>
         </div>
       </div>
     </section>

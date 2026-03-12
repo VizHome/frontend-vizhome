@@ -1,19 +1,12 @@
 <template>
   <div class="render-container">
     <canvas ref="canvasRef" class="render-canvas" />
-    <RenderSidebar
-      :fps="fps"
-      :triangle-count="triangleCount"
-      @reset-camera="resetCamera"
-      @toggle-fullscreen="toggleFullscreen"
-      @capture-screenshot="captureScreenshot"
-      @sidebar-toggled="onSidebarToggled"
-    />
+    <RenderSidebar />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted } from 'vue'
 
 definePageMeta({
   layout: 'none',
@@ -23,17 +16,11 @@ definePageMeta({
 const canvasRef = ref<HTMLCanvasElement>()
 
 const {
-  fps,
-  triangleCount,
   animationSpeedArray,
   initThreeJS,
   animate,
   setupResizeHandler,
   setupPerformanceMonitor,
-  resetCamera,
-  toggleFullscreen,
-  captureScreenshot,
-  handleResize,
 } = useThreeScene(canvasRef)
 
 const { initLighting } = useThreeLighting()
@@ -65,11 +52,6 @@ onMounted(() => {
     weatherFrame(elapsed, speed)
   })
 })
-
-// ─── Événements sidebar ───────────────────────────────────────────────────────
-const onSidebarToggled = () => {
-  setTimeout(() => handleResize(), 350)
-}
 </script>
 
 <style scoped>

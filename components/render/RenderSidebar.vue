@@ -38,7 +38,7 @@
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton @click="emit('reset-camera')">
+                <SidebarMenuButton @click="resetCamera">
                   <RotateCcw class="h-4 w-4" />
                   <span>Réinitialiser la vue</span>
                 </SidebarMenuButton>
@@ -50,13 +50,13 @@
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton @click="emit('toggle-fullscreen')">
+                <SidebarMenuButton @click="toggleFullscreen">
                   <Maximize class="h-4 w-4" />
                   <span>Plein écran</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton @click="emit('capture-screenshot')">
+                <SidebarMenuButton @click="captureScreenshot">
                   <Camera class="h-4 w-4" />
                   <span>Capture d'écran</span>
                 </SidebarMenuButton>
@@ -778,8 +778,6 @@ import {
   Move3d,
   Scale,
 } from 'lucide-vue-next'
-import { ref } from 'vue'
-
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -882,29 +880,16 @@ const {
   updateAudioVolume,
 } = useThreeAudio()
 
-const { animationSpeedArray } = useThreeScene()
-
-// ─── Props exposés par la page ────────────────────────────────────────────────
-const props = defineProps<{
-  fps: number
-  triangleCount: number
-}>()
-
-// ─── Emits vers la page ───────────────────────────────────────────────────────
-const emit = defineEmits<{
-  'reset-camera': []
-  'toggle-fullscreen': []
-  'capture-screenshot': []
-  'sidebar-toggled': []
-}>()
-
-// ─── État local sidebar ───────────────────────────────────────────────────────
-const sidebarCollapsed = ref(false)
-
-const toggleSidebarCollapse = () => {
-  sidebarCollapsed.value = !sidebarCollapsed.value
-  emit('sidebar-toggled')
-}
+const {
+  animationSpeedArray,
+  fps,
+  triangleCount,
+  sidebarCollapsed,
+  toggleSidebarCollapse,
+  resetCamera,
+  toggleFullscreen,
+  captureScreenshot,
+} = useThreeScene()
 </script>
 
 <style scoped>

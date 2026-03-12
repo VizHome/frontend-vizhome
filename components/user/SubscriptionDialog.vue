@@ -1,0 +1,174 @@
+<template>
+  <Dialog v-model:open="open">
+    <DialogContent class="sm:max-w-lg">
+      <DialogHeader>
+        <DialogTitle class="flex items-center gap-2">
+          <CreditCard class="h-5 w-5 text-primary" />
+          Abonnement
+        </DialogTitle>
+        <DialogDescription>
+          Votre plan actuel et les options disponibles.
+        </DialogDescription>
+      </DialogHeader>
+
+      <div class="flex flex-col gap-4 py-2">
+        <!-- Plan actuel -->
+        <div
+          class="rounded-xl border-2 border-primary/30 bg-primary/5 p-4 flex items-center gap-4"
+        >
+          <div
+            class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 shrink-0"
+          >
+            <component :is="currentPlanIcon" class="h-6 w-6 text-primary" />
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-sm">Plan {{ planLabel }}</p>
+              <span
+                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
+                :class="planBadgeClass"
+                >Actuel</span
+              >
+            </div>
+            <p class="text-xs text-muted-foreground mt-0.5">
+              {{ currentPlanDesc }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Comparaison des plans -->
+        <div class="flex flex-col gap-2">
+          <p
+            class="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+          >
+            Tous les plans
+          </p>
+          <div class="flex flex-col gap-2">
+            <div
+              v-for="plan in PLANS"
+              :key="plan.id"
+              :class="[
+                'rounded-xl border p-3 flex items-center gap-3 transition-colors',
+                user.plan === plan.id
+                  ? 'border-primary/40 bg-primary/5'
+                  : 'border-border bg-muted/30',
+              ]"
+            >
+              <div
+                class="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+                :class="plan.iconBg"
+              >
+                <component
+                  :is="plan.icon"
+                  class="h-4 w-4"
+                  :class="plan.iconColor"
+                />
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <p class="text-sm font-medium">{{ plan.label }}</p>
+                  <span
+                    v-if="user.plan === plan.id"
+                    class="text-xs text-primary font-medium"
+                    >● Actuel</span
+                  >
+                </div>
+                <p class="text-xs text-muted-foreground truncate">
+                  {{ plan.desc }}
+                </p>
+              </div>
+              <p class="text-sm font-semibold shrink-0 tabular-nums">
+                {{ plan.price }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA upgrade si pas enterprise -->
+        <div
+          v-if="user.plan !== 'enterprise'"
+          class="rounded-xl border border-dashed border-primary/40 bg-primary/5 p-4 flex flex-col gap-3"
+        >
+          <p class="text-sm font-medium">Passez au niveau supérieur</p>
+          <p class="text-xs text-muted-foreground">
+            Débloquez plus de rendus, de stockage et des fonctionnalités
+            avancées.
+          </p>
+          <Button class="w-full" size="sm">
+            <Zap class="h-4 w-4 mr-2" />
+            Mettre à niveau
+          </Button>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <Button variant="ghost" @click="open = false">Fermer</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+</template>
+
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { Building2, CreditCard, Rocket, Sparkles, Zap } from 'lucide-vue-next'
+import type { UserPlan } from '~/composables/useUser'
+
+const open = defineModel<boolean>('open', { default: false })
+
+const { user, planLabel } = useUser()
+
+const PLANS: {
+  id: UserPlan
+  label: string
+  desc: string
+  price: string
+  icon: unknown
+  iconBg: string
+  iconColor: string
+}[] = [
+  {
+    id: 'free',
+    label: 'Gratuit',
+    desc: '5 rendus/mois · 1 Go stockage',
+    price: '0 €/mois',
+    icon: Sparkles,
+    iconBg: 'bg-muted',
+    iconColor: 'text-muted-foreground',
+  },
+  {
+    id: 'pro',
+    label: 'Pro',
+    desc: '50 rendus/mois · 5 Go stockage',
+    price: '19 €/mois',
+    icon: Rocket,
+    iconBg: 'bg-primary/10',
+    iconColor: 'text-primary',
+  },
+  {
+    id: 'enterprise',
+    label: 'Entreprise',
+    desc: 'Rendus illimités · Stockage illimité',
+    price: 'Sur devis',
+    icon: Building2,
+    iconBg: 'bg-amber-500/10',
+    iconColor: 'text-amber-600',
+  },
+]
+
+const currentPlanIcon = computed(
+  () => PLANS.find(p => p.id === user.value.plan)?.icon ?? Sparkles
+)
+
+const currentPlanDesc = computed(
+  () => PLANS.find(p => p.id === user.value.plan)?.desc ?? ''
+)
+
+const planBadgeClass = computed(() => {
+  const classes: Record<UserPlan, string> = {
+    free: 'bg-muted text-muted-foreground',
+    pro: 'bg-primary/15 text-primary',
+    enterprise: 'bg-amber-500/15 text-amber-600',
+  }
+  return classes[user.value.plan]
+})
+</script>

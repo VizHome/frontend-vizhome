@@ -43,6 +43,13 @@ export function useThreeLighting() {
     directionalLight.castShadow = true
     directionalLight.shadow.mapSize.width = 2048
     directionalLight.shadow.mapSize.height = 2048
+    directionalLight.shadow.camera.near = 0.5
+    directionalLight.shadow.camera.far = 200
+    directionalLight.shadow.camera.left = -40
+    directionalLight.shadow.camera.right = 40
+    directionalLight.shadow.camera.top = 40
+    directionalLight.shadow.camera.bottom = -40
+    directionalLight.shadow.bias = -0.0005
     scene.add(directionalLight)
   }
 

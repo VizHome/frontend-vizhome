@@ -136,6 +136,12 @@ export function useSketchCanvas() {
     link.click()
   }
 
+  /** Retourne le contenu du canvas en base64 PNG (pour envoi à l'IA). */
+  const getCanvasDataURL = (): string | null => {
+    if (!canvasEl) return null
+    return canvasEl.toDataURL('image/png')
+  }
+
   return {
     currentTool,
     brushSize,
@@ -150,5 +156,6 @@ export function useSketchCanvas() {
     redo,
     clear,
     exportPNG,
+    getCanvasDataURL,
   }
 }

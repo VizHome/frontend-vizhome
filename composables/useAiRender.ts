@@ -1,5 +1,5 @@
 /**
- * useAiRender — Génération IA par prompt (2D ou 3D)
+ * useAiRender — Génération IA par prompt (2D ou 3D) + rendu depuis croquis
  * L'endpoint /api/render est un stub à remplacer par la vraie API IA
  */
 import { ref } from 'vue'
@@ -22,6 +22,11 @@ const isLoading = ref(false)
 const result = ref<string | null>(null)
 const error = ref<string | null>(null)
 const promptHistory = ref<PromptHistoryEntry[]>([])
+
+// ─── État sketch → IA ────────────────────────────────────────────────────────
+const sketchResult = ref<string | null>(null)
+const isSketchLoading = ref(false)
+const sketchError = ref<string | null>(null)
 
 // ─── Composable ──────────────────────────────────────────────────────────────
 export function useAiRender() {
@@ -72,6 +77,42 @@ export function useAiRender() {
     }
   }
 
+  /**
+   * Envoie le croquis (base64 PNG) à l'API IA pour un rendu 2D.
+   * styleHint permet d'ajouter un style ("photoréaliste", "aquarelle", etc.)
+   */
+  const generateFromSketch = async (
+    imageBase64: string,
+    styleHint?: string
+  ) => {
+    if (isSketchLoading.value) return
+    isSketchLoading.value = true
+    sketchError.value = null
+    sketchResult.value = null
+
+    try {
+      const data = await $fetch<{ imageUrl: string | null }>('/api/render', {
+        method: 'POST',
+        body: {
+          prompt: styleHint ?? 'Rendu architectural réaliste depuis ce croquis',
+          outputType: '2d' as AiOutputType,
+          sketchBase64: imageBase64,
+        },
+      })
+      sketchResult.value = data.imageUrl
+    } catch (err: unknown) {
+      sketchError.value =
+        err instanceof Error ? err.message : 'Erreur lors de la génération'
+    } finally {
+      isSketchLoading.value = false
+    }
+  }
+
+  const clearSketchResult = () => {
+    sketchResult.value = null
+    sketchError.value = null
+  }
+
   const loadFromHistory = (entry: PromptHistoryEntry) => {
     prompt.value = entry.prompt
     outputType.value = entry.outputType
@@ -85,6 +126,7 @@ export function useAiRender() {
   }
 
   return {
+    // Prompt
     prompt,
     outputType,
     isLoading,
@@ -95,5 +137,11 @@ export function useAiRender() {
     generate,
     loadFromHistory,
     clearResult,
+    // Sketch → IA
+    sketchResult,
+    isSketchLoading,
+    sketchError,
+    generateFromSketch,
+    clearSketchResult,
   }
 }

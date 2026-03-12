@@ -3,9 +3,11 @@
  * À remplacer par l'appel API réel (OpenAI DALL-E, Stable Diffusion, etc.)
  */
 export default defineEventHandler(async event => {
-  const body = await readBody<{ prompt: string; outputType: '2d' | '3d' }>(
-    event
-  )
+  const body = await readBody<{
+    prompt: string
+    outputType: '2d' | '3d'
+    sketchBase64?: string
+  }>(event)
 
   if (!body?.prompt?.trim()) {
     throw createError({
@@ -38,6 +40,7 @@ export default defineEventHandler(async event => {
     status: 'placeholder',
     prompt: body.prompt,
     outputType: body.outputType,
+    hasSketch: !!body.sketchBase64,
     imageUrl: null as string | null,
     message:
       'API IA non configurée — voir server/api/render.post.ts pour brancher OpenAI ou Stable Diffusion',

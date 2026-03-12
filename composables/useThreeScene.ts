@@ -18,6 +18,7 @@ let renderer: THREE.WebGLRenderer
 let controls: OrbitControls
 let clock: THREE.Clock
 let animationId: number
+let groundPlane: THREE.Mesh | null = null
 
 const sidebarCollapsed = ref(false)
 const fps = ref(0)
@@ -66,12 +67,30 @@ export function useThreeScene(canvasRef?: Ref<HTMLCanvasElement | undefined>) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    renderer.toneMapping = THREE.ACESFilmicToneMapping
+    renderer.toneMappingExposure = 1.0
 
     controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
     controls.dampingFactor = 0.1
 
     clock = new THREE.Clock()
+
+    // ─── Sol réfléchissant ───────────────────────────────────────────────────
+    const groundGeo = new THREE.PlaneGeometry(200, 200)
+    const groundMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.05,
+      metalness: 0.0,
+      transparent: true,
+      opacity: 0.35,
+    })
+    groundPlane = new THREE.Mesh(groundGeo, groundMat)
+    groundPlane.rotation.x = -Math.PI / 2
+    groundPlane.position.y = -0.01
+    groundPlane.receiveShadow = true
+    groundPlane.name = 'groundPlane'
+    scene.add(groundPlane)
   }
 
   const handleResize = () => {

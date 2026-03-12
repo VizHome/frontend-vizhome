@@ -7,8 +7,19 @@
       class="render-canvas"
       tabindex="0"
     />
-    <!-- Sidebar (contient RenderModeBar + SketchCanvas + PromptPanel) -->
-    <RenderSidebar />
+
+    <!-- Barre de mode toujours visible -->
+    <RenderModeBar />
+
+    <!-- Modes légers montés/démontés à la demande -->
+    <SketchCanvas v-if="currentMode === 'sketch'" />
+    <PromptPanel v-if="currentMode === 'prompt'" />
+
+    <!-- Overlays et contrôles 3D -->
+    <template v-if="currentMode === '3d'">
+      <RenderOverlays />
+      <ThreeControls />
+    </template>
   </div>
 </template>
 

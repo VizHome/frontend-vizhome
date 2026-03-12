@@ -1,56 +1,56 @@
 <template>
   <div class="render-container">
-    <canvas ref="canvasRef" class="render-canvas" />
+    <!-- Canvas Three.js — v-show pour ne jamais démissionner le renderer -->
+    <canvas
+      v-show="currentMode === '3d'"
+      ref="canvasRef"
+      class="render-canvas"
+    />
+    <!-- Sidebar (contient RenderModeBar + SketchCanvas + PromptPanel) -->
     <RenderSidebar />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
-definePageMeta({
-  layout: 'none',
-})
+definePageMeta({ layout: 'none' })
 
-// ─── Composables (singletons) ────────────────────────────────────────────────
+// ─── Mode actif ───────────────────────────────────────────────────────────────
+const { currentMode } = useRenderMode()
+
+// ─── Canvas & composables Three.js ───────────────────────────────────────────
 const canvasRef = ref<HTMLCanvasElement>()
+let threeInitialized = false
 
-const {
-  animationSpeedArray,
-  initThreeJS,
-  animate,
-  setupResizeHandler,
-  setupPerformanceMonitor,
-} = useThreeScene(canvasRef)
+const { initThreeJS, animate, setupResizeHandler, setupPerformanceMonitor } =
+  useThreeScene(canvasRef)
 
 const { initLighting } = useThreeLighting()
-const { createHouse, updateFrame: houseFrame } = useThreeHouse()
-const { createOptionalElements, updateFrame: elementsFrame } =
-  useThreeElements()
-const { initWeatherGroups, updateFrame: weatherFrame } = useThreeWeather()
 const { initLoaders } = useThreeModels()
-const { setupAudio } = useThreeAudio()
+const { updateFrame: firstPersonFrame } = useThreeFirstPerson()
 
-// ─── Initialisation ───────────────────────────────────────────────────────────
-onMounted(() => {
-  if (typeof window === 'undefined') return
-
+// ─── Initialisation lazy (seulement au premier passage en mode 3D) ────────────
+const initThree = () => {
+  if (threeInitialized) return
+  threeInitialized = true
   initThreeJS()
   initLighting()
-  createHouse()
-  createOptionalElements()
-  initWeatherGroups()
   initLoaders()
-  setupAudio()
   setupResizeHandler()
   setupPerformanceMonitor()
-
-  animate((delta, elapsed) => {
-    const speed = animationSpeedArray.value[0] ?? 1
-    houseFrame(delta, speed)
-    elementsFrame(delta, elapsed)
-    weatherFrame(elapsed, speed)
+  animate((delta: number) => {
+    firstPersonFrame(delta)
   })
+}
+
+onMounted(() => {
+  if (typeof window === 'undefined') return
+  if (currentMode.value === '3d') initThree()
+})
+
+watch(currentMode, mode => {
+  if (mode === '3d') initThree()
 })
 </script>
 

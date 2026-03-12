@@ -27,652 +27,544 @@
         </SidebarMenu>
       </SidebarHeader>
 
-      <!-- Contenu du menu avec scrollbar personnalisée -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- Contenu conditionnel par mode                                       -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
       <SidebarContent class="custom-scroll">
-        <!-- Section Vue -->
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            <Eye class="h-4 w-4 mr-1" />
-            Vue
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton @click="resetCamera">
-                  <RotateCcw class="h-4 w-4" />
-                  <span>Réinitialiser la vue</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton @click="toggleWireframe">
-                  <Grid3x3 class="h-4 w-4" />
-                  <span>{{ wireframe ? 'Solide' : 'Filaire' }}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton @click="toggleFullscreen">
-                  <Maximize class="h-4 w-4" />
-                  <span>Plein écran</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton @click="captureScreenshot">
-                  <Camera class="h-4 w-4" />
-                  <span>Capture d'écran</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <!-- Section Éclairage -->
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            <Sun class="h-4 w-4 mr-1" />
-            Éclairage
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton @click="toggleDayNight">
-                  <Moon v-if="isDay" class="h-4 w-4" />
-                  <Sun v-else class="h-4 w-4" />
-                  <span>{{ isDay ? 'Mode Nuit' : 'Mode Jour' }}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <div
-                  class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
-                >
-                  <Label class="flex items-center gap-2 text-xs">
-                    <Lightbulb class="h-3 w-3" />
-                    Intensité lumière
-                  </Label>
-                  <Slider
-                    v-model="lightIntensity"
-                    :min="0"
-                    :max="2"
-                    :step="0.1"
-                    class="w-full"
-                    @update:model-value="updateLighting"
-                  />
-                  <div class="text-center text-xs text-muted-foreground">
-                    {{ lightIntensity[0] }}
-                  </div>
-                </div>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <div
-                  class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
-                >
-                  <Label class="flex items-center gap-2 text-xs">
-                    <Sun class="h-3 w-3" />
-                    Angle du soleil
-                  </Label>
-                  <Slider
-                    v-model="sunAngle"
-                    :min="0"
-                    :max="360"
-                    :step="1"
-                    class="w-full"
-                    @update:model-value="updateSunPosition"
-                  />
-                  <div class="text-center text-xs text-muted-foreground">
-                    {{ sunAngle[0] }}°
-                  </div>
-                </div>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <!-- Section Couleurs -->
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            <Palette class="h-4 w-4 mr-1" />
-            Couleurs
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <div
-                  class="px-2 py-2 space-y-3 group-data-[collapsible=icon]:hidden"
-                >
-                  <div class="flex items-center justify-between">
-                    <Label class="flex items-center gap-2 text-xs">
-                      <Home class="h-3 w-3" />
-                      Murs
-                    </Label>
-                    <Input
-                      v-model="wallColor"
-                      type="color"
-                      class="w-8 h-6 p-0 border-0"
-                      @change="updateColors"
-                    />
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <Label class="flex items-center gap-2 text-xs">
-                      <Triangle class="h-3 w-3" />
-                      Toit
-                    </Label>
-                    <Input
-                      v-model="roofColor"
-                      type="color"
-                      class="w-8 h-6 p-0 border-0"
-                      @change="updateColors"
-                    />
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <Label class="flex items-center gap-2 text-xs">
-                      <DoorOpen class="h-3 w-3" />
-                      Porte
-                    </Label>
-                    <Input
-                      v-model="doorColor"
-                      type="color"
-                      class="w-8 h-6 p-0 border-0"
-                      @change="updateColors"
-                    />
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <Label class="flex items-center gap-2 text-xs">
-                      <Mountain class="h-3 w-3" />
-                      Sol
-                    </Label>
-                    <Input
-                      v-model="groundColor"
-                      type="color"
-                      class="w-8 h-6 p-0 border-0"
-                      @change="updateColors"
-                    />
-                  </div>
-                </div>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <!-- Section Éléments -->
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            <Trees class="h-4 w-4 mr-1" />
-            Éléments
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="showTrees ? 'default' : 'outline'"
-                  @click="toggleTrees"
-                >
-                  <TreePine class="h-4 w-4" />
-                  <span>{{ showTrees ? 'Masquer' : 'Afficher' }} arbres</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="showFence ? 'default' : 'outline'"
-                  @click="toggleFence"
-                >
-                  <Fence class="h-4 w-4" />
-                  <span>{{ showFence ? 'Masquer' : 'Afficher' }} clôture</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton @click="addRandomCloud">
-                  <Cloud class="h-4 w-4" />
-                  <span>Ajouter nuage</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="showGarden ? 'default' : 'outline'"
-                  @click="toggleGarden"
-                >
-                  <Flower2 class="h-4 w-4" />
-                  <span>{{ showGarden ? 'Masquer' : 'Afficher' }} jardin</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="showPath ? 'default' : 'outline'"
-                  @click="togglePath"
-                >
-                  <Footprints class="h-4 w-4" />
-                  <span>{{ showPath ? 'Masquer' : 'Afficher' }} chemin</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <!-- Section Météo & Effets -->
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            <CloudRain class="h-4 w-4 mr-1" />
-            Météo & Effets
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="isRaining ? 'default' : 'outline'"
-                  @click="toggleRain"
-                >
-                  <CloudRain class="h-4 w-4" />
-                  <span>{{ isRaining ? 'Arrêter' : 'Démarrer' }} pluie</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="isSnowing ? 'default' : 'outline'"
-                  @click="toggleSnow"
-                >
-                  <Snowflake class="h-4 w-4" />
-                  <span>{{ isSnowing ? 'Arrêter' : 'Démarrer' }} neige</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="showFog ? 'default' : 'outline'"
-                  @click="toggleFog"
-                >
-                  <CloudFog class="h-4 w-4" />
-                  <span>{{ showFog ? 'Masquer' : 'Afficher' }} brouillard</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton @click="addFireflies">
-                  <Sparkles class="h-4 w-4" />
-                  <span>Ajouter lucioles</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="showSmoke ? 'default' : 'outline'"
-                  @click="toggleSmoke"
-                >
-                  <Flame class="h-4 w-4" />
-                  <span>{{ showSmoke ? 'Arrêter' : 'Démarrer' }} fumée</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <!-- Section Animations -->
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            <Play class="h-4 w-4 mr-1" />
-            Animations
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="doorOpen ? 'default' : 'outline'"
-                  @click="toggleDoorAnimation"
-                >
-                  <DoorOpen class="h-4 w-4" />
-                  <span>{{ doorOpen ? 'Fermer' : 'Ouvrir' }} porte</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="treeAnimation ? 'default' : 'outline'"
-                  @click="toggleTreeAnimation"
-                >
-                  <Wind class="h-4 w-4" />
-                  <span>{{ treeAnimation ? 'Arrêter' : 'Démarrer' }} vent</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="rotateHouse ? 'default' : 'outline'"
-                  @click="toggleRotateHouse"
-                >
-                  <RotateCw class="h-4 w-4" />
-                  <span
-                    >{{ rotateHouse ? 'Arrêter' : 'Démarrer' }} rotation</span
-                  >
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <div
-                  class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
-                >
-                  <Label class="flex items-center gap-2 text-xs">
-                    <Gauge class="h-3 w-3" />
-                    Vitesse animation
-                  </Label>
-                  <Slider
-                    v-model="animationSpeedArray"
-                    :min="0.1"
-                    :max="3"
-                    :step="0.1"
-                    class="w-full"
-                  />
-                  <div class="text-center text-xs text-muted-foreground">
-                    {{ animationSpeedArray[0] }}x
-                  </div>
-                </div>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <!-- Section Audio -->
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            <Volume2 class="h-4 w-4 mr-1" />
-            Audio
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :variant="ambientSound ? 'default' : 'outline'"
-                  @click="toggleAmbientSound"
-                >
-                  <Volume2 v-if="ambientSound" class="h-4 w-4" />
-                  <VolumeX v-else class="h-4 w-4" />
-                  <span
-                    >{{ ambientSound ? 'Arrêter' : 'Démarrer' }} sons
-                    ambiants</span
-                  >
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <div
-                  class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
-                >
-                  <Label class="flex items-center gap-2 text-xs">
-                    <Volume1 class="h-3 w-3" />
-                    Volume
-                  </Label>
-                  <Slider
-                    v-model="audioVolumeArray"
-                    :min="0"
-                    :max="1"
-                    :step="0.1"
-                    class="w-full"
-                    @update:model-value="updateAudioVolume"
-                  />
-                  <div class="text-center text-xs text-muted-foreground">
-                    {{ Math.round((audioVolumeArray[0] ?? 0) * 100) }}%
-                  </div>
-                </div>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <!-- Section Saisons -->
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            <Calendar class="h-4 w-4 mr-1" />
-            Saisons
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
-                  <Select
-                    v-model="currentSeason"
-                    @update:model-value="changeSeason"
-                  >
-                    <SelectTrigger class="w-full">
-                      <SelectValue placeholder="Choisir une saison" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="spring">🌸 Printemps</SelectItem>
-                      <SelectItem value="summer">☀️ Été</SelectItem>
-                      <SelectItem value="autumn">🍂 Automne</SelectItem>
-                      <SelectItem value="winter">❄️ Hiver</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <!-- Section Modèles 3D -->
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            <Upload class="h-4 w-4 mr-1" />
-            Modèles 3D
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  :disabled="isLoadingModel"
-                  @click="importModel"
-                >
-                  <Upload class="h-4 w-4" />
-                  <span>{{
-                    isLoadingModel ? 'Chargement...' : 'Importer modèle'
-                  }}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              <!-- Message d'erreur -->
-              <SidebarMenuItem v-if="modelLoadError">
-                <div
-                  class="px-2 py-2 text-xs text-red-500 group-data-[collapsible=icon]:hidden"
-                >
-                  {{ modelLoadError }}
-                </div>
-              </SidebarMenuItem>
-
-              <!-- Liste des modèles importés -->
-              <SidebarMenuItem v-for="model in importedModels" :key="model.id">
-                <div
-                  class="px-2 py-1 space-y-2 group-data-[collapsible=icon]:hidden"
-                >
-                  <div class="flex items-center justify-between">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      class="flex-1 justify-start text-xs"
-                      :class="{ 'bg-accent': selectedModelId === model.id }"
-                      @click="selectModel(model.id)"
-                    >
-                      <Move3d class="h-3 w-3 mr-1" />
-                      {{ model.name }}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      class="h-6 w-6 p-0 text-red-500 hover:text-red-700"
-                      @click="removeModel(model.id)"
-                    >
-                      <Trash2 class="h-3 w-3" />
-                    </Button>
-                  </div>
-
-                  <!-- Contrôles du modèle sélectionné -->
+        <!-- ─── MODE SKETCH ─────────────────────────────────────────────── -->
+        <template v-if="currentMode === 'sketch'">
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Pencil class="h-4 w-4 mr-1" />
+              Dessin
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <!-- Outil -->
+                <SidebarMenuItem>
                   <div
-                    v-if="selectedModelId === model.id"
-                    class="space-y-3 p-2 bg-accent/20 rounded"
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
                   >
-                    <!-- Position -->
-                    <div class="space-y-2">
-                      <Label class="flex items-center gap-2 text-xs">
-                        <Move3d class="h-3 w-3" />
-                        Position
-                      </Label>
-                      <div class="grid grid-cols-3 gap-1">
-                        <div class="text-center">
-                          <Label class="text-xs">X</Label>
-                          <Input
-                            type="number"
-                            :value="model.position.x"
-                            class="h-6 text-xs"
-                            step="0.1"
-                            @input="
-                              updateModelPosition(
-                                'x',
-                                parseFloat(
-                                  ($event.target as HTMLInputElement).value
-                                )
-                              )
-                            "
-                          />
-                        </div>
-                        <div class="text-center">
-                          <Label class="text-xs">Y</Label>
-                          <Input
-                            type="number"
-                            :value="model.position.y"
-                            class="h-6 text-xs"
-                            step="0.1"
-                            @input="
-                              updateModelPosition(
-                                'y',
-                                parseFloat(
-                                  ($event.target as HTMLInputElement).value
-                                )
-                              )
-                            "
-                          />
-                        </div>
-                        <div class="text-center">
-                          <Label class="text-xs">Z</Label>
-                          <Input
-                            type="number"
-                            :value="model.position.z"
-                            class="h-6 text-xs"
-                            step="0.1"
-                            @input="
-                              updateModelPosition(
-                                'z',
-                                parseFloat(
-                                  ($event.target as HTMLInputElement).value
-                                )
-                              )
-                            "
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Rotation -->
-                    <div class="space-y-2">
-                      <Label class="flex items-center gap-2 text-xs">
-                        <Rotate3d class="h-3 w-3" />
-                        Rotation (°)
-                      </Label>
-                      <div class="grid grid-cols-3 gap-1">
-                        <div class="text-center">
-                          <Label class="text-xs">X</Label>
-                          <Input
-                            type="number"
-                            :value="
-                              Math.round((model.rotation.x * 180) / Math.PI)
-                            "
-                            class="h-6 text-xs"
-                            @input="
-                              updateModelRotation(
-                                'x',
-                                parseFloat(
-                                  ($event.target as HTMLInputElement).value
-                                )
-                              )
-                            "
-                          />
-                        </div>
-                        <div class="text-center">
-                          <Label class="text-xs">Y</Label>
-                          <Input
-                            type="number"
-                            :value="
-                              Math.round((model.rotation.y * 180) / Math.PI)
-                            "
-                            class="h-6 text-xs"
-                            @input="
-                              updateModelRotation(
-                                'y',
-                                parseFloat(
-                                  ($event.target as HTMLInputElement).value
-                                )
-                              )
-                            "
-                          />
-                        </div>
-                        <div class="text-center">
-                          <Label class="text-xs">Z</Label>
-                          <Input
-                            type="number"
-                            :value="
-                              Math.round((model.rotation.z * 180) / Math.PI)
-                            "
-                            class="h-6 text-xs"
-                            @input="
-                              updateModelRotation(
-                                'z',
-                                parseFloat(
-                                  ($event.target as HTMLInputElement).value
-                                )
-                              )
-                            "
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Échelle -->
-                    <div class="space-y-2">
-                      <Label class="flex items-center gap-2 text-xs">
-                        <Scale class="h-3 w-3" />
-                        Échelle
-                      </Label>
-                      <Slider
-                        :min="0.1"
-                        :max="5"
-                        :step="0.1"
-                        :model-value="[model.scale.x]"
-                        class="w-full"
-                        @update:model-value="
-                          updateModelScale(($event as number[])[0] ?? 1)
+                    <Label class="text-xs">Outil</Label>
+                    <div class="flex gap-2">
+                      <Button
+                        :variant="
+                          currentTool === 'pencil' ? 'default' : 'outline'
                         "
-                      />
-                      <div class="text-center text-xs text-muted-foreground">
-                        {{ model.scale.x.toFixed(1) }}x
-                      </div>
+                        size="sm"
+                        class="flex-1"
+                        @click="currentTool = 'pencil'"
+                      >
+                        <Pencil class="h-3 w-3 mr-1" />
+                        Crayon
+                      </Button>
+                      <Button
+                        :variant="
+                          currentTool === 'eraser' ? 'default' : 'outline'
+                        "
+                        size="sm"
+                        class="flex-1"
+                        @click="currentTool = 'eraser'"
+                      >
+                        <Eraser class="h-3 w-3 mr-1" />
+                        Gomme
+                      </Button>
                     </div>
                   </div>
-                </div>
-              </SidebarMenuItem>
+                </SidebarMenuItem>
 
-              <!-- Formats supportés -->
-              <SidebarMenuItem>
-                <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
-                  <div class="text-xs text-muted-foreground">
-                    <p class="font-medium mb-1">Formats supportés:</p>
-                    <ul class="space-y-1">
-                      <li>• GLB/GLTF (recommandé)</li>
-                      <li>• OBJ</li>
-                      <li>• FBX</li>
+                <!-- Couleur -->
+                <SidebarMenuItem>
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
+                    <div class="flex items-center justify-between">
+                      <Label class="flex items-center gap-2 text-xs">
+                        <Palette class="h-3 w-3" />
+                        Couleur
+                      </Label>
+                      <Input
+                        v-model="brushColor"
+                        type="color"
+                        class="w-8 h-6 p-0 border-0"
+                      />
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+
+                <!-- Taille du pinceau -->
+                <SidebarMenuItem>
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
+                    <Label class="flex items-center gap-2 text-xs">
+                      <Brush class="h-3 w-3" />
+                      Taille du pinceau
+                    </Label>
+                    <Slider
+                      v-model="brushSizeArray"
+                      :min="1"
+                      :max="40"
+                      :step="1"
+                      class="w-full"
+                    />
+                    <div class="text-center text-xs text-muted-foreground">
+                      {{ brushSize }}px
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+
+                <!-- Actions -->
+                <SidebarMenuItem>
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
+                    <div class="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        :disabled="!canUndo"
+                        @click="undo"
+                      >
+                        <Undo2 class="h-3 w-3 mr-1" />
+                        Annuler
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        :disabled="!canRedo"
+                        @click="redo"
+                      >
+                        <Redo2 class="h-3 w-3 mr-1" />
+                        Rétablir
+                      </Button>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      class="w-full"
+                      @click="clear"
+                    >
+                      <Trash2 class="h-3 w-3 mr-1" />
+                      Effacer tout
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      class="w-full"
+                      @click="exportPNG"
+                    >
+                      <Download class="h-3 w-3 mr-1" />
+                      Exporter PNG
+                    </Button>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </template>
+
+        <!-- ─── MODE PROMPT IA ───────────────────────────────────────────── -->
+        <template v-else-if="currentMode === 'prompt'">
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Sparkles class="h-4 w-4 mr-1" />
+              Génération IA
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <!-- Type de sortie -->
+                <SidebarMenuItem>
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
+                    <Label class="text-xs">Type de sortie</Label>
+                    <div class="flex gap-2">
+                      <Button
+                        :variant="outputType === '2d' ? 'default' : 'outline'"
+                        size="sm"
+                        class="flex-1"
+                        @click="outputType = '2d'"
+                      >
+                        Image 2D
+                      </Button>
+                      <Button
+                        :variant="outputType === '3d' ? 'default' : 'outline'"
+                        size="sm"
+                        class="flex-1"
+                        @click="outputType = '3d'"
+                      >
+                        Modèle 3D
+                      </Button>
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+
+                <!-- Historique des prompts -->
+                <SidebarMenuItem v-if="promptHistory.length > 0">
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
+                    <Label class="text-xs">Historique</Label>
+                    <div class="space-y-1 max-h-40 overflow-y-auto">
+                      <button
+                        v-for="entry in promptHistory"
+                        :key="entry.createdAt"
+                        class="w-full text-left text-xs px-2 py-1 rounded hover:bg-accent truncate block"
+                        @click="loadFromHistory(entry)"
+                      >
+                        <span class="text-muted-foreground mr-1">{{
+                          entry.outputType.toUpperCase()
+                        }}</span>
+                        {{ entry.prompt }}
+                      </button>
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+
+                <!-- Conseils -->
+                <SidebarMenuItem>
+                  <div
+                    class="px-2 py-2 space-y-1 group-data-[collapsible=icon]:hidden"
+                  >
+                    <Label class="flex items-center gap-2 text-xs">
+                      <Info class="h-3 w-3" />
+                      Conseils
+                    </Label>
+                    <ul class="text-xs text-muted-foreground space-y-1 pl-2">
+                      <li>• Décris le style architectural</li>
+                      <li>• Précise les matériaux (béton, bois...)</li>
+                      <li>• Mentionne l'environnement</li>
                     </ul>
                   </div>
-                </div>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </template>
+
+        <!-- ─── MODE 3D PRO ──────────────────────────────────────────────── -->
+        <template v-else>
+          <!-- Vue rapide -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Eye class="h-4 w-4 mr-1" />
+              Vue
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="resetCamera">
+                    <RotateCcw class="h-4 w-4" />
+                    <span>Réinitialiser la vue</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="toggleFullscreen">
+                    <Maximize class="h-4 w-4" />
+                    <span>Plein écran</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="captureScreenshot">
+                    <Camera class="h-4 w-4" />
+                    <span>Capture d'écran</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Import modèle -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Upload class="h-4 w-4 mr-1" />
+              Modèles 3D
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    :disabled="isLoadingModel"
+                    @click="importModel"
+                  >
+                    <Upload class="h-4 w-4" />
+                    <span>{{
+                      isLoadingModel ? 'Chargement...' : 'Importer modèle'
+                    }}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                <!-- Message d'erreur -->
+                <SidebarMenuItem v-if="modelLoadError">
+                  <div
+                    class="px-2 py-2 text-xs text-red-500 group-data-[collapsible=icon]:hidden"
+                  >
+                    {{ modelLoadError }}
+                  </div>
+                </SidebarMenuItem>
+
+                <!-- Liste des modèles importés -->
+                <SidebarMenuItem
+                  v-for="model in importedModels"
+                  :key="model.id"
+                >
+                  <div
+                    class="px-2 py-1 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
+                    <div class="flex items-center justify-between">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        class="flex-1 justify-start text-xs"
+                        :class="{ 'bg-accent': selectedModelId === model.id }"
+                        @click="selectModel(model.id)"
+                      >
+                        <Move3d class="h-3 w-3 mr-1" />
+                        {{ model.name }}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        class="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                        @click="removeModel(model.id)"
+                      >
+                        <Trash2 class="h-3 w-3" />
+                      </Button>
+                    </div>
+
+                    <!-- Contrôles position / rotation / échelle -->
+                    <div
+                      v-if="selectedModelId === model.id"
+                      class="space-y-3 p-2 bg-accent/20 rounded"
+                    >
+                      <div class="space-y-2">
+                        <Label class="flex items-center gap-2 text-xs">
+                          <Move3d class="h-3 w-3" />
+                          Position
+                        </Label>
+                        <div class="grid grid-cols-3 gap-1">
+                          <div
+                            v-for="axis in ['x', 'y', 'z'] as const"
+                            :key="axis"
+                            class="text-center"
+                          >
+                            <Label class="text-xs">{{
+                              axis.toUpperCase()
+                            }}</Label>
+                            <Input
+                              type="number"
+                              :value="model.position[axis]"
+                              class="h-6 text-xs"
+                              step="0.1"
+                              @input="
+                                updateModelPosition(
+                                  axis,
+                                  parseFloat(
+                                    ($event.target as HTMLInputElement).value
+                                  )
+                                )
+                              "
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="space-y-2">
+                        <Label class="flex items-center gap-2 text-xs">
+                          <Rotate3d class="h-3 w-3" />
+                          Rotation (°)
+                        </Label>
+                        <div class="grid grid-cols-3 gap-1">
+                          <div
+                            v-for="axis in ['x', 'y', 'z'] as const"
+                            :key="axis"
+                            class="text-center"
+                          >
+                            <Label class="text-xs">{{
+                              axis.toUpperCase()
+                            }}</Label>
+                            <Input
+                              type="number"
+                              :value="
+                                Math.round(
+                                  (model.rotation[axis] * 180) / Math.PI
+                                )
+                              "
+                              class="h-6 text-xs"
+                              @input="
+                                updateModelRotation(
+                                  axis,
+                                  parseFloat(
+                                    ($event.target as HTMLInputElement).value
+                                  )
+                                )
+                              "
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="space-y-2">
+                        <Label class="flex items-center gap-2 text-xs">
+                          <Scale class="h-3 w-3" />
+                          Échelle
+                        </Label>
+                        <Slider
+                          :min="0.1"
+                          :max="5"
+                          :step="0.1"
+                          :model-value="[model.scale.x]"
+                          class="w-full"
+                          @update:model-value="
+                            updateModelScale(($event as number[])[0] ?? 1)
+                          "
+                        />
+                        <div class="text-center text-xs text-muted-foreground">
+                          {{ model.scale.x.toFixed(1) }}x
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
+                    <div class="text-xs text-muted-foreground">
+                      <p class="font-medium mb-1">Formats supportés:</p>
+                      <ul class="space-y-1">
+                        <li>• GLB/GLTF (recommandé)</li>
+                        <li>• OBJ</li>
+                        <li>• FBX</li>
+                      </ul>
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Éclairage — presets -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Sun class="h-4 w-4 mr-1" />
+              Éclairage
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
+                    <div class="grid grid-cols-2 gap-2">
+                      <button
+                        v-for="(cfg, key) in LIGHT_PRESETS"
+                        :key="key"
+                        class="rounded-lg p-2 text-xs font-medium border transition-all"
+                        :class="
+                          currentPreset === key
+                            ? 'bg-primary text-primary-foreground border-primary'
+                            : 'bg-card border-border hover:bg-accent'
+                        "
+                        @click="applyPreset(key as LightPreset)"
+                      >
+                        <span class="block text-base leading-none mb-1">
+                          {{ PRESET_ICONS[key as LightPreset] }}
+                        </span>
+                        {{ cfg.label }}
+                      </button>
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Navigation -->
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Compass class="h-4 w-4 mr-1" />
+              Navigation
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    :variant="isFirstPerson ? 'default' : 'outline'"
+                    @click="toggleNavigation"
+                  >
+                    <PersonStanding v-if="!isFirstPerson" class="h-4 w-4" />
+                    <Orbit v-else class="h-4 w-4" />
+                    <span>{{ isFirstPerson ? 'Orbite' : 'First-person' }}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem v-if="isFirstPerson">
+                  <div
+                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                  >
+                    <Label class="flex items-center gap-2 text-xs">
+                      <Gauge class="h-3 w-3" />
+                      Vitesse (WASD)
+                    </Label>
+                    <Slider
+                      v-model="moveSpeedArray"
+                      :min="1"
+                      :max="20"
+                      :step="1"
+                      class="w-full"
+                    />
+                    <div class="text-center text-xs text-muted-foreground">
+                      {{ moveSpeed }}
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <!-- Saisons (uniquement si un modèle est importé) -->
+          <SidebarGroup v-if="importedModels.length > 0">
+            <SidebarGroupLabel>
+              <Calendar class="h-4 w-4 mr-1" />
+              Saisons
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
+                    <div class="grid grid-cols-2 gap-2">
+                      <button
+                        v-for="(cfg, key) in SEASON_CONFIGS"
+                        :key="key"
+                        class="rounded-lg p-2 text-xs font-medium border transition-all"
+                        :class="
+                          currentSeason === key
+                            ? 'bg-primary text-primary-foreground border-primary'
+                            : 'bg-card border-border hover:bg-accent'
+                        "
+                        @click="applySeason(key as Season)"
+                      >
+                        <span class="block text-base leading-none mb-1">
+                          {{ SEASON_ICONS[key as Season] }}
+                        </span>
+                        {{ cfg.label }}
+                      </button>
+                    </div>
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </template>
       </SidebarContent>
 
-      <!-- Panneau d'informations -->
-      <SidebarFooter>
+      <!-- Pied de page — performances (mode 3D uniquement) -->
+      <SidebarFooter v-if="currentMode === '3d'">
         <SidebarMenu>
           <SidebarMenuItem>
             <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
               <div class="flex items-center gap-2 mb-3">
                 <Info class="h-4 w-4 text-orange-500" />
                 <h4 class="text-sm font-semibold text-orange-500">
-                  Informations
+                  Performances
                 </h4>
               </div>
               <div class="space-y-2 text-xs text-muted-foreground">
@@ -690,20 +582,6 @@
                   </div>
                   <Badge variant="secondary">{{ triangleCount }}</Badge>
                 </div>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <Calendar class="h-3 w-3" />
-                    <span>Saison:</span>
-                  </div>
-                  <Badge variant="outline">{{ currentSeason }}</Badge>
-                </div>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <Cloud class="h-3 w-3" />
-                    <span>Météo:</span>
-                  </div>
-                  <Badge variant="outline">{{ currentWeather }}</Badge>
-                </div>
               </div>
             </div>
           </SidebarMenuItem>
@@ -713,8 +591,9 @@
       <SidebarRail />
     </Sidebar>
 
-    <!-- Zone de rendu 3D (SidebarInset + boutons de contrôle) -->
+    <!-- Zone de rendu (SidebarInset) — contient la ModeBar + les panels légers -->
     <SidebarInset class="render-inset">
+      <!-- Contrôles sidebar top-left -->
       <div class="absolute top-4 left-4 z-20 flex items-center gap-2">
         <SidebarTrigger class="sidebar-trigger" />
         <Button
@@ -730,6 +609,13 @@
           <PanelLeftClose v-else class="h-4 w-4" />
         </Button>
       </div>
+
+      <!-- Sélecteur de mode flottant (top-center) -->
+      <RenderModeBar />
+
+      <!-- Panels légers (v-if : peuvent être démontés) -->
+      <SketchCanvas v-if="currentMode === 'sketch'" />
+      <PromptPanel v-if="currentMode === 'prompt'" />
     </SidebarInset>
   </SidebarProvider>
 </template>
@@ -738,57 +624,38 @@
 import {
   Eye,
   RotateCcw,
-  Grid3x3,
   Maximize,
   Camera,
   Sun,
-  Moon,
-  Lightbulb,
+  Pencil,
+  Eraser,
   Palette,
-  Home,
-  Triangle,
-  DoorOpen,
-  Mountain,
-  Trees,
-  TreePine,
-  Fence,
-  Flower2,
-  Footprints,
-  CloudRain,
-  Snowflake,
-  CloudFog,
+  Brush,
+  Undo2,
+  Redo2,
+  Trash2,
+  Download,
   Sparkles,
-  Flame,
-  Play,
-  Wind,
-  RotateCw,
-  Gauge,
-  Volume2,
-  VolumeX,
-  Volume1,
-  Calendar,
   Info,
+  Upload,
+  Move3d,
+  Rotate3d,
+  Scale,
+  Compass,
+  PersonStanding,
+  Orbit,
+  Gauge,
+  Calendar,
   Zap,
-  Cloud,
+  Triangle,
   PanelLeftOpen,
   PanelLeftClose,
-  Upload,
-  Trash2,
-  Rotate3d,
-  Move3d,
-  Scale,
 } from 'lucide-vue-next'
+import { computed } from 'vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import {
   Sidebar,
   SidebarContent,
@@ -806,59 +673,36 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { Slider } from '@/components/ui/slider'
+import type { LightPreset, Season } from '@/composables/useThreeLightingPresets'
+
+// ─── Icônes presets ───────────────────────────────────────────────────────────
+const PRESET_ICONS: Record<LightPreset, string> = {
+  morning: '🌅',
+  noon: '☀️',
+  sunset: '🌇',
+  night: '🌙',
+  studio: '💡',
+}
+
+const SEASON_ICONS: Record<Season, string> = {
+  spring: '🌸',
+  summer: '☀️',
+  autumn: '🍂',
+  winter: '❄️',
+}
 
 // ─── Composables (singletons) ────────────────────────────────────────────────
-const {
-  isDay,
-  lightIntensity,
-  sunAngle,
-  toggleDayNight,
-  updateLighting,
-  updateSunPosition,
-} = useThreeLighting()
+const { currentMode } = useRenderMode()
 
 const {
-  wallColor,
-  roofColor,
-  doorColor,
-  groundColor,
-  doorOpen,
-  wireframe,
-  rotateHouse,
-  updateColors,
-  toggleWireframe,
-  toggleDoorAnimation,
-  toggleRotateHouse,
-} = useThreeHouse()
-
-const {
-  showTrees,
-  showFence,
-  showGarden,
-  showPath,
-  treeAnimation,
-  currentSeason,
-  toggleTrees,
-  toggleFence,
-  toggleGarden,
-  togglePath,
-  toggleTreeAnimation,
-  addRandomCloud,
-  changeSeason,
-} = useThreeElements()
-
-const {
-  isRaining,
-  isSnowing,
-  showFog,
-  showSmoke,
-  currentWeather,
-  toggleRain,
-  toggleSnow,
-  toggleFog,
-  addFireflies,
-  toggleSmoke,
-} = useThreeWeather()
+  fps,
+  triangleCount,
+  sidebarCollapsed,
+  toggleSidebarCollapse,
+  resetCamera,
+  toggleFullscreen,
+  captureScreenshot,
+} = useThreeScene()
 
 const {
   importedModels,
@@ -874,22 +718,44 @@ const {
 } = useThreeModels()
 
 const {
-  ambientSound,
-  audioVolumeArray,
-  toggleAmbientSound,
-  updateAudioVolume,
-} = useThreeAudio()
+  currentPreset,
+  currentSeason,
+  LIGHT_PRESETS,
+  SEASON_CONFIGS,
+  applyPreset,
+  applySeason,
+} = useThreeLightingPresets()
+
+const { isFirstPerson, moveSpeed, toggleNavigation } = useThreeFirstPerson()
 
 const {
-  animationSpeedArray,
-  fps,
-  triangleCount,
-  sidebarCollapsed,
-  toggleSidebarCollapse,
-  resetCamera,
-  toggleFullscreen,
-  captureScreenshot,
-} = useThreeScene()
+  currentTool,
+  brushSize,
+  brushColor,
+  canUndo,
+  canRedo,
+  undo,
+  redo,
+  clear,
+  exportPNG,
+} = useSketchCanvas()
+
+const { outputType, promptHistory, loadFromHistory } = useAiRender()
+
+// ─── Adapters pour Slider (attend un tableau) ─────────────────────────────────
+const brushSizeArray = computed({
+  get: () => [brushSize.value],
+  set: (v: number[]) => {
+    brushSize.value = v[0] ?? brushSize.value
+  },
+})
+
+const moveSpeedArray = computed({
+  get: () => [moveSpeed.value],
+  set: (v: number[]) => {
+    moveSpeed.value = v[0] ?? moveSpeed.value
+  },
+})
 </script>
 
 <style scoped>

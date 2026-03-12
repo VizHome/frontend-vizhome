@@ -8,7 +8,7 @@
           :title="user.name"
         >
           <Avatar
-            class="h-9 w-9 border-2 border-background shadow-md ring-2 ring-border transition hover:ring-primary/50"
+            class="h-12 w-12 border-2 border-background shadow-md ring-2 ring-border transition hover:ring-primary/50"
           >
             <AvatarImage :src="user.avatarUrl" :alt="user.name" />
             <AvatarFallback class="text-sm font-semibold">{{
@@ -84,6 +84,13 @@
               >
             </div>
           </DropdownMenuItem>
+          <DropdownMenuItem
+            class="gap-2.5 cursor-pointer"
+            @click="openDialog('settings')"
+          >
+            <Settings class="h-4 w-4 text-muted-foreground" />
+            <span>Paramètres</span>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
@@ -155,6 +162,7 @@
     <StatsDialog v-model:open="dialogs.stats" />
     <SubscriptionDialog v-model:open="dialogs.subscription" />
     <HelpDialog v-model:open="dialogs.help" :initial-tab="helpInitialTab" />
+    <SettingsDialog v-model:open="dialogs.settings" />
   </div>
 </template>
 
@@ -168,6 +176,7 @@ import {
   HelpCircle,
   Keyboard,
   LogOut,
+  Settings,
   Shield,
   Tag,
   UserIcon,
@@ -184,6 +193,7 @@ const dialogs = reactive({
   stats: false,
   subscription: false,
   help: false,
+  settings: false,
 })
 
 type DialogId = keyof typeof dialogs

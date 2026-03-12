@@ -5,6 +5,9 @@
 import { ref, computed } from 'vue'
 
 export type UserPlan = 'free' | 'pro' | 'enterprise'
+export type AppLanguage = 'fr' | 'en' | 'es' | 'de'
+export type RenderQuality = 'draft' | 'standard' | 'high'
+export type RenderFormat = 'png' | 'jpg' | 'webp'
 
 export interface UserProfile {
   name: string
@@ -23,6 +26,31 @@ export interface UserStats {
   storageLimitGb: number
 }
 
+export interface UserPreferences {
+  // Apparence
+  theme: 'light' | 'dark' | 'system'
+  // Langue
+  language: AppLanguage
+  // Notifications
+  notifEmailRender: boolean
+  notifEmailNewsletter: boolean
+  notifPushRender: boolean
+  notifPushMentions: boolean
+  // Qualité de rendu
+  renderQuality: RenderQuality
+  renderFormat: RenderFormat
+  renderResolution: '1024' | '2048' | '4096'
+  // Confidentialité
+  analyticsEnabled: boolean
+  marketingEnabled: boolean
+  // Sécurité
+  twoFactorEnabled: boolean
+  // Accessibilité
+  reducedMotion: boolean
+  highContrast: boolean
+  fontSize: 'small' | 'medium' | 'large'
+}
+
 // ─── État singleton ──────────────────────────────────────────────────────────
 const user = ref<UserProfile>({
   name: 'Jean Dupont',
@@ -39,6 +67,24 @@ const stats = ref<UserStats>({
   totalProjects: 5,
   storageUsedGb: 1.2,
   storageLimitGb: 5,
+})
+
+const preferences = ref<UserPreferences>({
+  theme: 'system',
+  language: 'fr',
+  notifEmailRender: true,
+  notifEmailNewsletter: false,
+  notifPushRender: true,
+  notifPushMentions: false,
+  renderQuality: 'standard',
+  renderFormat: 'png',
+  renderResolution: '2048',
+  analyticsEnabled: true,
+  marketingEnabled: false,
+  twoFactorEnabled: false,
+  reducedMotion: false,
+  highContrast: false,
+  fontSize: 'medium',
 })
 
 // ─── Composable ──────────────────────────────────────────────────────────────
@@ -82,6 +128,10 @@ export function useUser() {
     user.value = { ...user.value, ...data }
   }
 
+  const updatePreferences = (data: Partial<UserPreferences>) => {
+    preferences.value = { ...preferences.value, ...data }
+  }
+
   const logout = () => {
     user.value.isLoggedIn = false
     // TODO: rediriger vers /auth/login avec navigateTo('/auth/login')
@@ -90,11 +140,13 @@ export function useUser() {
   return {
     user,
     stats,
+    preferences,
     initials,
     planLabel,
     storagePercent,
     rendersPercent,
     updateProfile,
+    updatePreferences,
     logout,
   }
 }

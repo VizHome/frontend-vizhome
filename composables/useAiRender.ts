@@ -3,6 +3,8 @@
  * L'endpoint /api/render est un stub à remplacer par la vraie API IA
  */
 import { ref } from 'vue'
+import { useGallery } from './useGallery'
+import type { GallerySource } from './useGallery'
 
 export type AiOutputType = '2d' | '3d'
 
@@ -69,6 +71,15 @@ export function useAiRender() {
       })
       if (promptHistory.value.length > 10) promptHistory.value.pop()
       _saveHistory()
+
+      // Ajouter en galerie si c'est un rendu 2D avec image
+      if (data.imageUrl && outputType.value === '2d') {
+        useGallery().addEntry({
+          source: 'prompt',
+          imageUrl: data.imageUrl,
+          prompt: prompt.value,
+        })
+      }
     } catch (err: unknown) {
       error.value =
         err instanceof Error ? err.message : 'Erreur lors de la génération'
@@ -83,7 +94,8 @@ export function useAiRender() {
    */
   const generateFromSketch = async (
     imageBase64: string,
-    styleHint?: string
+    styleHint?: string,
+    source: GallerySource = 'sketch'
   ) => {
     if (isSketchLoading.value) return
     isSketchLoading.value = true
@@ -100,6 +112,15 @@ export function useAiRender() {
         },
       })
       sketchResult.value = data.imageUrl
+
+      // Ajouter en galerie
+      if (data.imageUrl) {
+        useGallery().addEntry({
+          source,
+          imageUrl: data.imageUrl,
+          styleHint: styleHint,
+        })
+      }
     } catch (err: unknown) {
       sketchError.value =
         err instanceof Error ? err.message : 'Erreur lors de la génération'

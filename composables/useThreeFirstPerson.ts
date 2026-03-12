@@ -13,6 +13,12 @@ const pressedKeys = new Set<string>()
 const isFirstPerson = ref(false)
 const moveSpeed = ref(5)
 
+// Vélocité locale caméra pour l'inertie (module-level)
+let velForward = 0
+let velRight = 0
+let velUp = 0
+const DAMPING = 10 // facteur de décélération frame-rate-independent
+
 // ─── Composable ──────────────────────────────────────────────────────────────
 export function useThreeFirstPerson() {
   const _init = () => {
@@ -53,6 +59,9 @@ export function useThreeFirstPerson() {
     if (orbitControls) orbitControls.enabled = true
     isFirstPerson.value = false
     pressedKeys.clear()
+    velForward = 0
+    velRight = 0
+    velUp = 0
   }
 
   const toggleNavigation = () => {
@@ -63,20 +72,30 @@ export function useThreeFirstPerson() {
   /** Appeler depuis la boucle d'animation principale */
   const updateFrame = (delta: number) => {
     if (!fpControls?.isLocked) return
-    const speed = moveSpeed.value * delta
-    if (pressedKeys.has('KeyW') || pressedKeys.has('ArrowUp'))
-      fpControls.moveForward(speed)
-    if (pressedKeys.has('KeyS') || pressedKeys.has('ArrowDown'))
-      fpControls.moveForward(-speed)
-    if (pressedKeys.has('KeyA') || pressedKeys.has('ArrowLeft'))
-      fpControls.moveRight(-speed)
-    if (pressedKeys.has('KeyD') || pressedKeys.has('ArrowRight'))
-      fpControls.moveRight(speed)
+    const max = moveSpeed.value
+
+    // Vélocité cible selon les touches actives
+    const tFwd =
+      (pressedKeys.has('KeyW') || pressedKeys.has('ArrowUp') ? max : 0) -
+      (pressedKeys.has('KeyS') || pressedKeys.has('ArrowDown') ? max : 0)
+    const tRight =
+      (pressedKeys.has('KeyD') || pressedKeys.has('ArrowRight') ? max : 0) -
+      (pressedKeys.has('KeyA') || pressedKeys.has('ArrowLeft') ? max : 0)
+    const tUp =
+      (pressedKeys.has('Space') ? max : 0) -
+      (pressedKeys.has('ShiftLeft') ? max : 0)
+
+    // Interpolation exponentielle frame-rate-independent
+    const t = 1 - Math.exp(-DAMPING * delta)
+    velForward += (tFwd - velForward) * t
+    velRight += (tRight - velRight) * t
+    velUp += (tUp - velUp) * t
+
+    // Application du mouvement (seuil anti-drift)
+    if (Math.abs(velForward) > 0.001) fpControls.moveForward(velForward * delta)
+    if (Math.abs(velRight) > 0.001) fpControls.moveRight(velRight * delta)
     const camera = getCamera()
-    if (camera) {
-      if (pressedKeys.has('Space')) camera.position.y += speed
-      if (pressedKeys.has('ShiftLeft')) camera.position.y -= speed
-    }
+    if (camera && Math.abs(velUp) > 0.001) camera.position.y += velUp * delta
   }
 
   return {

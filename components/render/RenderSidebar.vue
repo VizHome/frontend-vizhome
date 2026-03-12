@@ -487,33 +487,101 @@
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton
-                    :variant="isFirstPerson ? 'default' : 'outline'"
-                    @click="toggleNavigation"
-                  >
-                    <PersonStanding v-if="!isFirstPerson" class="h-4 w-4" />
-                    <Orbit v-else class="h-4 w-4" />
-                    <span>{{ isFirstPerson ? 'Orbite' : 'First-person' }}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem v-if="isFirstPerson">
                   <div
-                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                    class="px-2 py-2 space-y-3 group-data-[collapsible=icon]:hidden"
                   >
-                    <Label class="flex items-center gap-2 text-xs">
-                      <Gauge class="h-3 w-3" />
-                      Vitesse (WASD)
-                    </Label>
-                    <Slider
-                      v-model="moveSpeedArray"
-                      :min="1"
-                      :max="20"
-                      :step="1"
-                      class="w-full"
-                    />
-                    <div class="text-center text-xs text-muted-foreground">
-                      {{ moveSpeed }}
+                    <!-- Sélecteur 2×2 des modes -->
+                    <div class="grid grid-cols-2 gap-1.5">
+                      <button
+                        v-for="m in NAV_MODES"
+                        :key="m.key"
+                        class="rounded-lg p-2 text-xs font-medium border transition-all"
+                        :class="
+                          navMode === m.key
+                            ? 'bg-primary text-primary-foreground border-primary'
+                            : 'bg-card border-border hover:bg-accent'
+                        "
+                        @click="setNavMode(m.key)"
+                      >
+                        <span class="block text-base leading-none mb-0.5">{{
+                          m.emoji
+                        }}</span>
+                        {{ m.label }}
+                      </button>
                     </div>
+
+                    <!-- Options : First-person -->
+                    <template v-if="navMode === 'firstperson'">
+                      <Label class="flex items-center gap-2 text-xs">
+                        <Gauge class="h-3 w-3" />
+                        Vitesse (WASD)
+                      </Label>
+                      <Slider
+                        v-model="moveSpeedArray"
+                        :min="1"
+                        :max="20"
+                        :step="1"
+                        class="w-full"
+                      />
+                      <div class="text-center text-xs text-muted-foreground">
+                        {{ moveSpeed }}
+                      </div>
+                    </template>
+
+                    <!-- Options : Top-down -->
+                    <template v-else-if="navMode === 'topdown'">
+                      <p class="text-xs text-muted-foreground leading-relaxed">
+                        Clic + drag pour déplacer &bull; Scroll pour zoomer
+                      </p>
+                    </template>
+
+                    <!-- Options : Visite guidée -->
+                    <template v-else-if="navMode === 'tour'">
+                      <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            class="flex-1"
+                            @click="togglePlayPause"
+                          >
+                            <Play v-if="!isPlaying" class="h-3 w-3 mr-1" />
+                            <Pause v-else class="h-3 w-3 mr-1" />
+                            {{ isPlaying ? 'Pause' : 'Lecture' }}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8 shrink-0"
+                            title="Arrêter"
+                            @click="setNavMode('orbit')"
+                          >
+                            <Square class="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <Label class="flex items-center gap-2 text-xs">
+                          <Timer class="h-3 w-3" />
+                          Durée · {{ tourDuration }}s
+                        </Label>
+                        <Slider
+                          v-model="tourDurationArray"
+                          :min="10"
+                          :max="120"
+                          :step="5"
+                          class="w-full"
+                        />
+                        <!-- Barre de progression -->
+                        <div
+                          class="w-full bg-muted rounded-full h-1.5 overflow-hidden"
+                        >
+                          <div
+                            class="bg-primary h-full rounded-full"
+                            style="transition: none"
+                            :style="{ width: `${tourProgress * 100}%` }"
+                          />
+                        </div>
+                      </div>
+                    </template>
                   </div>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -642,9 +710,11 @@ import {
   Rotate3d,
   Scale,
   Compass,
-  PersonStanding,
-  Orbit,
   Gauge,
+  Play,
+  Pause,
+  Square,
+  Timer,
   Calendar,
   Zap,
   Triangle,
@@ -674,6 +744,15 @@ import {
 } from '@/components/ui/sidebar'
 import { Slider } from '@/components/ui/slider'
 import type { LightPreset, Season } from '@/composables/useThreeLightingPresets'
+import type { NavMode } from '@/composables/useThreeNavigation'
+
+// ─── Modes de navigation ──────────────────────────────────────────────────────
+const NAV_MODES: { key: NavMode; emoji: string; label: string }[] = [
+  { key: 'orbit', emoji: '🔄', label: 'Orbite' },
+  { key: 'firstperson', emoji: '🚶', label: 'Marche' },
+  { key: 'topdown', emoji: '🗺️', label: 'Plan' },
+  { key: 'tour', emoji: '🎬', label: 'Visite' },
+]
 
 // ─── Icônes presets ───────────────────────────────────────────────────────────
 const PRESET_ICONS: Record<LightPreset, string> = {
@@ -726,7 +805,15 @@ const {
   applySeason,
 } = useThreeLightingPresets()
 
-const { isFirstPerson, moveSpeed, toggleNavigation } = useThreeFirstPerson()
+const {
+  navMode,
+  setNavMode,
+  moveSpeed,
+  isPlaying,
+  tourProgress,
+  tourDuration,
+  togglePlayPause,
+} = useThreeNavigation()
 
 const {
   currentTool,
@@ -754,6 +841,13 @@ const moveSpeedArray = computed({
   get: () => [moveSpeed.value],
   set: (v: number[]) => {
     moveSpeed.value = v[0] ?? moveSpeed.value
+  },
+})
+
+const tourDurationArray = computed({
+  get: () => [tourDuration.value],
+  set: (v: number[]) => {
+    tourDuration.value = v[0] ?? tourDuration.value
   },
 })
 </script>

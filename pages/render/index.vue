@@ -34,10 +34,10 @@ const {
 
 const { initLighting } = useThreeLighting()
 const { initLoaders } = useThreeModels()
-const { updateFrame: firstPersonFrame } = useThreeFirstPerson()
+const { updateFrame: navFrame, setNavMode } = useThreeNavigation()
 
 // ─── Callback d'animation stocké pour la reprise ──────────────────────────────
-const onFrame = (delta: number) => firstPersonFrame(delta)
+const onFrame = (delta: number) => navFrame(delta)
 
 // ─── Initialisation lazy (seulement au premier passage en mode 3D) ────────────
 const initThree = () => {
@@ -61,6 +61,7 @@ watch(currentMode, (mode, prev) => {
     initThree() // no-op si déjà initialisé
     animate(onFrame) // reprend la boucle si elle était en pause
   } else if (prev === '3d') {
+    setNavMode('orbit') // nettoie first-person / top-down / tour
     pauseAnimation() // suspend la boucle quand on quitte le mode 3D
   }
 })

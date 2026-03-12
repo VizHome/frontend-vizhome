@@ -122,13 +122,15 @@ export function useThreeScene(canvasRef?: Ref<HTMLCanvasElement | undefined>) {
         fps.value = Math.round((frameCount * 1000) / (now - lastTime))
         frameCount = 0
         lastTime = now
-        let triangles = 0
-        scene.traverse(child => {
-          if (child instanceof THREE.Mesh) {
-            triangles += child.geometry.attributes.position.count / 3
-          }
-        })
-        triangleCount.value = Math.round(triangles)
+        if (scene) {
+          let triangles = 0
+          scene.traverse(child => {
+            if (child instanceof THREE.Mesh) {
+              triangles += child.geometry.attributes.position.count / 3
+            }
+          })
+          triangleCount.value = Math.round(triangles)
+        }
       }
       requestAnimationFrame(update)
     }
@@ -137,15 +139,32 @@ export function useThreeScene(canvasRef?: Ref<HTMLCanvasElement | undefined>) {
 
   /** Lance la boucle d'animation. onFrame reçoit (deltaTime, elapsedTime). */
   const animate = (onFrame: (delta: number, elapsed: number) => void) => {
+    if (animationId) cancelAnimationFrame(animationId) // guard anti-double-boucle (HMR)
     const loop = () => {
       animationId = requestAnimationFrame(loop)
+      if (!scene || !camera || !renderer) return
       const delta = clock.getDelta()
       const elapsed = clock.getElapsedTime()
-      controls.update()
+      if (controls?.enabled) controls.update()
       onFrame(delta, elapsed)
       renderer.render(scene, camera)
     }
     loop()
+  }
+
+  /** Suspend la boucle d'animation (économie CPU/GPU hors mode 3D). */
+  const pauseAnimation = () => {
+    if (animationId) {
+      cancelAnimationFrame(animationId)
+      animationId = 0
+    }
+  }
+
+  /** Reprend la boucle après une pause — nécessite de rappeler animate(). */
+  const resumeAnimation = (
+    onFrame: (delta: number, elapsed: number) => void
+  ) => {
+    if (!animationId) animate(onFrame)
   }
 
   const resetCamera = () => {
@@ -156,8 +175,10 @@ export function useThreeScene(canvasRef?: Ref<HTMLCanvasElement | undefined>) {
   }
 
   const toggleFullscreen = () => {
+    const el = renderer?.domElement ?? canvasRef?.value
+    if (!el) return
     if (!document.fullscreenElement) {
-      canvasRef?.value?.requestFullscreen()
+      el.requestFullscreen()
     } else {
       document.exitFullscreen()
     }
@@ -171,6 +192,7 @@ export function useThreeScene(canvasRef?: Ref<HTMLCanvasElement | undefined>) {
   }
 
   onUnmounted(() => {
+    if (!canvasRef) return // seul le propriétaire (avec canvasRef) dispose
     if (animationId) cancelAnimationFrame(animationId)
     if (renderer) renderer.dispose()
   })
@@ -190,6 +212,8 @@ export function useThreeScene(canvasRef?: Ref<HTMLCanvasElement | undefined>) {
     // Fonctions
     initThreeJS,
     animate,
+    pauseAnimation,
+    resumeAnimation,
     handleResize,
     setupResizeHandler,
     setupPerformanceMonitor,

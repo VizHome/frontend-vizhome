@@ -5,6 +5,7 @@
       v-show="currentMode === '3d'"
       ref="canvasRef"
       class="render-canvas"
+      tabindex="0"
     />
     <!-- Sidebar (contient RenderModeBar + SketchCanvas + PromptPanel) -->
     <RenderSidebar />
@@ -23,12 +24,20 @@ const { currentMode } = useRenderMode()
 const canvasRef = ref<HTMLCanvasElement>()
 let threeInitialized = false
 
-const { initThreeJS, animate, setupResizeHandler, setupPerformanceMonitor } =
-  useThreeScene(canvasRef)
+const {
+  initThreeJS,
+  animate,
+  pauseAnimation,
+  setupResizeHandler,
+  setupPerformanceMonitor,
+} = useThreeScene(canvasRef)
 
 const { initLighting } = useThreeLighting()
 const { initLoaders } = useThreeModels()
 const { updateFrame: firstPersonFrame } = useThreeFirstPerson()
+
+// ─── Callback d'animation stocké pour la reprise ──────────────────────────────
+const onFrame = (delta: number) => firstPersonFrame(delta)
 
 // ─── Initialisation lazy (seulement au premier passage en mode 3D) ────────────
 const initThree = () => {
@@ -39,9 +48,7 @@ const initThree = () => {
   initLoaders()
   setupResizeHandler()
   setupPerformanceMonitor()
-  animate((delta: number) => {
-    firstPersonFrame(delta)
-  })
+  animate(onFrame)
 }
 
 onMounted(() => {
@@ -49,8 +56,13 @@ onMounted(() => {
   if (currentMode.value === '3d') initThree()
 })
 
-watch(currentMode, mode => {
-  if (mode === '3d') initThree()
+watch(currentMode, (mode, prev) => {
+  if (mode === '3d') {
+    initThree() // no-op si déjà initialisé
+    animate(onFrame) // reprend la boucle si elle était en pause
+  } else if (prev === '3d') {
+    pauseAnimation() // suspend la boucle quand on quitte le mode 3D
+  }
 })
 </script>
 

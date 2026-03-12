@@ -112,7 +112,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import {
   Download,
   Eraser,
@@ -145,5 +145,21 @@ const {
 
 onMounted(() => {
   if (canvasRef.value) initCanvas(canvasRef.value)
+  window.addEventListener('keydown', handleKeydown)
 })
+onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
+
+// ─── Raccourcis clavier ────────────────────────────────────────────────────────
+function handleKeydown(e: KeyboardEvent) {
+  const tag = (e.target as HTMLElement)?.tagName
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return
+  if (e.ctrlKey && !e.shiftKey && e.key === 'z') {
+    e.preventDefault()
+    undo()
+  }
+  if (e.ctrlKey && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) {
+    e.preventDefault()
+    redo()
+  }
+}
 </script>

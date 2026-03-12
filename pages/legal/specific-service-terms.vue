@@ -35,7 +35,7 @@
               <div
                 class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2"
               >
-                <Image3DIcon class="h-5 w-5 text-primary" />
+                <ImageIcon class="h-5 w-5 text-primary" />
               </div>
               <CardTitle class="text-base">Traitement d'images</CardTitle>
             </CardHeader>
@@ -229,7 +229,7 @@
 
 <script setup lang="ts">
 import {
-  Image3DIcon,
+  ImageIcon,
   PaintbrushIcon,
   StarIcon,
   UploadIcon,

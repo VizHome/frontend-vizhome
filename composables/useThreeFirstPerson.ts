@@ -28,6 +28,9 @@ export function useThreeFirstPerson() {
     })
     document.addEventListener('keyup', e => pressedKeys.delete(e.code))
 
+    fpControls.addEventListener('lock', () => {
+      isFirstPerson.value = true
+    })
     fpControls.addEventListener('unlock', () => {
       if (isFirstPerson.value) disableFirstPerson()
     })
@@ -38,8 +41,10 @@ export function useThreeFirstPerson() {
     if (!fpControls) return
     const orbitControls = getControls()
     if (orbitControls) orbitControls.enabled = false
+    // Focus le canvas avant de demander le pointer lock (user gesture requis)
+    getRenderer()?.domElement?.focus()
     fpControls.lock()
-    isFirstPerson.value = true
+    // isFirstPerson.value = true est maintenant géré dans le listener 'lock'
   }
 
   const disableFirstPerson = () => {

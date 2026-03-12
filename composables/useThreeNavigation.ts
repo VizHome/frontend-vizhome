@@ -16,11 +16,12 @@ export function useThreeNavigation() {
   const {
     enableFirstPerson,
     disableFirstPerson,
+    isFirstPerson,
     moveSpeed,
     updateFrame: fpFrame,
   } = useThreeFirstPerson()
 
-  const { enableTopDown, disableTopDown } = useThreeTopDown()
+  const { enableTopDown, disableTopDown, isTopDown } = useThreeTopDown()
 
   const {
     startTour,
@@ -62,7 +63,10 @@ export function useThreeNavigation() {
     navMode,
     setNavMode,
     // First-person
+    isFirstPerson,
     moveSpeed,
+    // Top-down
+    isTopDown,
     // Tour
     isTourActive,
     isPlaying,

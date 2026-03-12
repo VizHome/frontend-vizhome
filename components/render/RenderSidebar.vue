@@ -6,7 +6,7 @@
       collapsible="icon"
       class="custom-sidebar"
     >
-      <!-- En-tête du menu -->
+      <!-- En-tête -->
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -40,123 +40,54 @@
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                <!-- Outil -->
+                <!-- Description -->
                 <SidebarMenuItem>
-                  <div
-                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
-                  >
-                    <Label class="text-xs">Outil</Label>
-                    <div class="flex gap-2">
-                      <Button
-                        :variant="
-                          currentTool === 'pencil' ? 'default' : 'outline'
-                        "
-                        size="sm"
-                        class="flex-1"
-                        @click="currentTool = 'pencil'"
-                      >
-                        <Pencil class="h-3 w-3 mr-1" />
-                        Crayon
-                      </Button>
-                      <Button
-                        :variant="
-                          currentTool === 'eraser' ? 'default' : 'outline'
-                        "
-                        size="sm"
-                        class="flex-1"
-                        @click="currentTool = 'eraser'"
-                      >
-                        <Eraser class="h-3 w-3 mr-1" />
-                        Gomme
-                      </Button>
-                    </div>
-                  </div>
-                </SidebarMenuItem>
-
-                <!-- Couleur -->
-                <SidebarMenuItem>
-                  <div
-                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
-                  >
-                    <div class="flex items-center justify-between">
-                      <Label class="flex items-center gap-2 text-xs">
-                        <Palette class="h-3 w-3" />
-                        Couleur
-                      </Label>
-                      <Input
-                        v-model="brushColor"
-                        type="color"
-                        class="w-8 h-6 p-0 border-0"
-                      />
-                    </div>
-                  </div>
-                </SidebarMenuItem>
-
-                <!-- Taille du pinceau -->
-                <SidebarMenuItem>
-                  <div
-                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
-                  >
-                    <Label class="flex items-center gap-2 text-xs">
-                      <Brush class="h-3 w-3" />
-                      Taille du pinceau
-                    </Label>
-                    <Slider
-                      v-model="brushSizeArray"
-                      :min="1"
-                      :max="40"
-                      :step="1"
-                      class="w-full"
-                    />
-                    <div class="text-center text-xs text-muted-foreground">
-                      {{ brushSize }}px
-                    </div>
+                  <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
+                    <p class="text-xs text-muted-foreground leading-relaxed">
+                      Dessinez librement sur le canvas. La barre d'outils en bas
+                      contient tous les contrôles.
+                    </p>
                   </div>
                 </SidebarMenuItem>
 
                 <!-- Actions -->
                 <SidebarMenuItem>
+                  <SidebarMenuButton @click="exportPNG">
+                    <Download class="h-4 w-4" />
+                    <span>Exporter PNG</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton @click="clear">
+                    <Trash2 class="h-4 w-4" />
+                    <span>Effacer tout</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                <!-- Raccourcis clavier -->
+                <SidebarMenuItem>
                   <div
-                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
+                    class="px-2 pt-3 pb-2 group-data-[collapsible=icon]:hidden"
                   >
-                    <div class="grid grid-cols-2 gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        :disabled="!canUndo"
-                        @click="undo"
-                      >
-                        <Undo2 class="h-3 w-3 mr-1" />
-                        Annuler
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        :disabled="!canRedo"
-                        @click="redo"
-                      >
-                        <Redo2 class="h-3 w-3 mr-1" />
-                        Rétablir
-                      </Button>
+                    <p class="text-xs font-medium text-muted-foreground mb-2">
+                      Raccourcis
+                    </p>
+                    <div class="space-y-1.5 text-xs text-muted-foreground">
+                      <div class="flex items-center gap-2">
+                        <kbd
+                          class="font-mono bg-muted px-1.5 py-0.5 rounded text-foreground/70"
+                          >Ctrl+Z</kbd
+                        >
+                        <span>Annuler</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <kbd
+                          class="font-mono bg-muted px-1.5 py-0.5 rounded text-foreground/70"
+                          >Ctrl+Y</kbd
+                        >
+                        <span>Rétablir</span>
+                      </div>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      class="w-full"
-                      @click="clear"
-                    >
-                      <Trash2 class="h-3 w-3 mr-1" />
-                      Effacer tout
-                    </Button>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      class="w-full"
-                      @click="exportPNG"
-                    >
-                      <Download class="h-3 w-3 mr-1" />
-                      Exporter PNG
-                    </Button>
                   </div>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -173,69 +104,34 @@
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                <!-- Type de sortie -->
-                <SidebarMenuItem>
-                  <div
-                    class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
-                  >
-                    <Label class="text-xs">Type de sortie</Label>
-                    <div class="flex gap-2">
-                      <Button
-                        :variant="outputType === '2d' ? 'default' : 'outline'"
-                        size="sm"
-                        class="flex-1"
-                        @click="outputType = '2d'"
-                      >
-                        Image 2D
-                      </Button>
-                      <Button
-                        :variant="outputType === '3d' ? 'default' : 'outline'"
-                        size="sm"
-                        class="flex-1"
-                        @click="outputType = '3d'"
-                      >
-                        Modèle 3D
-                      </Button>
-                    </div>
-                  </div>
-                </SidebarMenuItem>
-
                 <!-- Historique des prompts -->
                 <SidebarMenuItem v-if="promptHistory.length > 0">
                   <div
                     class="px-2 py-2 space-y-2 group-data-[collapsible=icon]:hidden"
                   >
                     <Label class="text-xs">Historique</Label>
-                    <div class="space-y-1 max-h-40 overflow-y-auto">
+                    <div class="space-y-1 max-h-48 overflow-y-auto">
                       <button
                         v-for="entry in promptHistory"
                         :key="entry.createdAt"
-                        class="w-full text-left text-xs px-2 py-1 rounded hover:bg-accent truncate block"
+                        class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-accent truncate block"
                         @click="loadFromHistory(entry)"
                       >
-                        <span class="text-muted-foreground mr-1">{{
-                          entry.outputType.toUpperCase()
-                        }}</span>
+                        <span class="text-muted-foreground mr-1">
+                          {{ entry.outputType.toUpperCase() }}
+                        </span>
                         {{ entry.prompt }}
                       </button>
                     </div>
                   </div>
                 </SidebarMenuItem>
 
-                <!-- Conseils -->
-                <SidebarMenuItem>
-                  <div
-                    class="px-2 py-2 space-y-1 group-data-[collapsible=icon]:hidden"
-                  >
-                    <Label class="flex items-center gap-2 text-xs">
-                      <Info class="h-3 w-3" />
-                      Conseils
-                    </Label>
-                    <ul class="text-xs text-muted-foreground space-y-1 pl-2">
-                      <li>• Décris le style architectural</li>
-                      <li>• Précise les matériaux (béton, bois...)</li>
-                      <li>• Mentionne l'environnement</li>
-                    </ul>
+                <!-- État vide historique -->
+                <SidebarMenuItem v-else>
+                  <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
+                    <p class="text-xs text-muted-foreground italic">
+                      Aucune génération pour l'instant.
+                    </p>
                   </div>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -295,7 +191,7 @@
                   </SidebarMenuButton>
                 </SidebarMenuItem>
 
-                <!-- Message d'erreur -->
+                <!-- Erreur -->
                 <SidebarMenuItem v-if="modelLoadError">
                   <div
                     class="px-2 py-2 text-xs text-red-500 group-data-[collapsible=icon]:hidden"
@@ -338,6 +234,7 @@
                       v-if="selectedModelId === model.id"
                       class="space-y-3 p-2 bg-accent/20 rounded"
                     >
+                      <!-- Position -->
                       <div class="space-y-2">
                         <Label class="flex items-center gap-2 text-xs">
                           <Move3d class="h-3 w-3" />
@@ -370,6 +267,7 @@
                         </div>
                       </div>
 
+                      <!-- Rotation -->
                       <div class="space-y-2">
                         <Label class="flex items-center gap-2 text-xs">
                           <Rotate3d class="h-3 w-3" />
@@ -405,6 +303,7 @@
                         </div>
                       </div>
 
+                      <!-- Échelle -->
                       <div class="space-y-2">
                         <Label class="flex items-center gap-2 text-xs">
                           <Scale class="h-3 w-3" />
@@ -424,19 +323,6 @@
                           {{ model.scale.x.toFixed(1) }}x
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </SidebarMenuItem>
-
-                <SidebarMenuItem>
-                  <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
-                    <div class="text-xs text-muted-foreground">
-                      <p class="font-medium mb-1">Formats supportés:</p>
-                      <ul class="space-y-1">
-                        <li>• GLB/GLTF (recommandé)</li>
-                        <li>• OBJ</li>
-                        <li>• FBX</li>
-                      </ul>
                     </div>
                   </div>
                 </SidebarMenuItem>
@@ -510,7 +396,7 @@
                       </button>
                     </div>
 
-                    <!-- Options : First-person -->
+                    <!-- Options : First-person (vitesse uniquement) -->
                     <template v-if="navMode === 'firstperson'">
                       <Label class="flex items-center gap-2 text-xs">
                         <Gauge class="h-3 w-3" />
@@ -528,14 +414,7 @@
                       </div>
                     </template>
 
-                    <!-- Options : Top-down -->
-                    <template v-else-if="navMode === 'topdown'">
-                      <p class="text-xs text-muted-foreground leading-relaxed">
-                        Clic + drag pour déplacer &bull; Scroll pour zoomer
-                      </p>
-                    </template>
-
-                    <!-- Options : Visite guidée -->
+                    <!-- Options : Visite guidée (durée + play/pause) -->
                     <template v-else-if="navMode === 'tour'">
                       <div class="space-y-2">
                         <div class="flex items-center gap-2">
@@ -588,8 +467,8 @@
             </SidebarGroupContent>
           </SidebarGroup>
 
-          <!-- Saisons (uniquement si un modèle est importé) -->
-          <SidebarGroup v-if="importedModels.length > 0">
+          <!-- Saisons (toujours visible — affecte fond + lumière même sans modèle) -->
+          <SidebarGroup>
             <SidebarGroupLabel>
               <Calendar class="h-4 w-4 mr-1" />
               Saisons
@@ -630,8 +509,8 @@
           <SidebarMenuItem>
             <div class="px-2 py-2 group-data-[collapsible=icon]:hidden">
               <div class="flex items-center gap-2 mb-3">
-                <Info class="h-4 w-4 text-orange-500" />
-                <h4 class="text-sm font-semibold text-orange-500">
+                <Activity class="h-4 w-4 text-muted-foreground" />
+                <h4 class="text-sm font-semibold text-muted-foreground">
                   Performances
                 </h4>
               </div>
@@ -639,14 +518,14 @@
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
                     <Zap class="h-3 w-3" />
-                    <span>FPS:</span>
+                    <span>FPS :</span>
                   </div>
                   <Badge variant="secondary">{{ fps }}</Badge>
                 </div>
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
                     <Triangle class="h-3 w-3" />
-                    <span>Triangles:</span>
+                    <span>Triangles :</span>
                   </div>
                   <Badge variant="secondary">{{ triangleCount }}</Badge>
                 </div>
@@ -659,27 +538,18 @@
       <SidebarRail />
     </Sidebar>
 
-    <!-- Zone de rendu (SidebarInset) — contient la ModeBar + les panels légers -->
+    <!-- Zone de rendu (SidebarInset) -->
     <SidebarInset class="render-inset">
-      <!-- Contrôles sidebar top-left -->
-      <div class="absolute top-4 left-4 z-20 flex items-center gap-2">
+      <!-- Trigger sidebar top-left (unique) -->
+      <div class="absolute top-4 left-4 z-20">
         <SidebarTrigger class="sidebar-trigger" />
-        <Button
-          variant="outline"
-          size="icon"
-          class="h-8 w-8 sidebar-control-btn"
-          :title="
-            sidebarCollapsed ? 'Agrandir la sidebar' : 'Réduire la sidebar'
-          "
-          @click="toggleSidebarCollapse"
-        >
-          <PanelLeftOpen v-if="sidebarCollapsed" class="h-4 w-4" />
-          <PanelLeftClose v-else class="h-4 w-4" />
-        </Button>
       </div>
 
       <!-- Sélecteur de mode flottant (top-center) -->
       <RenderModeBar />
+
+      <!-- Overlays contextuels sur le canvas (uniquement en mode 3D) -->
+      <RenderOverlays v-if="currentMode === '3d'" />
 
       <!-- Panels légers (v-if : peuvent être démontés) -->
       <SketchCanvas v-if="currentMode === 'sketch'" />
@@ -690,36 +560,29 @@
 
 <script lang="ts" setup>
 import {
-  Eye,
-  RotateCcw,
-  Maximize,
-  Camera,
-  Sun,
-  Pencil,
-  Eraser,
-  Palette,
-  Brush,
-  Undo2,
-  Redo2,
-  Trash2,
-  Download,
-  Sparkles,
-  Info,
-  Upload,
-  Move3d,
-  Rotate3d,
-  Scale,
-  Compass,
-  Gauge,
-  Play,
-  Pause,
-  Square,
-  Timer,
+  Activity,
   Calendar,
-  Zap,
+  Camera,
+  Compass,
+  Download,
+  Eye,
+  Gauge,
+  Maximize,
+  Move3d,
+  Pause,
+  Pencil,
+  Play,
+  Rotate3d,
+  RotateCcw,
+  Scale,
+  Sparkles,
+  Square,
+  Sun,
+  Timer,
+  Trash2,
   Triangle,
-  PanelLeftOpen,
-  PanelLeftClose,
+  Upload,
+  Zap,
 } from 'lucide-vue-next'
 import { computed } from 'vue'
 import { Badge } from '@/components/ui/badge'
@@ -773,15 +636,8 @@ const SEASON_ICONS: Record<Season, string> = {
 // ─── Composables (singletons) ────────────────────────────────────────────────
 const { currentMode } = useRenderMode()
 
-const {
-  fps,
-  triangleCount,
-  sidebarCollapsed,
-  toggleSidebarCollapse,
-  resetCamera,
-  toggleFullscreen,
-  captureScreenshot,
-} = useThreeScene()
+const { fps, triangleCount, resetCamera, toggleFullscreen, captureScreenshot } =
+  useThreeScene()
 
 const {
   importedModels,
@@ -815,28 +671,11 @@ const {
   togglePlayPause,
 } = useThreeNavigation()
 
-const {
-  currentTool,
-  brushSize,
-  brushColor,
-  canUndo,
-  canRedo,
-  undo,
-  redo,
-  clear,
-  exportPNG,
-} = useSketchCanvas()
+const { clear, exportPNG } = useSketchCanvas()
 
-const { outputType, promptHistory, loadFromHistory } = useAiRender()
+const { promptHistory, loadFromHistory } = useAiRender()
 
 // ─── Adapters pour Slider (attend un tableau) ─────────────────────────────────
-const brushSizeArray = computed({
-  get: () => [brushSize.value],
-  set: (v: number[]) => {
-    brushSize.value = v[0] ?? brushSize.value
-  },
-})
-
 const moveSpeedArray = computed({
   get: () => [moveSpeed.value],
   set: (v: number[]) => {
@@ -853,7 +692,6 @@ const tourDurationArray = computed({
 </script>
 
 <style scoped>
-/* Personnalisation de la sidebar */
 .custom-sidebar {
   border-right: 1px solid hsl(var(--border));
   backdrop-filter: blur(8px);
@@ -861,28 +699,23 @@ const tourDurationArray = computed({
   max-width: 100vw;
 }
 
-/* Scrollbar personnalisée */
 .custom-scroll {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
   scroll-behavior: smooth;
 }
-
 .custom-scroll::-webkit-scrollbar {
   width: 4px;
 }
-
 .custom-scroll::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 2px;
 }
-
 .custom-scroll::-webkit-scrollbar-thumb {
   background-color: hsl(var(--muted-foreground) / 0.2);
   border-radius: 2px;
   transition: all 0.2s ease;
 }
-
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--muted-foreground) / 0.4);
 }
@@ -896,17 +729,14 @@ const tourDurationArray = computed({
   min-height: 0;
 }
 
-.sidebar-trigger,
-.sidebar-control-btn {
+.sidebar-trigger {
   background: hsl(var(--background) / 0.95);
   border: 1px solid hsl(var(--border));
   backdrop-filter: blur(12px);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 8px hsl(var(--shadow) / 0.1);
 }
-
-.sidebar-trigger:hover,
-.sidebar-control-btn:hover {
+.sidebar-trigger:hover {
   background: hsl(var(--accent));
   border-color: hsl(var(--accent-foreground) / 0.2);
   transform: translateY(-1px) scale(1.02);
@@ -918,20 +748,8 @@ const tourDurationArray = computed({
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (max-width: 480px) {
-  .sidebar-control-btn {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .sidebar-control-btn {
-    display: none;
-  }
-
-  .custom-sidebar {
-    max-width: 90vw;
-  }
+.sidebar-trigger {
+  animation: slideInFromLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes slideInFromLeft {
@@ -939,16 +757,16 @@ const tourDurationArray = computed({
     opacity: 0;
     transform: translateX(-20px) scale(0.95);
   }
-
   to {
     opacity: 1;
     transform: translateX(0) scale(1);
   }
 }
 
-.sidebar-trigger,
-.sidebar-control-btn {
-  animation: slideInFromLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+@media (max-width: 768px) {
+  .custom-sidebar {
+    max-width: 90vw;
+  }
 }
 
 @media (max-height: 600px) {

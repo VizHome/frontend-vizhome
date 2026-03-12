@@ -17,10 +17,14 @@
             </p>
             <div class="flex flex-col sm:flex-row gap-4 pt-4">
               <Button size="lg" as-child>
-                <a to="/auth/register"> Commencer gratuitement </a>
+                <NuxtLink to="/auth/register">
+                  Commencer gratuitement
+                </NuxtLink>
               </Button>
               <Button size="lg" variant="outline" as-child>
-                <a to="/features"> Découvrir les fonctionnalités </a>
+                <NuxtLink to="/features">
+                  Découvrir les fonctionnalités
+                </NuxtLink>
               </Button>
             </div>
             <div class="flex items-center gap-4 pt-6">

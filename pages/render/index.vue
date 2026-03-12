@@ -904,7 +904,7 @@ let fenceGroup: THREE.Group
 let cloudsGroup: THREE.Group
 let gardenGroup: THREE.Group
 let pathGroup: THREE.Group
-let particleSystem: THREE.Points
+let particleSystem: THREE.Points | null
 let firefliesGroup: THREE.Group
 let smokeGroup: THREE.Group
 let doorGroup: THREE.Group

@@ -364,6 +364,18 @@ export function useSketchCanvas() {
     return canvasEl.toDataURL('image/png')
   }
 
+  /** Lit la couleur sous un PointerEvent sans déclencher d'action (hover pipette). */
+  const sampleColorAt = (e: PointerEvent) => {
+    if (!ctx || !canvasEl) return
+    const { x, y } = getPos(e)
+    const pixel = ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data
+    eyedropperColor.value =
+      '#' +
+      [pixel[0], pixel[1], pixel[2]]
+        .map(v => (v ?? 0).toString(16).padStart(2, '0'))
+        .join('')
+  }
+
   return {
     currentTool,
     brushSize,
@@ -382,5 +394,6 @@ export function useSketchCanvas() {
     clear,
     exportPNG,
     getCanvasDataURL,
+    sampleColorAt,
   }
 }

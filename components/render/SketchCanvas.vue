@@ -4,7 +4,7 @@
     <canvas
       ref="canvasRef"
       class="absolute inset-0 w-full h-full touch-none"
-      :style="{ cursor: currentTool === 'eyedropper' ? 'none' : cursorStyle }"
+      :style="{ cursor: cursorStyle }"
       @pointerdown="startDraw"
       @pointermove="onPointerMove"
       @pointerup="stopDraw"
@@ -22,7 +22,7 @@
       <div
         v-if="currentTool === 'eyedropper' && cursorVisible"
         class="pointer-events-none fixed z-50 flex items-center gap-2 rounded-lg border bg-background/95 backdrop-blur-sm shadow-lg px-2.5 py-1.5 text-xs font-mono"
-        :style="{ left: `${cursorX + 18}px`, top: `${cursorY - 36}px` }"
+        :style="{ left: `${cursorX + 20}px`, top: `${cursorY - 44}px` }"
       >
         <span
           class="h-4 w-4 rounded-full border border-border shrink-0"
@@ -428,6 +428,7 @@ const {
   clear,
   exportPNG,
   getCanvasDataURL,
+  sampleColorAt,
 } = useSketchCanvas()
 
 const {
@@ -443,6 +444,8 @@ const cursorStyle = computed(() => {
   switch (currentTool.value) {
     case 'eraser':
       return 'cell'
+    case 'eyedropper':
+      return 'crosshair'
     case 'fill':
       return 'copy'
     default:
@@ -461,6 +464,7 @@ const onPointerMove = (e: PointerEvent) => {
     cursorX.value = e.clientX
     cursorY.value = e.clientY
     cursorVisible.value = true
+    sampleColorAt(e)
   }
 }
 

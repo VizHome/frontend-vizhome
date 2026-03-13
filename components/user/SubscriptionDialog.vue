@@ -33,6 +33,17 @@
             <p class="text-xs text-muted-foreground mt-0.5">
               {{ currentPlanDesc }}
             </p>
+            <div v-if="renewalDate" class="flex items-center gap-1.5 mt-2">
+              <CalendarClock
+                class="h-3.5 w-3.5 text-muted-foreground shrink-0"
+              />
+              <p class="text-xs text-muted-foreground">
+                Renouvellement le
+                <span class="font-medium text-foreground">{{
+                  renewalDate
+                }}</span>
+              </p>
+            </div>
           </div>
         </div>
 
@@ -101,7 +112,18 @@
         </div>
       </div>
 
-      <DialogFooter>
+      <DialogFooter class="flex-col sm:flex-row gap-2 sm:items-center">
+        <a
+          v-if="user.plan !== 'free'"
+          href="#"
+          class="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mr-auto"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <CreditCard class="h-3.5 w-3.5" />
+          Gérer la facturation
+          <ExternalLink class="h-3 w-3" />
+        </a>
         <Button variant="ghost" @click="open = false">Fermer</Button>
       </DialogFooter>
     </DialogContent>
@@ -110,12 +132,34 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { Building2, CreditCard, Rocket, Sparkles, Zap } from 'lucide-vue-next'
+import {
+  Building2,
+  CalendarClock,
+  CreditCard,
+  ExternalLink,
+  Rocket,
+  Sparkles,
+  Zap,
+} from 'lucide-vue-next'
 import type { UserPlan } from '~/composables/useUser'
 
 const open = defineModel<boolean>('open', { default: false })
 
 const { user, planLabel } = useUser()
+
+// ─── Date de renouvellement fictive ──────────────────────────────────────────
+// TODO: remplacer par la vraie date issue de l'API facturation
+const renewalDate = computed(() => {
+  if (user.value.plan === 'free') return null
+  // Date fictive : 30 jours à partir d'aujourd'hui
+  const d = new Date()
+  d.setDate(d.getDate() + 30)
+  return d.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+})
 
 const PLANS: {
   id: UserPlan

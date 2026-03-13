@@ -4,10 +4,7 @@
       <nav class="flex items-center justify-between h-16">
         <div class="flex items-center gap-6">
           <NuxtLink to="/" class="hidden lg:flex items-center">
-            <span
-              class="font-bold text-2xl bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent"
-              >Viz<span class="text-primary">Home</span></span
-            >
+            <AppLogo />
           </NuxtLink>
           <div class="hidden md:flex items-center gap-1">
             <NavigationMenu>

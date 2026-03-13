@@ -301,7 +301,20 @@ const LEGAL_DOCS = [
 
 const SHORTCUTS = [
   {
-    title: 'Croquis 2D',
+    title: 'Croquis 2D — Outils',
+    items: [
+      { action: 'Crayon', keys: ['P'] },
+      { action: 'Gomme', keys: ['E'] },
+      { action: 'Ligne', keys: ['L'] },
+      { action: 'Rectangle', keys: ['R'] },
+      { action: 'Cercle', keys: ['C'] },
+      { action: 'Remplissage', keys: ['F'] },
+      { action: 'Pipette', keys: ['I'] },
+      { action: 'Afficher / masquer les raccourcis', keys: ['?'] },
+    ],
+  },
+  {
+    title: 'Croquis 2D — Actions',
     items: [
       { action: 'Annuler', keys: ['Ctrl', 'Z'] },
       { action: 'Rétablir', keys: ['Ctrl', 'Y'] },
@@ -310,17 +323,17 @@ const SHORTCUTS = [
   },
   {
     title: 'Prompt IA',
-    items: [{ action: 'Générer le rendu', keys: ['Entrée'] }],
+    items: [{ action: 'Générer le rendu', keys: ['Ctrl', 'Entrée'] }],
   },
   {
-    title: 'Mode 3D',
+    title: 'Mode 3D — Navigation',
     items: [
+      { action: 'Mode Orbite', keys: ['1'] },
+      { action: 'Mode Marche à pied (WASD)', keys: ['2'] },
+      { action: 'Vue plan (top-down)', keys: ['3'] },
+      { action: 'Visite guidée (tour 360°)', keys: ['4'] },
       { action: 'Réinitialiser la caméra', keys: ['R'] },
       { action: 'Plein écran', keys: ['F'] },
-      { action: 'Orbite', keys: ['1'] },
-      { action: 'Marche à pied', keys: ['2'] },
-      { action: 'Vue plan', keys: ['3'] },
-      { action: 'Visite guidée', keys: ['4'] },
     ],
   },
   {

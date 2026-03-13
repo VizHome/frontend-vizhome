@@ -22,10 +22,7 @@
       <div class="w-full max-w-md">
         <div class="text-center mb-8">
           <NuxtLink to="/" class="inline-block">
-            <span
-              class="font-bold text-3xl bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent"
-              >Viz<span class="text-primary">Home</span></span
-            >
+            <AppLogo />
           </NuxtLink>
           <h2 class="text-2xl font-bold mt-6 mb-2">Créer un compte</h2>
           <p class="text-muted-foreground">

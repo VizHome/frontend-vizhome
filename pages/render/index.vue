@@ -11,6 +11,9 @@
     <!-- Barre de mode toujours visible -->
     <RenderModeBar />
 
+    <!-- Bulle utilisateur (toujours visible sur /render) -->
+    <UserNav />
+
     <!-- Modes légers montés/démontés à la demande -->
     <SketchCanvas v-if="currentMode === 'sketch'" />
     <PromptPanel v-if="currentMode === 'prompt'" />

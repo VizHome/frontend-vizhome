@@ -210,6 +210,12 @@ export function useThreeScene(canvasRef?: Ref<HTMLCanvasElement | undefined>) {
     link.click()
   }
 
+  /** Retourne le dataURL PNG de la scène sans déclencher de téléchargement */
+  const captureScreenshotDataURL = (): string | null => {
+    if (!renderer) return null
+    return renderer.domElement.toDataURL('image/png')
+  }
+
   onUnmounted(() => {
     if (!canvasRef) return // seul le propriétaire (avec canvasRef) dispose
     if (animationId) cancelAnimationFrame(animationId)
@@ -239,6 +245,7 @@ export function useThreeScene(canvasRef?: Ref<HTMLCanvasElement | undefined>) {
     resetCamera,
     toggleFullscreen,
     captureScreenshot,
+    captureScreenshotDataURL,
     toggleSidebarCollapse,
   }
 }

@@ -7,7 +7,7 @@ import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
 import { computed, ref } from 'vue'
-import { getScene } from './useThreeScene'
+import { getCamera, getControls, getScene } from './useThreeScene'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 export interface ImportedModel {
@@ -51,17 +51,20 @@ export function useThreeModels() {
     const scene = getScene()
     const modelId = Date.now().toString()
 
+    // 1. Calculer le bounding box avant scaling pour normaliser la taille
     const box = new THREE.Box3().setFromObject(model)
     const size = box.getSize(new THREE.Vector3())
     const maxSize = Math.max(size.x, size.y, size.z)
     const scale = 3 / maxSize
-
     model.scale.setScalar(scale)
-    const center = box.getCenter(new THREE.Vector3())
-    model.position.sub(center.multiplyScalar(scale))
-    model.position.y = 0
-    model.position.x = 5
-    model.position.z = 5
+
+    // 2. Recalculer le bounding box après scaling et centrer sur l'origine
+    const boxScaled = new THREE.Box3().setFromObject(model)
+    const center = boxScaled.getCenter(new THREE.Vector3())
+    model.position.sub(center)
+    // Poser le modèle sur le sol (y=0)
+    const boxFinal = new THREE.Box3().setFromObject(model)
+    model.position.y -= boxFinal.min.y
 
     model.traverse(child => {
       if (child instanceof THREE.Mesh) {
@@ -71,6 +74,25 @@ export function useThreeModels() {
     })
 
     scene.add(model)
+
+    // 3. Recentrer la caméra sur le modèle importé
+    const camera = getCamera()
+    const controls = getControls()
+    if (camera && controls) {
+      const finalBox = new THREE.Box3().setFromObject(model)
+      const finalCenter = finalBox.getCenter(new THREE.Vector3())
+      const finalSize = finalBox.getSize(new THREE.Vector3())
+      const maxDim = Math.max(finalSize.x, finalSize.y, finalSize.z)
+      const dist = maxDim * 2.5
+      camera.position.set(
+        finalCenter.x + dist * 0.6,
+        finalCenter.y + dist * 0.5,
+        finalCenter.z + dist * 0.6
+      )
+      controls.target.copy(finalCenter)
+      controls.update()
+    }
+
     importedModels.value.push({
       id: modelId,
       name: fileName.split('.')[0] ?? fileName,

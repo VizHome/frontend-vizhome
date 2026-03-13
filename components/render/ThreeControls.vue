@@ -60,6 +60,12 @@
     </button>
   </div>
 
+  <!-- Panel Screenshot → Rendu IA -->
+  <ScreenshotRenderPanel
+    v-model:open="showScreenshotPanel"
+    :screenshot-data-url="screenshotDataUrl"
+  />
+
   <!-- Panel flottant -->
   <Transition name="panel-slide">
     <div
@@ -374,8 +380,8 @@
           </button>
           <button
             class="flex flex-col items-center gap-1 rounded-xl border bg-muted/50 hover:bg-accent p-2 text-xs font-medium transition-colors"
-            title="Capturer l'écran"
-            @click="captureScreenshot"
+            title="Capturer et générer un rendu IA"
+            @click="openScreenshotPanel"
           >
             <Camera class="h-4 w-4" />
             Capture
@@ -481,8 +487,23 @@ const {
   updateModelScale,
 } = useThreeModels()
 
-const { fps, triangleCount, resetCamera, toggleFullscreen, captureScreenshot } =
-  useThreeScene()
+const {
+  fps,
+  triangleCount,
+  resetCamera,
+  toggleFullscreen,
+  captureScreenshot,
+  captureScreenshotDataURL,
+} = useThreeScene()
+
+// ─── Panel Screenshot ─────────────────────────────────────────────────────────
+const showScreenshotPanel = ref(false)
+const screenshotDataUrl = ref<string | null>(null)
+
+const openScreenshotPanel = () => {
+  screenshotDataUrl.value = captureScreenshotDataURL()
+  showScreenshotPanel.value = true
+}
 
 // ─── Config UI ────────────────────────────────────────────────────────────────
 const PRESET_EMOJIS: Record<LightPreset, string> = {

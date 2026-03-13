@@ -301,6 +301,49 @@
                 Transform
               </p>
 
+              <!-- Sélecteur de mode transform -->
+              <div class="grid grid-cols-3 gap-1.5">
+                <button
+                  :class="[
+                    'flex flex-col items-center gap-1 rounded-xl border p-2 text-xs font-medium transition-colors',
+                    transformMode === 'translate'
+                      ? 'bg-primary text-primary-foreground border-primary'
+                      : 'bg-muted/50 hover:bg-accent border-transparent',
+                  ]"
+                  title="Déplacer"
+                  @click="setTransformMode('translate')"
+                >
+                  <Move3d class="h-3.5 w-3.5" />
+                  Déplacer
+                </button>
+                <button
+                  :class="[
+                    'flex flex-col items-center gap-1 rounded-xl border p-2 text-xs font-medium transition-colors',
+                    transformMode === 'rotate'
+                      ? 'bg-primary text-primary-foreground border-primary'
+                      : 'bg-muted/50 hover:bg-accent border-transparent',
+                  ]"
+                  title="Rotation"
+                  @click="setTransformMode('rotate')"
+                >
+                  <RefreshCw class="h-3.5 w-3.5" />
+                  Rotation
+                </button>
+                <button
+                  :class="[
+                    'flex flex-col items-center gap-1 rounded-xl border p-2 text-xs font-medium transition-colors',
+                    transformMode === 'scale'
+                      ? 'bg-primary text-primary-foreground border-primary'
+                      : 'bg-muted/50 hover:bg-accent border-transparent',
+                  ]"
+                  title="Échelle"
+                  @click="setTransformMode('scale')"
+                >
+                  <Maximize2 class="h-3.5 w-3.5" />
+                  Échelle
+                </button>
+              </div>
+
               <!-- Position -->
               <div class="flex items-center gap-1">
                 <Move3d class="h-3.5 w-3.5 text-muted-foreground shrink-0" />
@@ -454,10 +497,12 @@ import {
   Gauge,
   ImageDown,
   Maximize,
+  Maximize2,
   Move3d,
   Navigation2,
   Pause,
   Play,
+  RefreshCw,
   Rotate3d,
   RotateCcw,
   Scale,
@@ -510,6 +555,7 @@ const {
   isLoadingModel,
   modelLoadError,
   selectedModel,
+  transformMode,
   importModel,
   removeModel,
   selectModel,
@@ -517,6 +563,8 @@ const {
   updateModelRotation,
   updateModelScale,
   fitCameraToModels,
+  setTransformMode,
+  setTransformVisible,
 } = useThreeModels()
 
 const {
@@ -524,12 +572,13 @@ const {
   triangleCount,
   resetCamera,
   toggleFullscreen,
-  captureScreenshot,
+  getRenderer,
+  getScene,
+  getCamera,
   captureScreenshotDataURL,
 } = useThreeScene()
 
 // ─── Reset caméra intelligent ─────────────────────────────────────────────────
-// Si des modèles sont présents, recadrer sur eux ; sinon reset standard
 const handleReset = () => {
   if (importedModels.value.length > 0) {
     fitCameraToModels()
@@ -538,13 +587,38 @@ const handleReset = () => {
   }
 }
 
-// ─── Panel Screenshot ─────────────────────────────────────────────────────────
+// ─── Capture PNG sans le gizmo TransformControls ──────────────────────────────
+const captureScreenshot = () => {
+  setTransformVisible(false)
+  // Forcer un rendu propre avant de lire le canvas (efface le gizmo)
+  const renderer = getRenderer()
+  const scene = getScene()
+  const camera = getCamera()
+  if (renderer && scene && camera) renderer.render(scene, camera)
+
+  const link = document.createElement('a')
+  link.download = 'house-render.png'
+  link.href = renderer?.domElement.toDataURL() ?? ''
+  link.click()
+
+  setTransformVisible(true)
+}
+
+// ─── Panel Screenshot (Rendu IA) sans le gizmo ───────────────────────────────
 const showScreenshotPanel = ref(false)
 const screenshotDataUrl = ref<string | null>(null)
 
 const openScreenshotPanel = () => {
+  setTransformVisible(false)
+  const renderer = getRenderer()
+  const scene = getScene()
+  const camera = getCamera()
+  if (renderer && scene && camera) renderer.render(scene, camera)
+
   screenshotDataUrl.value = captureScreenshotDataURL()
   showScreenshotPanel.value = true
+
+  setTransformVisible(true)
 }
 
 // ─── Config UI ────────────────────────────────────────────────────────────────

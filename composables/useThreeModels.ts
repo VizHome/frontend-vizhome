@@ -2,12 +2,13 @@
  * useThreeModels — Import et gestion de modèles 3D (GLTF/OBJ/FBX)
  */
 import * as THREE from 'three'
+import { TransformControls } from 'three/addons/controls/TransformControls.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
 import { computed, ref } from 'vue'
-import { getCamera, getControls, getScene } from './useThreeScene'
+import { getCamera, getControls, getRenderer, getScene } from './useThreeScene'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 export interface ImportedModel {
@@ -24,11 +25,13 @@ let gltfLoader: GLTFLoader
 let objLoader: OBJLoader
 let fbxLoader: FBXLoader
 let dracoLoader: DRACOLoader
+let transformCtrl: TransformControls | null = null
 
 const importedModels = ref<ImportedModel[]>([])
 const selectedModelId = ref<string | null>(null)
 const isLoadingModel = ref(false)
 const modelLoadError = ref<string | null>(null)
+const transformMode = ref<'translate' | 'rotate' | 'scale'>('translate')
 
 // ─── Composable ──────────────────────────────────────────────────────────────
 export function useThreeModels() {
@@ -42,7 +45,6 @@ export function useThreeModels() {
     const controls = getControls()
     if (!camera || !controls) return
 
-    // Construire le bounding box global de tous les modèles (ou du modèle cible)
     const box = new THREE.Box3()
     if (target) {
       box.setFromObject(target)
@@ -55,11 +57,9 @@ export function useThreeModels() {
     const size = box.getSize(new THREE.Vector3())
     const maxDim = Math.max(size.x, size.y, size.z)
 
-    // Distance de vue : on veut le modèle entier visible avec un peu de marge
     const fov = camera.fov * (Math.PI / 180)
     const dist = (maxDim / 2 / Math.tan(fov / 2)) * 1.8
 
-    // Position caméra : légèrement en hauteur et de biais (vue 3/4)
     camera.position.set(
       center.x + dist * 0.6,
       center.y + dist * 0.5,
@@ -71,6 +71,60 @@ export function useThreeModels() {
 
     controls.target.copy(center)
     controls.update()
+  }
+
+  /**
+   * Initialise les TransformControls Three.js.
+   * Doit être appelé après initThreeJS().
+   */
+  const initTransformControls = () => {
+    const camera = getCamera()
+    const renderer = getRenderer()
+    const scene = getScene()
+    const orbitControls = getControls()
+    if (!camera || !renderer || !scene) return
+    if (transformCtrl) return // déjà initialisé (singleton)
+
+    transformCtrl = new TransformControls(camera, renderer.domElement)
+    transformCtrl.setMode(transformMode.value)
+
+    // Synchroniser position/rotation/scale dans la ref à chaque changement
+    transformCtrl.addEventListener('change', () => {
+      const entry = importedModels.value.find(
+        m => m.id === selectedModelId.value
+      )
+      if (!entry || !transformCtrl?.object) return
+      const obj = transformCtrl.object
+      entry.position.x = obj.position.x
+      entry.position.y = obj.position.y
+      entry.position.z = obj.position.z
+      entry.rotation.x = obj.rotation.x
+      entry.rotation.y = obj.rotation.y
+      entry.rotation.z = obj.rotation.z
+      entry.scale.x = obj.scale.x
+      entry.scale.y = obj.scale.y
+      entry.scale.z = obj.scale.z
+    })
+
+    // Désactiver OrbitControls pendant le drag pour éviter les conflits
+    transformCtrl.addEventListener('dragging-changed', (event: any) => {
+      if (orbitControls) orbitControls.enabled = !event.value
+    })
+
+    scene.add(transformCtrl.getHelper())
+  }
+
+  /** Change le mode de transform (translate / rotate / scale) */
+  const setTransformMode = (mode: 'translate' | 'rotate' | 'scale') => {
+    transformMode.value = mode
+    transformCtrl?.setMode(mode)
+  }
+
+  /** Affiche ou masque le helper des TransformControls (pour les captures) */
+  const setTransformVisible = (visible: boolean) => {
+    if (!transformCtrl) return
+    const helper = transformCtrl.getHelper()
+    if (helper) helper.visible = visible
   }
 
   const initLoaders = () => {
@@ -88,20 +142,30 @@ export function useThreeModels() {
     const scene = getScene()
     const modelId = Date.now().toString()
 
-    // 1. Calculer le bounding box avant scaling pour normaliser la taille
+    // 1. Normaliser la taille
     const box = new THREE.Box3().setFromObject(model)
     const size = box.getSize(new THREE.Vector3())
     const maxSize = Math.max(size.x, size.y, size.z)
     const scale = 3 / maxSize
     model.scale.setScalar(scale)
 
-    // 2. Recalculer le bounding box après scaling et centrer sur l'origine
+    // 2. Centrer et poser au sol
     const boxScaled = new THREE.Box3().setFromObject(model)
     const center = boxScaled.getCenter(new THREE.Vector3())
     model.position.sub(center)
-    // Poser le modèle sur le sol (y=0)
     const boxFinal = new THREE.Box3().setFromObject(model)
     model.position.y -= boxFinal.min.y
+
+    // 3. Offset automatique si d'autres modèles existent déjà
+    //    → placer le nouveau à droite du bounding box global existant
+    if (importedModels.value.length > 0) {
+      const globalBox = new THREE.Box3()
+      importedModels.value.forEach(m => globalBox.expandByObject(m.model))
+      const newBox = new THREE.Box3().setFromObject(model)
+      const newHalfX = (newBox.max.x - newBox.min.x) / 2
+      // Décaler en X : bord droit du global + gap 1 + demi-largeur du nouveau
+      model.position.x = globalBox.max.x + 1 + newHalfX
+    }
 
     model.traverse(child => {
       if (child instanceof THREE.Mesh) {
@@ -112,7 +176,7 @@ export function useThreeModels() {
 
     scene.add(model)
 
-    // 3. Recentrer la caméra sur le modèle importé (avec calcul FOV-aware)
+    // 4. Recentrer la caméra sur tous les modèles (FOV-aware)
     fitCameraToModels(model)
 
     importedModels.value.push({
@@ -133,6 +197,9 @@ export function useThreeModels() {
     })
     isLoadingModel.value = false
     selectedModelId.value = modelId
+
+    // Attacher immédiatement les TransformControls au nouveau modèle
+    if (transformCtrl) transformCtrl.attach(model)
   }
 
   const _loadGLTF = (buffer: ArrayBuffer, name: string) => {
@@ -205,12 +272,25 @@ export function useThreeModels() {
       const entry = importedModels.value[idx]
       if (entry) scene.remove(entry.model)
       importedModels.value.splice(idx, 1)
-      if (selectedModelId.value === modelId) selectedModelId.value = null
+      if (selectedModelId.value === modelId) {
+        selectedModelId.value = null
+        transformCtrl?.detach()
+      }
     }
   }
 
   const selectModel = (modelId: string) => {
-    selectedModelId.value = selectedModelId.value === modelId ? null : modelId
+    // Toggle : si déjà sélectionné → désélectionner
+    if (selectedModelId.value === modelId) {
+      selectedModelId.value = null
+      transformCtrl?.detach()
+      return
+    }
+    selectedModelId.value = modelId
+    const entry = importedModels.value.find(m => m.id === modelId)
+    if (entry && transformCtrl) {
+      transformCtrl.attach(entry.model)
+    }
   }
 
   const updateModelPosition = (axis: 'x' | 'y' | 'z', value: number) => {
@@ -244,7 +324,9 @@ export function useThreeModels() {
     isLoadingModel,
     modelLoadError,
     selectedModel,
+    transformMode,
     initLoaders,
+    initTransformControls,
     importModel,
     removeModel,
     selectModel,
@@ -252,5 +334,7 @@ export function useThreeModels() {
     updateModelRotation,
     updateModelScale,
     fitCameraToModels,
+    setTransformMode,
+    setTransformVisible,
   }
 }

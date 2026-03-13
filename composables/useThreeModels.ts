@@ -36,6 +36,43 @@ export function useThreeModels() {
     importedModels.value.find(m => m.id === selectedModelId.value)
   )
 
+  /** Ajuste la caméra pour cadrer tous les modèles (ou un modèle donné) */
+  const fitCameraToModels = (target?: THREE.Group) => {
+    const camera = getCamera()
+    const controls = getControls()
+    if (!camera || !controls) return
+
+    // Construire le bounding box global de tous les modèles (ou du modèle cible)
+    const box = new THREE.Box3()
+    if (target) {
+      box.setFromObject(target)
+    } else {
+      importedModels.value.forEach(m => box.expandByObject(m.model))
+    }
+    if (box.isEmpty()) return
+
+    const center = box.getCenter(new THREE.Vector3())
+    const size = box.getSize(new THREE.Vector3())
+    const maxDim = Math.max(size.x, size.y, size.z)
+
+    // Distance de vue : on veut le modèle entier visible avec un peu de marge
+    const fov = camera.fov * (Math.PI / 180)
+    const dist = (maxDim / 2 / Math.tan(fov / 2)) * 1.8
+
+    // Position caméra : légèrement en hauteur et de biais (vue 3/4)
+    camera.position.set(
+      center.x + dist * 0.6,
+      center.y + dist * 0.5,
+      center.z + dist * 0.6
+    )
+    camera.near = dist * 0.01
+    camera.far = dist * 10
+    camera.updateProjectionMatrix()
+
+    controls.target.copy(center)
+    controls.update()
+  }
+
   const initLoaders = () => {
     dracoLoader = new DRACOLoader()
     dracoLoader.setDecoderPath(
@@ -75,23 +112,8 @@ export function useThreeModels() {
 
     scene.add(model)
 
-    // 3. Recentrer la caméra sur le modèle importé
-    const camera = getCamera()
-    const controls = getControls()
-    if (camera && controls) {
-      const finalBox = new THREE.Box3().setFromObject(model)
-      const finalCenter = finalBox.getCenter(new THREE.Vector3())
-      const finalSize = finalBox.getSize(new THREE.Vector3())
-      const maxDim = Math.max(finalSize.x, finalSize.y, finalSize.z)
-      const dist = maxDim * 2.5
-      camera.position.set(
-        finalCenter.x + dist * 0.6,
-        finalCenter.y + dist * 0.5,
-        finalCenter.z + dist * 0.6
-      )
-      controls.target.copy(finalCenter)
-      controls.update()
-    }
+    // 3. Recentrer la caméra sur le modèle importé (avec calcul FOV-aware)
+    fitCameraToModels(model)
 
     importedModels.value.push({
       id: modelId,
@@ -229,5 +251,6 @@ export function useThreeModels() {
     updateModelPosition,
     updateModelRotation,
     updateModelScale,
+    fitCameraToModels,
   }
 }

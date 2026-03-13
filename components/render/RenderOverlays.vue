@@ -54,24 +54,31 @@ const tourPercent = computed(() => Math.round(tourProgress.value * 100))
         class="pointer-events-auto absolute inset-0 flex items-center justify-center"
       >
         <div
-          class="flex flex-col items-center gap-4 rounded-2xl border-2 border-dashed border-white/20 bg-black/40 px-10 py-8 text-center backdrop-blur-sm"
+          class="flex flex-col items-center gap-5 rounded-3xl border border-white/10 bg-black/30 px-12 py-10 text-center backdrop-blur-md shadow-2xl"
         >
-          <Box class="h-12 w-12 text-white/40" />
-          <div class="space-y-1">
-            <p class="text-base font-medium text-white/70">
-              Aucun modèle chargé
+          <!-- Icône -->
+          <div
+            class="h-16 w-16 rounded-2xl bg-white/10 flex items-center justify-center"
+          >
+            <Box class="h-8 w-8 text-white/50" />
+          </div>
+          <!-- Texte -->
+          <div class="space-y-1.5">
+            <p class="text-base font-semibold text-white/80">
+              Aucun modèle dans la scène
             </p>
             <p class="text-sm text-white/40">
               GLB &middot; GLTF &middot; OBJ &middot; FBX
             </p>
           </div>
+          <!-- Bouton -->
           <button
-            class="mt-1 flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/20 active:scale-95 disabled:opacity-50"
+            class="flex items-center gap-2 rounded-xl bg-white text-black px-5 py-2.5 text-sm font-semibold transition hover:bg-white/90 active:scale-95 disabled:opacity-50 shadow-lg"
             :disabled="isLoadingModel"
             @click="importModel"
           >
             <Upload class="h-4 w-4" />
-            {{ isLoadingModel ? 'Chargement…' : 'Importer un modèle' }}
+            {{ isLoadingModel ? 'Chargement…' : 'Importer un modèle 3D' }}
           </button>
         </div>
       </div>

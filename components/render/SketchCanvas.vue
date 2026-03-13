@@ -4,11 +4,11 @@
     <canvas
       ref="canvasRef"
       class="absolute inset-0 w-full h-full touch-none"
-      :style="{ cursor: cursorStyle }"
+      :style="{ cursor: currentTool === 'eyedropper' ? 'none' : cursorStyle }"
       @pointerdown="startDraw"
-      @pointermove="draw"
+      @pointermove="onPointerMove"
       @pointerup="stopDraw"
-      @pointerleave="stopDraw"
+      @pointerleave="onPointerLeave"
     />
 
     <!-- Canvas overlay (preview formes) -->
@@ -17,18 +17,34 @@
       class="absolute inset-0 w-full h-full touch-none pointer-events-none"
     />
 
+    <!-- Tooltip pipette (couleur sous le curseur) -->
+    <Transition name="fade-quick">
+      <div
+        v-if="currentTool === 'eyedropper' && cursorVisible"
+        class="pointer-events-none fixed z-50 flex items-center gap-2 rounded-lg border bg-background/95 backdrop-blur-sm shadow-lg px-2.5 py-1.5 text-xs font-mono"
+        :style="{ left: `${cursorX + 18}px`, top: `${cursorY - 36}px` }"
+      >
+        <span
+          class="h-4 w-4 rounded-full border border-border shrink-0"
+          :style="{ background: eyedropperColor }"
+        />
+        {{ eyedropperColor }}
+      </div>
+    </Transition>
+
     <!-- Toolbar flottante bas-centre -->
     <div
       class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-2xl border bg-background/90 backdrop-blur-sm shadow-lg px-3 py-2 z-10 flex-wrap max-w-[96vw]"
     >
       <!-- Couleur -->
       <div class="relative flex items-center">
-        <input
-          v-model="brushColor"
-          type="color"
-          class="h-8 w-8 cursor-pointer rounded-full border-2 border-border p-0.5 bg-transparent"
+        <label
+          class="h-8 w-8 cursor-pointer rounded-full border-2 border-border shadow-sm block shrink-0"
+          :style="{ background: brushColor }"
           title="Couleur du crayon"
-        />
+        >
+          <input v-model="brushColor" type="color" class="sr-only" />
+        </label>
         <!-- Indicateur eyedropper color -->
         <span
           v-if="currentTool === 'eyedropper'"
@@ -40,30 +56,41 @@
       <div class="h-6 w-px bg-border" />
 
       <!-- Taille du brush -->
-      <div class="flex items-center gap-1.5 w-24">
-        <Minus class="h-3 w-3 text-muted-foreground shrink-0" />
-        <input
-          v-model.number="brushSize"
-          type="range"
-          min="2"
-          max="40"
-          class="flex-1 h-1 accent-primary cursor-pointer"
-          title="Taille du trait"
-        />
-        <Plus class="h-3 w-3 text-muted-foreground shrink-0" />
+      <div class="flex flex-col items-center gap-0.5" title="Taille du trait">
+        <span class="text-[9px] text-muted-foreground leading-none"
+          >Taille</span
+        >
+        <div class="flex items-center gap-1">
+          <Minus class="h-2.5 w-2.5 text-muted-foreground shrink-0" />
+          <input
+            v-model.number="brushSize"
+            type="range"
+            min="2"
+            max="40"
+            class="w-20 h-1 accent-primary cursor-pointer"
+          />
+          <Plus class="h-2.5 w-2.5 text-muted-foreground shrink-0" />
+        </div>
       </div>
 
+      <div class="h-6 w-px bg-border" />
+
       <!-- Opacité -->
-      <div class="flex items-center gap-1.5 w-20" title="Opacité du trait">
-        <Blend class="h-3 w-3 text-muted-foreground shrink-0" />
-        <input
-          v-model.number="brushOpacity"
-          type="range"
-          min="0.05"
-          max="1"
-          step="0.05"
-          class="flex-1 h-1 accent-primary cursor-pointer"
-        />
+      <div class="flex flex-col items-center gap-0.5" title="Opacité du trait">
+        <span class="text-[9px] text-muted-foreground leading-none"
+          >Opacité</span
+        >
+        <div class="flex items-center gap-1">
+          <Blend class="h-2.5 w-2.5 text-muted-foreground shrink-0" />
+          <input
+            v-model.number="brushOpacity"
+            type="range"
+            min="0.05"
+            max="1"
+            step="0.05"
+            class="w-16 h-1 accent-primary cursor-pointer"
+          />
+        </div>
       </div>
 
       <div class="h-6 w-px bg-border" />
@@ -416,18 +443,31 @@ const cursorStyle = computed(() => {
   switch (currentTool.value) {
     case 'eraser':
       return 'cell'
-    case 'eyedropper':
-      return 'crosshair'
     case 'fill':
       return 'copy'
-    case 'line':
-    case 'rect':
-    case 'circle':
-      return 'crosshair'
     default:
       return 'crosshair'
   }
 })
+
+// ─── Tooltip pipette ──────────────────────────────────────────────────────────
+const cursorX = ref(0)
+const cursorY = ref(0)
+const cursorVisible = ref(false)
+
+const onPointerMove = (e: PointerEvent) => {
+  draw(e)
+  if (currentTool.value === 'eyedropper') {
+    cursorX.value = e.clientX
+    cursorY.value = e.clientY
+    cursorVisible.value = true
+  }
+}
+
+const onPointerLeave = (e: PointerEvent) => {
+  stopDraw(e)
+  cursorVisible.value = false
+}
 
 // ─── État local panel IA ────────────────────────────────────────────────────
 const showAiPanel = ref(false)

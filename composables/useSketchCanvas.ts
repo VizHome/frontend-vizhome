@@ -38,6 +38,7 @@ const fillShape = ref(false)
 const canUndo = ref(false)
 const canRedo = ref(false)
 const eyedropperColor = ref('#000000')
+const isEmpty = ref(true)
 
 // ─── Helpers internes ────────────────────────────────────────────────────────
 function saveSnapshot() {
@@ -246,6 +247,10 @@ export function useSketchCanvas() {
     startY = y
     isPointerDown = true
 
+    if (currentTool.value !== 'eyedropper' && currentTool.value !== 'fill') {
+      isEmpty.value = false
+    }
+
     if (currentTool.value === 'eyedropper') {
       const pixel = ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data
       const hex =
@@ -347,6 +352,7 @@ export function useSketchCanvas() {
     if (!ctx || !canvasEl) return
     ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, canvasEl.width, canvasEl.height)
+    isEmpty.value = true
     saveSnapshot()
   }
 
@@ -385,6 +391,7 @@ export function useSketchCanvas() {
     canUndo,
     canRedo,
     eyedropperColor,
+    isEmpty,
     initCanvas,
     startDraw,
     draw,

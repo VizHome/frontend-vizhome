@@ -42,6 +42,18 @@
           </div>
         </div>
 
+        <!-- Suggestions cliquables -->
+        <div class="flex flex-wrap gap-1.5">
+          <button
+            v-for="s in SUGGESTIONS"
+            :key="s"
+            class="px-2.5 py-1 rounded-full border text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent hover:border-primary/30 transition-colors"
+            @click="prompt = s"
+          >
+            {{ s }}
+          </button>
+        </div>
+
         <!-- Textarea -->
         <div class="relative">
           <textarea
@@ -88,10 +100,9 @@
         </div>
         <div v-else class="text-center text-sm text-muted-foreground py-6">
           <Box class="h-10 w-10 mx-auto mb-3 opacity-30" />
-          <p class="font-medium">API IA non encore configurée</p>
+          <p class="font-medium">Rendu en cours de préparation</p>
           <p class="text-xs mt-1 opacity-70">
-            Voir <code>server/api/render.post.ts</code> pour brancher votre
-            service
+            Le résultat apparaîtra ici dès que l'IA aura terminé
           </p>
         </div>
       </div>
@@ -110,13 +121,30 @@
           <button
             v-for="entry in promptHistory.slice(0, 5)"
             :key="entry.createdAt"
-            class="text-left text-xs px-3 py-2 rounded-lg hover:bg-muted/50 transition-colors truncate flex items-center gap-2"
+            class="text-left text-xs px-3 py-2 rounded-lg hover:bg-muted/50 transition-colors flex items-center gap-2"
             @click="loadFromHistory(entry)"
           >
+            <!-- Miniature -->
+            <div
+              class="h-9 w-14 rounded-md border bg-muted shrink-0 overflow-hidden"
+            >
+              <img
+                v-if="entry.imageUrl"
+                :src="entry.imageUrl"
+                alt="Aperçu"
+                class="w-full h-full object-cover"
+              />
+              <div
+                v-else
+                class="w-full h-full flex items-center justify-center"
+              >
+                <ImageIcon class="h-3 w-3 text-muted-foreground/40" />
+              </div>
+            </div>
             <Badge variant="outline" class="text-[10px] px-1.5 py-0 shrink-0">
               {{ entry.outputType.toUpperCase() }}
             </Badge>
-            <span class="truncate">{{ entry.prompt }}</span>
+            <span class="truncate flex-1">{{ entry.prompt }}</span>
           </button>
         </div>
       </div>
@@ -129,6 +157,14 @@ import { onMounted } from 'vue'
 import { AlertCircle, Box, ImageIcon, Loader2, Sparkles } from 'lucide-vue-next'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+
+const SUGGESTIONS = [
+  'Maison moderne à toit plat',
+  'Villa méditerranéenne',
+  'Appartement haussmannien',
+  'Intérieur minimaliste',
+  'Façade industrielle loft',
+]
 
 const {
   prompt,

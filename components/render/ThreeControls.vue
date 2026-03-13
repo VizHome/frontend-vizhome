@@ -6,7 +6,7 @@
     <!-- Bouton Éclairage -->
     <button
       :class="[
-        'h-10 w-10 rounded-xl border shadow-sm flex items-center justify-center transition-colors',
+        'min-w-[52px] px-2 py-2 rounded-xl border shadow-sm flex flex-col items-center gap-1 transition-colors',
         activePanel === 'light'
           ? 'bg-primary text-primary-foreground border-primary'
           : 'bg-background/80 backdrop-blur-sm text-foreground hover:bg-accent',
@@ -14,13 +14,14 @@
       title="Éclairage"
       @click="togglePanel('light')"
     >
-      <Sun class="h-5 w-5" />
+      <Sun class="h-4 w-4" />
+      <span class="text-[9px] font-medium leading-none">Lumière</span>
     </button>
 
     <!-- Bouton Navigation -->
     <button
       :class="[
-        'h-10 w-10 rounded-xl border shadow-sm flex items-center justify-center transition-colors',
+        'min-w-[52px] px-2 py-2 rounded-xl border shadow-sm flex flex-col items-center gap-1 transition-colors',
         activePanel === 'nav'
           ? 'bg-primary text-primary-foreground border-primary'
           : 'bg-background/80 backdrop-blur-sm text-foreground hover:bg-accent',
@@ -28,13 +29,14 @@
       title="Navigation"
       @click="togglePanel('nav')"
     >
-      <Navigation2 class="h-5 w-5" />
+      <Navigation2 class="h-4 w-4" />
+      <span class="text-[9px] font-medium leading-none">Navigation</span>
     </button>
 
     <!-- Bouton Modèles -->
     <button
       :class="[
-        'h-10 w-10 rounded-xl border shadow-sm flex items-center justify-center transition-colors',
+        'min-w-[52px] px-2 py-2 rounded-xl border shadow-sm flex flex-col items-center gap-1 transition-colors',
         activePanel === 'models'
           ? 'bg-primary text-primary-foreground border-primary'
           : 'bg-background/80 backdrop-blur-sm text-foreground hover:bg-accent',
@@ -42,13 +44,14 @@
       title="Modèles 3D"
       @click="togglePanel('models')"
     >
-      <Upload class="h-5 w-5" />
+      <Upload class="h-4 w-4" />
+      <span class="text-[9px] font-medium leading-none">Modèles</span>
     </button>
 
     <!-- Bouton Vue -->
     <button
       :class="[
-        'h-10 w-10 rounded-xl border shadow-sm flex items-center justify-center transition-colors',
+        'min-w-[52px] px-2 py-2 rounded-xl border shadow-sm flex flex-col items-center gap-1 transition-colors',
         activePanel === 'view'
           ? 'bg-primary text-primary-foreground border-primary'
           : 'bg-background/80 backdrop-blur-sm text-foreground hover:bg-accent',
@@ -56,7 +59,23 @@
       title="Vue & Caméra"
       @click="togglePanel('view')"
     >
-      <Camera class="h-5 w-5" />
+      <Camera class="h-4 w-4" />
+      <span class="text-[9px] font-medium leading-none">Caméra</span>
+    </button>
+
+    <div class="h-px w-full bg-border/50 my-0.5" />
+
+    <!-- Bouton Rendu IA -->
+    <button
+      :class="[
+        'min-w-[52px] px-2 py-2 rounded-xl border shadow-sm flex flex-col items-center gap-1 transition-colors',
+        'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20',
+      ]"
+      title="Capturer et générer un rendu IA"
+      @click="openScreenshotPanel"
+    >
+      <Wand2 class="h-4 w-4" />
+      <span class="text-[9px] font-medium leading-none">Rendu IA</span>
     </button>
   </div>
 
@@ -65,6 +84,34 @@
     v-model:open="showScreenshotPanel"
     :screenshot-data-url="screenshotDataUrl"
   />
+
+  <!-- Empty state scène 3D vide -->
+  <Transition name="fade">
+    <div
+      v-if="importedModels.length === 0"
+      class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
+    >
+      <div class="flex flex-col items-center gap-4 pointer-events-auto">
+        <div
+          class="h-16 w-16 rounded-2xl bg-background/80 backdrop-blur-sm border shadow-lg flex items-center justify-center"
+        >
+          <Box class="h-8 w-8 text-muted-foreground/40" />
+        </div>
+        <p class="text-sm text-foreground/50 font-medium">
+          Aucun modèle dans la scène
+        </p>
+        <button
+          :disabled="isLoadingModel"
+          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors shadow-lg disabled:opacity-50"
+          @click="importModel"
+        >
+          <Loader2 v-if="isLoadingModel" class="h-4 w-4 animate-spin" />
+          <Upload v-else class="h-4 w-4" />
+          Importer un modèle 3D
+        </button>
+      </div>
+    </div>
+  </Transition>
 
   <!-- Panel flottant -->
   <Transition name="panel-slide">
@@ -421,6 +468,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import {
+  Box,
   Camera,
   Gauge,
   Maximize,
@@ -435,6 +483,7 @@ import {
   Sun,
   Timer,
   Upload,
+  Wand2,
   X,
   Loader2,
 } from 'lucide-vue-next'
@@ -492,7 +541,6 @@ const {
   triangleCount,
   resetCamera,
   toggleFullscreen,
-  captureScreenshot,
   captureScreenshotDataURL,
 } = useThreeScene()
 
@@ -544,5 +592,14 @@ const NAV_MODES: { key: NavMode; label: string; emoji: string }[] = [
 .panel-slide-enter-to,
 .panel-slide-leave-from {
   transform: translateX(0) translateY(-50%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

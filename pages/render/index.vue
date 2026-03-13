@@ -23,6 +23,9 @@
       <RenderOverlays />
       <ThreeControls />
     </template>
+
+    <!-- Onboarding première visite -->
+    <OnboardingOverlay />
   </div>
 </template>
 

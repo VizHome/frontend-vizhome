@@ -112,11 +112,20 @@
         v-if="promptHistory.length > 0"
         class="rounded-2xl border bg-background/90 backdrop-blur-sm shadow-lg p-4"
       >
-        <p
-          class="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide"
-        >
-          Prompts récents
-        </p>
+        <div class="flex items-center justify-between mb-2">
+          <p
+            class="text-xs font-semibold text-muted-foreground uppercase tracking-wide"
+          >
+            Prompts récents
+          </p>
+          <button
+            class="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+            @click="historyOpen = true"
+          >
+            <History class="h-3 w-3" />
+            Voir tout
+          </button>
+        </div>
         <div class="flex flex-col gap-1">
           <button
             v-for="entry in promptHistory.slice(0, 5)"
@@ -150,11 +159,20 @@
       </div>
     </div>
   </div>
+
+  <HistoryDialog v-model:open="historyOpen" />
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
-import { AlertCircle, Box, ImageIcon, Loader2, Sparkles } from 'lucide-vue-next'
+import { onMounted, ref } from 'vue'
+import {
+  AlertCircle,
+  Box,
+  History,
+  ImageIcon,
+  Loader2,
+  Sparkles,
+} from 'lucide-vue-next'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
@@ -165,6 +183,8 @@ const SUGGESTIONS = [
   'Intérieur minimaliste',
   'Façade industrielle loft',
 ]
+
+const historyOpen = ref(false)
 
 const {
   prompt,

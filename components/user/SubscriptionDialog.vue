@@ -113,17 +113,14 @@
       </div>
 
       <DialogFooter class="flex-col sm:flex-row gap-2 sm:items-center">
-        <a
+        <button
           v-if="user.plan !== 'free'"
-          href="#"
           class="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mr-auto"
-          target="_blank"
-          rel="noopener noreferrer"
+          @click="openBilling"
         >
           <CreditCard class="h-3.5 w-3.5" />
           Gérer la facturation
-          <ExternalLink class="h-3 w-3" />
-        </a>
+        </button>
         <Button variant="ghost" @click="open = false">Fermer</Button>
       </DialogFooter>
     </DialogContent>
@@ -136,7 +133,6 @@ import {
   Building2,
   CalendarClock,
   CreditCard,
-  ExternalLink,
   Rocket,
   Sparkles,
   Zap,
@@ -144,8 +140,14 @@ import {
 import type { UserPlan } from '~/composables/useUser'
 
 const open = defineModel<boolean>('open', { default: false })
+const emit = defineEmits<{ 'open-billing': [] }>()
 
 const { user, planLabel } = useUser()
+
+function openBilling() {
+  open.value = false
+  emit('open-billing')
+}
 
 // ─── Date de renouvellement fictive ──────────────────────────────────────────
 // TODO: remplacer par la vraie date issue de l'API facturation

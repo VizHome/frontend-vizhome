@@ -71,6 +71,13 @@
           </DropdownMenuItem>
           <DropdownMenuItem
             class="gap-2.5 cursor-pointer"
+            @click="openDialog('history')"
+          >
+            <History class="h-4 w-4 text-muted-foreground" />
+            <span>Historique</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="gap-2.5 cursor-pointer"
             @click="openDialog('subscription')"
           >
             <CreditCard class="h-4 w-4 text-muted-foreground" />
@@ -159,9 +166,14 @@
     <!-- Dialogs -->
     <ProfileDialog v-model:open="dialogs.profile" />
     <StatsDialog v-model:open="dialogs.stats" />
-    <SubscriptionDialog v-model:open="dialogs.subscription" />
+    <SubscriptionDialog
+      v-model:open="dialogs.subscription"
+      @open-billing="openDialog('billing')"
+    />
     <HelpDialog v-model:open="dialogs.help" :initial-tab="helpInitialTab" />
     <SettingsDialog v-model:open="dialogs.settings" />
+    <HistoryDialog v-model:open="dialogs.history" />
+    <BillingDialog v-model:open="dialogs.billing" />
   </div>
 </template>
 
@@ -173,6 +185,7 @@ import {
   Bug,
   CreditCard,
   HelpCircle,
+  History,
   Keyboard,
   LogOut,
   Settings,
@@ -193,6 +206,8 @@ const dialogs = reactive({
   subscription: false,
   help: false,
   settings: false,
+  history: false,
+  billing: false,
 })
 
 type DialogId = keyof typeof dialogs

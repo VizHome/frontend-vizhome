@@ -68,7 +68,7 @@ const tourPercent = computed(() => Math.round(tourProgress.value * 100))
               Aucun modèle dans la scène
             </p>
             <p class="text-sm text-white/40">
-              GLB &middot; GLTF &middot; OBJ &middot; FBX
+              GLB &middot; GLTF &middot; OBJ+MTL &middot; FBX &middot; STL
             </p>
           </div>
           <!-- Bouton -->

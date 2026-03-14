@@ -68,6 +68,21 @@
       <template v-if="importedModels.length > 0">
         <div class="h-px w-full bg-border/50 my-0.5" />
 
+        <!-- Bouton Matériaux -->
+        <button
+          :class="[
+            'min-w-[52px] px-2 py-2 rounded-xl border shadow-sm flex flex-col items-center gap-1 transition-colors',
+            activePanel === 'materials'
+              ? 'bg-primary text-primary-foreground border-primary'
+              : 'bg-background/80 backdrop-blur-sm text-foreground hover:bg-accent',
+          ]"
+          title="Matériaux & Textures"
+          @click="togglePanel('materials')"
+        >
+          <Layers class="h-4 w-4" />
+          <span class="text-[9px] font-medium leading-none">Matériaux</span>
+        </button>
+
         <!-- Bouton Rendu IA — visible uniquement si un modèle est chargé -->
         <button
           class="min-w-[52px] px-2 py-2 rounded-xl shadow-sm flex flex-col items-center gap-1 transition-colors bg-primary text-primary-foreground hover:bg-primary/90"
@@ -241,17 +256,55 @@
           <button
             :class="[
               'w-full flex items-center justify-center gap-2 rounded-xl border py-2 text-sm font-medium transition-colors',
-              isLoadingModel
+              isLoadingModel || !!pendingOBJFile
                 ? 'opacity-50 cursor-not-allowed bg-muted'
                 : 'bg-primary text-primary-foreground hover:bg-primary/90',
             ]"
-            :disabled="isLoadingModel"
+            :disabled="isLoadingModel || !!pendingOBJFile"
             @click="importModel"
           >
             <Loader2 v-if="isLoadingModel" class="h-4 w-4 animate-spin" />
             <Upload v-else class="h-4 w-4" />
             Importer un modèle
           </button>
+
+          <!-- Modale de choix OBJ (.mtl ou non) -->
+          <div
+            v-if="pendingOBJFile"
+            class="rounded-xl border border-primary/30 bg-primary/5 p-3 flex flex-col gap-2"
+          >
+            <p class="text-xs font-semibold text-foreground">
+              Fichier .mtl associé ?
+            </p>
+            <p class="text-[10px] text-muted-foreground leading-snug">
+              <span class="font-medium text-foreground truncate block">{{
+                pendingOBJFile.name
+              }}</span>
+              Chargez avec les matériaux ou directement sans.
+            </p>
+            <div class="flex gap-2 mt-1">
+              <button
+                class="flex-1 flex items-center justify-center gap-1.5 rounded-lg border bg-primary text-primary-foreground py-1.5 text-xs font-medium hover:bg-primary/90 transition-colors"
+                @click="confirmOBJImport(true)"
+              >
+                <Layers class="h-3.5 w-3.5" />
+                Avec .mtl
+              </button>
+              <button
+                class="flex-1 flex items-center justify-center gap-1.5 rounded-lg border bg-muted/50 py-1.5 text-xs font-medium hover:bg-accent transition-colors"
+                @click="confirmOBJImport(false)"
+              >
+                <Box class="h-3.5 w-3.5" />
+                Sans matériaux
+              </button>
+            </div>
+            <button
+              class="text-[10px] text-muted-foreground hover:text-destructive transition-colors text-center"
+              @click="cancelOBJImport"
+            >
+              Annuler
+            </button>
+          </div>
 
           <div
             v-if="modelLoadError"
@@ -479,6 +532,214 @@
             </div>
           </div>
         </template>
+
+        <!-- ── Panel Matériaux ── -->
+        <template v-else-if="activePanel === 'materials'">
+          <!-- Sous-mode : Sélection de mesh -->
+          <p
+            class="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+          >
+            Sélection de surface
+          </p>
+          <button
+            :class="[
+              'w-full flex items-center justify-center gap-2 rounded-xl border py-2 text-sm font-medium transition-colors',
+              isMeshSelectMode
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-muted/50 hover:bg-accent border-transparent',
+            ]"
+            @click="handleToggleMeshSelect"
+          >
+            <MousePointer2 class="h-4 w-4" />
+            {{
+              isMeshSelectMode ? 'Mode sélection actif' : 'Cliquer une surface'
+            }}
+          </button>
+          <p class="text-[10px] text-muted-foreground -mt-1">
+            {{
+              isMeshSelectMode
+                ? 'Cliquez sur une surface du modèle'
+                : 'Active le mode pour cliquer sur une surface'
+            }}
+          </p>
+
+          <!-- Infos mesh sélectionné + texture -->
+          <template v-if="selectedMesh">
+            <div class="h-px bg-border" />
+            <div class="flex items-center gap-2">
+              <div class="h-3 w-3 rounded-full bg-primary shrink-0" />
+              <span class="text-xs font-medium truncate">{{
+                selectedMesh.name
+              }}</span>
+            </div>
+            <button
+              class="w-full flex items-center justify-center gap-2 rounded-xl border bg-primary text-primary-foreground py-2 text-sm font-medium transition-colors hover:bg-primary/90"
+              @click="applyTextureToSelected"
+            >
+              <ImagePlus class="h-4 w-4" />
+              Appliquer une texture
+            </button>
+            <p
+              v-if="selectedMesh.textureUrl"
+              class="text-[10px] text-green-600 dark:text-green-400 truncate"
+            >
+              ✓ {{ selectedMesh.textureUrl }}
+            </p>
+
+            <!-- Roughness -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-muted-foreground w-20 shrink-0"
+                >Rugosité</span
+              >
+              <span class="text-xs font-mono w-6 text-right">{{
+                roughness.toFixed(2)
+              }}</span>
+            </div>
+            <input
+              :value="roughness"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              class="w-full h-1 accent-primary cursor-pointer"
+              @input="onRoughnessInput($event)"
+            />
+
+            <!-- Metalness -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-muted-foreground w-20 shrink-0"
+                >Métal</span
+              >
+              <span class="text-xs font-mono w-6 text-right">{{
+                metalness.toFixed(2)
+              }}</span>
+            </div>
+            <input
+              :value="metalness"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              class="w-full h-1 accent-primary cursor-pointer"
+              @input="onMetalnessInput($event)"
+            />
+
+            <!-- Effets procéduraux -->
+            <div class="h-px bg-border" />
+            <p
+              class="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+            >
+              Effets
+            </p>
+            <div class="grid grid-cols-3 gap-1.5">
+              <button
+                v-for="effect in MATERIAL_EFFECTS"
+                :key="effect.id"
+                class="flex flex-col items-center gap-1 rounded-xl border bg-muted/50 hover:bg-accent border-transparent p-2 text-xs font-medium transition-colors"
+                :title="effect.label"
+                @click="applyEffectToSelected(effect.id)"
+              >
+                <span class="text-base leading-none">{{ effect.emoji }}</span>
+                <span class="text-[9px] leading-none text-center">{{
+                  effect.label
+                }}</span>
+              </button>
+            </div>
+          </template>
+
+          <p v-if="meshSelectError" class="text-[10px] text-destructive">
+            {{ meshSelectError }}
+          </p>
+
+          <div class="h-px bg-border" />
+
+          <!-- Sous-mode : Pastilles (hotspots) -->
+          <p
+            class="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+          >
+            Pastilles (hotspots)
+          </p>
+          <button
+            :class="[
+              'w-full flex items-center justify-center gap-2 rounded-xl border py-2 text-sm font-medium transition-colors',
+              isAnnotationMode
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-muted/50 hover:bg-accent border-transparent',
+            ]"
+            @click="handleToggleAnnotation"
+          >
+            <MapPin class="h-4 w-4" />
+            {{
+              isAnnotationMode ? 'Mode pastilles actif' : 'Placer une pastille'
+            }}
+          </button>
+          <p class="text-[10px] text-muted-foreground -mt-1">
+            {{
+              isAnnotationMode
+                ? 'Cliquez sur une surface pour poser une pastille'
+                : 'Active le mode pour placer des hotspots'
+            }}
+          </p>
+
+          <!-- Liste des hotspots -->
+          <template v-if="annotations.length > 0">
+            <div class="h-px bg-border" />
+            <p
+              class="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+            >
+              Pastilles ({{ annotations.length }})
+            </p>
+            <div class="flex flex-col gap-2">
+              <div
+                v-for="ann in annotations"
+                :key="ann.id"
+                class="rounded-lg border bg-muted/30 p-2 flex flex-col gap-1.5"
+              >
+                <div class="flex items-center gap-2">
+                  <div
+                    :class="[
+                      'h-2.5 w-2.5 rounded-full shrink-0',
+                      ann.textureFileName ? 'bg-green-500' : 'bg-primary',
+                    ]"
+                  />
+                  <input
+                    :value="ann.label"
+                    class="flex-1 text-xs bg-transparent border-b border-border focus:outline-none focus:border-primary"
+                    @change="
+                      updateAnnotationLabel(
+                        ann.id,
+                        ($event.target as HTMLInputElement).value
+                      )
+                    "
+                  />
+                  <button
+                    class="h-5 w-5 rounded hover:bg-destructive/10 hover:text-destructive flex items-center justify-center shrink-0"
+                    @click="removeAnnotation(ann.id)"
+                  >
+                    <X class="h-3 w-3" />
+                  </button>
+                </div>
+                <button
+                  class="w-full flex items-center justify-center gap-1.5 rounded-lg border bg-background py-1 text-xs font-medium transition-colors hover:bg-accent"
+                  @click="applyTextureToAnnotation(ann.id)"
+                >
+                  <ImagePlus class="h-3 w-3" />
+                  {{ ann.textureFileName ?? 'Assigner une texture' }}
+                </button>
+              </div>
+            </div>
+            <button
+              class="w-full text-xs text-muted-foreground hover:text-destructive transition-colors py-1"
+              @click="clearAnnotations"
+            >
+              Supprimer toutes les pastilles
+            </button>
+          </template>
+
+          <p v-if="annotationError" class="text-[10px] text-destructive">
+            {{ annotationError }}
+          </p>
+        </template>
       </div>
     </Transition>
   </div>
@@ -491,13 +752,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import {
+  Box,
   Camera,
   Gauge,
   ImageDown,
+  ImagePlus,
+  Layers,
+  Loader2,
+  MapPin,
   Maximize,
   Maximize2,
+  MousePointer2,
   Move3d,
   Navigation2,
   Pause,
@@ -512,16 +779,24 @@ import {
   Upload,
   Wand2,
   X,
-  Loader2,
 } from 'lucide-vue-next'
+import { MATERIAL_EFFECTS } from '~/composables/useThreeMeshSelect'
 
-type PanelId = 'light' | 'nav' | 'models' | 'view'
+type PanelId = 'light' | 'nav' | 'models' | 'view' | 'materials'
 
 const activePanel = ref<PanelId | null>(null)
 
 const togglePanel = (id: PanelId) => {
   activePanel.value = activePanel.value === id ? null : id
 }
+
+// Désactiver les modes matériaux quand on quitte le panel
+watch(activePanel, (newPanel, oldPanel) => {
+  if (oldPanel === 'materials' && newPanel !== 'materials') {
+    disableMeshSelectMode()
+    disableAnnotationMode()
+  }
+})
 
 // ─── Composables ──────────────────────────────────────────────────────────────
 const {
@@ -556,7 +831,10 @@ const {
   modelLoadError,
   selectedModel,
   transformMode,
+  pendingOBJFile,
   importModel,
+  confirmOBJImport,
+  cancelOBJImport,
   removeModel,
   selectModel,
   updateModelPosition,
@@ -577,6 +855,73 @@ const {
   getCamera,
   captureScreenshotDataURL,
 } = useThreeScene()
+
+// ─── Matériaux : sélection mesh ───────────────────────────────────────────────
+const {
+  isMeshSelectMode,
+  selectedMesh,
+  meshSelectError,
+  toggleMeshSelectMode,
+  disableMeshSelectMode,
+  applyTextureToSelected,
+  applyEffectToSelected,
+  setRoughness,
+  setMetalness,
+  getRoughness,
+  getMetalness,
+} = useThreeMeshSelect()
+
+// ─── Matériaux : pastilles (hotspots) ────────────────────────────────────────
+const {
+  isAnnotationMode,
+  annotations,
+  annotationError,
+  toggleAnnotationMode,
+  disableAnnotationMode,
+  removeAnnotation,
+  applyTextureToAnnotation,
+  updateAnnotationLabel,
+  clearAnnotations,
+} = useThreeAnnotations()
+
+// Refs roughness/metalness synchronisées avec le mesh sélectionné
+const roughness = ref(0.5)
+const metalness = ref(0)
+
+watch(selectedMesh, mesh => {
+  if (mesh) {
+    roughness.value = getRoughness()
+    metalness.value = getMetalness()
+  }
+})
+
+const handleToggleMeshSelect = () => {
+  const canvas = getRenderer()?.domElement
+  if (!canvas) return
+  // Désactiver l'autre mode si actif
+  if (isAnnotationMode.value) disableAnnotationMode()
+  toggleMeshSelectMode(canvas)
+}
+
+const handleToggleAnnotation = () => {
+  const canvas = getRenderer()?.domElement
+  if (!canvas) return
+  // Désactiver l'autre mode si actif
+  if (isMeshSelectMode.value) disableMeshSelectMode()
+  toggleAnnotationMode(canvas)
+}
+
+const onRoughnessInput = (e: Event) => {
+  const v = Number((e.target as HTMLInputElement).value)
+  roughness.value = v
+  setRoughness(v)
+}
+
+const onMetalnessInput = (e: Event) => {
+  const v = Number((e.target as HTMLInputElement).value)
+  metalness.value = v
+  setMetalness(v)
+}
 
 // ─── Reset caméra intelligent ─────────────────────────────────────────────────
 const handleReset = () => {

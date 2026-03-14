@@ -342,7 +342,10 @@ export function useThreeModels() {
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = '.glb,.gltf,.obj,.fbx,.stl'
+    input.style.display = 'none'
+    document.body.appendChild(input)
     input.onchange = e => {
+      document.body.removeChild(input)
       const file = (e.target as HTMLInputElement).files?.[0]
       if (!file) return
       const ext = file.name.split('.').pop()?.toLowerCase()
@@ -353,6 +356,10 @@ export function useThreeModels() {
       }
       _loadFromFile(file)
     }
+    // Nettoyage si l'utilisateur annule sans choisir de fichier
+    input.addEventListener('cancel', () => {
+      document.body.removeChild(input)
+    })
     input.click()
   }
 
@@ -366,10 +373,18 @@ export function useThreeModels() {
       const mtlInput = document.createElement('input')
       mtlInput.type = 'file'
       mtlInput.accept = '.mtl'
+      mtlInput.style.display = 'none'
+      document.body.appendChild(mtlInput)
       mtlInput.onchange = mtlE => {
+        document.body.removeChild(mtlInput)
         const mtlFile = (mtlE.target as HTMLInputElement).files?.[0]
         _loadFromFile(file, mtlFile)
       }
+      mtlInput.addEventListener('cancel', () => {
+        document.body.removeChild(mtlInput)
+        // Si l'utilisateur annule la sélection du MTL, charger sans matériaux
+        _loadFromFile(file)
+      })
       mtlInput.click()
     } else {
       _loadFromFile(file)

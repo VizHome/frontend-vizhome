@@ -71,13 +71,6 @@
           </DropdownMenuItem>
           <DropdownMenuItem
             class="gap-2.5 cursor-pointer"
-            @click="openDialog('history')"
-          >
-            <History class="h-4 w-4 text-muted-foreground" />
-            <span>Historique</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            class="gap-2.5 cursor-pointer"
             @click="openDialog('subscription')"
           >
             <CreditCard class="h-4 w-4 text-muted-foreground" />
@@ -172,7 +165,6 @@
     />
     <HelpDialog v-model:open="dialogs.help" :initial-tab="helpInitialTab" />
     <SettingsDialog v-model:open="dialogs.settings" />
-    <HistoryDialog v-model:open="dialogs.history" />
     <BillingDialog v-model:open="dialogs.billing" />
   </div>
 </template>
@@ -185,7 +177,6 @@ import {
   Bug,
   CreditCard,
   HelpCircle,
-  History,
   Keyboard,
   LogOut,
   Settings,
@@ -206,7 +197,6 @@ const dialogs = reactive({
   subscription: false,
   help: false,
   settings: false,
-  history: false,
   billing: false,
 })
 

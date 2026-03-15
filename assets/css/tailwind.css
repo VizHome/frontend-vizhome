@@ -147,3 +147,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ── Accessibilité : réduction des animations ─────────────────────────────── */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ── Accessibilité : contraste élevé ─────────────────────────────────────── */
+.high-contrast {
+  filter: contrast(1.5);
+}
+
+/* ── Accessibilité : taille de police ────────────────────────────────────── */
+html[data-font-size='small'] {
+  font-size: 14px;
+}
+
+html[data-font-size='medium'] {
+  font-size: 16px;
+}
+
+html[data-font-size='large'] {
+  font-size: 18px;
+}

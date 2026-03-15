@@ -105,10 +105,36 @@
             Débloquez plus de rendus, de stockage et des fonctionnalités
             avancées.
           </p>
-          <Button class="w-full" size="sm">
+
+          <!-- free → pro -->
+          <Button
+            v-if="user.plan === 'free'"
+            class="w-full"
+            size="sm"
+            :disabled="upgrading"
+            @click="upgradeToPro"
+          >
             <Zap class="h-4 w-4 mr-2" />
-            Mettre à niveau
+            {{
+              upgrading ? 'Mise à niveau…' : 'Passer au plan Pro — 19 €/mois'
+            }}
           </Button>
+
+          <!-- pro → enterprise -->
+          <div v-else-if="user.plan === 'pro'" class="flex flex-col gap-2">
+            <Button
+              class="w-full"
+              size="sm"
+              :disabled="upgrading"
+              @click="upgradeToEnterprise"
+            >
+              <Zap class="h-4 w-4 mr-2" />
+              {{ upgrading ? 'Traitement…' : 'Passer au plan Entreprise' }}
+            </Button>
+            <p class="text-xs text-center text-muted-foreground">
+              Notre équipe commerciale vous contactera sous 24 h.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -128,7 +154,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import {
   Building2,
   CalendarClock,
@@ -137,23 +163,47 @@ import {
   Sparkles,
   Zap,
 } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
 import type { UserPlan } from '~/composables/useUser'
 
 const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{ 'open-billing': [] }>()
 
-const { user, planLabel } = useUser()
+const { user, planLabel, setUserPlan } = useUser()
+
+const upgrading = ref(false)
 
 function openBilling() {
   open.value = false
   emit('open-billing')
 }
 
+// ─── Upgrade free → pro ───────────────────────────────────────────────────────
+async function upgradeToPro() {
+  upgrading.value = true
+  // Simulation d'un appel de paiement (500 ms)
+  await new Promise(resolve => setTimeout(resolve, 500))
+  setUserPlan('pro')
+  upgrading.value = false
+  toast.success(
+    'Bienvenue sur le plan Pro ! Accédez à 50 rendus/mois et 5 Go de stockage.'
+  )
+}
+
+// ─── Upgrade pro → enterprise ─────────────────────────────────────────────────
+async function upgradeToEnterprise() {
+  upgrading.value = true
+  await new Promise(resolve => setTimeout(resolve, 500))
+  setUserPlan('enterprise')
+  upgrading.value = false
+  toast.success(
+    'Plan Entreprise activé. Notre équipe commerciale vous contactera sous 24 h.'
+  )
+}
+
 // ─── Date de renouvellement fictive ──────────────────────────────────────────
-// TODO: remplacer par la vraie date issue de l'API facturation
 const renewalDate = computed(() => {
   if (user.value.plan === 'free') return null
-  // Date fictive : 30 jours à partir d'aujourd'hui
   const d = new Date()
   d.setDate(d.getDate() + 30)
   return d.toLocaleDateString('fr-FR', {

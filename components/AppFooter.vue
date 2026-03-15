@@ -72,10 +72,10 @@
             </li>
             <li>
               <NuxtLink
-                to="/gallery"
+                to="/render"
                 class="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
-                Galerie
+                Éditeur 3D
                 <ArrowUpRightIcon class="h-3 w-3" />
               </NuxtLink>
             </li>

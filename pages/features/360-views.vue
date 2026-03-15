@@ -221,7 +221,7 @@
           <NuxtLink to="/auth/register">Commencer gratuitement</NuxtLink>
         </Button>
         <Button size="lg" variant="outline" class="rounded-full" as-child>
-          <NuxtLink to="/gallery">Voir nos exemples</NuxtLink>
+          <NuxtLink to="/render">Ouvrir l'éditeur</NuxtLink>
         </Button>
       </div>
     </section>
@@ -247,7 +247,6 @@ import {
   MonitorIcon,
   BarChartIcon,
 } from 'lucide-vue-next'
-
 
 const demoTabs = [
   {

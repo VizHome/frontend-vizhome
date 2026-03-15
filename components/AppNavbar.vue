@@ -8,107 +8,72 @@
         </NuxtLink>
 
         <!-- Nav desktop -->
-        <nav class="hidden md:flex items-center gap-1">
+        <nav class="hidden md:flex items-center">
           <NavigationMenu>
             <NavigationMenuList>
               <!-- Fonctionnalités -->
               <NavigationMenuItem>
-                <NavigationMenuTrigger class="bg-transparent"
-                  >Fonctionnalités</NavigationMenuTrigger
+                <NavigationMenuTrigger
+                  class="bg-transparent text-sm font-medium"
                 >
+                  Fonctionnalités
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div class="w-[520px] p-4 grid grid-cols-2 gap-2">
+                  <div class="w-[560px] p-4">
+                    <!-- Item vedette -->
                     <NavigationMenuLink as-child>
                       <NuxtLink
                         to="/features"
-                        class="col-span-2 flex flex-col gap-1 rounded-lg bg-muted/50 p-3 hover:bg-accent transition-colors"
+                        class="group flex gap-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/10 p-4 hover:border-primary/20 transition-all mb-3"
                       >
-                        <span class="text-sm font-medium"
-                          >Toutes les fonctionnalités</span
+                        <div
+                          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors"
                         >
-                        <span class="text-xs text-muted-foreground"
-                          >Découvrez l'ensemble des capacités de VizHome</span
-                        >
+                          <SparklesIcon class="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <p class="text-sm font-semibold mb-0.5">
+                            Toutes les fonctionnalités
+                          </p>
+                          <p class="text-xs text-muted-foreground">
+                            Vue d'ensemble complète des capacités de VizHome
+                          </p>
+                        </div>
                       </NuxtLink>
                     </NavigationMenuLink>
-                    <NavigationMenuLink as-child>
-                      <NuxtLink
-                        to="/features/auto-3d"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
+
+                    <!-- Grille des sous-fonctionnalités -->
+                    <div class="grid grid-cols-2 gap-1">
+                      <NavigationMenuLink
+                        as-child
+                        v-for="feat in featuresMenu"
+                        :key="feat.to"
                       >
-                        <span class="text-sm font-medium"
-                          >Génération 3D automatique</span
+                        <NuxtLink
+                          :to="feat.to"
+                          class="group flex items-start gap-3 rounded-lg p-3 hover:bg-accent transition-colors"
                         >
-                        <span class="text-xs text-muted-foreground"
-                          >Transformez vos photos en modèles 3D</span
-                        >
-                      </NuxtLink>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink as-child>
-                      <NuxtLink
-                        to="/features/materials"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
-                      >
-                        <span class="text-sm font-medium"
-                          >Bibliothèque de matériaux</span
-                        >
-                        <span class="text-xs text-muted-foreground"
-                          >Plus de 10 000 matériaux photoréalistes</span
-                        >
-                      </NuxtLink>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink as-child>
-                      <NuxtLink
-                        to="/features/360-views"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
-                      >
-                        <span class="text-sm font-medium"
-                          >Vues 360° immersives</span
-                        >
-                        <span class="text-xs text-muted-foreground"
-                          >Visites virtuelles interactives</span
-                        >
-                      </NuxtLink>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink as-child>
-                      <NuxtLink
-                        to="/features/intelligent-lighting"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
-                      >
-                        <span class="text-sm font-medium"
-                          >Éclairage intelligent</span
-                        >
-                        <span class="text-xs text-muted-foreground"
-                          >Simulation d'éclairage réaliste</span
-                        >
-                      </NuxtLink>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink as-child>
-                      <NuxtLink
-                        to="/features/collaboration"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
-                      >
-                        <span class="text-sm font-medium"
-                          >Partage et collaboration</span
-                        >
-                        <span class="text-xs text-muted-foreground"
-                          >Travaillez en équipe facilement</span
-                        >
-                      </NuxtLink>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink as-child>
-                      <NuxtLink
-                        to="/features/mobile-apps"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
-                      >
-                        <span class="text-sm font-medium"
-                          >Applications mobiles</span
-                        >
-                        <span class="text-xs text-muted-foreground"
-                          >iOS et Android disponibles</span
-                        >
-                      </NuxtLink>
-                    </NavigationMenuLink>
+                          <div
+                            class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-background transition-colors mt-0.5"
+                          >
+                            <component
+                              :is="feat.icon"
+                              class="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors"
+                            />
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium leading-none mb-1">
+                              {{ feat.label }}
+                            </p>
+                            <p
+                              class="text-xs text-muted-foreground leading-snug"
+                            >
+                              {{ feat.desc }}
+                            </p>
+                          </div>
+                        </NuxtLink>
+                      </NavigationMenuLink>
+                    </div>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -116,10 +81,7 @@
               <!-- Tarifs -->
               <NavigationMenuItem>
                 <NavigationMenuLink as-child>
-                  <NuxtLink
-                    to="/pricing"
-                    class="inline-flex h-9 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none"
-                  >
+                  <NuxtLink to="/pricing" :class="navLinkClass('/pricing')">
                     Tarifs
                   </NuxtLink>
                 </NavigationMenuLink>
@@ -128,66 +90,66 @@
               <!-- Documentation -->
               <NavigationMenuItem>
                 <NavigationMenuLink as-child>
-                  <NuxtLink
-                    to="/docs"
-                    class="inline-flex h-9 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none"
-                  >
-                    Documentation
+                  <NuxtLink to="/docs" :class="navLinkClass('/docs')">
+                    Docs
                   </NuxtLink>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
-              <!-- À propos -->
+              <!-- Entreprise -->
               <NavigationMenuItem>
-                <NavigationMenuTrigger class="bg-transparent"
-                  >Entreprise</NavigationMenuTrigger
+                <NavigationMenuTrigger
+                  class="bg-transparent text-sm font-medium"
                 >
+                  Entreprise
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div class="w-[280px] p-3 flex flex-col gap-1">
-                    <NavigationMenuLink as-child>
+                  <div class="w-[300px] p-3 flex flex-col gap-1">
+                    <NavigationMenuLink
+                      as-child
+                      v-for="item in companyMenu"
+                      :key="item.to"
+                    >
                       <NuxtLink
-                        to="/about"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
+                        :to="item.to"
+                        class="group flex items-start gap-3 rounded-lg p-3 hover:bg-accent transition-colors"
                       >
-                        <span class="text-sm font-medium">À propos</span>
-                        <span class="text-xs text-muted-foreground"
-                          >Notre mission et notre équipe</span
+                        <div
+                          class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-background transition-colors mt-0.5"
                         >
+                          <component
+                            :is="item.icon"
+                            class="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors"
+                          />
+                        </div>
+                        <div>
+                          <p class="text-sm font-medium leading-none mb-1">
+                            {{ item.label }}
+                          </p>
+                          <p class="text-xs text-muted-foreground leading-snug">
+                            {{ item.desc }}
+                          </p>
+                        </div>
                       </NuxtLink>
                     </NavigationMenuLink>
-                    <NavigationMenuLink as-child>
+
+                    <!-- Divider + CTA lancer l'app -->
+                    <div class="mt-2 pt-3 border-t">
                       <NuxtLink
-                        to="/testimonials"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
+                        to="/render"
+                        class="flex items-center justify-between rounded-lg bg-primary/5 border border-primary/10 px-3 py-2.5 hover:bg-primary/10 transition-colors group"
                       >
-                        <span class="text-sm font-medium">Témoignages</span>
-                        <span class="text-xs text-muted-foreground"
-                          >Ce que disent nos clients</span
-                        >
+                        <div class="flex items-center gap-2">
+                          <BoxIcon class="h-4 w-4 text-primary" />
+                          <span class="text-sm font-medium text-primary"
+                            >Ouvrir l'éditeur</span
+                          >
+                        </div>
+                        <ArrowRightIcon
+                          class="h-3.5 w-3.5 text-primary/60 group-hover:translate-x-0.5 transition-transform"
+                        />
                       </NuxtLink>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink as-child>
-                      <NuxtLink
-                        to="/faq"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
-                      >
-                        <span class="text-sm font-medium">FAQ</span>
-                        <span class="text-xs text-muted-foreground"
-                          >Questions fréquentes</span
-                        >
-                      </NuxtLink>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink as-child>
-                      <NuxtLink
-                        to="/contact"
-                        class="flex flex-col gap-0.5 rounded-lg p-3 hover:bg-accent transition-colors"
-                      >
-                        <span class="text-sm font-medium">Contact</span>
-                        <span class="text-xs text-muted-foreground"
-                          >Nous écrire</span
-                        >
-                      </NuxtLink>
-                    </NavigationMenuLink>
+                    </div>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -199,11 +161,15 @@
         <div class="hidden md:flex items-center gap-2">
           <LanguageSwitcher />
           <ModeToggle />
+          <div class="h-5 w-px bg-border mx-1" />
           <NuxtLink to="/auth/login">
-            <Button variant="ghost" size="sm">Connexion</Button>
+            <Button variant="ghost" size="sm" class="text-sm">Connexion</Button>
           </NuxtLink>
           <NuxtLink to="/auth/register">
-            <Button size="sm" class="rounded-full">Essayer gratuitement</Button>
+            <Button size="sm" class="rounded-full text-sm gap-1.5">
+              <SparklesIcon class="h-3.5 w-3.5" />
+              Essayer gratuitement
+            </Button>
           </NuxtLink>
         </div>
 
@@ -216,134 +182,140 @@
                 <MenuIcon class="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" class="w-72 p-0 overflow-y-auto">
-              <div class="flex flex-col h-full p-4 gap-1">
-                <NuxtLink
-                  to="/"
-                  class="flex items-center py-2 mb-3"
-                  @click="mobileOpen = false"
-                >
-                  <AppLogo />
-                </NuxtLink>
-
-                <NuxtLink
-                  to="/"
-                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors"
-                  @click="mobileOpen = false"
-                >
-                  <HomeIcon class="h-4 w-4 text-muted-foreground" />
-                  Accueil
-                </NuxtLink>
-
-                <!-- Features section -->
-                <button
-                  class="flex items-center justify-between px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors w-full text-left"
-                  @click="mobileFeatOpen = !mobileFeatOpen"
-                >
-                  <span class="flex items-center gap-2">
-                    <ZapIcon class="h-4 w-4 text-muted-foreground" />
-                    Fonctionnalités
-                  </span>
-                  <ChevronDownIcon
-                    class="h-4 w-4 transition-transform"
-                    :class="{ 'rotate-180': mobileFeatOpen }"
-                  />
-                </button>
+            <SheetContent side="right" class="w-80 p-0 overflow-y-auto">
+              <div class="flex flex-col h-full">
+                <!-- Header -->
                 <div
-                  v-if="mobileFeatOpen"
-                  class="ml-4 border-l pl-3 flex flex-col gap-0.5"
+                  class="flex items-center justify-between px-4 h-14 border-b"
                 >
                   <NuxtLink
-                    to="/features"
-                    class="py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground rounded transition-colors"
+                    to="/"
+                    class="flex items-center"
                     @click="mobileOpen = false"
-                    >Vue d'ensemble</NuxtLink
                   >
-                  <NuxtLink
-                    to="/features/auto-3d"
-                    class="py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground rounded transition-colors"
-                    @click="mobileOpen = false"
-                    >3D automatique</NuxtLink
-                  >
-                  <NuxtLink
-                    to="/features/materials"
-                    class="py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground rounded transition-colors"
-                    @click="mobileOpen = false"
-                    >Matériaux</NuxtLink
-                  >
-                  <NuxtLink
-                    to="/features/360-views"
-                    class="py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground rounded transition-colors"
-                    @click="mobileOpen = false"
-                    >Vues 360°</NuxtLink
-                  >
-                  <NuxtLink
-                    to="/features/intelligent-lighting"
-                    class="py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground rounded transition-colors"
-                    @click="mobileOpen = false"
-                    >Éclairage intelligent</NuxtLink
-                  >
-                  <NuxtLink
-                    to="/features/collaboration"
-                    class="py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground rounded transition-colors"
-                    @click="mobileOpen = false"
-                    >Collaboration</NuxtLink
-                  >
-                  <NuxtLink
-                    to="/features/mobile-apps"
-                    class="py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground rounded transition-colors"
-                    @click="mobileOpen = false"
-                    >Applications mobiles</NuxtLink
-                  >
+                    <AppLogo />
+                  </NuxtLink>
                 </div>
 
-                <NuxtLink
-                  to="/pricing"
-                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors"
-                  @click="mobileOpen = false"
-                >
-                  <TagIcon class="h-4 w-4 text-muted-foreground" />
-                  Tarifs
-                </NuxtLink>
-                <NuxtLink
-                  to="/docs"
-                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors"
-                  @click="mobileOpen = false"
-                >
-                  <BookOpenIcon class="h-4 w-4 text-muted-foreground" />
-                  Documentation
-                </NuxtLink>
-                <NuxtLink
-                  to="/about"
-                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors"
-                  @click="mobileOpen = false"
-                >
-                  <UsersIcon class="h-4 w-4 text-muted-foreground" />
-                  À propos
-                </NuxtLink>
-                <NuxtLink
-                  to="/contact"
-                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors"
-                  @click="mobileOpen = false"
-                >
-                  <MailIcon class="h-4 w-4 text-muted-foreground" />
-                  Contact
-                </NuxtLink>
+                <!-- Nav mobile -->
+                <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-1">
+                  <NuxtLink
+                    to="/"
+                    :class="mobileLinkClass('/')"
+                    @click="mobileOpen = false"
+                  >
+                    <HomeIcon class="h-4 w-4" />
+                    Accueil
+                  </NuxtLink>
 
-                <div class="mt-auto pt-4 border-t flex flex-col gap-2">
+                  <!-- Section Fonctionnalités -->
+                  <button
+                    class="flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm hover:bg-accent transition-colors text-left"
+                    @click="mobileFeatOpen = !mobileFeatOpen"
+                  >
+                    <span class="flex items-center gap-3">
+                      <ZapIcon class="h-4 w-4 text-muted-foreground" />
+                      <span class="font-medium">Fonctionnalités</span>
+                    </span>
+                    <ChevronDownIcon
+                      class="h-4 w-4 text-muted-foreground transition-transform duration-200"
+                      :class="{ 'rotate-180': mobileFeatOpen }"
+                    />
+                  </button>
+                  <div
+                    v-if="mobileFeatOpen"
+                    class="ml-6 border-l pl-3 flex flex-col gap-0.5 mb-1"
+                  >
+                    <NuxtLink
+                      v-for="feat in featuresMenu"
+                      :key="feat.to"
+                      :to="feat.to"
+                      class="flex items-center gap-2 py-2 px-2 text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-accent/50 transition-colors"
+                      @click="mobileOpen = false"
+                    >
+                      <component :is="feat.icon" class="h-3.5 w-3.5 shrink-0" />
+                      {{ feat.label }}
+                    </NuxtLink>
+                  </div>
+
+                  <NuxtLink
+                    to="/pricing"
+                    :class="mobileLinkClass('/pricing')"
+                    @click="mobileOpen = false"
+                  >
+                    <TagIcon class="h-4 w-4" />
+                    Tarifs
+                  </NuxtLink>
+
+                  <NuxtLink
+                    to="/docs"
+                    :class="mobileLinkClass('/docs')"
+                    @click="mobileOpen = false"
+                  >
+                    <BookOpenIcon class="h-4 w-4" />
+                    Documentation
+                  </NuxtLink>
+
+                  <!-- Section Entreprise -->
+                  <button
+                    class="flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm hover:bg-accent transition-colors text-left"
+                    @click="mobileCompanyOpen = !mobileCompanyOpen"
+                  >
+                    <span class="flex items-center gap-3">
+                      <BuildingIcon class="h-4 w-4 text-muted-foreground" />
+                      <span class="font-medium">Entreprise</span>
+                    </span>
+                    <ChevronDownIcon
+                      class="h-4 w-4 text-muted-foreground transition-transform duration-200"
+                      :class="{ 'rotate-180': mobileCompanyOpen }"
+                    />
+                  </button>
+                  <div
+                    v-if="mobileCompanyOpen"
+                    class="ml-6 border-l pl-3 flex flex-col gap-0.5 mb-1"
+                  >
+                    <NuxtLink
+                      v-for="item in companyMenu"
+                      :key="item.to"
+                      :to="item.to"
+                      class="flex items-center gap-2 py-2 px-2 text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-accent/50 transition-colors"
+                      @click="mobileOpen = false"
+                    >
+                      <component :is="item.icon" class="h-3.5 w-3.5 shrink-0" />
+                      {{ item.label }}
+                    </NuxtLink>
+                  </div>
+
+                  <!-- CTA éditeur -->
+                  <div class="mt-2 pt-2 border-t">
+                    <NuxtLink
+                      to="/render"
+                      class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm bg-primary/5 border border-primary/10 text-primary font-medium hover:bg-primary/10 transition-colors"
+                      @click="mobileOpen = false"
+                    >
+                      <BoxIcon class="h-4 w-4" />
+                      Ouvrir l'éditeur 3D
+                    </NuxtLink>
+                  </div>
+                </div>
+
+                <!-- Footer mobile -->
+                <div class="p-4 border-t flex flex-col gap-2">
                   <LanguageSwitcher />
                   <NuxtLink to="/auth/login" @click="mobileOpen = false">
                     <Button
                       variant="outline"
                       class="w-full rounded-full"
                       size="sm"
-                      >Connexion</Button
                     >
+                      Connexion
+                    </Button>
                   </NuxtLink>
                   <NuxtLink to="/auth/register" @click="mobileOpen = false">
-                    <Button class="w-full rounded-full" size="sm"
-                      >Essayer gratuitement</Button
-                    >
+                    <Button class="w-full rounded-full gap-1.5" size="sm">
+                      <SparklesIcon class="h-3.5 w-3.5" />
+                      Essayer gratuitement
+                    </Button>
                   </NuxtLink>
                 </div>
               </div>
@@ -357,6 +329,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import {
   MenuIcon,
   HomeIcon,
@@ -364,7 +337,17 @@ import {
   ChevronDownIcon,
   TagIcon,
   BookOpenIcon,
+  BuildingIcon,
+  BoxIcon,
+  ArrowRightIcon,
+  SparklesIcon,
+  PaletteIcon,
+  Globe2Icon,
+  SunIcon,
   UsersIcon,
+  SmartphoneIcon,
+  HeartIcon,
+  HelpCircleIcon,
   MailIcon,
 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
@@ -378,6 +361,97 @@ import {
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu'
 
+const route = useRoute()
 const mobileOpen = ref(false)
 const mobileFeatOpen = ref(false)
+const mobileCompanyOpen = ref(false)
+
+const NAV_LINK_BASE =
+  'inline-flex h-9 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none'
+const NAV_LINK_ACTIVE = `${NAV_LINK_BASE} bg-accent text-accent-foreground`
+const NAV_LINK_DEFAULT = `${NAV_LINK_BASE} text-foreground/80 hover:bg-accent hover:text-accent-foreground`
+
+const MOBILE_LINK_BASE =
+  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors'
+const MOBILE_LINK_ACTIVE = `${MOBILE_LINK_BASE} bg-accent text-accent-foreground`
+const MOBILE_LINK_DEFAULT = `${MOBILE_LINK_BASE} text-foreground/80 hover:bg-accent hover:text-foreground`
+
+function navLinkClass(path: string) {
+  return route.path === path || route.path.startsWith(path + '/')
+    ? NAV_LINK_ACTIVE
+    : NAV_LINK_DEFAULT
+}
+
+function mobileLinkClass(path: string) {
+  return route.path === path ||
+    (path !== '/' && route.path.startsWith(path + '/'))
+    ? MOBILE_LINK_ACTIVE
+    : MOBILE_LINK_DEFAULT
+}
+
+const featuresMenu = [
+  {
+    to: '/features/auto-3d',
+    label: 'Génération 3D auto',
+    desc: 'Photos → modèle 3D en <30 sec',
+    icon: BoxIcon,
+  },
+  {
+    to: '/features/materials',
+    label: 'Matériaux',
+    desc: '10 000+ matériaux photoréalistes',
+    icon: PaletteIcon,
+  },
+  {
+    to: '/features/360-views',
+    label: 'Vues 360°',
+    desc: 'Visites virtuelles interactives',
+    icon: Globe2Icon,
+  },
+  {
+    to: '/features/intelligent-lighting',
+    label: 'Éclairage IA',
+    desc: 'Ambiances et saisons en temps réel',
+    icon: SunIcon,
+  },
+  {
+    to: '/features/collaboration',
+    label: 'Collaboration',
+    desc: 'Partage et travail en équipe',
+    icon: UsersIcon,
+  },
+  {
+    to: '/features/mobile-apps',
+    label: 'Applications mobiles',
+    desc: 'iOS & Android natifs',
+    icon: SmartphoneIcon,
+  },
+]
+
+const companyMenu = [
+  {
+    to: '/about',
+    label: 'À propos',
+    desc: 'Notre mission et notre équipe',
+    icon: BuildingIcon,
+  },
+  {
+    to: '/testimonials',
+    label: 'Témoignages',
+    desc: '+2 500 professionnels satisfaits',
+    icon: HeartIcon,
+  },
+  {
+    to: '/faq',
+    label: 'FAQ',
+    desc: 'Questions fréquentes',
+    icon: HelpCircleIcon,
+  },
+  {
+    to: '/contact',
+    label: 'Contact',
+    desc: 'Nous écrire ou demander une démo',
+    icon: MailIcon,
+  },
+]
 </script>

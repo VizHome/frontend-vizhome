@@ -29,6 +29,57 @@
     <!-- Quick Start -->
     <section id="demarrage-rapide">
       <h2 class="text-2xl font-bold mb-4">Démarrage rapide</h2>
+
+      <!-- Les 3 modes -->
+      <div class="grid gap-4 md:grid-cols-3 mb-6">
+        <Card class="rounded-xl border shadow-sm">
+          <CardHeader class="pb-2">
+            <div
+              class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mb-2"
+            >
+              <PencilIcon class="h-5 w-5 text-primary" />
+            </div>
+            <CardTitle class="text-base">Croquis 2D</CardTitle>
+            <CardDescription>Dessinez, annotez, exportez</CardDescription>
+          </CardHeader>
+          <CardContent class="text-sm text-muted-foreground">
+            Canvas vectoriel avec outils crayon, formes, texte et pipette.
+            Exportez en PNG ou transformez votre croquis en rendu IA.
+          </CardContent>
+        </Card>
+        <Card class="rounded-xl border shadow-sm">
+          <CardHeader class="pb-2">
+            <div
+              class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mb-2"
+            >
+              <SparklesIcon class="h-5 w-5 text-primary" />
+            </div>
+            <CardTitle class="text-base">Prompt IA</CardTitle>
+            <CardDescription>Générez par description</CardDescription>
+          </CardHeader>
+          <CardContent class="text-sm text-muted-foreground">
+            Décrivez votre espace en texte libre. L'IA génère une image 2D ou un
+            modèle 3D. Suggestions, historique tabulé et confirmation avant
+            génération.
+          </CardContent>
+        </Card>
+        <Card class="rounded-xl border shadow-sm">
+          <CardHeader class="pb-2">
+            <div
+              class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mb-2"
+            >
+              <Box class="h-5 w-5 text-primary" />
+            </div>
+            <CardTitle class="text-base">3D Pro</CardTitle>
+            <CardDescription>Éditeur temps réel avancé</CardDescription>
+          </CardHeader>
+          <CardContent class="text-sm text-muted-foreground">
+            Importez un modèle GLB/GLTF/OBJ/FBX/STL. Contrôlez l'éclairage, les
+            matériaux, la caméra et naviguez en première personne (WASD).
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardContent class-name="py-10 px-10">
           <div class="grid gap-6 pt-5">
@@ -39,7 +90,7 @@
                 1
               </div>
               <div class="space-y-1">
-                <h3 class="text-base font-medium">Création de compte</h3>
+                <h3 class="text-base font-medium">Créer un compte</h3>
                 <p class="text-sm text-muted-foreground">
                   Commencez par
                   <NuxtLink
@@ -59,11 +110,14 @@
                 2
               </div>
               <div class="space-y-1">
-                <h3 class="text-base font-medium">Importer des photos</h3>
+                <h3 class="text-base font-medium">Ouvrir l'éditeur</h3>
                 <p class="text-sm text-muted-foreground">
-                  Téléchargez des photos de votre espace. Pour des résultats
-                  optimaux, utilisez des photos bien éclairées prises sous
-                  différents angles.
+                  Rendez-vous sur
+                  <NuxtLink to="/render" class="text-primary hover:underline"
+                    >/render</NuxtLink
+                  >. La barre de mode en haut vous permet de choisir entre
+                  <strong>Croquis 2D</strong>, <strong>Prompt IA</strong> et
+                  <strong>3D Pro</strong>.
                 </p>
               </div>
             </div>
@@ -74,10 +128,14 @@
                 3
               </div>
               <div class="space-y-1">
-                <h3 class="text-base font-medium">Génération 3D</h3>
+                <h3 class="text-base font-medium">
+                  Choisir votre flux de travail
+                </h3>
                 <p class="text-sm text-muted-foreground">
-                  Notre IA analyse vos images et génère automatiquement un
-                  modèle 3D texturé de votre espace en quelques secondes.
+                  En <strong>Croquis 2D</strong>, utilisez les outils de dessin
+                  librement. En <strong>Prompt IA</strong>, décrivez votre
+                  projet en texte. En <strong>3D Pro</strong>, importez un
+                  fichier GLB, OBJ, FBX ou STL.
                 </p>
               </div>
             </div>
@@ -88,11 +146,11 @@
                 4
               </div>
               <div class="space-y-1">
-                <h3 class="text-base font-medium">Personnalisation</h3>
+                <h3 class="text-base font-medium">Personnaliser le rendu</h3>
                 <p class="text-sm text-muted-foreground">
-                  Modifiez les matériaux, ajoutez des meubles, changez
-                  l'éclairage et explorez différentes perspectives de votre
-                  espace.
+                  En mode 3D Pro, accédez aux panneaux flottants via la toolbar
+                  droite : éclairage (ambiances + saisons), navigation (orbite,
+                  première personne, visite, top-down), matériaux et caméra.
                 </p>
               </div>
             </div>
@@ -103,11 +161,11 @@
                 5
               </div>
               <div class="space-y-1">
-                <h3 class="text-base font-medium">Export et partage</h3>
+                <h3 class="text-base font-medium">Exporter et partager</h3>
                 <p class="text-sm text-muted-foreground">
-                  Exportez vos rendus en haute résolution ou créez des vues 360°
-                  pour une immersion complète. Partagez-les facilement avec vos
-                  clients ou collègues.
+                  Exportez vos rendus en PNG haute résolution, ou partagez un
+                  lien sécurisé avec vos clients. En Croquis 2D, le bouton
+                  export est accessible directement depuis la toolbar.
                 </p>
               </div>
             </div>
@@ -358,12 +416,11 @@ curl -X POST https://api.vizhome.fr/v1/renders \
             ?</AccordionTrigger
           >
           <AccordionContent>
-            VizHome offre plusieurs options de partage. Vous pouvez générer un
-            lien sécurisé vers une galerie en ligne, exporter des images haute
-            résolution, créer une visite virtuelle interactive ou intégrer vos
-            rendus et vues 360° directement sur votre site web via notre widget.
-            Les paramètres de confidentialité vous permettent de contrôler qui
-            peut voir vos projets.
+            Vous pouvez générer un lien sécurisé vers votre rendu, exporter des
+            images haute résolution, créer une visite virtuelle interactive ou
+            intégrer vos rendus et vues 360° directement sur votre site web via
+            notre widget. Les paramètres de confidentialité vous permettent de
+            contrôler qui peut voir vos projets.
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -427,7 +484,7 @@ curl -X POST https://api.vizhome.fr/v1/renders \
 </template>
 
 <script setup lang="ts">
-import { ArrowRightIcon } from 'lucide-vue-next'
+import { ArrowRightIcon, PencilIcon, SparklesIcon, Box } from 'lucide-vue-next'
 
 // Définir le layout docs pour cette page
 definePageMeta({

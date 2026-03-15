@@ -3,7 +3,8 @@
     <div>
       <h1 class="text-3xl font-bold tracking-tight">Guide d'interface</h1>
       <p class="text-lg text-muted-foreground mt-2">
-        Maîtrisez l'interface utilisateur de VizHome
+        Maîtrisez l'interface de l'éditeur VizHome et ses trois modes de
+        création
       </p>
     </div>
 
@@ -15,596 +16,381 @@
       <CardContent>
         <ul class="grid gap-2">
           <li>
-            <a href="#dashboard" class="text-primary hover:underline"
-              >Tableau de bord</a
+            <a href="#rendermodebar" class="text-primary hover:underline"
+              >Barre de modes</a
             >
           </li>
           <li>
-            <a href="#projects" class="text-primary hover:underline"
-              >Gestion des projets</a
+            <a href="#sketch" class="text-primary hover:underline"
+              >Mode Croquis 2D</a
             >
           </li>
           <li>
-            <a href="#editor" class="text-primary hover:underline"
-              >Éditeur 3D</a
+            <a href="#prompt" class="text-primary hover:underline"
+              >Mode Prompt IA</a
             >
           </li>
           <li>
-            <a href="#models" class="text-primary hover:underline"
-              >Bibliothèque de modèles</a
+            <a href="#three" class="text-primary hover:underline"
+              >Mode 3D Pro</a
             >
           </li>
           <li>
-            <a href="#settings" class="text-primary hover:underline"
-              >Paramètres du compte</a
+            <a href="#overlays" class="text-primary hover:underline"
+              >Overlays et navigation immersive</a
+            >
+          </li>
+          <li>
+            <a href="#shortcuts" class="text-primary hover:underline"
+              >Raccourcis clavier</a
             >
           </li>
         </ul>
       </CardContent>
     </Card>
 
-    <!-- Tableau de bord -->
-    <div id="dashboard" class="scroll-mt-20">
+    <!-- Barre de modes -->
+    <div id="rendermodebar" class="scroll-mt-20">
       <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
         <LayoutDashboardIcon class="h-5 w-5 text-primary" />
-        Tableau de bord
+        Barre de modes (RenderModeBar)
       </h2>
-      <Card class="mb-6">
-        <div class="aspect-video relative bg-muted">
-          <img
-            src="/images/generate/image_generate.png"
-            alt="Tableau de bord VizHome"
-            class="object-cover w-full h-full rounded-t-lg"
-          />
-        </div>
+      <Card class="mb-4">
         <CardContent class="pt-6">
           <p class="mb-4">
-            Le tableau de bord est votre point d'entrée principal dans VizHome.
-            Il vous donne un aperçu de vos projets récents, de vos statistiques
-            d'utilisation et de votre activité.
+            La barre en haut de l'éditeur (<code
+              class="bg-muted px-1.5 py-0.5 rounded text-sm"
+              >RenderModeBar</code
+            >) affiche le logo VizHome et trois boutons de mode. Elle reste
+            visible en permanence et permet de basculer instantanément entre les
+            trois flux de création.
           </p>
-          <h3 class="text-lg font-medium mb-2">Éléments principaux</h3>
-          <ul class="space-y-2">
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div
+              class="bg-muted/40 rounded-lg p-4 border flex items-start gap-3"
+            >
+              <div class="bg-primary/10 rounded-full p-2 shrink-0">
+                <PencilIcon class="h-4 w-4 text-primary" />
               </div>
-              <p>
-                <strong>Projets récents</strong> : Accès rapide à vos derniers
-                projets avec aperçus.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
+              <div>
+                <h4 class="font-medium text-sm">Croquis 2D</h4>
+                <p class="text-xs text-muted-foreground mt-0.5">
+                  Canvas de dessin vectoriel libre
+                </p>
               </div>
-              <p>
-                <strong>Statistiques</strong> : Visualisez votre utilisation
-                avec le nombre de projets actifs, rendus générés, stockage
-                utilisé et quota restant.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
+            </div>
+            <div
+              class="bg-muted/40 rounded-lg p-4 border flex items-start gap-3"
+            >
+              <div class="bg-primary/10 rounded-full p-2 shrink-0">
+                <SparklesIcon class="h-4 w-4 text-primary" />
               </div>
-              <p>
-                <strong>Activité récente</strong> : Timeline des dernières
-                actions effectuées sur vos projets.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
+              <div>
+                <h4 class="font-medium text-sm">Prompt IA</h4>
+                <p class="text-xs text-muted-foreground mt-0.5">
+                  Génération par texte (2D ou 3D)
+                </p>
               </div>
-              <p>
-                <strong>Bouton "Nouveau projet"</strong> : Créez rapidement un
-                nouveau projet depuis n'importe quelle page.
-              </p>
-            </li>
-          </ul>
+            </div>
+            <div
+              class="bg-muted/40 rounded-lg p-4 border flex items-start gap-3"
+            >
+              <div class="bg-primary/10 rounded-full p-2 shrink-0">
+                <Box class="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <h4 class="font-medium text-sm">3D Pro</h4>
+                <p class="text-xs text-muted-foreground mt-0.5">
+                  Éditeur Three.js temps réel
+                </p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
 
-    <!-- Gestion des projets -->
-    <div id="projects" class="scroll-mt-20">
-      <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-        <FolderIcon class="h-5 w-5 text-primary" />
-        Gestion des projets
-      </h2>
-      <Card class="mb-6">
-        <div class="aspect-video relative bg-muted">
-          <img
-            src="/images/generate/image_generate.png"
-            alt="Gestion des projets VizHome"
-            class="object-cover w-full h-full rounded-t-lg"
-          />
-        </div>
-        <CardContent class="pt-6">
-          <p class="mb-4">
-            La section Projets vous permet d'organiser et de gérer tous vos
-            projets VizHome. Vous pouvez créer des dossiers, filtrer vos projets
-            et effectuer des actions par lots.
-          </p>
-          <h3 class="text-lg font-medium mb-2">Fonctionnalités clés</h3>
-          <ul class="space-y-2">
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
-              </div>
-              <p>
-                <strong>Création de projet</strong> : Démarrez un nouveau projet
-                en téléchargeant des photos ou en important un modèle 3D.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
-              </div>
-              <p>
-                <strong>Organisation</strong> : Regroupez vos projets par
-                client, type ou statut à l'aide de dossiers et d'étiquettes.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
-              </div>
-              <p>
-                <strong>Gestion</strong> : Modifiez, dupliquez ou archivez des
-                projets via les options du menu contextuel.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
-              </div>
-              <p>
-                <strong>Partage</strong> : Invitez des collaborateurs ou clients
-                avec différents niveaux d'accès.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
-              </div>
-              <p>
-                <strong>Recherche</strong> : Retrouvez rapidement vos projets
-                grâce à la recherche plein texte et aux filtres avancés.
-              </p>
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
-    </div>
-
-    <!-- Éditeur 3D -->
-    <div id="editor" class="scroll-mt-20">
+    <!-- Mode Croquis 2D -->
+    <div id="sketch" class="scroll-mt-20">
       <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
         <PencilIcon class="h-5 w-5 text-primary" />
-        Éditeur 3D
+        Mode Croquis 2D
       </h2>
-      <Card class="mb-6">
-        <div class="aspect-video relative bg-muted">
-          <img
-            src="/images/generate/image_generate.png"
-            alt="Éditeur 3D VizHome"
-            class="object-cover w-full h-full rounded-t-lg"
-          />
-        </div>
+      <Card class="mb-4">
         <CardContent class="pt-6">
           <p class="mb-4">
-            L'éditeur 3D est le cœur de VizHome. C'est ici que vous
-            personnalisez vos espaces, modifiez les matériaux, ajoutez des
-            objets et générez vos rendus finaux.
+            Le mode Croquis 2D (<code
+              class="bg-muted px-1.5 py-0.5 rounded text-sm"
+              >SketchCanvas.vue</code
+            >) est un canvas vectoriel interactif. La toolbar est positionnée en
+            bas au centre de l'écran.
           </p>
-          <h3 class="text-lg font-medium mb-2">Interface de l'éditeur</h3>
-          <ul class="space-y-2">
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
+          <h3 class="text-base font-medium mb-3">Outils disponibles</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            <div
+              v-for="tool in sketchTools"
+              :key="tool.name"
+              class="bg-muted/30 rounded-lg p-3 flex items-start gap-3 border"
+            >
+              <div class="bg-background rounded-full p-1.5 shrink-0 border">
+                <component :is="tool.icon" class="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <h4 class="font-medium text-sm">{{ tool.name }}</h4>
+                <p class="text-xs text-muted-foreground">{{ tool.desc }}</p>
+              </div>
+            </div>
+          </div>
+          <Alert>
+            <SparklesIcon class="h-4 w-4" />
+            <AlertTitle>Transformez en rendu IA</AlertTitle>
+            <AlertDescription>
+              Un bouton dédié dans la toolbar permet d'envoyer directement votre
+              croquis au moteur IA pour générer un rendu photoréaliste à partir
+              de votre dessin.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+    </div>
+
+    <!-- Mode Prompt IA -->
+    <div id="prompt" class="scroll-mt-20">
+      <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+        <SparklesIcon class="h-5 w-5 text-primary" />
+        Mode Prompt IA
+      </h2>
+      <Card class="mb-4">
+        <CardContent class="pt-6">
+          <p class="mb-4">
+            Le mode Prompt IA (<code
+              class="bg-muted px-1.5 py-0.5 rounded text-sm"
+              >PromptPanel.vue</code
+            >) affiche un panneau centré avec un formulaire de saisie textuelle.
+          </p>
+          <h3 class="text-base font-medium mb-3">Fonctionnalités du panneau</h3>
+          <ul class="space-y-2 mb-6">
+            <li
+              v-for="feat in promptFeatures"
+              :key="feat.title"
+              class="flex items-start gap-2"
+            >
+              <div class="min-w-[20px] mt-1 shrink-0">
                 <Circle class="h-2 w-2 fill-primary text-primary" />
               </div>
-              <p>
-                <strong>Vue 3D</strong> : Visualisation interactive de votre
-                espace avec contrôles de caméra intuitifs.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
-              </div>
-              <p>
-                <strong>Panneau de propriétés</strong> : Modifiez les
-                caractéristiques des éléments sélectionnés.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
-              </div>
-              <p>
-                <strong>Bibliothèque de matériaux</strong> : Accédez à des
-                milliers de textures et matériaux réalistes.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
-              </div>
-              <p>
-                <strong>Catalogue d'objets</strong> : Ajoutez des meubles et
-                accessoires depuis notre bibliothèque 3D.
-              </p>
-            </li>
-            <li class="flex items-start gap-2">
-              <div class="min-w-[20px] mt-1">
-                <Circle class="h-2 w-2 fill-primary text-primary" />
-              </div>
-              <p>
-                <strong>Réglages de rendu</strong> : Contrôlez l'éclairage, les
-                ombres et les effets postproduction.
+              <p class="text-sm">
+                <strong>{{ feat.title }}</strong> : {{ feat.desc }}
               </p>
             </li>
           </ul>
-
-          <h3 class="text-lg font-medium mt-6 mb-2">Outils principaux</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-muted rounded-md p-3 flex items-start gap-3">
-              <div class="bg-background rounded-full p-2">
-                <MousePointerIcon class="h-4 w-4" />
-              </div>
-              <div>
-                <h4 class="font-medium">Sélection</h4>
-                <p class="text-sm text-muted-foreground">
-                  Sélectionnez des objets ou surfaces
-                </p>
-              </div>
-            </div>
-            <div class="bg-muted rounded-md p-3 flex items-start gap-3">
-              <div class="bg-background rounded-full p-2">
-                <MoveIcon class="h-4 w-4" />
-              </div>
-              <div>
-                <h4 class="font-medium">Déplacement</h4>
-                <p class="text-sm text-muted-foreground">
-                  Repositionnez les objets
-                </p>
-              </div>
-            </div>
-            <div class="bg-muted rounded-md p-3 flex items-start gap-3">
-              <div class="bg-background rounded-full p-2">
-                <PaintbrushIcon class="h-4 w-4" />
-              </div>
-              <div>
-                <h4 class="font-medium">Matériaux</h4>
-                <p class="text-sm text-muted-foreground">
-                  Appliquez des textures
-                </p>
-              </div>
-            </div>
-            <div class="bg-muted rounded-md p-3 flex items-start gap-3">
-              <div class="bg-background rounded-full p-2">
-                <SunIcon class="h-4 w-4" />
-              </div>
-              <div>
-                <h4 class="font-medium">Éclairage</h4>
-                <p class="text-sm text-muted-foreground">
-                  Ajustez les sources lumineuses
-                </p>
-              </div>
-            </div>
-          </div>
+          <Alert>
+            <InfoIcon class="h-4 w-4" />
+            <AlertTitle>Confirmation avant génération</AlertTitle>
+            <AlertDescription>
+              Un <strong>AlertDialog</strong> de confirmation s'affiche avant
+              chaque génération IA, pour éviter les consommations de crédits
+              accidentelles.
+            </AlertDescription>
+          </Alert>
         </CardContent>
       </Card>
-
-      <Alert>
-        <InfoIcon class="h-4 w-4" />
-        <AlertTitle>Astuce</AlertTitle>
-        <AlertDescription>
-          Utilisez les raccourcis clavier pour naviguer plus rapidement dans
-          l'éditeur. Appuyez sur
-          <kbd class="px-2 py-1 bg-muted rounded text-xs">?</kbd> pour afficher
-          tous les raccourcis disponibles.
-        </AlertDescription>
-      </Alert>
     </div>
 
-    <!-- Bibliothèque de modèles -->
-    <div id="models" class="scroll-mt-20">
+    <!-- Mode 3D Pro -->
+    <div id="three" class="scroll-mt-20">
       <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
         <Box class="h-5 w-5 text-primary" />
-        Bibliothèque de modèles
+        Mode 3D Pro
       </h2>
-      <Card class="mb-6">
+      <Card class="mb-4">
         <CardContent class="pt-6">
           <p class="mb-4">
-            La bibliothèque de modèles vous donne accès à des milliers d'objets
-            3D préfabriqués que vous pouvez utiliser dans vos projets. Cette
-            section vous permet également de gérer vos propres modèles importés.
+            Le mode 3D Pro utilise <strong>Three.js</strong> pour un rendu WebGL
+            temps réel. L'éditeur est composé de deux parties :
+            <code class="bg-muted px-1.5 py-0.5 rounded text-sm"
+              >ThreeControls.vue</code
+            >
+            (toolbar droite + panels flottants) et
+            <code class="bg-muted px-1.5 py-0.5 rounded text-sm"
+              >RenderOverlays.vue</code
+            >
+            (overlays contextuels).
           </p>
-          <h3 class="text-lg font-medium mb-2">Catégories principales</h3>
-          <div
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6"
-          >
-            <div class="border rounded-lg p-4 text-center">
-              <div
-                class="w-12 h-12 mx-auto mb-2 bg-primary/10 rounded-full flex items-center justify-center"
-              >
-                <ArmchairIcon class="h-6 w-6 text-primary" />
+
+          <h3 class="text-base font-medium mb-3">Formats d'import supportés</h3>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <Badge
+              v-for="fmt in formats"
+              :key="fmt"
+              variant="secondary"
+              class="rounded-full"
+              >{{ fmt }}</Badge
+            >
+          </div>
+
+          <h3 class="text-base font-medium mb-3">Toolbar droite — 5 boutons</h3>
+          <div class="space-y-3 mb-6">
+            <div
+              v-for="btn in threeButtons"
+              :key="btn.label"
+              class="bg-muted/30 rounded-lg p-3 border flex items-start gap-3"
+            >
+              <div class="bg-primary/10 rounded-full p-1.5 shrink-0">
+                <component :is="btn.icon" class="h-4 w-4 text-primary" />
               </div>
-              <h4 class="font-medium">Meubles</h4>
-            </div>
-            <div class="border rounded-lg p-4 text-center">
-              <div
-                class="w-12 h-12 mx-auto mb-2 bg-primary/10 rounded-full flex items-center justify-center"
-              >
-                <LampIcon class="h-6 w-6 text-primary" />
+              <div>
+                <h4 class="font-medium text-sm">{{ btn.label }}</h4>
+                <p class="text-xs text-muted-foreground">{{ btn.desc }}</p>
               </div>
-              <h4 class="font-medium">Éclairage</h4>
-            </div>
-            <div class="border rounded-lg p-4 text-center">
-              <div
-                class="w-12 h-12 mx-auto mb-2 bg-primary/10 rounded-full flex items-center justify-center"
-              >
-                <UtensilsIcon class="h-6 w-6 text-primary" />
-              </div>
-              <h4 class="font-medium">Cuisine</h4>
-            </div>
-            <div class="border rounded-lg p-4 text-center">
-              <div
-                class="w-12 h-12 mx-auto mb-2 bg-primary/10 rounded-full flex items-center justify-center"
-              >
-                <ShowerHeadIcon class="h-6 w-6 text-primary" />
-              </div>
-              <h4 class="font-medium">Salle de bain</h4>
-            </div>
-            <div class="border rounded-lg p-4 text-center">
-              <div
-                class="w-12 h-12 mx-auto mb-2 bg-primary/10 rounded-full flex items-center justify-center"
-              >
-                <ShowerHeadIcon class="h-6 w-6 text-primary" />
-              </div>
-              <h4 class="font-medium">Salle de bain</h4>
-            </div>
-            <div class="border rounded-lg p-4 text-center">
-              <div
-                class="w-12 h-12 mx-auto mb-2 bg-primary/10 rounded-full flex items-center justify-center"
-              >
-                <FlowerIcon class="h-6 w-6 text-primary" />
-              </div>
-              <h4 class="font-medium">Décoration</h4>
-            </div>
-            <div class="border rounded-lg p-4 text-center">
-              <div
-                class="w-12 h-12 mx-auto mb-2 bg-primary/10 rounded-full flex items-center justify-center"
-              >
-                <TreePineIcon class="h-6 w-6 text-primary" />
-              </div>
-              <h4 class="font-medium">Extérieur</h4>
             </div>
           </div>
 
-          <h3 class="text-lg font-medium mb-2">Importer vos modèles</h3>
-          <p class="mb-4">
-            Vous pouvez importer vos propres modèles 3D dans les formats
-            suivants : OBJ, FBX, GLTF/GLB et DAE. Les modèles importés seront
-            disponibles dans la section "Mes modèles".
-          </p>
-
-          <div class="border rounded-lg p-6 text-center">
-            <UploadCloudIcon
-              class="h-12 w-12 mx-auto text-muted-foreground mb-4"
-            />
-            <h4 class="font-medium mb-2">Glissez-déposez vos fichiers ici</h4>
-            <p class="text-sm text-muted-foreground mb-4">
-              Formats supportés : OBJ, FBX, GLTF/GLB, DAE
-            </p>
-            <Button>Parcourir les fichiers</Button>
-          </div>
+          <Alert>
+            <InfoIcon class="h-4 w-4" />
+            <AlertTitle>Boutons conditionnels</AlertTitle>
+            <AlertDescription>
+              Les boutons <strong>Matériaux</strong> et
+              <strong>Rendu IA</strong> n'apparaissent dans la toolbar que
+              lorsqu'un modèle 3D est chargé dans la scène.
+            </AlertDescription>
+          </Alert>
         </CardContent>
       </Card>
+
+      <!-- Panels flottants détaillés -->
+      <h3 class="text-lg font-semibold mb-3 mt-6">Panels flottants</h3>
+      <Accordion type="single" collapsible class="w-full">
+        <AccordionItem
+          v-for="panel in floatingPanels"
+          :key="panel.title"
+          :value="panel.title"
+        >
+          <AccordionTrigger class="text-sm font-medium">
+            <span class="flex items-center gap-2">
+              <component :is="panel.icon" class="h-4 w-4 text-primary" />
+              {{ panel.title }}
+            </span>
+          </AccordionTrigger>
+          <AccordionContent>
+            <ul class="space-y-1.5 pl-6">
+              <li
+                v-for="item in panel.items"
+                :key="item"
+                class="text-sm text-muted-foreground list-disc"
+              >
+                {{ item }}
+              </li>
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
 
-    <!-- Paramètres du compte -->
-    <div id="settings" class="scroll-mt-20">
+    <!-- Overlays -->
+    <div id="overlays" class="scroll-mt-20">
       <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-        <SettingsIcon class="h-5 w-5 text-primary" />
-        Paramètres du compte
+        <LayersIcon class="h-5 w-5 text-primary" />
+        Overlays et navigation immersive
       </h2>
-      <Card class="mb-6">
+      <Card class="mb-4">
         <CardContent class="pt-6">
           <p class="mb-4">
-            La section Paramètres vous permet de gérer votre compte, vos
-            préférences et vos options de facturation.
+            <code class="bg-muted px-1.5 py-0.5 rounded text-sm"
+              >RenderOverlays.vue</code
+            >
+            gère les éléments contextuels superposés à la vue 3D selon le mode
+            de navigation actif.
           </p>
-
-          <h3 class="text-lg font-medium mb-2">Options disponibles</h3>
-          <Tabs default-value="profile">
-            <TabsList>
-              <TabsTrigger value="profile">Profil</TabsTrigger>
-              <TabsTrigger value="appearance">Apparence</TabsTrigger>
-              <TabsTrigger value="billing">Facturation</TabsTrigger>
-              <TabsTrigger value="team">Équipe</TabsTrigger>
-            </TabsList>
-            <TabsContent value="profile" class="space-y-4 pt-4">
-              <div class="space-y-2">
-                <h4 class="font-medium">Informations personnelles</h4>
-                <p class="text-sm text-muted-foreground">
-                  Modifiez vos informations de base telles que votre nom,
-                  adresse email et mot de passe.
-                </p>
-              </div>
-              <div class="space-y-2">
-                <h4 class="font-medium">Sécurité</h4>
-                <p class="text-sm text-muted-foreground">
-                  Activez l'authentification à deux facteurs et gérez vos
-                  sessions actives.
-                </p>
-              </div>
-              <div class="space-y-2">
-                <h4 class="font-medium">Notifications</h4>
-                <p class="text-sm text-muted-foreground">
-                  Configurez vos préférences de notifications par email et dans
-                  l'application.
-                </p>
-              </div>
-            </TabsContent>
-            <TabsContent value="appearance" class="space-y-4 pt-4">
-              <div class="space-y-2">
-                <h4 class="font-medium">Thème</h4>
-                <p class="text-sm text-muted-foreground">
-                  Choisissez entre le mode clair, sombre ou automatique.
-                </p>
-              </div>
-              <div class="space-y-2">
-                <h4 class="font-medium">Interface</h4>
-                <p class="text-sm text-muted-foreground">
-                  Personnalisez l'apparence de l'éditeur et du tableau de bord.
-                </p>
-              </div>
-            </TabsContent>
-            <TabsContent value="billing" class="space-y-4 pt-4">
-              <div class="space-y-2">
-                <h4 class="font-medium">Abonnement</h4>
-                <p class="text-sm text-muted-foreground">
-                  Consultez et modifiez votre abonnement actuel.
-                </p>
-              </div>
-              <div class="space-y-2">
-                <h4 class="font-medium">Paiement</h4>
-                <p class="text-sm text-muted-foreground">
-                  Gérez vos méthodes de paiement et consultez l'historique de
-                  vos factures.
-                </p>
-              </div>
-              <div class="space-y-2">
-                <h4 class="font-medium">Utilisation</h4>
-                <p class="text-sm text-muted-foreground">
-                  Suivez votre consommation de rendus et d'espace de stockage.
-                </p>
-              </div>
-            </TabsContent>
-            <TabsContent value="team" class="space-y-4 pt-4">
-              <div class="space-y-2">
-                <h4 class="font-medium">Membres</h4>
-                <p class="text-sm text-muted-foreground">
-                  Invitez des collaborateurs et gérez les permissions.
-                </p>
-              </div>
-              <div class="space-y-2">
-                <h4 class="font-medium">Rôles</h4>
-                <p class="text-sm text-muted-foreground">
-                  Configurez les rôles et les niveaux d'accès personnalisés.
-                </p>
-              </div>
-            </TabsContent>
-          </Tabs>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div
+              v-for="overlay in overlays"
+              :key="overlay.name"
+              class="bg-muted/30 rounded-lg p-3 border"
+            >
+              <h4 class="font-medium text-sm mb-1 flex items-center gap-1.5">
+                <component
+                  :is="overlay.icon"
+                  class="h-3.5 w-3.5 text-primary"
+                />
+                {{ overlay.name }}
+              </h4>
+              <p class="text-xs text-muted-foreground">{{ overlay.desc }}</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
 
-    <!-- Navigation et raccourcis -->
-    <div class="scroll-mt-20">
+    <!-- Raccourcis clavier -->
+    <div id="shortcuts" class="scroll-mt-20">
       <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
         <KeyboardIcon class="h-5 w-5 text-primary" />
-        Navigation et raccourcis
+        Raccourcis clavier
       </h2>
       <Card class="mb-6">
         <CardContent class="pt-6">
-          <p class="mb-6">
-            Pour une utilisation plus efficace de VizHome, vous pouvez utiliser
-            ces raccourcis clavier dans l'éditeur 3D.
-          </p>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 class="text-base font-medium mb-3">Navigation</h3>
+              <h3 class="text-base font-medium mb-3">Navigation 3D (Orbite)</h3>
               <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Rotation de la caméra</span>
+                <div class="flex justify-between items-center text-sm">
+                  <span>Rotation caméra</span>
                   <div class="flex gap-1">
                     <kbd class="px-2 py-1 bg-muted rounded text-xs"
-                      >Clic droit</kbd
+                      >Clic gauche</kbd
                     >
-                    <span class="text-xs">+</span>
+                    <span class="text-xs self-center">+</span>
                     <kbd class="px-2 py-1 bg-muted rounded text-xs"
                       >Glisser</kbd
                     >
                   </div>
                 </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Zoom</span>
-                  <div>
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs"
-                      >Molette souris</kbd
-                    >
-                  </div>
+                <div class="flex justify-between items-center text-sm">
+                  <span>Zoom</span>
+                  <kbd class="px-2 py-1 bg-muted rounded text-xs"
+                    >Molette souris</kbd
+                  >
                 </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Panoramique</span>
+                <div class="flex justify-between items-center text-sm">
+                  <span>Panoramique</span>
                   <div class="flex gap-1">
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs">Maj</kbd>
-                    <span class="text-xs">+</span>
                     <kbd class="px-2 py-1 bg-muted rounded text-xs"
                       >Clic droit</kbd
                     >
-                    <span class="text-xs">+</span>
+                    <span class="text-xs self-center">+</span>
                     <kbd class="px-2 py-1 bg-muted rounded text-xs"
                       >Glisser</kbd
                     >
-                  </div>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Réinitialiser la vue</span>
-                  <div>
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs">F</kbd>
                   </div>
                 </div>
               </div>
             </div>
             <div>
-              <h3 class="text-base font-medium mb-3">Édition</h3>
+              <h3 class="text-base font-medium mb-3">
+                Navigation première personne
+              </h3>
               <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Sélection</span>
-                  <div>
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs">V</kbd>
-                  </div>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Déplacer</span>
-                  <div>
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs">G</kbd>
-                  </div>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Faire pivoter</span>
-                  <div>
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs">R</kbd>
-                  </div>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Mettre à l'échelle</span>
-                  <div>
+                <div class="flex justify-between items-center text-sm">
+                  <span>Avancer / Reculer</span>
+                  <div class="flex gap-1">
+                    <kbd class="px-2 py-1 bg-muted rounded text-xs">W</kbd>
+                    <span class="text-xs self-center">/</span>
                     <kbd class="px-2 py-1 bg-muted rounded text-xs">S</kbd>
                   </div>
                 </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Annuler</span>
+                <div class="flex justify-between items-center text-sm">
+                  <span>Latéral gauche / droite</span>
                   <div class="flex gap-1">
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs">Ctrl</kbd>
-                    <span class="text-xs">+</span>
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs">Z</kbd>
+                    <kbd class="px-2 py-1 bg-muted rounded text-xs">A</kbd>
+                    <span class="text-xs self-center">/</span>
+                    <kbd class="px-2 py-1 bg-muted rounded text-xs">D</kbd>
                   </div>
                 </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">Rétablir</span>
-                  <div class="flex gap-1">
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs">Ctrl</kbd>
-                    <span class="text-xs">+</span>
-                    <kbd class="px-2 py-1 bg-muted rounded text-xs">Y</kbd>
-                  </div>
+                <div class="flex justify-between items-center text-sm">
+                  <span>Regarder autour</span>
+                  <kbd class="px-2 py-1 bg-muted rounded text-xs"
+                    >Clic gauche + Glisser</kbd
+                  >
                 </div>
               </div>
             </div>
@@ -637,27 +423,182 @@ import {
   ArrowLeftIcon,
   Circle,
   LayoutDashboardIcon,
-  FolderIcon,
   Box,
-  SettingsIcon,
-  MousePointerIcon,
-  MoveIcon,
+  InfoIcon,
   PaintbrushIcon,
   SunIcon,
-  InfoIcon,
-  ArmchairIcon,
-  LampIcon,
-  UtensilsIcon,
-  ShowerHeadIcon,
-  FlowerIcon,
-  TreePineIcon,
-  UploadCloudIcon,
   KeyboardIcon,
   PencilIcon,
+  SparklesIcon,
+  LayersIcon,
+  NavigationIcon,
+  CameraIcon,
+  EyeIcon,
+  MessageSquareIcon,
+  HistoryIcon,
+  UploadCloudIcon,
+  Palette,
+  WaypointsIcon,
+  MapIcon,
+  MousePointerIcon,
+  EraserIcon,
+  TypeIcon,
+  Pipette,
+  DownloadIcon,
 } from 'lucide-vue-next'
 
-// Définir le layout docs pour cette page
 definePageMeta({
   layout: 'docs',
 })
+
+const sketchTools = [
+  {
+    name: 'Crayon libre',
+    icon: PencilIcon,
+    desc: "Dessinez à main levée avec réglage de l'épaisseur et de la couleur.",
+  },
+  {
+    name: 'Formes géométriques',
+    icon: MousePointerIcon,
+    desc: 'Rectangles, cercles, lignes droites au pixel près.',
+  },
+  {
+    name: 'Texte',
+    icon: TypeIcon,
+    desc: 'Ajoutez des annotations textuelles avec choix de police et taille.',
+  },
+  {
+    name: 'Pipette',
+    icon: Pipette,
+    desc: 'Sélectionnez une couleur directement depuis le canvas.',
+  },
+  {
+    name: 'Gomme',
+    icon: EraserIcon,
+    desc: 'Effacez des zones sélectionnées avec réglage de taille.',
+  },
+  {
+    name: 'Export PNG',
+    icon: DownloadIcon,
+    desc: 'Exportez le croquis en image PNG haute résolution.',
+  },
+]
+
+const promptFeatures = [
+  {
+    title: 'Saisie texte libre',
+    desc: 'Décrivez votre espace en langage naturel.',
+  },
+  {
+    title: 'Type de sortie',
+    desc: "Choisissez entre génération d'une image 2D ou d'un modèle 3D.",
+  },
+  {
+    title: 'Suggestions de prompts',
+    desc: 'Des prompts pré-définis vous aident à démarrer rapidement.',
+  },
+  {
+    title: 'Historique tabulé',
+    desc: 'Retrouvez vos générations précédentes organisées par onglets.',
+  },
+  {
+    title: 'Confirmation AlertDialog',
+    desc: 'Une modale de confirmation protège contre les générations accidentelles.',
+  },
+]
+
+const formats = ['GLB', 'GLTF', 'OBJ', 'FBX', 'STL']
+
+const threeButtons = [
+  {
+    label: 'Éclairage',
+    icon: SunIcon,
+    desc: 'Ouvre le panel Éclairage : ambiances (naturelle, dramatique, studio…) et saisons (printemps, été, automne, hiver).',
+  },
+  {
+    label: 'Navigation',
+    icon: NavigationIcon,
+    desc: 'Ouvre le panel Navigation : modes Orbite, Première personne (WASD), Visite guidée et Vue top-down.',
+  },
+  {
+    label: 'Modèles',
+    icon: UploadCloudIcon,
+    desc: "Permet d'importer un fichier GLB, GLTF, OBJ, FBX ou STL dans la scène Three.js.",
+  },
+  {
+    label: 'Caméra',
+    icon: CameraIcon,
+    desc: 'Contrôle le champ de vision (FOV), la hauteur et la mise au point. Toujours visible.',
+  },
+  {
+    label: 'Matériaux',
+    icon: PaintbrushIcon,
+    desc: 'Sélectionner et modifier les matériaux des meshes chargés. Visible uniquement quand un modèle est présent.',
+  },
+]
+
+const floatingPanels = [
+  {
+    title: 'Panel Éclairage',
+    icon: SunIcon,
+    items: [
+      'Ambiances : Naturelle, Dramatique, Studio, Coucher de soleil, Nuit',
+      'Saisons : Printemps, Été, Automne, Hiver (modifie la température de couleur)',
+      'Intensité lumière ambiante réglable',
+      'Direction et couleur de la lumière directionnelle',
+    ],
+  },
+  {
+    title: 'Panel Navigation',
+    icon: NavigationIcon,
+    items: [
+      'Orbite : rotation, zoom et panoramique à la souris',
+      'Première personne : déplacement WASD + vue à la souris',
+      'Visite guidée : parcours automatique avec barre de progression',
+      'Top-down : vue de dessus avec pill indicateur',
+    ],
+  },
+  {
+    title: 'Panel Matériaux',
+    icon: Palette,
+    items: [
+      'Liste des meshes du modèle chargé',
+      "Sélection d'un matériau dans la bibliothèque",
+      'Réglages : roughness, metalness, couleur de base',
+      'Aperçu en temps réel dans la scène',
+    ],
+  },
+  {
+    title: 'Panel Caméra',
+    icon: CameraIcon,
+    items: [
+      'FOV (champ de vision) de 30° à 120°',
+      'Hauteur de la caméra ajustable',
+      'Réinitialisation rapide de la position',
+    ],
+  },
+]
+
+const overlays = [
+  {
+    name: 'Empty state',
+    icon: UploadCloudIcon,
+    desc: "Affiché quand aucun modèle n'est chargé. Invite à importer un fichier ou utiliser le Prompt IA.",
+  },
+  {
+    name: 'Hint première personne',
+    icon: EyeIcon,
+    desc: "Rappel des touches WASD affiché lors de l'activation du mode première personne.",
+  },
+  {
+    name: 'Barre de visite',
+    icon: WaypointsIcon,
+    desc: "Progress bar affichant l'avancement de la visite guidée automatique.",
+  },
+  {
+    name: 'Pill top-down',
+    icon: MapIcon,
+    desc: "Indicateur de vue top-down affiché en bas de l'écran.",
+  },
+]
 </script>

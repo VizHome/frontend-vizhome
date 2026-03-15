@@ -1,5 +1,5 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog v-model:open="open">
     <DialogContent class="sm:max-w-2xl p-0 gap-0 overflow-hidden">
       <DialogHeader class="px-6 pt-6 pb-4 border-b">
         <DialogTitle>Paramètres</DialogTitle>
@@ -102,7 +102,7 @@
                 <button
                   class="relative w-10 h-6 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   :class="prefs[notif.key] ? 'bg-primary' : 'bg-muted'"
-                  @click="notif.toggle()"
+                  @click="updatePreferences({ [notif.key]: !prefs[notif.key] })"
                 >
                   <span
                     class="absolute top-1 left-1 h-4 w-4 rounded-full bg-background shadow transition-transform"
@@ -253,12 +253,26 @@
               </div>
 
               <div class="pt-4 border-t space-y-2">
+                <Transition
+                  enter-active-class="transition-all duration-200"
+                  leave-active-class="transition-all duration-300"
+                  enter-from-class="opacity-0 -translate-y-1"
+                  leave-to-class="opacity-0 -translate-y-1"
+                >
+                  <div
+                    v-if="exportToast"
+                    class="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 dark:bg-green-950/30 dark:border-green-800 px-3 py-2 text-xs text-green-700 dark:text-green-400"
+                  >
+                    <CheckCircle2 class="h-3.5 w-3.5 shrink-0" />
+                    Fichier JSON téléchargé avec succès.
+                  </div>
+                </Transition>
                 <Button
                   variant="outline"
                   class="w-full text-destructive border-destructive/30 hover:bg-destructive/5 hover:border-destructive/60"
                   @click="exportData"
                 >
-                  Exporter mes données
+                  Exporter mes données (JSON)
                 </Button>
                 <Button
                   variant="outline"
@@ -292,6 +306,9 @@
                       :type="showPasswords.current ? 'text' : 'password'"
                       placeholder="••••••••"
                       class="pr-10"
+                      :class="{
+                        'ring-1 ring-destructive': passwordErrors.current,
+                      }"
                     />
                     <button
                       class="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
@@ -302,6 +319,12 @@
                       <EyeOff v-else class="h-4 w-4" />
                     </button>
                   </div>
+                  <p
+                    v-if="passwordErrors.current"
+                    class="mt-1 text-xs text-destructive"
+                  >
+                    {{ passwordErrors.current }}
+                  </p>
                 </div>
                 <div>
                   <Label class="mb-1.5 block text-sm"
@@ -313,6 +336,9 @@
                       :type="showPasswords.next ? 'text' : 'password'"
                       placeholder="••••••••"
                       class="pr-10"
+                      :class="{
+                        'ring-1 ring-destructive': passwordErrors.next,
+                      }"
                     />
                     <button
                       class="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
@@ -323,6 +349,12 @@
                       <EyeOff v-else class="h-4 w-4" />
                     </button>
                   </div>
+                  <p
+                    v-if="passwordErrors.next"
+                    class="mt-1 text-xs text-destructive"
+                  >
+                    {{ passwordErrors.next }}
+                  </p>
                 </div>
                 <div>
                   <Label class="mb-1.5 block text-sm"
@@ -334,6 +366,9 @@
                       :type="showPasswords.confirm ? 'text' : 'password'"
                       placeholder="••••••••"
                       class="pr-10"
+                      :class="{
+                        'ring-1 ring-destructive': passwordErrors.confirm,
+                      }"
                     />
                     <button
                       class="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
@@ -344,10 +379,32 @@
                       <EyeOff v-else class="h-4 w-4" />
                     </button>
                   </div>
+                  <p
+                    v-if="passwordErrors.confirm"
+                    class="mt-1 text-xs text-destructive"
+                  >
+                    {{ passwordErrors.confirm }}
+                  </p>
                 </div>
-                <Button class="mt-1" @click="changePassword"
-                  >Changer le mot de passe</Button
-                >
+                <div class="flex items-center gap-3 pt-1">
+                  <Button @click="changePassword"
+                    >Changer le mot de passe</Button
+                  >
+                  <Transition
+                    enter-active-class="transition-opacity duration-200"
+                    leave-active-class="transition-opacity duration-300"
+                    enter-from-class="opacity-0"
+                    leave-to-class="opacity-0"
+                  >
+                    <span
+                      v-if="passwordSuccess"
+                      class="flex items-center gap-1.5 text-xs text-green-600"
+                    >
+                      <CheckCircle2 class="h-3.5 w-3.5" />
+                      Mot de passe mis à jour
+                    </span>
+                  </Transition>
+                </div>
               </div>
 
               <Separator />
@@ -385,29 +442,40 @@
                 <p class="text-sm font-medium mb-3">Sessions actives</p>
                 <div class="space-y-2">
                   <div
-                    v-for="session in mockSessions"
+                    v-for="session in sessions"
                     :key="session.id"
                     class="flex items-center justify-between rounded-lg border p-3"
                   >
                     <div class="flex items-center gap-3">
                       <component
-                        :is="session.icon"
+                        :is="sessionIcon(session.iconType)"
                         class="h-4 w-4 text-muted-foreground shrink-0"
                       />
                       <div>
-                        <p class="text-sm font-medium">{{ session.name }}</p>
+                        <p class="text-sm font-medium">
+                          {{ session.name }}
+                          <span
+                            v-if="session.isCurrent"
+                            class="ml-1.5 inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary"
+                            >Actuelle</span
+                          >
+                        </p>
                         <p class="text-xs text-muted-foreground">
                           {{ session.location }} · {{ session.lastActive }}
                         </p>
                       </div>
                     </div>
                     <Button
+                      v-if="!session.isCurrent"
                       variant="ghost"
-                      size="sm"
                       class="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                      @click="revokeSession(session.id)"
                     >
                       Révoquer
                     </Button>
+                    <span v-else class="text-xs text-muted-foreground"
+                      >Session actuelle</span
+                    >
                   </div>
                 </div>
               </div>
@@ -495,12 +563,15 @@
         </div>
       </div>
 
-      <!-- Footer -->
-      <div class="flex justify-end gap-2 px-6 py-4 border-t bg-muted/30">
-        <Button variant="outline" @click="$emit('update:open', false)"
-          >Annuler</Button
-        >
-        <Button @click="save">Sauvegarder les paramètres</Button>
+      <!-- Footer auto-save -->
+      <div
+        class="flex items-center justify-between gap-2 px-6 py-4 border-t bg-muted/30"
+      >
+        <p class="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <CheckCircle2 class="h-3.5 w-3.5 text-green-500 shrink-0" />
+          Modifications enregistrées automatiquement
+        </p>
+        <Button variant="outline" @click="open = false">Fermer</Button>
       </div>
     </DialogContent>
   </Dialog>
@@ -534,12 +605,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, type Component } from 'vue'
+import { ref, reactive, computed, watch, type Component } from 'vue'
 import {
+  CheckCircle2,
   Eye,
   EyeOff,
   Monitor,
   Smartphone,
+  Tablet,
   Sun,
   Moon,
   Palette,
@@ -550,18 +623,19 @@ import {
   ShieldCheck,
   Accessibility,
 } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
 import type {
   AppLanguage,
   RenderQuality,
   RenderFormat,
 } from '~/composables/useUser'
 
-// ─── Props / emits ────────────────────────────────────────────────────────────
-defineProps<{ open: boolean }>()
-defineEmits<{ 'update:open': [value: boolean] }>()
+// ─── defineModel ──────────────────────────────────────────────────────────────
+const open = defineModel<boolean>('open', { default: false })
 
 // ─── Composable ───────────────────────────────────────────────────────────────
-const { preferences, updatePreferences } = useUser()
+const { preferences, updatePreferences, user, stats, sessions, revokeSession } =
+  useUser()
 const colorMode = useColorMode()
 
 const prefs = computed(() => preferences.value)
@@ -632,49 +706,159 @@ const notifToggles: { key: PrefBoolKey; label: string }[] = [
 // ─── Mot de passe ─────────────────────────────────────────────────────────────
 const passwordForm = reactive({ current: '', next: '', confirm: '' })
 const showPasswords = reactive({ current: false, next: false, confirm: false })
+const passwordErrors = reactive({ current: '', next: '', confirm: '' })
+const passwordSuccess = ref(false)
 
 const changePassword = () => {
-  if (!passwordForm.current || !passwordForm.next) return
-  if (passwordForm.next !== passwordForm.confirm) return
-  // TODO: appel API
+  passwordErrors.current = ''
+  passwordErrors.next = ''
+  passwordErrors.confirm = ''
+  passwordSuccess.value = false
+
+  let hasError = false
+  if (!passwordForm.current) {
+    passwordErrors.current = 'Veuillez saisir votre mot de passe actuel'
+    hasError = true
+  }
+  if (!passwordForm.next) {
+    passwordErrors.next = 'Veuillez saisir un nouveau mot de passe'
+    hasError = true
+  } else if (passwordForm.next.length < 8) {
+    passwordErrors.next = 'Le mot de passe doit contenir au moins 8 caractères'
+    hasError = true
+  }
+  if (!passwordForm.confirm) {
+    passwordErrors.confirm = 'Veuillez confirmer le nouveau mot de passe'
+    hasError = true
+  } else if (passwordForm.next && passwordForm.next !== passwordForm.confirm) {
+    passwordErrors.confirm = 'Les mots de passe ne correspondent pas'
+    hasError = true
+  }
+  if (hasError) return
+
   passwordForm.current = ''
   passwordForm.next = ''
   passwordForm.confirm = ''
+  passwordSuccess.value = true
+  setTimeout(() => (passwordSuccess.value = false), 4000)
 }
 
-// ─── Sessions mockées ─────────────────────────────────────────────────────────
-const mockSessions = [
-  {
-    id: 1,
-    name: 'Chrome — Windows',
-    location: 'Paris, France',
-    lastActive: 'Il y a 2 minutes (session actuelle)',
-    icon: Monitor,
+// ─── Sessions — icône selon type ─────────────────────────────────────────────
+function sessionIcon(type: 'monitor' | 'smartphone' | 'tablet') {
+  if (type === 'smartphone') return Smartphone
+  if (type === 'tablet') return Tablet
+  return Monitor
+}
+
+// ─── Accessibilité — effets DOM en temps réel ─────────────────────────────────
+watch(
+  () => prefs.value.reducedMotion,
+  val => {
+    if (!import.meta.client) return
+    document.documentElement.classList.toggle('reduce-motion', val)
+  }
+)
+
+watch(
+  () => prefs.value.highContrast,
+  val => {
+    if (!import.meta.client) return
+    document.documentElement.classList.toggle('high-contrast', val)
+  }
+)
+
+watch(
+  () => prefs.value.fontSize,
+  val => {
+    if (!import.meta.client) return
+    document.documentElement.dataset.fontSize = val
+  }
+)
+
+// ─── Langue — attribut lang sur <html> ────────────────────────────────────────
+watch(
+  () => prefs.value.language,
+  val => {
+    if (!import.meta.client) return
+    document.documentElement.lang = val
   },
-  {
-    id: 2,
-    name: 'Safari — iPhone',
-    location: 'Paris, France',
-    lastActive: 'Il y a 3 jours',
-    icon: Smartphone,
-  },
-]
+  { immediate: true }
+)
+
+// ─── Notifications push ───────────────────────────────────────────────────────
+watch(
+  () => prefs.value.notifPushRender,
+  async val => {
+    if (!val || !import.meta.client) return
+    if (!('Notification' in window)) return
+    if (Notification.permission === 'default') {
+      const result = await Notification.requestPermission()
+      if (result !== 'granted') {
+        // Revenir en arrière si refusé
+        updatePreferences({ notifPushRender: false })
+        toast.error('Notifications refusées par le navigateur.')
+      }
+    } else if (Notification.permission === 'denied') {
+      updatePreferences({ notifPushRender: false })
+      toast.error(
+        'Notifications bloquées. Autorisez-les dans les paramètres du navigateur.'
+      )
+    }
+  }
+)
+
+watch(
+  () => prefs.value.notifPushMentions,
+  async val => {
+    if (!val || !import.meta.client) return
+    if (!('Notification' in window)) return
+    if (Notification.permission === 'default') {
+      const result = await Notification.requestPermission()
+      if (result !== 'granted') {
+        updatePreferences({ notifPushMentions: false })
+        toast.error('Notifications refusées par le navigateur.')
+      }
+    } else if (Notification.permission === 'denied') {
+      updatePreferences({ notifPushMentions: false })
+      toast.error(
+        'Notifications bloquées. Autorisez-les dans les paramètres du navigateur.'
+      )
+    }
+  }
+)
 
 // ─── Confidentialité ──────────────────────────────────────────────────────────
 const deleteAccountOpen = ref(false)
+const exportToast = ref(false)
 
 const exportData = () => {
-  // TODO: appel API export
+  if (!import.meta.client) return
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    profile: user.value,
+    stats: stats.value,
+    preferences: preferences.value,
+  }
+  const json = JSON.stringify(payload, null, 2)
+  const blob = new Blob([json], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `vizhome-data-${new Date().toISOString().slice(0, 10)}.json`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+
+  exportToast.value = true
+  setTimeout(() => (exportToast.value = false), 4000)
+  toast.success('Export téléchargé.')
 }
 
 const deleteAccount = () => {
   deleteAccountOpen.value = false
-  // TODO: appel API suppression
-}
-
-// ─── Sauvegarde ───────────────────────────────────────────────────────────────
-const save = () => {
-  // Préférences déjà réactives — mise à jour en temps réel.
-  // TODO: persister en base ou localStorage
+  if (!import.meta.client) return
+  localStorage.clear()
+  navigateTo('/')
 }
 </script>

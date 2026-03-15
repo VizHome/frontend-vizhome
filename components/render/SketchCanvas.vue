@@ -17,6 +17,27 @@
       class="absolute inset-0 w-full h-full touch-none pointer-events-none"
     />
 
+    <!-- Empty state canvas vide -->
+    <Transition name="fade">
+      <div
+        v-if="isEmpty"
+        class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none z-5"
+      >
+        <Pencil class="h-10 w-10 text-muted-foreground/20 mb-3" />
+        <p class="text-sm font-medium text-muted-foreground/40">
+          Commencez à dessiner
+        </p>
+        <p class="text-xs text-muted-foreground/30 mt-1">
+          Appuyez sur
+          <kbd
+            class="px-1 py-0.5 rounded border border-muted-foreground/20 font-mono"
+            >?</kbd
+          >
+          pour les raccourcis
+        </p>
+      </div>
+    </Transition>
+
     <!-- Tooltip pipette (couleur sous le curseur) -->
     <Transition name="fade-quick">
       <div
@@ -96,55 +117,60 @@
       <div class="h-6 w-px bg-border" />
 
       <!-- Outils de tracé libre -->
-      <Button
-        :variant="currentTool === 'pencil' ? 'default' : 'ghost'"
-        size="icon"
-        class="h-8 w-8"
-        title="Crayon"
-        @click="currentTool = 'pencil'"
-      >
-        <Pencil class="h-4 w-4" />
-      </Button>
-      <Button
-        :variant="currentTool === 'eraser' ? 'default' : 'ghost'"
-        size="icon"
-        class="h-8 w-8"
-        title="Gomme"
-        @click="currentTool = 'eraser'"
-      >
-        <Eraser class="h-4 w-4" />
-      </Button>
+      <ToolButton label="Crayon" shortcut="P">
+        <Button
+          :variant="currentTool === 'pencil' ? 'default' : 'ghost'"
+          size="icon"
+          class="h-8 w-8"
+          @click="currentTool = 'pencil'"
+        >
+          <Pencil class="h-4 w-4" />
+        </Button>
+      </ToolButton>
+      <ToolButton label="Gomme" shortcut="E">
+        <Button
+          :variant="currentTool === 'eraser' ? 'default' : 'ghost'"
+          size="icon"
+          class="h-8 w-8"
+          @click="currentTool = 'eraser'"
+        >
+          <Eraser class="h-4 w-4" />
+        </Button>
+      </ToolButton>
 
       <div class="h-6 w-px bg-border" />
 
       <!-- Outils de formes -->
-      <Button
-        :variant="currentTool === 'line' ? 'default' : 'ghost'"
-        size="icon"
-        class="h-8 w-8"
-        title="Ligne droite"
-        @click="currentTool = 'line'"
-      >
-        <Minus class="h-4 w-4 rotate-[-45deg]" />
-      </Button>
-      <Button
-        :variant="currentTool === 'rect' ? 'default' : 'ghost'"
-        size="icon"
-        class="h-8 w-8"
-        title="Rectangle"
-        @click="currentTool = 'rect'"
-      >
-        <Square class="h-4 w-4" />
-      </Button>
-      <Button
-        :variant="currentTool === 'circle' ? 'default' : 'ghost'"
-        size="icon"
-        class="h-8 w-8"
-        title="Cercle / Ellipse"
-        @click="currentTool = 'circle'"
-      >
-        <Circle class="h-4 w-4" />
-      </Button>
+      <ToolButton label="Ligne" shortcut="L">
+        <Button
+          :variant="currentTool === 'line' ? 'default' : 'ghost'"
+          size="icon"
+          class="h-8 w-8"
+          @click="currentTool = 'line'"
+        >
+          <Minus class="h-4 w-4 rotate-[-45deg]" />
+        </Button>
+      </ToolButton>
+      <ToolButton label="Rectangle" shortcut="R">
+        <Button
+          :variant="currentTool === 'rect' ? 'default' : 'ghost'"
+          size="icon"
+          class="h-8 w-8"
+          @click="currentTool = 'rect'"
+        >
+          <Square class="h-4 w-4" />
+        </Button>
+      </ToolButton>
+      <ToolButton label="Cercle" shortcut="C">
+        <Button
+          :variant="currentTool === 'circle' ? 'default' : 'ghost'"
+          size="icon"
+          class="h-8 w-8"
+          @click="currentTool = 'circle'"
+        >
+          <Circle class="h-4 w-4" />
+        </Button>
+      </ToolButton>
 
       <!-- Toggle remplissage (visible pour rect/circle) -->
       <Transition name="fade-quick">
@@ -166,88 +192,140 @@
       <div class="h-6 w-px bg-border" />
 
       <!-- Remplissage & pipette -->
-      <Button
-        :variant="currentTool === 'fill' ? 'default' : 'ghost'"
-        size="icon"
-        class="h-8 w-8"
-        title="Remplissage (fill bucket)"
-        @click="currentTool = 'fill'"
-      >
-        <Droplets class="h-4 w-4" />
-      </Button>
-      <Button
-        :variant="currentTool === 'eyedropper' ? 'default' : 'ghost'"
-        size="icon"
-        class="h-8 w-8"
-        title="Pipette (prélever une couleur)"
-        @click="currentTool = 'eyedropper'"
-      >
-        <Pipette class="h-4 w-4" />
-      </Button>
+      <ToolButton label="Remplissage" shortcut="F">
+        <Button
+          :variant="currentTool === 'fill' ? 'default' : 'ghost'"
+          size="icon"
+          class="h-8 w-8"
+          @click="currentTool = 'fill'"
+        >
+          <Droplets class="h-4 w-4" />
+        </Button>
+      </ToolButton>
+      <ToolButton label="Pipette" shortcut="I">
+        <Button
+          :variant="currentTool === 'eyedropper' ? 'default' : 'ghost'"
+          size="icon"
+          class="h-8 w-8"
+          @click="currentTool = 'eyedropper'"
+        >
+          <Pipette class="h-4 w-4" />
+        </Button>
+      </ToolButton>
 
       <div class="h-6 w-px bg-border" />
 
       <!-- Undo / Redo -->
-      <Button
-        variant="ghost"
-        size="icon"
-        class="h-8 w-8"
-        :disabled="!canUndo"
-        title="Annuler (Ctrl+Z)"
-        @click="undo"
-      >
-        <Undo2 class="h-4 w-4" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        class="h-8 w-8"
-        :disabled="!canRedo"
-        title="Rétablir (Ctrl+Y)"
-        @click="redo"
-      >
-        <Redo2 class="h-4 w-4" />
-      </Button>
+      <ToolButton label="Annuler" shortcut="Ctrl+Z">
+        <Button
+          variant="ghost"
+          size="icon"
+          class="h-8 w-8"
+          :disabled="!canUndo"
+          @click="undo"
+        >
+          <Undo2 class="h-4 w-4" />
+        </Button>
+      </ToolButton>
+      <ToolButton label="Rétablir" shortcut="Ctrl+Y">
+        <Button
+          variant="ghost"
+          size="icon"
+          class="h-8 w-8"
+          :disabled="!canRedo"
+          @click="redo"
+        >
+          <Redo2 class="h-4 w-4" />
+        </Button>
+      </ToolButton>
 
       <div class="h-6 w-px bg-border" />
 
       <!-- Clear -->
-      <Button
-        variant="ghost"
-        size="icon"
-        class="h-8 w-8"
-        title="Tout effacer"
-        @click="clear"
-      >
-        <Trash2 class="h-4 w-4" />
-      </Button>
+      <ToolButton label="Tout effacer">
+        <Button variant="ghost" size="icon" class="h-8 w-8" @click="clear">
+          <Trash2 class="h-4 w-4" />
+        </Button>
+      </ToolButton>
 
       <!-- Export PNG -->
-      <Button
-        variant="ghost"
-        size="icon"
-        class="h-8 w-8"
-        title="Exporter en PNG"
-        @click="exportPNG"
-      >
-        <Download class="h-4 w-4" />
-      </Button>
+      <ToolButton label="Exporter PNG">
+        <Button variant="ghost" size="icon" class="h-8 w-8" @click="exportPNG">
+          <Download class="h-4 w-4" />
+        </Button>
+      </ToolButton>
 
       <div class="h-6 w-px bg-border" />
 
       <!-- Rendu IA -->
-      <Button
-        variant="default"
-        size="icon"
-        class="h-8 w-8"
-        title="Rendu IA depuis le croquis"
-        :disabled="isSketchLoading"
-        @click="openAiPanel"
-      >
-        <Loader2 v-if="isSketchLoading" class="h-4 w-4 animate-spin" />
-        <Sparkles v-else class="h-4 w-4" />
-      </Button>
+      <ToolButton label="Rendu IA">
+        <Button
+          variant="default"
+          size="icon"
+          class="h-8 w-8"
+          :disabled="isSketchLoading"
+          @click="openAiPanel"
+        >
+          <Loader2 v-if="isSketchLoading" class="h-4 w-4 animate-spin" />
+          <Sparkles v-else class="h-4 w-4" />
+        </Button>
+      </ToolButton>
+
+      <div class="h-6 w-px bg-border" />
+
+      <!-- Aide raccourcis -->
+      <ToolButton label="Raccourcis" shortcut="?">
+        <Button
+          variant="ghost"
+          size="icon"
+          class="h-8 w-8"
+          @click="showShortcuts = !showShortcuts"
+        >
+          <HelpCircle class="h-4 w-4" />
+        </Button>
+      </ToolButton>
     </div>
+
+    <!-- Modal raccourcis clavier -->
+    <Transition name="fade">
+      <div
+        v-if="showShortcuts"
+        class="absolute inset-0 bg-black/40 backdrop-blur-sm z-30 flex items-center justify-center p-4"
+        @click.self="showShortcuts = false"
+      >
+        <div
+          class="w-full max-w-sm rounded-2xl border bg-background shadow-xl flex flex-col overflow-hidden"
+        >
+          <div class="flex items-center justify-between px-5 py-4 border-b">
+            <div class="flex items-center gap-2">
+              <HelpCircle class="h-5 w-5 text-primary" />
+              <h2 class="text-base font-semibold">Raccourcis clavier</h2>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              class="h-8 w-8"
+              @click="showShortcuts = false"
+            >
+              <X class="h-4 w-4" />
+            </Button>
+          </div>
+          <div class="p-5 flex flex-col gap-2">
+            <div
+              v-for="sc in SHORTCUTS"
+              :key="sc.key"
+              class="flex items-center justify-between"
+            >
+              <span class="text-sm text-muted-foreground">{{ sc.label }}</span>
+              <kbd
+                class="text-[11px] font-mono bg-muted text-foreground px-2 py-0.5 rounded border leading-none"
+                >{{ sc.key }}</kbd
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
 
     <!-- Overlay panel IA -->
     <Transition name="fade">
@@ -392,6 +470,7 @@ import {
   Download,
   Droplets,
   Eraser,
+  HelpCircle,
   Loader2,
   Minus,
   PaintBucket,
@@ -419,6 +498,7 @@ const {
   canUndo,
   canRedo,
   eyedropperColor,
+  isEmpty,
   initCanvas,
   startDraw,
   draw,
@@ -510,6 +590,21 @@ onMounted(() => {
 onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
 
 // ─── Raccourcis clavier ────────────────────────────────────────────────────────
+const showShortcuts = ref(false)
+
+const SHORTCUTS = [
+  { key: 'P', label: 'Crayon' },
+  { key: 'E', label: 'Gomme' },
+  { key: 'L', label: 'Ligne' },
+  { key: 'R', label: 'Rectangle' },
+  { key: 'C', label: 'Cercle / Ellipse' },
+  { key: 'F', label: 'Remplissage' },
+  { key: 'I', label: 'Pipette' },
+  { key: 'Ctrl+Z', label: 'Annuler' },
+  { key: 'Ctrl+Y', label: 'Rétablir' },
+  { key: '?', label: 'Aide raccourcis' },
+]
+
 function handleKeydown(e: KeyboardEvent) {
   const tag = (e.target as HTMLElement)?.tagName
   if (tag === 'INPUT' || tag === 'TEXTAREA') return
@@ -530,6 +625,7 @@ function handleKeydown(e: KeyboardEvent) {
     if (e.key === 'c') currentTool.value = 'circle'
     if (e.key === 'f') currentTool.value = 'fill'
     if (e.key === 'i') currentTool.value = 'eyedropper'
+    if (e.key === '?') showShortcuts.value = !showShortcuts.value
   }
 }
 </script>

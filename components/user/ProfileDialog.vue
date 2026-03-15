@@ -81,10 +81,33 @@
       </div>
 
       <DialogFooter class="gap-2">
-        <Button variant="ghost" @click="open = false">Annuler</Button>
-        <Button :disabled="isSaving" @click="save">
-          <Loader2 v-if="isSaving" class="h-4 w-4 mr-2 animate-spin" />
-          Sauvegarder
+        <Transition
+          enter-active-class="transition-opacity duration-200"
+          leave-active-class="transition-opacity duration-300"
+          enter-from-class="opacity-0"
+          leave-to-class="opacity-0"
+        >
+          <span
+            v-if="saveSuccess"
+            class="flex items-center gap-1.5 text-xs text-green-600 mr-auto"
+          >
+            <CheckCircle2 class="h-3.5 w-3.5" />
+            Profil mis à jour !
+          </span>
+        </Transition>
+        <Button
+          variant="ghost"
+          :disabled="isSaving || saveSuccess"
+          @click="open = false"
+          >Annuler</Button
+        >
+        <Button :disabled="isSaving || saveSuccess" @click="save">
+          <CheckCircle2
+            v-if="saveSuccess"
+            class="h-4 w-4 mr-2 text-green-500"
+          />
+          <Loader2 v-else-if="isSaving" class="h-4 w-4 mr-2 animate-spin" />
+          {{ saveSuccess ? 'Enregistré !' : 'Sauvegarder' }}
         </Button>
       </DialogFooter>
     </DialogContent>
@@ -92,8 +115,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue'
-import { Camera, Loader2, UserIcon } from 'lucide-vue-next'
+import { ref, watch } from 'vue'
+import { Camera, CheckCircle2, Loader2, UserIcon } from 'lucide-vue-next'
 
 const open = defineModel<boolean>('open', { default: false })
 
@@ -108,6 +131,7 @@ const form = ref({
 
 const errors = ref({ name: '', email: '' })
 const isSaving = ref(false)
+const saveSuccess = ref(false)
 const avatarInputRef = ref<HTMLInputElement>()
 
 // Sync form quand le dialog s'ouvre
@@ -119,6 +143,7 @@ watch(open, val => {
       avatarUrl: user.value.avatarUrl,
     }
     errors.value = { name: '', email: '' }
+    saveSuccess.value = false
   }
 })
 
@@ -159,6 +184,9 @@ const save = async () => {
     avatarUrl: form.value.avatarUrl,
   })
   isSaving.value = false
-  open.value = false
+  saveSuccess.value = true
+  setTimeout(() => {
+    open.value = false
+  }, 1200)
 }
 </script>

@@ -2,6 +2,16 @@
   <div
     class="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 rounded-full border bg-background/80 backdrop-blur-sm shadow-lg px-2 py-1.5"
   >
+    <!-- Logo -->
+    <NuxtLink
+      to="/"
+      class="px-3 opacity-80 hover:opacity-100 transition-opacity"
+    >
+      <AppLogo />
+    </NuxtLink>
+
+    <div class="h-5 w-px bg-border/50 mx-1" />
+
     <Button
       v-for="mode in modes"
       :key="mode.id"

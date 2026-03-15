@@ -17,8 +17,7 @@
           </Avatar>
           <!-- Badge plan -->
           <span
-            class="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full px-1.5 py-px text-[10px] font-bold leading-none border border-background shadow-sm"
-            :class="planBadgeClass"
+            class="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full px-1.5 py-px text-[10px] font-bold leading-none bg-background border border-border shadow-sm text-foreground"
             >{{ planLabel }}</span
           >
         </button>
@@ -160,9 +159,13 @@
     <!-- Dialogs -->
     <ProfileDialog v-model:open="dialogs.profile" />
     <StatsDialog v-model:open="dialogs.stats" />
-    <SubscriptionDialog v-model:open="dialogs.subscription" />
+    <SubscriptionDialog
+      v-model:open="dialogs.subscription"
+      @open-billing="openDialog('billing')"
+    />
     <HelpDialog v-model:open="dialogs.help" :initial-tab="helpInitialTab" />
     <SettingsDialog v-model:open="dialogs.settings" />
+    <BillingDialog v-model:open="dialogs.billing" />
   </div>
 </template>
 
@@ -194,6 +197,7 @@ const dialogs = reactive({
   subscription: false,
   help: false,
   settings: false,
+  billing: false,
 })
 
 type DialogId = keyof typeof dialogs

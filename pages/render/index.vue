@@ -23,6 +23,9 @@
       <RenderOverlays />
       <ThreeControls />
     </template>
+
+    <!-- Onboarding première visite -->
+    <OnboardingOverlay />
   </div>
 </template>
 
@@ -47,7 +50,7 @@ const {
 } = useThreeScene(canvasRef)
 
 const { initLighting } = useThreeLighting()
-const { initLoaders } = useThreeModels()
+const { initLoaders, initTransformControls } = useThreeModels()
 const { updateFrame: navFrame, setNavMode } = useThreeNavigation()
 
 // ─── Callback d'animation stocké pour la reprise ──────────────────────────────
@@ -60,6 +63,7 @@ const initThree = () => {
   initThreeJS()
   initLighting()
   initLoaders()
+  initTransformControls()
   setupResizeHandler()
   setupPerformanceMonitor()
   animate(onFrame)

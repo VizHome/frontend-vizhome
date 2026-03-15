@@ -134,6 +134,21 @@ export function useAiRender() {
     sketchError.value = null
   }
 
+  const removeHistoryEntry = (createdAt: number) => {
+    const idx = promptHistory.value.findIndex(e => e.createdAt === createdAt)
+    if (idx !== -1) {
+      promptHistory.value.splice(idx, 1)
+      _saveHistory()
+    }
+  }
+
+  const clearHistory = () => {
+    promptHistory.value = []
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY)
+    }
+  }
+
   const loadFromHistory = (entry: PromptHistoryEntry) => {
     prompt.value = entry.prompt
     outputType.value = entry.outputType
@@ -164,5 +179,8 @@ export function useAiRender() {
     sketchError,
     generateFromSketch,
     clearSketchResult,
+    // Historique
+    removeHistoryEntry,
+    clearHistory,
   }
 }

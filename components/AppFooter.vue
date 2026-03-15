@@ -4,9 +4,7 @@
       <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
         <div class="md:col-span-1">
           <NuxtLink to="/" class="inline-block mb-4">
-            <span class="font-bold text-2xl"
-              >Viz<span class="text-primary">Home</span></span
-            >
+            <AppLogo />
           </NuxtLink>
           <p class="text-muted-foreground max-w-md mb-4">
             Solution d'intégration 3D architecturale par IA pour des rendus

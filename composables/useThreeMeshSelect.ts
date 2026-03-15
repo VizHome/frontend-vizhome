@@ -224,7 +224,10 @@ export function useThreeMeshSelect() {
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = 'image/png,image/jpeg,image/webp'
+    input.style.display = 'none'
+    document.body.appendChild(input)
     input.onchange = e => {
+      if (document.body.contains(input)) document.body.removeChild(input)
       const file = (e.target as HTMLInputElement).files?.[0]
       if (!file || !selectedMesh.value) return
 
@@ -260,6 +263,9 @@ export function useThreeMeshSelect() {
         }
       )
     }
+    input.addEventListener('cancel', () => {
+      if (document.body.contains(input)) document.body.removeChild(input)
+    })
     input.click()
   }
 

@@ -153,6 +153,12 @@ export function useThreeModels() {
 
     // 1. Normaliser la taille
     const box = new THREE.Box3().setFromObject(model)
+    if (box.isEmpty()) {
+      modelLoadError.value =
+        'Le modèle ne contient pas de géométrie visible (OBJ vide ou sans faces)'
+      isLoadingModel.value = false
+      return
+    }
     const size = box.getSize(new THREE.Vector3())
     const maxSize = Math.max(size.x, size.y, size.z)
     const scale = 3 / maxSize
@@ -322,6 +328,10 @@ export function useThreeModels() {
               file.name
             )
           }
+          mtlReader.onerror = () => {
+            modelLoadError.value = 'Impossible de lire le fichier .mtl'
+            isLoadingModel.value = false
+          }
           mtlReader.readAsArrayBuffer(mtlFile)
         } else {
           _loadOBJ(buffer, file.name)
@@ -334,6 +344,10 @@ export function useThreeModels() {
         modelLoadError.value = 'Format non supporté (.glb .gltf .obj .fbx .stl)'
         isLoadingModel.value = false
       }
+    }
+    reader.onerror = () => {
+      modelLoadError.value = 'Impossible de lire le fichier'
+      isLoadingModel.value = false
     }
     reader.readAsArrayBuffer(file)
   }
@@ -358,7 +372,7 @@ export function useThreeModels() {
     }
     // Nettoyage si l'utilisateur annule sans choisir de fichier
     input.addEventListener('cancel', () => {
-      document.body.removeChild(input)
+      if (document.body.contains(input)) document.body.removeChild(input)
     })
     input.click()
   }
@@ -381,7 +395,8 @@ export function useThreeModels() {
         _loadFromFile(file, mtlFile)
       }
       mtlInput.addEventListener('cancel', () => {
-        document.body.removeChild(mtlInput)
+        if (document.body.contains(mtlInput))
+          document.body.removeChild(mtlInput)
         // Si l'utilisateur annule la sélection du MTL, charger sans matériaux
         _loadFromFile(file)
       })

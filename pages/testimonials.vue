@@ -217,7 +217,6 @@ import {
 } from 'lucide-vue-next'
 import { ref, computed } from 'vue'
 
-definePageMeta({ layout: 'sidebar' })
 
 const filter = ref('all')
 const displayCount = ref(6)

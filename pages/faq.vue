@@ -112,7 +112,6 @@ import { SearchIcon } from 'lucide-vue-next'
 import { ref, computed } from 'vue'
 import FAQAccordion from '@/components/FAQAccordion.vue'
 
-definePageMeta({ layout: 'sidebar' })
 
 const searchQuery = ref('')
 

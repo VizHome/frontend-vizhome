@@ -262,5 +262,4 @@ import {
   InfoIcon,
 } from 'lucide-vue-next'
 
-definePageMeta({ layout: 'sidebar' })
 </script>

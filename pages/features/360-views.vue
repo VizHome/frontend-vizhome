@@ -248,7 +248,6 @@ import {
   BarChartIcon,
 } from 'lucide-vue-next'
 
-definePageMeta({ layout: 'sidebar' })
 
 const demoTabs = [
   {

@@ -271,7 +271,6 @@ import { Form, Field } from 'vee-validate'
 import { ref } from 'vue'
 import * as yup from 'yup'
 
-definePageMeta({ layout: 'sidebar' })
 
 interface FormValues {
   name: string

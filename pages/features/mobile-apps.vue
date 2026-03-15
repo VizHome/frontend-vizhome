@@ -266,7 +266,6 @@ import {
   StarIcon,
 } from 'lucide-vue-next'
 
-definePageMeta({ layout: 'sidebar' })
 
 const mainFeatures = [
   {

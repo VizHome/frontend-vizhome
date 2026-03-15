@@ -197,5 +197,4 @@ import {
   DownloadIcon,
 } from 'lucide-vue-next'
 
-definePageMeta({ layout: 'sidebar' })
 </script>

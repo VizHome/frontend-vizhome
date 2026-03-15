@@ -239,5 +239,4 @@ import {
   HeadphonesIcon,
 } from 'lucide-vue-next'
 
-definePageMeta({ layout: 'sidebar' })
 </script>

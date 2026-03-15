@@ -285,7 +285,6 @@
 import { CheckIcon, XIcon } from 'lucide-vue-next'
 import { ref } from 'vue'
 
-definePageMeta({ layout: 'sidebar' })
 
 const billingCycle = ref<'monthly' | 'yearly'>('monthly')
 

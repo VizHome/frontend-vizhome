@@ -225,7 +225,6 @@ import {
   ChevronRightIcon,
 } from 'lucide-vue-next'
 
-definePageMeta({ layout: 'sidebar' })
 
 const categories = [
   { name: 'Bois' },

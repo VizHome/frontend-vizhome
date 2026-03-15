@@ -189,7 +189,6 @@ import {
   ShieldIcon,
 } from 'lucide-vue-next'
 
-definePageMeta({ layout: 'sidebar' })
 
 const team = [
   {

@@ -55,10 +55,10 @@
               </p>
             </div>
             <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Créer des expériences immersives</h3>
+              <h3 class="font-medium">Déclencher des rendus IA</h3>
               <p class="text-sm text-muted-foreground">
-                Proposez des visites virtuelles 360° et des expériences VR pour
-                une immersion totale.
+                Soumettez des prompts ou des modèles 3D pour générer des rendus
+                photoréalistes via l'IA et récupérez les résultats.
               </p>
             </div>
             <div class="border-l-4 border-primary pl-4 py-2">
@@ -282,7 +282,7 @@
                 </li>
                 <li class="flex items-start gap-2">
                   <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Expériences 360° et VR</span>
+                  <span>Rendu IA illimité</span>
                 </li>
               </ul>
             </div>

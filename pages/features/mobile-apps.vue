@@ -3,46 +3,36 @@
     <!-- Hero -->
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <div>
-        <Badge class="mb-4 rounded-full">Mobilité</Badge>
-        <h1 class="text-4xl font-bold mb-6">Applications mobiles</h1>
+        <Badge class="mb-4 rounded-full">Accès universel</Badge>
+        <h1 class="text-4xl font-bold mb-6">VizHome partout</h1>
         <p class="text-xl text-muted-foreground mb-8">
-          Emportez VizHome partout avec vous grâce à nos applications mobiles
-          pour iOS et Android. Créez, visualisez et partagez vos projets 3D où
-          que vous soyez.
+          VizHome est une application web responsive accessible depuis n'importe
+          quel appareil disposant d'un navigateur moderne. Consultez vos
+          projets, ajustez les matériaux et partagez vos rendus depuis votre
+          bureau, tablette ou mobile.
         </p>
-        <div class="flex flex-wrap gap-3">
-          <Button size="lg" class="rounded-full gap-2" as-child>
-            <a href="#" target="_blank" rel="noopener noreferrer">
-              <AppleIcon class="h-5 w-5" />
-              App Store
-            </a>
-          </Button>
-          <Button size="lg" class="rounded-full gap-2" as-child>
-            <a href="#" target="_blank" rel="noopener noreferrer">
-              <SmartphoneIcon class="h-5 w-5" />
-              Google Play
-            </a>
-          </Button>
-        </div>
+        <Button size="lg" class="rounded-full" as-child>
+          <NuxtLink to="/render">Ouvrir l'éditeur</NuxtLink>
+        </Button>
       </div>
       <div class="relative">
         <img
           src="/images/generate/image_generate.png"
-          alt="Applications mobiles"
+          alt="VizHome sur mobile et desktop"
           class="rounded-xl border shadow-sm w-full"
         />
         <img
           src="/images/generate/image_generate.png"
-          alt="App mobile détail"
+          alt="Vue détaillée mobile"
           class="absolute -bottom-8 -left-8 w-2/3 rounded-xl shadow-sm border-4 border-background"
         />
       </div>
     </section>
 
-    <!-- Fonctionnalités principales -->
+    <!-- Ce qui fonctionne sur mobile -->
     <section>
       <h2 class="text-3xl font-bold mb-12 text-center">
-        Fonctionnalités principales
+        Fonctionnalités sur mobile et tablette
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card
@@ -65,27 +55,27 @@
       </div>
     </section>
 
-    <!-- Interface intuitive -->
+    <!-- Interface adaptée -->
     <section class="bg-muted/30 rounded-xl border p-8 md:p-12">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         <div>
-          <h2 class="text-3xl font-bold mb-6">Interface intuitive</h2>
+          <h2 class="text-3xl font-bold mb-6">Interface adaptée aux écrans</h2>
           <p class="text-muted-foreground mb-6">
-            Notre application mobile a été conçue pour être facile à utiliser,
-            même en déplacement, avec une interface claire et des contrôles
-            tactiles intuitifs.
+            L'interface de VizHome s'adapte automatiquement à la taille de
+            l'écran. Sur mobile et tablette, les gestes tactiles remplacent la
+            souris pour naviguer dans les modèles 3D.
           </p>
-          <Tabs default-value="projects">
+          <Tabs default-value="view">
             <TabsList class="grid w-full grid-cols-3">
-              <TabsTrigger value="projects">Projets</TabsTrigger>
+              <TabsTrigger value="view">Visualisation</TabsTrigger>
               <TabsTrigger value="edit">Édition</TabsTrigger>
               <TabsTrigger value="share">Partage</TabsTrigger>
             </TabsList>
-            <TabsContent value="projects" class="space-y-3 mt-4">
-              <h3 class="font-semibold">Gestion de projets simplifiée</h3>
+            <TabsContent value="view" class="space-y-3 mt-4">
+              <h3 class="font-semibold">Navigation tactile 3D</h3>
               <ul class="space-y-2">
                 <li
-                  v-for="item in tabContent.projects"
+                  v-for="item in tabContent.view"
                   :key="item"
                   class="flex items-start gap-2"
                 >
@@ -97,7 +87,7 @@
               </ul>
             </TabsContent>
             <TabsContent value="edit" class="space-y-3 mt-4">
-              <h3 class="font-semibold">Outils d'édition tactiles</h3>
+              <h3 class="font-semibold">Édition sur tablette</h3>
               <ul class="space-y-2">
                 <li
                   v-for="item in tabContent.edit"
@@ -112,7 +102,7 @@
               </ul>
             </TabsContent>
             <TabsContent value="share" class="space-y-3 mt-4">
-              <h3 class="font-semibold">Options de partage flexibles</h3>
+              <h3 class="font-semibold">Partage depuis mobile</h3>
               <ul class="space-y-2">
                 <li
                   v-for="item in tabContent.share"
@@ -132,7 +122,7 @@
           <div class="w-full max-w-xs">
             <img
               src="/images/generate/image_generate.png"
-              alt="Interface mobile"
+              alt="Interface mobile VizHome"
               class="rounded-xl shadow-sm border"
             />
           </div>
@@ -140,48 +130,31 @@
       </div>
     </section>
 
-    <!-- Réalité augmentée -->
+    <!-- Compatibilité -->
     <section>
       <h2 class="text-3xl font-bold mb-4 text-center">
-        Expérience de réalité augmentée
+        Compatibilité navigateurs
       </h2>
       <p class="text-center text-muted-foreground max-w-2xl mx-auto mb-10">
-        Visualisez vos projets dans le monde réel avec notre technologie de
-        réalité augmentée avancée.
+        VizHome requiert un navigateur avec support WebGL 2.0 pour le rendu 3D
+        Three.js. Tous les navigateurs modernes le supportent.
       </p>
-      <div
-        class="relative aspect-video rounded-xl overflow-hidden border shadow-sm mb-8"
-      >
-        <img
-          src="/images/generate/image_generate.png"
-          alt="Réalité augmentée"
-          class="w-full h-full object-cover"
-        />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
         <div
-          class="absolute inset-0 bg-black/50 flex items-center justify-center"
-        >
-          <Button
-            variant="secondary"
-            size="icon"
-            class="rounded-full h-16 w-16"
-          >
-            <PlayIcon class="h-8 w-8" />
-          </Button>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div
-          v-for="feat in arFeatures"
-          :key="feat.title"
-          class="bg-muted/30 rounded-xl border p-4"
+          v-for="browser in browsers"
+          :key="browser.name"
+          class="bg-muted/30 rounded-xl border p-4 flex items-center gap-4"
         >
           <div
-            class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3"
+            class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"
           >
-            <component :is="feat.icon" class="h-5 w-5 text-primary" />
+            <component :is="browser.icon" class="h-5 w-5 text-primary" />
           </div>
-          <h3 class="font-semibold mb-2">{{ feat.title }}</h3>
-          <p class="text-sm text-muted-foreground">{{ feat.desc }}</p>
+          <div>
+            <p class="font-medium">{{ browser.name }}</p>
+            <p class="text-xs text-muted-foreground">{{ browser.note }}</p>
+          </div>
+          <CheckIcon class="h-5 w-5 text-primary ml-auto flex-shrink-0" />
         </div>
       </div>
     </section>
@@ -224,106 +197,91 @@
       class="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl border p-8 md:p-12 text-center"
     >
       <h2 class="text-3xl font-bold mb-4">
-        Téléchargez notre application mobile
+        Accédez à VizHome où que vous soyez
       </h2>
       <p class="text-muted-foreground mb-8 max-w-2xl mx-auto">
-        Disponible sur iOS et Android, notre application vous permet d'emporter
-        VizHome partout avec vous.
+        Aucune installation requise. Ouvrez simplement votre navigateur et
+        commencez à créer.
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <Button size="lg" class="rounded-full gap-2" as-child>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <AppleIcon class="h-5 w-5" />
-            Télécharger sur iOS
-          </a>
+        <Button size="lg" class="rounded-full" as-child>
+          <NuxtLink to="/auth/register">Créer un compte gratuit</NuxtLink>
         </Button>
-        <Button size="lg" class="rounded-full gap-2" as-child>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <SmartphoneIcon class="h-5 w-5" />
-            Télécharger sur Android
-          </a>
+        <Button size="lg" variant="outline" class="rounded-full" as-child>
+          <NuxtLink to="/render">Ouvrir l'éditeur</NuxtLink>
         </Button>
       </div>
-      <p class="text-sm text-muted-foreground mt-6">
-        Nécessite iOS 14.0+ ou Android 9.0+. Connexion Internet requise pour
-        certaines fonctionnalités.
-      </p>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
-  AppleIcon,
+  MonitorIcon,
+  TabletIcon,
   SmartphoneIcon,
-  CameraIcon,
-  CloudIcon,
-  NotebookIcon,
+  Share2Icon,
   CheckIcon,
-  PlayIcon,
-  ScanIcon,
-  HandIcon,
+  GlobeIcon,
   StarIcon,
+  LayersIcon,
+  PaletteIcon,
 } from 'lucide-vue-next'
-
 
 const mainFeatures = [
   {
-    icon: CameraIcon,
-    title: 'Capture rapide',
-    desc: 'Prenez une photo avec votre téléphone et transformez-la instantanément en modèle 3D grâce à notre IA mobile.',
+    icon: MonitorIcon,
+    title: 'Éditeur complet',
+    desc: 'Sur desktop, accédez aux 3 modes (Croquis 2D, Prompt IA, 3D Pro) avec tous les outils et panels disponibles.',
+  },
+  {
+    icon: TabletIcon,
+    title: 'Tablette optimisée',
+    desc: "Sur tablette, les gestes multi-touch permettent de naviguer dans les modèles 3D et d'ajuster les matériaux via les panels.",
   },
   {
     icon: SmartphoneIcon,
-    title: 'Visualisation AR',
-    desc: 'Visualisez vos projets en réalité augmentée directement dans votre environnement physique pour une expérience immersive.',
+    title: 'Mobile — consultation',
+    desc: 'Sur smartphone, consultez et partagez vos projets. La navigation 3D reste accessible avec les gestes tactiles.',
   },
   {
-    icon: CloudIcon,
-    title: 'Synchronisation cloud',
-    desc: 'Tous vos projets sont automatiquement synchronisés entre vos appareils pour un accès transparent où que vous soyez.',
-  },
-  {
-    icon: NotebookIcon,
-    title: 'Notes de terrain',
-    desc: 'Prenez des notes et faites des croquis directement sur site, puis intégrez-les à vos projets 3D pour une référence rapide.',
+    icon: Share2Icon,
+    title: 'Partage universel',
+    desc: "Envoyez un lien de visualisation à vos clients — ils accèdent au modèle 3D interactif depuis n'importe quel appareil.",
   },
 ]
 
 const tabContent = {
-  projects: [
-    'Affichage en grille ou en liste de tous vos projets',
-    'Filtres intelligents par date, type ou statut',
-    'Accès rapide aux projets récents ou favoris',
+  view: [
+    'Pinch-to-zoom pour zoomer sur le modèle',
+    'Glisser un doigt pour faire pivoter (mode orbite)',
+    'Deux doigts pour panoramiquer',
   ],
   edit: [
-    'Modification des matériaux par simple tapotement',
-    'Contrôles de rotation et de zoom intuitifs',
-    "Réglage de l'éclairage avec des gestes simples",
+    'Modification des matériaux via les panels tactiles',
+    "Réglage de l'éclairage avec les sliders",
+    'Génération de prompts IA depuis le clavier mobile',
   ],
   share: [
-    'Partage direct via messagerie, email ou réseaux sociaux',
-    'Génération de liens de visualisation sécurisés',
-    "Export d'images haute résolution en un clic",
+    'Copie du lien de partage en un tap',
+    'Export PNG directement depuis le navigateur mobile',
+    'Envoi par messagerie ou email natif',
   ],
 }
 
-const arFeatures = [
+const browsers = [
   {
-    icon: ScanIcon,
-    title: "Scan de l'environnement",
-    desc: "L'application analyse automatiquement l'espace pour placer les objets de manière réaliste.",
+    icon: GlobeIcon,
+    name: 'Chrome / Chromium',
+    note: 'Version 88+ · WebGL 2.0 ✓',
   },
+  { icon: GlobeIcon, name: 'Firefox', note: 'Version 85+ · WebGL 2.0 ✓' },
   {
-    icon: HandIcon,
-    title: 'Manipulation intuitive',
-    desc: 'Déplacez, tournez et redimensionnez les modèles avec des gestes naturels.',
+    icon: GlobeIcon,
+    name: 'Safari',
+    note: 'Version 14+ · WebGL 2.0 ✓ (iOS 14+)',
   },
-  {
-    icon: CameraIcon,
-    title: "Capture d'écrans AR",
-    desc: "Prenez des photos ou des vidéos de vos projets intégrés dans l'environnement réel.",
-  },
+  { icon: GlobeIcon, name: 'Edge', note: 'Version 88+ · WebGL 2.0 ✓' },
 ]
 
 const testimonials = [
@@ -333,7 +291,7 @@ const testimonials = [
     initials: 'JD',
     avatar: 'https://i.pravatar.cc/150?img=26',
     quote:
-      "L'application mobile VizHome est devenue mon outil indispensable sur les chantiers. Je peux scanner un espace et présenter immédiatement des options de design à mes clients.",
+      "Je présente mes rendus 3D sur tablette directement chez le client. L'interface tactile est fluide et mes clients adorent interagir avec le modèle.",
   },
   {
     name: 'Emma Martin',
@@ -341,7 +299,7 @@ const testimonials = [
     initials: 'EM',
     avatar: 'https://i.pravatar.cc/150?img=28',
     quote:
-      "La fonction de réalité augmentée est incroyable. Mes clients peuvent littéralement voir leur future maison avant même qu'elle ne soit construite. Un outil de vente puissant.",
+      "Depuis mon téléphone, j'envoie en quelques secondes un lien de visualisation 3D à mes acheteurs. Plus besoin de déplacer un ordinateur en visite.",
   },
   {
     name: 'Lucas Bernard',
@@ -349,7 +307,7 @@ const testimonials = [
     initials: 'LB',
     avatar: 'https://i.pravatar.cc/150?img=5',
     quote:
-      'La synchronisation avec la version desktop est parfaite. Je commence un projet au bureau et je peux le continuer en déplacement sans aucune difficulté.',
+      'Je commence un projet au bureau sur desktop et je peux vérifier le rendu final depuis mon mobile pendant mes déplacements. Parfaitement synchronisé.',
   },
 ]
 </script>

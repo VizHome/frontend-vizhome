@@ -70,12 +70,12 @@
             >
               <SearchIcon class="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>Recherche avancée</CardTitle>
+            <CardTitle>Sélection par mesh</CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-muted-foreground">
-              Trouvez le matériau parfait grâce à notre moteur de recherche
-              intelligent par couleur, texture, style ou pièce.
+              Dans le mode 3D Pro, sélectionnez précisément chaque mesh de votre
+              modèle importé pour lui appliquer un matériau différent.
             </p>
           </CardContent>
         </Card>
@@ -87,12 +87,12 @@
             >
               <ReplaceIcon class="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>Remplacement instantané</CardTitle>
+            <CardTitle>Aperçu temps réel</CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-muted-foreground">
-              Appliquez les matériaux en temps réel avec un aperçu instantané
-              pour voir le résultat avant de valider.
+              Les changements de matériaux s'appliquent instantanément dans la
+              scène Three.js sans rechargement ni attente.
             </p>
           </CardContent>
         </Card>
@@ -104,12 +104,13 @@
             >
               <PaletteIcon class="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>Personnalisation</CardTitle>
+            <CardTitle>Propriétés PBR</CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-muted-foreground">
-              Ajustez les propriétés des matériaux (brillance, rugosité,
-              couleur) pour obtenir exactement l'effet souhaité.
+              Ajustez les propriétés physiques réalistes : roughness (rugosité),
+              metalness (métallicité) et couleur de base selon le rendu
+              souhaité.
             </p>
           </CardContent>
         </Card>
@@ -224,7 +225,6 @@ import {
   UploadCloudIcon,
   ChevronRightIcon,
 } from 'lucide-vue-next'
-
 
 const categories = [
   { name: 'Bois' },

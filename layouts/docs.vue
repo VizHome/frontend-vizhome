@@ -9,9 +9,9 @@
       <div
         class="h-16 flex items-center justify-between border-b px-4 bg-background"
       >
-        <NuxtLink to="/" class="flex items-center gap-1">
-          <span class="font-bold">VizHome</span>
-          <Badge variant="outline">Docs</Badge>
+        <NuxtLink to="/" class="flex items-center gap-2">
+          <AppLogo />
+          <Badge variant="outline" class="text-xs">Docs</Badge>
         </NuxtLink>
         <Button
           variant="ghost"
@@ -374,9 +374,9 @@
           <span class="sr-only">Menu</span>
         </Button>
         <div class="flex items-center gap-2">
-          <NuxtLink to="/" class="flex items-center gap-1">
-            <span class="font-bold">VizHome</span>
-            <Badge variant="outline">Docs</Badge>
+          <NuxtLink to="/" class="flex items-center gap-2">
+            <AppLogo />
+            <Badge variant="outline" class="text-xs">Docs</Badge>
           </NuxtLink>
         </div>
       </header>

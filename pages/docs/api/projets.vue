@@ -60,7 +60,7 @@
             <div class="border-l-4 border-primary pl-4 py-2">
               <h3 class="font-medium">Rendus</h3>
               <p class="text-sm text-muted-foreground">
-                Images statiques, panoramas 360° et autres fichiers exportés.
+                Images statiques, rendus IA et autres fichiers exportés.
               </p>
             </div>
             <div class="border-l-4 border-primary pl-4 py-2">

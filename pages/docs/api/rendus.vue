@@ -52,16 +52,15 @@
               <div class="aspect-video bg-muted relative">
                 <img
                   src="/images/generate/image_generate.png"
-                  alt="Rendu 360°"
+                  alt="Rendu IA photoréaliste"
                   class="w-full h-full object-cover"
                 />
               </div>
               <div class="p-4">
-                <h3 class="font-medium mb-1">Panoramas 360°</h3>
+                <h3 class="font-medium mb-1">Rendu IA photoréaliste</h3>
                 <p class="text-sm text-muted-foreground">
-                  Vues immersives à 360° permettant d'explorer librement
-                  l'espace. Parfaites pour les visites virtuelles et
-                  l'intégration sur sites web.
+                  Image haute résolution générée par l'IA à partir d'un modèle
+                  3D ou d'un prompt texte, exportable en PNG.
                 </p>
               </div>
             </div>
@@ -69,15 +68,15 @@
               <div class="aspect-video bg-muted relative">
                 <img
                   src="/images/generate/image_generate.png"
-                  alt="Rendu VR"
+                  alt="Export PNG"
                   class="w-full h-full object-cover"
                 />
               </div>
               <div class="p-4">
-                <h3 class="font-medium mb-1">Rendus VR</h3>
+                <h3 class="font-medium mb-1">Export PNG / capture</h3>
                 <p class="text-sm text-muted-foreground">
-                  Expériences en réalité virtuelle compatibles avec les
-                  principaux casques VR du marché (Oculus, HTC Vive, etc.).
+                  Capture de la scène 3D WebGL dans l'état courant, incluant
+                  l'éclairage, les matériaux et l'angle de caméra définis.
                 </p>
               </div>
             </div>
@@ -144,8 +143,8 @@
                   Choisissez le type de rendu
                 </h3>
                 <p class="text-sm text-muted-foreground">
-                  Sélectionnez le format souhaité : standard, panorama 360°, VR
-                  ou vidéo.
+                  Sélectionnez le format souhaité : rendu IA photoréaliste,
+                  export PNG de la scène ou capture vidéo du parcours.
                 </p>
               </div>
             </div>
@@ -436,23 +435,23 @@
                 </div>
                 <div class="border rounded-lg p-3">
                   <h4 class="text-sm font-medium mb-1 flex items-center gap-2">
-                    <Fullscreen360Icon class="h-4 w-4 text-muted-foreground" />
-                    Panoramas 360°
+                    <SparklesIcon class="h-4 w-4 text-muted-foreground" />
+                    Rendu IA
                   </h4>
                   <p class="text-xs text-muted-foreground">
-                    Formats disponibles : JPG équirectangulaire, HTML
-                    interactif<br />
-                    Compatible avec Facebook 360, Google Photos, etc.
+                    Image photoréaliste générée par l'IA depuis un prompt ou un
+                    modèle 3D<br />
+                    Livré en PNG haute résolution
                   </p>
                 </div>
                 <div class="border rounded-lg p-3">
                   <h4 class="text-sm font-medium mb-1 flex items-center gap-2">
-                    <HeadsetIcon class="h-4 w-4 text-muted-foreground" />
-                    Réalité virtuelle
+                    <BoxIcon class="h-4 w-4 text-muted-foreground" />
+                    Modèle 3D exporté
                   </h4>
                   <p class="text-xs text-muted-foreground">
-                    Formats disponibles : Package VR interactif<br />
-                    Compatible avec Oculus, HTC Vive, Google Cardboard
+                    Export du modèle Three.js modifié<br />
+                    Format GLB/GLTF avec matériaux PBR intégrés
                   </p>
                 </div>
                 <div class="border rounded-lg p-3">
@@ -508,8 +507,8 @@
                   <div>
                     <p class="font-medium">Intégration web</p>
                     <p class="text-muted-foreground">
-                      Incorporez vos rendus 360° ou visites virtuelles sur votre
-                      site web via un code d'intégration personnalisable.
+                      Incorporez vos rendus IA ou captures 3D sur votre site web
+                      via un code d'intégration personnalisable.
                     </p>
                   </div>
                 </div>
@@ -535,8 +534,8 @@
                 <li class="flex items-start gap-2">
                   <CircleCheckIcon class="h-4 w-4 text-primary mt-0.5" />
                   <p>
-                    Créez une galerie de plusieurs rendus avec navigation
-                    intuitive
+                    Regroupez plusieurs rendus d'un même projet en un lien de
+                    présentation unique
                   </p>
                 </li>
                 <li class="flex items-start gap-2">
@@ -624,39 +623,9 @@ import {
   ShareIcon,
   GitPullRequest,
   CircleCheckIcon,
-  HeadsetIcon,
+  SparklesIcon,
+  BoxIcon,
 } from 'lucide-vue-next'
-
-// Composant personnalisé pour l'icône 360
-const Fullscreen360Icon = defineComponent({
-  setup() {
-    return () =>
-      h(
-        'svg',
-        {
-          xmlns: 'http://www.w3.org/2000/svg',
-          width: '24',
-          height: '24',
-          viewBox: '0 0 24 24',
-          fill: 'none',
-          stroke: 'currentColor',
-          strokeWidth: '2',
-          strokeLinecap: 'round',
-          strokeLinejoin: 'round',
-          class: 'lucide lucide-fullscreen-360',
-        },
-        [
-          h('circle', { cx: '12', cy: '12', r: '10' }),
-          h('path', { d: 'M9.5 10a2.5 2.5 0 1 1 5 0 2.5 2.5 0 0 1-5 0z' }),
-          h('path', { d: 'M16.5 15a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z' }),
-          h('path', { d: 'M14 7v.01' }),
-          h('path', { d: 'M10 17v.01' }),
-          h('path', { d: 'M17 14v.01' }),
-          h('path', { d: 'M7 10v.01' }),
-        ]
-      )
-  },
-})
 
 definePageMeta({
   layout: 'docs',

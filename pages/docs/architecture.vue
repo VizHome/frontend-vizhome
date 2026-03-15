@@ -41,8 +41,9 @@
             <div class="border-l-4 border-primary pl-4 py-2">
               <h3 class="font-medium">Frontend</h3>
               <p class="text-sm text-muted-foreground">
-                Applications web responsive et applications mobiles natives
-                iOS/Android avec interface utilisateur intuitive.
+                Application web responsive (Nuxt 4 / Vue 3 / Three.js) avec
+                éditeur 3D temps réel WebGL 2.0 fonctionnant directement dans le
+                navigateur.
               </p>
             </div>
             <div class="border-l-4 border-primary pl-4 py-2">
@@ -178,41 +179,60 @@
             </div>
 
             <div>
-              <h3 class="text-lg font-medium mb-2">Applications Mobiles</h3>
+              <h3 class="text-lg font-medium mb-2">Éditeur 3D (Three.js)</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 class="font-medium mb-2">iOS</h4>
-                  <ul class="space-y-2">
-                    <li class="flex items-start gap-2">
-                      <div class="min-w-[20px] mt-1">
-                        <Circle class="h-2 w-2 fill-primary text-primary" />
-                      </div>
-                      <p><strong>Framework</strong> : Swift UI & UIKit</p>
-                    </li>
-                    <li class="flex items-start gap-2">
-                      <div class="min-w-[20px] mt-1">
-                        <Circle class="h-2 w-2 fill-primary text-primary" />
-                      </div>
-                      <p><strong>3D & AR</strong> : SceneKit et ARKit</p>
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 class="font-medium mb-2">Android</h4>
+                  <h4 class="font-medium mb-2">Moteur de rendu</h4>
                   <ul class="space-y-2">
                     <li class="flex items-start gap-2">
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
                       <p>
-                        <strong>Framework</strong> : Kotlin & Jetpack Compose
+                        <strong>Three.js</strong> : Rendu WebGL 2.0 temps réel
+                        dans le navigateur
                       </p>
                     </li>
                     <li class="flex items-start gap-2">
                       <div class="min-w-[20px] mt-1">
                         <Circle class="h-2 w-2 fill-primary text-primary" />
                       </div>
-                      <p><strong>3D & AR</strong> : Sceneform et ARCore</p>
+                      <p>
+                        <strong>Loaders</strong> : GLTFLoader, OBJLoader,
+                        FBXLoader, STLLoader
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-medium mb-2">Modes de l'éditeur</h4>
+                  <ul class="space-y-2">
+                    <li class="flex items-start gap-2">
+                      <div class="min-w-[20px] mt-1">
+                        <Circle class="h-2 w-2 fill-primary text-primary" />
+                      </div>
+                      <p>
+                        <strong>Croquis 2D</strong> : Canvas HTML5 avec outils
+                        de dessin vectoriel
+                      </p>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <div class="min-w-[20px] mt-1">
+                        <Circle class="h-2 w-2 fill-primary text-primary" />
+                      </div>
+                      <p>
+                        <strong>Prompt IA</strong> : Génération image/3D par
+                        texte via API backend
+                      </p>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <div class="min-w-[20px] mt-1">
+                        <Circle class="h-2 w-2 fill-primary text-primary" />
+                      </div>
+                      <p>
+                        <strong>3D Pro</strong> : Import de modèles + panels
+                        éclairage, matériaux, navigation
+                      </p>
                     </li>
                   </ul>
                 </div>

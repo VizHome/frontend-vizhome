@@ -28,23 +28,66 @@
 
     <!-- Types d'éclairage -->
     <section>
-      <h2 class="text-3xl font-bold mb-4 text-center">Types d'éclairage</h2>
+      <h2 class="text-3xl font-bold mb-4 text-center">Ambiances et saisons</h2>
       <p class="text-center text-muted-foreground max-w-2xl mx-auto mb-10">
-        Explorez les différentes options d'éclairage pour créer l'ambiance
-        parfaite pour vos espaces.
+        Le panel Éclairage du mode 3D Pro vous donne accès à des préréglages
+        d'ambiances et de saisons pour transformer instantanément l'atmosphère
+        de votre scène.
       </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+        <Card class="rounded-xl border shadow-sm p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
+            >
+              <SunIcon class="h-5 w-5 text-primary" />
+            </div>
+            <h3 class="text-lg font-semibold">Ambiances lumineuses</h3>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <Badge
+              v-for="a in ambiances"
+              :key="a"
+              variant="secondary"
+              class="rounded-full"
+              >{{ a }}</Badge
+            >
+          </div>
+        </Card>
+        <Card class="rounded-xl border shadow-sm p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
+            >
+              <LeafIcon class="h-5 w-5 text-primary" />
+            </div>
+            <h3 class="text-lg font-semibold">Saisons</h3>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <Badge
+              v-for="s in saisons"
+              :key="s"
+              variant="secondary"
+              class="rounded-full"
+              >{{ s }}</Badge
+            >
+          </div>
+          <p class="text-sm text-muted-foreground mt-3">
+            Chaque saison modifie la température de couleur et la direction de
+            la lumière solaire.
+          </p>
+        </Card>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card
           v-for="type in lightingTypes"
           :key="type.title"
           class="rounded-xl border shadow-sm overflow-hidden"
         >
-          <div class="aspect-video">
-            <img
-              src="/images/generate/image_generate.png"
-              :alt="type.title"
-              class="w-full h-full object-cover"
-            />
+          <div
+            class="aspect-video bg-gradient-to-br from-primary/5 to-primary/10 flex items-center justify-center"
+          >
+            <component :is="type.icon" class="h-12 w-12 text-primary/40" />
           </div>
           <CardContent class="p-4">
             <h3 class="font-medium mb-2">{{ type.title }}</h3>
@@ -179,9 +222,7 @@
 
     <!-- Modes d'éclairage spécialisés -->
     <section class="bg-muted/30 rounded-xl border p-8 md:p-12">
-      <h2 class="text-3xl font-bold mb-10 text-center">
-        Modes d'éclairage spécialisés
-      </h2>
+      <h2 class="text-3xl font-bold mb-10 text-center">Contrôles avancés</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card
           v-for="mode in lightingModes"
@@ -233,54 +274,69 @@
 
 <script setup lang="ts">
 import {
-  HomeIcon,
-  BuildingIcon,
+  SunIcon,
+  MoonIcon,
+  CloudSunIcon,
   LampDeskIcon,
-  UtensilsIcon,
+  LeafIcon,
+  SunriseIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  SunsetIcon,
+  ThermometerIcon,
 } from 'lucide-vue-next'
 
+const ambiances = [
+  'Naturelle',
+  'Dramatique',
+  'Studio',
+  'Coucher de soleil',
+  'Nuit',
+]
+const saisons = ['Printemps', 'Été', 'Automne', 'Hiver']
 
 const lightingTypes = [
   {
-    title: 'Éclairage naturel',
-    desc: 'Simulez la lumière du soleil à différentes heures de la journée pour voir comment votre espace change avec la lumière naturelle.',
+    icon: SunIcon,
+    title: 'Lumière naturelle',
+    desc: "Simulez la lumière du jour selon l'heure, la saison et l'orientation de l'espace.",
   },
   {
-    title: 'Éclairage artificiel',
-    desc: "Configurez différents types de luminaires avec contrôle précis de l'intensité, de la couleur et de la diffusion.",
+    icon: LampDeskIcon,
+    title: 'Lumière artificielle',
+    desc: 'Intensité, couleur et direction de la lumière directionnelle entièrement configurables.',
   },
   {
-    title: "Éclairage d'ambiance",
-    desc: "Créez des atmosphères spécifiques avec des préréglages d'éclairage pour différentes ambiances et occasions.",
+    icon: MoonIcon,
+    title: 'Ambiance nocturne',
+    desc: 'Mode Nuit avec température de couleur froide et ombres profondes pour des rendus dramatiques.',
   },
 ]
 
 const lightingModes = [
   {
-    icon: HomeIcon,
-    title: 'Mode résidentiel',
-    desc: "Optimisé pour les espaces de vie avec simulation de l'éclairage domestique, incluant des options pour différentes périodes de la journée et ambiances.",
-    tags: ['Matinée', 'Soirée', 'Nuit'],
+    icon: ThermometerIcon,
+    title: 'Intensité ambiante',
+    desc: "Réglage de la lumière ambiante globale pour contrôler les zones d'ombre et la profondeur de la scène.",
+    tags: ['Ambiance', 'Ombre douce', 'Profondeur'],
   },
   {
-    icon: BuildingIcon,
-    title: 'Mode commercial',
-    desc: "Conçu pour les espaces commerciaux avec des options pour l'éclairage de produits, de vitrines et d'espaces événementiels.",
-    tags: ['Vitrine', 'Boutique', 'Showroom'],
+    icon: SunIcon,
+    title: 'Lumière directionnelle',
+    desc: 'Direction et couleur de la source lumineuse principale, simulant soleil ou projecteur.',
+    tags: ['Direction', 'Couleur', 'Intensité'],
   },
   {
-    icon: LampDeskIcon,
-    title: 'Mode bureau',
-    desc: 'Éclairage adapté aux environnements de travail avec options pour maximiser la productivité et le confort visuel.',
-    tags: ['Productif', 'Réunion', 'Créatif'],
+    icon: CloudSunIcon,
+    title: 'Saisons automatiques',
+    desc: "Chaque saison règle automatiquement la température de couleur et l'angle du soleil.",
+    tags: ['Printemps', 'Été', 'Automne', 'Hiver'],
   },
   {
-    icon: UtensilsIcon,
-    title: 'Mode gastronomie',
-    desc: "Spécialement conçu pour les restaurants et cafés, avec des options d'éclairage qui mettent en valeur les plats et créent l'ambiance désirée.",
-    tags: ['Intimité', 'Dynamique', 'Élégant'],
+    icon: SunriseIcon,
+    title: "Préréglages d'ambiance",
+    desc: "Cinq ambiances prêtes à l'emploi pour transformer l'atmosphère en un clic.",
+    tags: ['Naturelle', 'Studio', 'Dramatique', 'Coucher de soleil', 'Nuit'],
   },
 ]
 </script>

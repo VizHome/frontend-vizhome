@@ -4,14 +4,20 @@
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <div>
         <Badge class="mb-4 rounded-full">Fonctionnalité phare</Badge>
-        <h1 class="text-4xl font-bold mb-6">Génération 3D automatique</h1>
+        <h1 class="text-4xl font-bold mb-6">Génération 3D par IA</h1>
         <p class="text-xl text-muted-foreground mb-8">
-          Transformez instantanément vos photos en modèles 3D détaillés grâce à
-          notre technologie d'intelligence artificielle de pointe.
+          Décrivez votre espace en texte ou importez un fichier 3D — VizHome
+          génère instantanément un modèle interactif prêt à explorer et
+          personnaliser.
         </p>
-        <Button size="lg" class="rounded-full" as-child>
-          <NuxtLink to="/auth/register">Essayer gratuitement</NuxtLink>
-        </Button>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <Button size="lg" class="rounded-full" as-child>
+            <NuxtLink to="/render">Ouvrir l'éditeur</NuxtLink>
+          </Button>
+          <Button size="lg" variant="outline" class="rounded-full" as-child>
+            <NuxtLink to="/auth/register">Essayer gratuitement</NuxtLink>
+          </Button>
+        </div>
       </div>
       <div
         class="relative aspect-video rounded-xl overflow-hidden border shadow-sm"
@@ -27,52 +33,57 @@
     <!-- Comment ça fonctionne -->
     <section>
       <h2 class="text-3xl font-bold mb-12 text-center">
-        Comment ça fonctionne
+        Deux façons de créer en 3D
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="text-center">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Card class="rounded-xl border shadow-sm p-6">
           <div
-            class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4"
+            class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4"
           >
-            <UploadCloudIcon class="h-8 w-8 text-primary" />
+            <SparklesIcon class="h-8 w-8 text-primary" />
           </div>
-          <h3 class="text-lg font-semibold mb-2">1. Téléchargez vos photos</h3>
-          <p class="text-muted-foreground">
-            Importez une ou plusieurs photos de votre espace depuis n'importe
-            quel appareil.
+          <h3 class="text-lg font-semibold mb-2">1. Prompt IA</h3>
+          <p class="text-muted-foreground mb-4">
+            Décrivez votre espace en texte libre dans le mode
+            <strong>Prompt IA</strong>. L'IA génère une image 2D ou un modèle 3D
+            à partir de votre description, avec suggestions de prompts et
+            historique tabulé.
           </p>
-        </div>
-        <div class="text-center">
-          <div
-            class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4"
-          >
-            <BrainCircuitIcon class="h-8 w-8 text-primary" />
+          <div class="flex flex-wrap gap-2">
+            <Badge variant="outline" class="rounded-full"
+              >Texte → Image 2D</Badge
+            >
+            <Badge variant="outline" class="rounded-full"
+              >Texte → Modèle 3D</Badge
+            >
+            <Badge variant="outline" class="rounded-full">Historique</Badge>
           </div>
-          <h3 class="text-lg font-semibold mb-2">2. L'IA analyse l'espace</h3>
-          <p class="text-muted-foreground">
-            Notre moteur d'IA avancé analyse la géométrie, les textures et
-            l'éclairage.
-          </p>
-        </div>
-        <div class="text-center">
+        </Card>
+        <Card class="rounded-xl border shadow-sm p-6">
           <div
-            class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4"
+            class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4"
           >
             <BoxIcon class="h-8 w-8 text-primary" />
           </div>
-          <h3 class="text-lg font-semibold mb-2">3. Modèle 3D généré</h3>
-          <p class="text-muted-foreground">
-            En quelques secondes, votre modèle 3D interactif est prêt à être
-            exploré et modifié.
+          <h3 class="text-lg font-semibold mb-2">2. Import 3D Pro</h3>
+          <p class="text-muted-foreground mb-4">
+            Importez directement un modèle 3D existant dans le mode
+            <strong>3D Pro</strong>. Formats supportés : GLB, GLTF, OBJ, FBX et
+            STL. L'éditeur Three.js prend en charge le modèle instantanément.
           </p>
-        </div>
+          <div class="flex flex-wrap gap-2">
+            <Badge variant="outline" class="rounded-full">GLB / GLTF</Badge>
+            <Badge variant="outline" class="rounded-full">OBJ / FBX</Badge>
+            <Badge variant="outline" class="rounded-full">STL</Badge>
+          </div>
+        </Card>
       </div>
     </section>
 
     <!-- Caractéristiques avancées -->
     <section class="bg-muted/30 rounded-xl border p-8 md:p-12">
       <h2 class="text-3xl font-bold mb-10 text-center">
-        Caractéristiques avancées
+        Ce que vous pouvez faire ensuite
       </h2>
       <div class="space-y-8 max-w-3xl mx-auto">
         <div class="flex flex-col md:flex-row gap-6 items-start">
@@ -82,10 +93,10 @@
             <ZapIcon class="h-7 w-7 text-primary" />
           </div>
           <div>
-            <h3 class="text-xl font-semibold mb-2">Rapidité inégalée</h3>
+            <h3 class="text-xl font-semibold mb-2">Navigation immersive</h3>
             <p class="text-muted-foreground">
-              Obtenez un modèle 3D complet en moins de 30 secondes, là où les
-              solutions traditionnelles nécessitent des heures.
+              Explorez votre modèle en orbite, en vue top-down, en visite guidée
+              automatique ou en première personne avec les touches WASD.
             </p>
           </div>
         </div>
@@ -94,13 +105,14 @@
           <div
             class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"
           >
-            <RulerIcon class="h-7 w-7 text-primary" />
+            <SunIcon class="h-7 w-7 text-primary" />
           </div>
           <div>
-            <h3 class="text-xl font-semibold mb-2">Précision géométrique</h3>
+            <h3 class="text-xl font-semibold mb-2">Éclairage et saisons</h3>
             <p class="text-muted-foreground">
-              Notre IA capture avec précision les dimensions, les angles et les
-              proportions de votre espace pour une représentation fidèle.
+              Changez l'ambiance lumineuse (naturelle, dramatique, studio,
+              coucher de soleil, nuit) et la saison pour visualiser votre espace
+              sous toutes ses facettes.
             </p>
           </div>
         </div>
@@ -109,15 +121,14 @@
           <div
             class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"
           >
-            <ScanIcon class="h-7 w-7 text-primary" />
+            <PaintbrushIcon class="h-7 w-7 text-primary" />
           </div>
           <div>
-            <h3 class="text-xl font-semibold mb-2">
-              Reconnaissance des objets
-            </h3>
+            <h3 class="text-xl font-semibold mb-2">Matériaux en temps réel</h3>
             <p class="text-muted-foreground">
-              Le système identifie intelligemment les meubles, les ouvertures et
-              les éléments architecturaux pour une modélisation optimale.
+              Sélectionnez les meshes de votre modèle et appliquez des matériaux
+              (roughness, metalness, couleur) avec aperçu instantané dans la
+              scène Three.js.
             </p>
           </div>
         </div>
@@ -129,10 +140,11 @@
             <FileTypeIcon class="h-7 w-7 text-primary" />
           </div>
           <div>
-            <h3 class="text-xl font-semibold mb-2">Exports polyvalents</h3>
+            <h3 class="text-xl font-semibold mb-2">Rendu IA final</h3>
             <p class="text-muted-foreground">
-              Exportez votre modèle 3D dans différents formats standards (OBJ,
-              FBX, GLTF) pour l'utiliser dans vos logiciels préférés.
+              Une fois votre scène configurée, déclenchez un rendu IA
+              photoréaliste depuis le bouton dédié de la toolbar pour obtenir
+              une image haute qualité.
             </p>
           </div>
         </div>
@@ -360,14 +372,12 @@
 
 <script setup lang="ts">
 import {
-  UploadCloudIcon,
-  BrainCircuitIcon,
+  SparklesIcon,
   BoxIcon,
   ZapIcon,
-  RulerIcon,
-  ScanIcon,
+  SunIcon,
+  PaintbrushIcon,
   FileTypeIcon,
   StarIcon,
 } from 'lucide-vue-next'
-
 </script>

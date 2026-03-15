@@ -457,9 +457,10 @@
             <InfoIcon class="h-4 w-4" />
             <AlertTitle>Conseil pro</AlertTitle>
             <AlertDescription>
-              Pour des résultats encore meilleurs, essayez notre application
-              mobile VizHome qui guide la prise de photo étape par étape et
-              vérifie la qualité des images en temps réel.
+              Pour de meilleurs résultats avec le mode
+              <strong>Prompt IA</strong>, décrivez précisément l'ambiance
+              souhaitée dans votre prompt après avoir fourni une image de
+              référence de qualité.
             </AlertDescription>
           </Alert>
         </CardContent>

@@ -392,39 +392,45 @@ function mobileLinkClass(path: string) {
 const featuresMenu = [
   {
     to: '/features/auto-3d',
-    label: 'Génération 3D auto',
-    desc: 'Photos → modèle 3D en <30 sec',
+    label: 'Génération 3D',
+    desc: 'Prompt IA ou import GLB/OBJ/FBX',
     icon: BoxIcon,
+    badge: null,
   },
   {
     to: '/features/materials',
-    label: 'Matériaux',
-    desc: '10 000+ matériaux photoréalistes',
+    label: 'Matériaux PBR',
+    desc: 'Roughness, metalness, couleur par mesh',
     icon: PaletteIcon,
+    badge: null,
   },
   {
     to: '/features/360-views',
-    label: 'Vues 360°',
-    desc: 'Visites virtuelles interactives',
+    label: 'Navigation 3D',
+    desc: 'Orbite, FP, visite guidée, top-down',
     icon: Globe2Icon,
+    badge: null,
   },
   {
     to: '/features/intelligent-lighting',
     label: 'Éclairage IA',
     desc: 'Ambiances et saisons en temps réel',
     icon: SunIcon,
+    badge: null,
   },
   {
     to: '/features/collaboration',
     label: 'Collaboration',
     desc: 'Partage et travail en équipe',
     icon: UsersIcon,
+    badge: 'Pro',
   },
   {
     to: '/features/mobile-apps',
-    label: 'Applications mobiles',
-    desc: 'iOS & Android natifs',
+    label: 'Accès mobile',
+    desc: 'Web responsive sur tous appareils',
     icon: SmartphoneIcon,
+    badge: 'Pro',
   },
 ]
 

@@ -34,18 +34,14 @@
           Produit
         </p>
 
-        <NuxtLink
-          to="/"
-          class="sidebar-link"
-          :class="{ 'sidebar-link-active': route.path === '/' }"
-        >
+        <NuxtLink to="/" :class="linkClass('/')">
           <HomeIcon class="h-4 w-4" />
           Accueil
         </NuxtLink>
 
         <!-- Fonctionnalités collapsible -->
         <Collapsible v-model:open="featuresOpen">
-          <CollapsibleTrigger class="sidebar-link w-full">
+          <CollapsibleTrigger :class="triggerClass">
             <ZapIcon class="h-4 w-4" />
             <span class="flex-1 text-left">Fonctionnalités</span>
             <ChevronDownIcon
@@ -55,71 +51,44 @@
           </CollapsibleTrigger>
           <CollapsibleContent>
             <div class="ml-4 mt-0.5 flex flex-col gap-0.5 border-l pl-3">
-              <NuxtLink
-                to="/features"
-                class="sidebar-sublink"
-                :class="{ 'sidebar-link-active': route.path === '/features' }"
+              <NuxtLink to="/features" :class="sublinkClass('/features')"
                 >Vue d'ensemble</NuxtLink
               >
               <NuxtLink
                 to="/features/auto-3d"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/features/auto-3d',
-                }"
+                :class="sublinkClass('/features/auto-3d')"
                 >3D automatique</NuxtLink
               >
               <NuxtLink
                 to="/features/materials"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/features/materials',
-                }"
+                :class="sublinkClass('/features/materials')"
                 >Matériaux</NuxtLink
               >
               <NuxtLink
                 to="/features/360-views"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/features/360-views',
-                }"
+                :class="sublinkClass('/features/360-views')"
                 >Vues 360°</NuxtLink
               >
               <NuxtLink
                 to="/features/intelligent-lighting"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active':
-                    route.path === '/features/intelligent-lighting',
-                }"
+                :class="sublinkClass('/features/intelligent-lighting')"
                 >Éclairage intelligent</NuxtLink
               >
               <NuxtLink
                 to="/features/collaboration"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active':
-                    route.path === '/features/collaboration',
-                }"
+                :class="sublinkClass('/features/collaboration')"
                 >Collaboration</NuxtLink
               >
               <NuxtLink
                 to="/features/mobile-apps"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/features/mobile-apps',
-                }"
+                :class="sublinkClass('/features/mobile-apps')"
                 >Applications mobiles</NuxtLink
               >
             </div>
           </CollapsibleContent>
         </Collapsible>
 
-        <NuxtLink
-          to="/pricing"
-          class="sidebar-link"
-          :class="{ 'sidebar-link-active': route.path === '/pricing' }"
-        >
+        <NuxtLink to="/pricing" :class="linkClass('/pricing')">
           <CreditCardIcon class="h-4 w-4" />
           Tarifs
         </NuxtLink>
@@ -133,7 +102,7 @@
 
         <!-- Documentation collapsible -->
         <Collapsible v-model:open="docsOpen">
-          <CollapsibleTrigger class="sidebar-link w-full">
+          <CollapsibleTrigger :class="triggerClass">
             <BookOpenIcon class="h-4 w-4" />
             <span class="flex-1 text-left">Documentation</span>
             <ChevronDownIcon
@@ -143,69 +112,38 @@
           </CollapsibleTrigger>
           <CollapsibleContent>
             <div class="ml-4 mt-0.5 flex flex-col gap-0.5 border-l pl-3">
-              <NuxtLink
-                to="/docs"
-                class="sidebar-sublink"
-                :class="{ 'sidebar-link-active': route.path === '/docs' }"
+              <NuxtLink to="/docs" :class="sublinkClass('/docs')"
                 >Introduction</NuxtLink
               >
               <NuxtLink
                 to="/docs/installation"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/docs/installation',
-                }"
+                :class="sublinkClass('/docs/installation')"
                 >Installation</NuxtLink
               >
               <NuxtLink
                 to="/docs/architecture"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/docs/architecture',
-                }"
+                :class="sublinkClass('/docs/architecture')"
                 >Architecture</NuxtLink
               >
               <NuxtLink
                 to="/docs/interface"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/docs/interface',
-                }"
+                :class="sublinkClass('/docs/interface')"
                 >Interface</NuxtLink
               >
-              <NuxtLink
-                to="/docs/photos"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/docs/photos',
-                }"
+              <NuxtLink to="/docs/photos" :class="sublinkClass('/docs/photos')"
                 >Photos</NuxtLink
               >
-              <NuxtLink
-                to="/docs/api"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path.startsWith('/docs/api'),
-                }"
+              <NuxtLink to="/docs/api" :class="sublinkStartClass('/docs/api')"
                 >API</NuxtLink
               >
-              <NuxtLink
-                to="/docs/sdk"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path.startsWith('/docs/sdk'),
-                }"
+              <NuxtLink to="/docs/sdk" :class="sublinkStartClass('/docs/sdk')"
                 >SDK</NuxtLink
               >
             </div>
           </CollapsibleContent>
         </Collapsible>
 
-        <NuxtLink
-          to="/faq"
-          class="sidebar-link"
-          :class="{ 'sidebar-link-active': route.path === '/faq' }"
-        >
+        <NuxtLink to="/faq" :class="linkClass('/faq')">
           <HelpCircleIcon class="h-4 w-4" />
           FAQ
         </NuxtLink>
@@ -217,36 +155,24 @@
           Entreprise
         </p>
 
-        <NuxtLink
-          to="/about"
-          class="sidebar-link"
-          :class="{ 'sidebar-link-active': route.path === '/about' }"
-        >
+        <NuxtLink to="/about" :class="linkClass('/about')">
           <UsersIcon class="h-4 w-4" />
           À propos
         </NuxtLink>
 
-        <NuxtLink
-          to="/contact"
-          class="sidebar-link"
-          :class="{ 'sidebar-link-active': route.path === '/contact' }"
-        >
+        <NuxtLink to="/contact" :class="linkClass('/contact')">
           <MailIcon class="h-4 w-4" />
           Contact
         </NuxtLink>
 
-        <NuxtLink
-          to="/testimonials"
-          class="sidebar-link"
-          :class="{ 'sidebar-link-active': route.path === '/testimonials' }"
-        >
+        <NuxtLink to="/testimonials" :class="linkClass('/testimonials')">
           <StarIcon class="h-4 w-4" />
           Témoignages
         </NuxtLink>
 
         <!-- Légal collapsible -->
         <Collapsible v-model:open="legalOpen">
-          <CollapsibleTrigger class="sidebar-link w-full">
+          <CollapsibleTrigger :class="triggerClass">
             <ShieldIcon class="h-4 w-4" />
             <span class="flex-1 text-left">Légal</span>
             <ChevronDownIcon
@@ -258,62 +184,37 @@
             <div class="ml-4 mt-0.5 flex flex-col gap-0.5 border-l pl-3">
               <NuxtLink
                 to="/legal/terms-of-use"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/legal/terms-of-use',
-                }"
+                :class="sublinkClass('/legal/terms-of-use')"
                 >CGU</NuxtLink
               >
               <NuxtLink
                 to="/legal/privacy-policy"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/legal/privacy-policy',
-                }"
+                :class="sublinkClass('/legal/privacy-policy')"
                 >Confidentialité</NuxtLink
               >
               <NuxtLink
                 to="/legal/cookie-policy"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active': route.path === '/legal/cookie-policy',
-                }"
+                :class="sublinkClass('/legal/cookie-policy')"
                 >Cookies</NuxtLink
               >
               <NuxtLink
                 to="/legal/data-processing"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active':
-                    route.path === '/legal/data-processing',
-                }"
+                :class="sublinkClass('/legal/data-processing')"
                 >Données</NuxtLink
               >
               <NuxtLink
                 to="/legal/refund-cancellation-policy"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active':
-                    route.path === '/legal/refund-cancellation-policy',
-                }"
+                :class="sublinkClass('/legal/refund-cancellation-policy')"
                 >Remboursements</NuxtLink
               >
               <NuxtLink
                 to="/legal/responsible-use-policy"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active':
-                    route.path === '/legal/responsible-use-policy',
-                }"
+                :class="sublinkClass('/legal/responsible-use-policy')"
                 >Usage responsable</NuxtLink
               >
               <NuxtLink
                 to="/legal/specific-service-terms"
-                class="sidebar-sublink"
-                :class="{
-                  'sidebar-link-active':
-                    route.path === '/legal/specific-service-terms',
-                }"
+                :class="sublinkClass('/legal/specific-service-terms')"
                 >CGV spécifiques</NuxtLink
               >
             </div>
@@ -383,7 +284,7 @@
               </Button>
             </NuxtLink>
 
-            <!-- Navigation mobile (même structure) -->
+            <!-- Navigation mobile -->
             <nav class="flex flex-col gap-0.5 flex-1">
               <p
                 class="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-1"
@@ -393,8 +294,7 @@
 
               <NuxtLink
                 to="/"
-                class="sidebar-link"
-                :class="{ 'sidebar-link-active': route.path === '/' }"
+                :class="linkClass('/')"
                 @click="mobileOpen = false"
               >
                 <HomeIcon class="h-4 w-4" />
@@ -402,7 +302,7 @@
               </NuxtLink>
 
               <Collapsible v-model:open="mobileFeaturesOpen">
-                <CollapsibleTrigger class="sidebar-link w-full">
+                <CollapsibleTrigger :class="triggerClass">
                   <ZapIcon class="h-4 w-4" />
                   <span class="flex-1 text-left">Fonctionnalités</span>
                   <ChevronDownIcon
@@ -414,43 +314,43 @@
                   <div class="ml-4 mt-0.5 flex flex-col gap-0.5 border-l pl-3">
                     <NuxtLink
                       to="/features"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/features')"
                       @click="mobileOpen = false"
                       >Vue d'ensemble</NuxtLink
                     >
                     <NuxtLink
                       to="/features/auto-3d"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/features/auto-3d')"
                       @click="mobileOpen = false"
                       >3D automatique</NuxtLink
                     >
                     <NuxtLink
                       to="/features/materials"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/features/materials')"
                       @click="mobileOpen = false"
                       >Matériaux</NuxtLink
                     >
                     <NuxtLink
                       to="/features/360-views"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/features/360-views')"
                       @click="mobileOpen = false"
                       >Vues 360°</NuxtLink
                     >
                     <NuxtLink
                       to="/features/intelligent-lighting"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/features/intelligent-lighting')"
                       @click="mobileOpen = false"
                       >Éclairage intelligent</NuxtLink
                     >
                     <NuxtLink
                       to="/features/collaboration"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/features/collaboration')"
                       @click="mobileOpen = false"
                       >Collaboration</NuxtLink
                     >
                     <NuxtLink
                       to="/features/mobile-apps"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/features/mobile-apps')"
                       @click="mobileOpen = false"
                       >Applications mobiles</NuxtLink
                     >
@@ -460,8 +360,7 @@
 
               <NuxtLink
                 to="/pricing"
-                class="sidebar-link"
-                :class="{ 'sidebar-link-active': route.path === '/pricing' }"
+                :class="linkClass('/pricing')"
                 @click="mobileOpen = false"
               >
                 <CreditCardIcon class="h-4 w-4" />
@@ -475,7 +374,7 @@
               </p>
 
               <Collapsible v-model:open="mobileDocsOpen">
-                <CollapsibleTrigger class="sidebar-link w-full">
+                <CollapsibleTrigger :class="triggerClass">
                   <BookOpenIcon class="h-4 w-4" />
                   <span class="flex-1 text-left">Documentation</span>
                   <ChevronDownIcon
@@ -487,43 +386,43 @@
                   <div class="ml-4 mt-0.5 flex flex-col gap-0.5 border-l pl-3">
                     <NuxtLink
                       to="/docs"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/docs')"
                       @click="mobileOpen = false"
                       >Introduction</NuxtLink
                     >
                     <NuxtLink
                       to="/docs/installation"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/docs/installation')"
                       @click="mobileOpen = false"
                       >Installation</NuxtLink
                     >
                     <NuxtLink
                       to="/docs/architecture"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/docs/architecture')"
                       @click="mobileOpen = false"
                       >Architecture</NuxtLink
                     >
                     <NuxtLink
                       to="/docs/interface"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/docs/interface')"
                       @click="mobileOpen = false"
                       >Interface</NuxtLink
                     >
                     <NuxtLink
                       to="/docs/photos"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/docs/photos')"
                       @click="mobileOpen = false"
                       >Photos</NuxtLink
                     >
                     <NuxtLink
                       to="/docs/api"
-                      class="sidebar-sublink"
+                      :class="sublinkStartClass('/docs/api')"
                       @click="mobileOpen = false"
                       >API</NuxtLink
                     >
                     <NuxtLink
                       to="/docs/sdk"
-                      class="sidebar-sublink"
+                      :class="sublinkStartClass('/docs/sdk')"
                       @click="mobileOpen = false"
                       >SDK</NuxtLink
                     >
@@ -533,8 +432,7 @@
 
               <NuxtLink
                 to="/faq"
-                class="sidebar-link"
-                :class="{ 'sidebar-link-active': route.path === '/faq' }"
+                :class="linkClass('/faq')"
                 @click="mobileOpen = false"
               >
                 <HelpCircleIcon class="h-4 w-4" />
@@ -549,8 +447,7 @@
 
               <NuxtLink
                 to="/about"
-                class="sidebar-link"
-                :class="{ 'sidebar-link-active': route.path === '/about' }"
+                :class="linkClass('/about')"
                 @click="mobileOpen = false"
               >
                 <UsersIcon class="h-4 w-4" />
@@ -559,8 +456,7 @@
 
               <NuxtLink
                 to="/contact"
-                class="sidebar-link"
-                :class="{ 'sidebar-link-active': route.path === '/contact' }"
+                :class="linkClass('/contact')"
                 @click="mobileOpen = false"
               >
                 <MailIcon class="h-4 w-4" />
@@ -569,10 +465,7 @@
 
               <NuxtLink
                 to="/testimonials"
-                class="sidebar-link"
-                :class="{
-                  'sidebar-link-active': route.path === '/testimonials',
-                }"
+                :class="linkClass('/testimonials')"
                 @click="mobileOpen = false"
               >
                 <StarIcon class="h-4 w-4" />
@@ -580,7 +473,7 @@
               </NuxtLink>
 
               <Collapsible v-model:open="mobileLegalOpen">
-                <CollapsibleTrigger class="sidebar-link w-full">
+                <CollapsibleTrigger :class="triggerClass">
                   <ShieldIcon class="h-4 w-4" />
                   <span class="flex-1 text-left">Légal</span>
                   <ChevronDownIcon
@@ -592,43 +485,43 @@
                   <div class="ml-4 mt-0.5 flex flex-col gap-0.5 border-l pl-3">
                     <NuxtLink
                       to="/legal/terms-of-use"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/legal/terms-of-use')"
                       @click="mobileOpen = false"
                       >CGU</NuxtLink
                     >
                     <NuxtLink
                       to="/legal/privacy-policy"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/legal/privacy-policy')"
                       @click="mobileOpen = false"
                       >Confidentialité</NuxtLink
                     >
                     <NuxtLink
                       to="/legal/cookie-policy"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/legal/cookie-policy')"
                       @click="mobileOpen = false"
                       >Cookies</NuxtLink
                     >
                     <NuxtLink
                       to="/legal/data-processing"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/legal/data-processing')"
                       @click="mobileOpen = false"
                       >Données</NuxtLink
                     >
                     <NuxtLink
                       to="/legal/refund-cancellation-policy"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/legal/refund-cancellation-policy')"
                       @click="mobileOpen = false"
                       >Remboursements</NuxtLink
                     >
                     <NuxtLink
                       to="/legal/responsible-use-policy"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/legal/responsible-use-policy')"
                       @click="mobileOpen = false"
                       >Usage responsable</NuxtLink
                     >
                     <NuxtLink
                       to="/legal/specific-service-terms"
-                      class="sidebar-sublink"
+                      :class="sublinkClass('/legal/specific-service-terms')"
                       @click="mobileOpen = false"
                       >CGV spécifiques</NuxtLink
                     >
@@ -717,16 +610,27 @@ const legalOpen = ref(route.path.startsWith('/legal'))
 const mobileFeaturesOpen = ref(route.path.startsWith('/features'))
 const mobileDocsOpen = ref(route.path.startsWith('/docs'))
 const mobileLegalOpen = ref(route.path.startsWith('/legal'))
-</script>
 
-<style>
-.sidebar-link {
-  @apply flex items-center gap-3 px-2 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors;
+// ── Classes utilitaires ───────────────────────────────────────────────────────
+const BASE_LINK =
+  'flex items-center gap-3 px-2 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors'
+const ACTIVE = 'bg-accent text-foreground font-medium'
+const BASE_SUBLINK =
+  'block py-1 text-sm text-muted-foreground hover:text-foreground transition-colors'
+
+const triggerClass = `${BASE_LINK} w-full`
+
+function linkClass(path: string) {
+  return route.path === path ? `${BASE_LINK} ${ACTIVE}` : BASE_LINK
 }
-.sidebar-link-active {
-  @apply bg-accent text-foreground font-medium;
+
+function sublinkClass(path: string) {
+  return route.path === path ? `${BASE_SUBLINK} ${ACTIVE}` : BASE_SUBLINK
 }
-.sidebar-sublink {
-  @apply block py-1 text-sm text-muted-foreground hover:text-foreground transition-colors;
+
+function sublinkStartClass(path: string) {
+  return route.path.startsWith(path)
+    ? `${BASE_SUBLINK} ${ACTIVE}`
+    : BASE_SUBLINK
 }
-</style>
+</script>

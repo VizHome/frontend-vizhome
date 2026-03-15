@@ -57,7 +57,7 @@
     "clsx": "^2.1.1",
     "eslint-config-prettier": "^10.1.8",
     "lucide-vue-next": "^0.577.0",
-    "prettier": "3.8.1",
+    "prettier": "^3.8.1",
     "shadcn-vue": "^2.4.3",
     "tailwind-merge": "^3.5.0",
     "three": "^0.183.2",

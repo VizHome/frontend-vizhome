@@ -468,7 +468,6 @@
                     <Button
                       v-if="!session.isCurrent"
                       variant="ghost"
-                      size="sm"
                       class="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
                       @click="revokeSession(session.id)"
                     >

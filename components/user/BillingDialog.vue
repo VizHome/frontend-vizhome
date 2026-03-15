@@ -57,7 +57,6 @@
             </div>
             <Button
               variant="outline"
-              size="sm"
               class="shrink-0 h-7 text-xs px-2.5"
               @click="startEditCard"
             >
@@ -167,7 +166,6 @@
               >
               <Button
                 variant="ghost"
-                size="icon"
                 class="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
                 :title="`Télécharger ${invoice.description}`"
                 @click="downloadInvoice(invoice)"

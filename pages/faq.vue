@@ -1,103 +1,105 @@
 <template>
   <div>
-    <div class="h-screen">
-      <!-- En-tête -->
-      <section class="pt-16 pb-12 bg-muted/30">
-        <div class="container mx-auto px-4 text-center">
-          <h1 class="text-4xl font-bold mb-4">Questions fréquentes</h1>
-          <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Tout ce que vous devez savoir sur VizHome et nos services
-          </p>
-        </div>
-      </section>
-
-      <!-- Navigation par catégories -->
-      <section class="py-8 border-b">
-        <div class="container mx-auto px-4">
-          <Tabs default-value="general" class="w-full">
-            <TabsList class="grid w-full grid-cols-5">
-              <TabsTrigger value="general">Général</TabsTrigger>
-              <TabsTrigger value="technical">Technique</TabsTrigger>
-              <TabsTrigger value="pricing">Tarifs</TabsTrigger>
-              <TabsTrigger value="security">Sécurité</TabsTrigger>
-              <TabsTrigger value="support">Support</TabsTrigger>
-            </TabsList>
-            <TabsContent value="general">
-              <div class="py-6">
-                <FAQAccordion :items="generalFAQs" />
-              </div>
-            </TabsContent>
-            <TabsContent value="technical">
-              <div class="py-6">
-                <FAQAccordion :items="technicalFAQs" />
-              </div>
-            </TabsContent>
-            <TabsContent value="pricing">
-              <div class="py-6">
-                <FAQAccordion :items="pricingFAQs" />
-              </div>
-            </TabsContent>
-            <TabsContent value="security">
-              <div class="py-6">
-                <FAQAccordion :items="securityFAQs" />
-              </div>
-            </TabsContent>
-            <TabsContent value="support">
-              <div class="py-6">
-                <FAQAccordion :items="supportFAQs" />
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-
-      <!-- Recherche -->
-      <section class="py-8">
-        <div class="container mx-auto px-4 max-w-2xl">
-          <div class="relative">
-            <SearchIcon
-              class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground"
-            />
-            <Input
-              v-model="searchQuery"
-              type="search"
-              placeholder="Rechercher une question..."
-              class="pl-10"
-            />
-          </div>
-          <div v-if="searchQuery && filteredFAQs.length > 0" class="mt-6">
-            <h3 class="font-medium mb-4">Résultats de recherche</h3>
-            <FAQAccordion :items="filteredFAQs" />
-          </div>
-          <div v-else-if="searchQuery" class="mt-6 text-center py-8">
-            <div class="text-5xl mb-4">🔍</div>
-            <h3 class="font-medium mb-2">Aucun résultat trouvé</h3>
-            <p class="text-muted-foreground">
-              Essayez de modifier votre recherche ou contactez notre support
-            </p>
-            <Button variant="outline" class="mt-4" as-child>
-              <NuxtLink to="/contact">Contacter le support</NuxtLink>
-            </Button>
-          </div>
-        </div>
-      </section>
-    </div>
-    <!-- Contact -->
-    <section class="py-12 bg-muted/30">
-      <div class="container mx-auto px-4 text-center">
-        <h2 class="text-2xl font-bold mb-4">
-          Vous ne trouvez pas de réponse à votre question ?
-        </h2>
-        <p class="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          Notre équipe de support est disponible pour vous aider avec toutes vos
-          questions techniques ou commerciales.
+    <!-- En-tête -->
+    <section class="py-16 px-6 border-b">
+      <div class="max-w-2xl mx-auto text-center">
+        <h1 class="text-4xl font-bold mb-3">Questions fréquentes</h1>
+        <p class="text-lg text-muted-foreground">
+          Tout ce que vous devez savoir sur VizHome et nos services
         </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <Button as-child>
-            <NuxtLink to="/contact"> Contacter le support </NuxtLink>
+      </div>
+    </section>
+
+    <!-- Recherche -->
+    <section class="py-8 px-6 border-b bg-muted/30">
+      <div class="max-w-xl mx-auto">
+        <div class="relative">
+          <SearchIcon
+            class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+          />
+          <Input
+            v-model="searchQuery"
+            type="search"
+            placeholder="Rechercher une question..."
+            class="pl-9 rounded-full"
+          />
+        </div>
+        <div v-if="searchQuery && filteredFAQs.length > 0" class="mt-6">
+          <p class="text-sm text-muted-foreground mb-4">
+            {{ filteredFAQs.length }} résultat(s) pour "{{ searchQuery }}"
+          </p>
+          <FAQAccordion :items="filteredFAQs" />
+        </div>
+        <div v-else-if="searchQuery" class="mt-6 text-center py-8">
+          <p class="text-4xl mb-3">🔍</p>
+          <h3 class="font-medium mb-1">Aucun résultat trouvé</h3>
+          <p class="text-sm text-muted-foreground mb-4">
+            Essayez de modifier votre recherche ou contactez notre support
+          </p>
+          <Button variant="outline" class="rounded-full" as-child>
+            <NuxtLink to="/contact">Contacter le support</NuxtLink>
           </Button>
-          <Button variant="outline" as-child>
-            <a href="mailto:support@vizhome.fr"> support@vizhome.fr </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Onglets par catégorie -->
+    <section v-if="!searchQuery" class="py-10 px-6">
+      <div class="max-w-3xl mx-auto">
+        <Tabs default-value="general" class="w-full">
+          <TabsList class="grid w-full grid-cols-5 rounded-full mb-6">
+            <TabsTrigger value="general" class="rounded-full text-xs sm:text-sm"
+              >Général</TabsTrigger
+            >
+            <TabsTrigger
+              value="technical"
+              class="rounded-full text-xs sm:text-sm"
+              >Technique</TabsTrigger
+            >
+            <TabsTrigger value="pricing" class="rounded-full text-xs sm:text-sm"
+              >Tarifs</TabsTrigger
+            >
+            <TabsTrigger
+              value="security"
+              class="rounded-full text-xs sm:text-sm"
+              >Sécurité</TabsTrigger
+            >
+            <TabsTrigger value="support" class="rounded-full text-xs sm:text-sm"
+              >Support</TabsTrigger
+            >
+          </TabsList>
+          <TabsContent value="general"
+            ><FAQAccordion :items="generalFAQs"
+          /></TabsContent>
+          <TabsContent value="technical"
+            ><FAQAccordion :items="technicalFAQs"
+          /></TabsContent>
+          <TabsContent value="pricing"
+            ><FAQAccordion :items="pricingFAQs"
+          /></TabsContent>
+          <TabsContent value="security"
+            ><FAQAccordion :items="securityFAQs"
+          /></TabsContent>
+          <TabsContent value="support"
+            ><FAQAccordion :items="supportFAQs"
+          /></TabsContent>
+        </Tabs>
+      </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section class="py-12 px-6 border-t bg-muted/30">
+      <div class="max-w-2xl mx-auto text-center">
+        <h2 class="text-xl font-bold mb-2">Vous ne trouvez pas de réponse ?</h2>
+        <p class="text-muted-foreground mb-6">
+          Notre équipe de support est disponible pour vous aider.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-3">
+          <Button class="rounded-full" as-child>
+            <NuxtLink to="/contact">Contacter le support</NuxtLink>
+          </Button>
+          <Button variant="outline" class="rounded-full" as-child>
+            <a href="mailto:support@vizhome.fr">support@vizhome.fr</a>
           </Button>
         </div>
       </div>
@@ -108,8 +110,9 @@
 <script setup lang="ts">
 import { SearchIcon } from 'lucide-vue-next'
 import { ref, computed } from 'vue'
-
 import FAQAccordion from '@/components/FAQAccordion.vue'
+
+definePageMeta({ layout: 'sidebar' })
 
 const searchQuery = ref('')
 
@@ -130,7 +133,7 @@ const generalFAQs = [
       "VizHome est conçu pour les architectes, designers d'intérieur, agents immobiliers, promoteurs et tout professionnel travaillant dans l'aménagement d'espaces. Notre version Freemium est également accessible aux particuliers et étudiants.",
   },
   {
-    question: 'Faut-il des compétences techniques pour utiliser VizHome ?',
+    question: 'Faut-il des compétences techniques ?',
     answer:
       'Non, VizHome a été conçu pour être utilisé sans compétences techniques particulières. Notre interface intuitive vous guide à travers toutes les étapes de création et de personnalisation de vos rendus 3D.',
   },
@@ -241,21 +244,20 @@ const supportFAQs = [
   {
     question: 'Proposez-vous des formations ?',
     answer:
-      "Oui, nous organisons régulièrement des webinaires gratuits d'introduction. Les forfaits Pro et Entreprise incluent également l'accès à notre bibliothèque de tutoriels vidéo. Des formations personnalisées sont disponibles sur demande pour les clients Entreprise.",
+      "Oui, nous organisons régulièrement des webinaires gratuits d'introduction. Les forfaits Pro et Entreprise incluent également l'accès à notre bibliothèque de tutoriels vidéo.",
   },
   {
     question: "Y a-t-il une communauté d'utilisateurs ?",
     answer:
-      'Oui, nous avons un forum communautaire actif où les utilisateurs peuvent échanger des conseils et astuces. Nous sommes également présents sur Discord, où nous organisons des événements et des sessions Q&R mensuelles.',
+      'Oui, nous avons un forum communautaire actif où les utilisateurs peuvent échanger des conseils et astuces. Nous sommes également présents sur Discord.',
   },
   {
     question: 'Comment suggérer de nouvelles fonctionnalités ?',
     answer:
-      'Nous accueillons favorablement les suggestions de nos utilisateurs ! Vous pouvez soumettre vos idées via notre portail de suggestions de fonctionnalités accessible depuis votre compte, ou directement à notre équipe produit via feedback@vizhome.fr.',
+      'Vous pouvez soumettre vos idées via notre portail de suggestions de fonctionnalités accessible depuis votre compte, ou directement à notre équipe produit via feedback@vizhome.fr.',
   },
 ]
 
-// Combine all FAQs for search
 const allFAQs = computed(() => [
   ...generalFAQs,
   ...technicalFAQs,
@@ -264,10 +266,8 @@ const allFAQs = computed(() => [
   ...supportFAQs,
 ])
 
-// Filter FAQs based on search query
 const filteredFAQs = computed(() => {
   if (!searchQuery.value) return []
-
   const query = searchQuery.value.toLowerCase()
   return allFAQs.value.filter(
     faq =>

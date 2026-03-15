@@ -192,4 +192,6 @@ import {
   FileEditIcon,
   MessageSquareIcon,
 } from 'lucide-vue-next'
+
+definePageMeta({ layout: 'sidebar' })
 </script>

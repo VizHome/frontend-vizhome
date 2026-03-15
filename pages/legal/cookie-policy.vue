@@ -136,5 +136,5 @@
 </template>
 
 <script setup lang="ts">
-// Pas de logique spécifique nécessaire pour cette page
+definePageMeta({ layout: 'sidebar' })
 </script>

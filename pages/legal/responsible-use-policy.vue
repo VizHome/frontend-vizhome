@@ -202,4 +202,6 @@ import {
   UserXIcon,
   BadgeAlertIcon,
 } from 'lucide-vue-next'
+
+definePageMeta({ layout: 'sidebar' })
 </script>

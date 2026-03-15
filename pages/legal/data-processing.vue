@@ -261,4 +261,6 @@ import {
   XSquareIcon,
   InfoIcon,
 } from 'lucide-vue-next'
+
+definePageMeta({ layout: 'sidebar' })
 </script>

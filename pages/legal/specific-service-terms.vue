@@ -238,4 +238,6 @@ import {
   AlertCircleIcon,
   HeadphonesIcon,
 } from 'lucide-vue-next'
+
+definePageMeta({ layout: 'sidebar' })
 </script>

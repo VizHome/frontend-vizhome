@@ -196,4 +196,6 @@ import {
   TrashIcon,
   DownloadIcon,
 } from 'lucide-vue-next'
+
+definePageMeta({ layout: 'sidebar' })
 </script>

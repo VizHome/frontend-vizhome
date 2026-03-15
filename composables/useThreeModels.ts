@@ -418,18 +418,39 @@ export function useThreeModels() {
   }
 
   const removeModel = (modelId: string) => {
-    const scene = getScene()
     const idx = importedModels.value.findIndex(m => m.id === modelId)
     if (idx !== -1) {
       const entry = importedModels.value[idx]
-      if (entry) scene.remove(entry.model)
+      if (entry) {
+        // Détacher les TransformControls si ce modèle était sélectionné
+        if (selectedModelId.value === modelId) {
+          transformCtrl?.detach()
+          const helper = transformCtrl?.getHelper()
+          if (helper) helper.visible = false
+        }
+
+        // Traverser le groupe et disposer géométries + matériaux
+        entry.model.traverse(child => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose()
+            if (Array.isArray(child.material)) {
+              child.material.forEach(mat => mat.dispose())
+            } else {
+              child.material?.dispose()
+            }
+          }
+        })
+
+        // Retirer de la scène (removeFromParent est plus robuste que scene.remove)
+        entry.model.removeFromParent()
+      }
+
       importedModels.value.splice(idx, 1)
+
       if (selectedModelId.value === modelId) {
         selectedModelId.value = null
-        transformCtrl?.detach()
-        const helper = transformCtrl?.getHelper()
-        if (helper) helper.visible = false
       }
+
       // Réinitialiser la caméra si plus aucun modèle
       if (importedModels.value.length === 0) {
         const camera = getCamera()

@@ -845,6 +845,19 @@ const {
   setTransformVisible,
 } = useThreeModels()
 
+// Ouvrir le panel Modèles quand un OBJ est en attente de confirmation
+watch(pendingOBJFile, file => {
+  if (file) activePanel.value = 'models'
+})
+
+// Ouvrir le panel Modèles à chaque import réussi
+watch(
+  () => importedModels.value.length,
+  (newLen, oldLen) => {
+    if (newLen > oldLen) activePanel.value = 'models'
+  }
+)
+
 const {
   fps,
   triangleCount,

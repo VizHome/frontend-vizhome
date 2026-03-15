@@ -118,7 +118,9 @@ export function useThreeModels() {
       if (orbitControls) orbitControls.enabled = !event.value
     })
 
-    scene.add(transformCtrl.getHelper())
+    const helper = transformCtrl.getHelper()
+    helper.visible = false
+    scene.add(helper)
   }
 
   /** Change le mode de transform (translate / rotate / scale) */
@@ -214,7 +216,11 @@ export function useThreeModels() {
     selectedModelId.value = modelId
 
     // Attacher immédiatement les TransformControls au nouveau modèle
-    if (transformCtrl) transformCtrl.attach(model)
+    if (transformCtrl) {
+      transformCtrl.attach(model)
+      const helper = transformCtrl.getHelper()
+      if (helper) helper.visible = true
+    }
   }
 
   const _loadGLTF = (buffer: ArrayBuffer, name: string) => {
@@ -421,6 +427,8 @@ export function useThreeModels() {
       if (selectedModelId.value === modelId) {
         selectedModelId.value = null
         transformCtrl?.detach()
+        const helper = transformCtrl?.getHelper()
+        if (helper) helper.visible = false
       }
       // Réinitialiser la caméra si plus aucun modèle
       if (importedModels.value.length === 0) {
@@ -443,12 +451,16 @@ export function useThreeModels() {
     if (selectedModelId.value === modelId) {
       selectedModelId.value = null
       transformCtrl?.detach()
+      const helper = transformCtrl?.getHelper()
+      if (helper) helper.visible = false
       return
     }
     selectedModelId.value = modelId
     const entry = importedModels.value.find(m => m.id === modelId)
     if (entry && transformCtrl) {
       transformCtrl.attach(entry.model)
+      const helper = transformCtrl.getHelper()
+      if (helper) helper.visible = true
     }
   }
 

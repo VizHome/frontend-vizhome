@@ -1,0 +1,25 @@
+services:
+  app:
+    container_name: vizhome-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: dev
+    ports:
+      - "3000:3000"
+      - "24678:24678" # HMR Vite
+    volumes:
+      # Bind-mount du code source pour le hot reload
+      - .:/app
+      # Volumes anonymes pour préserver les node_modules / .nuxt du container
+      # (évite que le host écrase ceux installés dans l'image)
+      - /app/node_modules
+      - /app/.nuxt
+      - /app/.output
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true # nécessaire sur Windows/WSL pour le file watching
+      - WATCHPACK_POLLING=true
+    tty: true
+    stdin_open: true
+    restart: unless-stopped

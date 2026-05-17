@@ -1,12 +1,49 @@
+# Dépendances et builds
 node_modules
 .nuxt
 .output
 dist
+coverage
+
+# Git / VCS
 .git
 .gitignore
-*.md
-.env*
+.gitattributes
+
+# Docker
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# Environnement
+.env
+.env.*
 !.env.example
+
+# IDE / OS
+.vscode
+.idea
 .DS_Store
 Thumbs.db
-coverage
+*.swp
+*.swo
+
+# Logs et caches
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+.cache
+
+# Tests / CI
+.github
+.husky
+*.test.ts
+*.spec.ts
+
+# Docs et fichiers inutiles
+*.md
+!README.md
+LICENSE

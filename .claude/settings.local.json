@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"C:\\\\Users\\\\thiba\\\\Documents\\\\Environnement_dev\\\\backend-vizhome\")",
+      "Bash(mv backend *)",
+      "Bash(mkdir -p config/settings apps/accounts apps/projects apps/renders apps/billing apps/gallery apps/core)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\thiba\\\\Documents\\\\Environnement_dev\\\\backend-vizhome\\\\docker\")",
+      "Bash(docker --version)",
+      "Bash(docker compose *)",
+      "Bash(curl -s -o NUL -w \"Status: %%{http_code}\\\\nTime: %%{time_total}s\\\\n\" http://localhost:8000/admin/login/)",
+      "Bash(curl -s -I http://localhost:8000/admin/login/)",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/auth/register -H \"Content-Type: application/json\" -d '{\"email\":\"test@vizhome.fr\",\"first_name\":\"Test\",\"last_name\":\"User\",\"password\":\"SecurePass1!\",\"password_confirm\":\"SecurePass1!\"}')",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s -I http://localhost:9000/vizhome-media/test/hello2.txt)",
+      "Bash(curl -s -I http://localhost:9000/vizhome-media/test/hello3.txt)",
+      "Bash(curl -s http://localhost:9000/vizhome-media/test/hello3.txt)",
+      "Bash(curl -s http://localhost:9000/vizhome-media/test/rename.txt)",
+      "Bash(curl -s -I http://localhost:9000/vizhome-media/test/rename_ok.txt)",
+      "Bash(curl -s http://localhost:8000/api/v1/billing/plans)",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"projects@test.fr\",\"password\":\"SecurePass1!\"}')",
+      "Bash(curl -s -w \"\\\\nStatus: %{http_code}\\\\n\" http://localhost:8000/health/live)",
+      "Bash(curl -s -w \"\\\\nStatus: %{http_code}\\\\n\" http://localhost:8000/health/ready)",
+      "Bash(curl -s http://localhost:8000/api/schema/)",
+      "Bash(curl -s -I http://localhost:8000/api/docs/)",
+      "Bash(docker build *)",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/auth/register -H \"Content-Type: application/json\" -d '{\"email\":\"frontend@test.fr\",\"first_name\":\"Front\",\"last_name\":\"End\",\"password\":\"SecurePass1!\",\"password_confirm\":\"SecurePass1!\"}')",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('user.name:', d['user']['name']\\); print\\('access[:30]:', d['access'][:30]\\)\")",
+      "Bash(curl -s -X OPTIONS http://localhost:8000/api/v1/auth/login -H \"Origin: http://localhost:3000\" -H \"Access-Control-Request-Method: POST\" -H \"Access-Control-Request-Headers: Content-Type\" -w \"Status: %{http_code}\\\\n\" -D - -o /dev/null)"
+    ]
+  }
+}

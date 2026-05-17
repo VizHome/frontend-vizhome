@@ -226,8 +226,8 @@ const planBadgeClass = computed(() => {
 })
 
 // ─── Logout ──────────────────────────────────────────────────────────────────
-const handleLogout = () => {
+const handleLogout = async () => {
   dropdownOpen.value = false
-  logout()
+  await logout()
 }
 </script>

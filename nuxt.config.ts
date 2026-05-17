@@ -111,7 +111,11 @@ export default defineNuxtConfig({
   // Runtime config
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3000',
+      // URL de l'API backend Django (préfixe /api/v1)
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1',
+      // OAuth — client IDs publics (les secrets restent côté backend)
+      googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID || '',
+      githubClientId: process.env.NUXT_PUBLIC_GITHUB_CLIENT_ID || '',
     },
   },
 

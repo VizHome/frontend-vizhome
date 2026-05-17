@@ -52,7 +52,52 @@
 
           <Card class="shadow-xl">
             <CardContent class="pt-6">
-              <form class="space-y-5" @submit.prevent="handleSubmit">
+              <!-- Erreur globale -->
+              <div
+                v-if="submitError"
+                class="mb-4 rounded-md bg-destructive/10 border border-destructive/30 px-4 py-2 text-sm text-destructive"
+              >
+                {{ submitError }}
+              </div>
+
+              <!-- Step 2 : challenge 2FA -->
+              <form
+                v-if="twoFactorChallenge"
+                class="space-y-4"
+                @submit.prevent="handle2faSubmit"
+              >
+                <div class="space-y-2">
+                  <Label for="2fa-code" class="text-sm font-medium"
+                    >Code de vérification 2FA</Label
+                  >
+                  <Input
+                    id="2fa-code"
+                    v-model="twoFactorCode"
+                    type="text"
+                    inputmode="numeric"
+                    pattern="[0-9]{6}"
+                    maxlength="6"
+                    placeholder="123456"
+                    autocomplete="one-time-code"
+                  />
+                  <p class="text-xs text-muted-foreground">
+                    Saisis le code à 6 chiffres de ton application TOTP.
+                  </p>
+                </div>
+                <Button
+                  type="submit"
+                  class="w-full h-11"
+                  :disabled="isSubmitting || twoFactorCode.length !== 6"
+                >
+                  {{ isSubmitting ? 'Vérification…' : 'Valider le code' }}
+                </Button>
+              </form>
+
+              <form
+                v-else
+                class="space-y-5"
+                @submit.prevent="handleSubmit"
+              >
                 <div class="space-y-2">
                   <Label for="email" class="text-sm font-medium">Email</Label>
                   <div class="relative">
@@ -134,7 +179,13 @@
                   </label>
                 </div>
 
-                <Button type="submit" class="w-full h-11">Se connecter</Button>
+                <Button
+                  type="submit"
+                  class="w-full h-11"
+                  :disabled="isSubmitting"
+                >
+                  {{ isSubmitting ? 'Connexion…' : 'Se connecter' }}
+                </Button>
               </form>
             </CardContent>
           </Card>
@@ -165,12 +216,24 @@ import {
   EyeOffIcon,
 } from 'lucide-vue-next'
 import { ref, reactive } from 'vue'
+import { toast } from 'vue-sonner'
+
+definePageMeta({
+  layout: 'none',
+  middleware: 'guest',
+})
+
+const route = useRoute()
+const auth = useAuth()
+const { fetchMe } = useUser()
 
 // État du formulaire
 const email = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 const showPassword = ref(false)
+const isSubmitting = ref(false)
+const submitError = ref('')
 
 // Gestion des erreurs
 const formErrors = reactive({
@@ -178,13 +241,15 @@ const formErrors = reactive({
   password: '',
 })
 
-// Validation
+// État 2FA (après step 1 du login)
+const twoFactorChallenge = ref<string | null>(null)
+const twoFactorCode = ref('')
+
 const validateForm = () => {
   let isValid = true
   formErrors.email = ''
   formErrors.password = ''
 
-  // Validation de l'email
   if (!email.value) {
     formErrors.email = "L'email est requis"
     isValid = false
@@ -193,7 +258,6 @@ const validateForm = () => {
     isValid = false
   }
 
-  // Validation du mot de passe
   if (!password.value) {
     formErrors.password = 'Le mot de passe est requis'
     isValid = false
@@ -202,20 +266,47 @@ const validateForm = () => {
   return isValid
 }
 
-// Fonction de soumission du formulaire
-const handleSubmit = () => {
-  if (!validateForm()) return
-
-  console.log('Login attempt:', {
-    email: email.value,
-    password: password.value,
-    rememberMe: rememberMe.value,
-  })
-
-  // Ici vous implémenteriez la logique d'authentification
+const handleSubmit = async () => {
+  if (!validateForm() || isSubmitting.value) return
+  submitError.value = ''
+  isSubmitting.value = true
+  try {
+    const result = await auth.login(email.value, password.value)
+    if (result.require2fa) {
+      twoFactorChallenge.value = result.challengeToken
+      return // affiche le champ 2FA
+    }
+    await fetchMe()
+    toast.success(`Bienvenue ${result.user.first_name || result.user.email} !`)
+    const redirect = (route.query.redirect as string) || '/render'
+    await navigateTo(redirect)
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string }; statusCode?: number }
+    if (err?.statusCode === 429) {
+      submitError.value = err.data?.detail || 'Trop de tentatives. Réessayez plus tard.'
+    } else {
+      submitError.value = err.data?.detail || 'Email ou mot de passe incorrect.'
+    }
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
-definePageMeta({
-  layout: 'none',
-})
+const handle2faSubmit = async () => {
+  if (!twoFactorChallenge.value || twoFactorCode.value.length !== 6) return
+  isSubmitting.value = true
+  submitError.value = ''
+  try {
+    const user = await auth.verify2fa(twoFactorChallenge.value, twoFactorCode.value)
+    await fetchMe()
+    toast.success(`Bienvenue ${user.first_name || user.email} !`)
+    const redirect = (route.query.redirect as string) || '/render'
+    await navigateTo(redirect)
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string } }
+    submitError.value = err?.data?.detail || 'Code 2FA invalide.'
+  } finally {
+    isSubmitting.value = false
+  }
+}
 </script>

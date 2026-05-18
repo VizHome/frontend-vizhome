@@ -77,7 +77,9 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'none' })
+definePageMeta({ layout: 'none', middleware: 'guest' })
+
+const auth = useAuth()
 
 const email = ref('')
 const emailError = ref('')
@@ -99,10 +101,21 @@ async function handleSubmit() {
   if (emailError.value) return
 
   loading.value = true
-  // TODO: call password reset API
-  await new Promise(resolve => setTimeout(resolve, 800))
-  loading.value = false
-  submitted.value = true
+  try {
+    await auth.forgotPassword(email.value.trim().toLowerCase())
+    submitted.value = true
+  } catch (e: unknown) {
+    // Le backend renvoie 204 même si l'email n'existe pas (anti-énumération).
+    // Une erreur ici signifie probablement un throttle (429) ou un souci réseau.
+    const err = e as { statusCode?: number; data?: { detail?: string } }
+    if (err?.statusCode === 429) {
+      emailError.value = err.data?.detail || 'Trop de demandes. Réessayez plus tard.'
+    } else {
+      emailError.value = "Erreur réseau, réessayez."
+    }
+  } finally {
+    loading.value = false
+  }
 }
 
 function reset() {

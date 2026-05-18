@@ -414,17 +414,20 @@
                 <div>
                   <p class="text-sm">Authentification à deux facteurs</p>
                   <p class="text-xs text-muted-foreground">
-                    Sécurisez votre compte avec un second facteur.
+                    <span v-if="prefs.twoFactorEnabled" class="text-green-600">
+                      ✓ Activée — un code TOTP sera demandé à la connexion
+                    </span>
+                    <span v-else>
+                      Sécurise ton compte avec un second facteur (app
+                      authenticator).
+                    </span>
                   </p>
                 </div>
                 <button
                   class="relative shrink-0 w-10 h-6 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   :class="prefs.twoFactorEnabled ? 'bg-primary' : 'bg-muted'"
-                  @click="
-                    updatePreferences({
-                      twoFactorEnabled: !prefs.twoFactorEnabled,
-                    })
-                  "
+                  :disabled="twoFactor.isSubmitting.value"
+                  @click="onToggle2fa"
                 >
                   <span
                     class="absolute top-1 left-1 h-4 w-4 rounded-full bg-background shadow transition-transform"
@@ -461,7 +464,8 @@
                           >
                         </p>
                         <p class="text-xs text-muted-foreground">
-                          {{ session.location }} · {{ session.lastActive }}
+                          {{ session.location }} ·
+                          {{ formatLastActive(session.lastActive) }}
                         </p>
                       </div>
                     </div>
@@ -602,6 +606,101 @@
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>
+
+  <!-- ── Dialog 2FA setup / disable ────────────────────────────────────────── -->
+  <Dialog v-model:open="twoFactorDialogOpen">
+    <DialogContent class="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle>
+          {{
+            twoFactorMode === 'setup'
+              ? "Activer l'authentification à 2 facteurs"
+              : 'Désactiver le 2FA'
+          }}
+        </DialogTitle>
+        <DialogDescription>
+          {{
+            twoFactorMode === 'setup'
+              ? "Scanne le QR code avec Google Authenticator, Authy ou 1Password, puis saisis le code à 6 chiffres."
+              : "Saisis un code TOTP courant pour confirmer la désactivation."
+          }}
+        </DialogDescription>
+      </DialogHeader>
+
+      <div class="flex flex-col gap-4 py-2">
+        <!-- QR code (mode setup uniquement) -->
+        <div
+          v-if="twoFactorMode === 'setup' && twoFactor.setupData.value"
+          class="flex flex-col items-center gap-3"
+        >
+          <img
+            :src="twoFactor.setupData.value.qrCode"
+            alt="QR code 2FA"
+            class="w-48 h-48 bg-white p-2 rounded-lg border"
+          />
+          <details class="w-full">
+            <summary class="text-xs text-muted-foreground cursor-pointer">
+              Saisie manuelle (si le QR ne marche pas)
+            </summary>
+            <div class="mt-2 flex items-center gap-2">
+              <code
+                class="flex-1 text-xs font-mono bg-muted px-2 py-1.5 rounded border break-all"
+              >
+                {{ twoFactor.setupData.value.secret }}
+              </code>
+            </div>
+          </details>
+        </div>
+
+        <!-- Erreur -->
+        <div
+          v-if="twoFactorError"
+          class="rounded-md bg-destructive/10 border border-destructive/30 px-3 py-2 text-xs text-destructive"
+        >
+          {{ twoFactorError }}
+        </div>
+
+        <!-- Input code -->
+        <div class="space-y-2">
+          <Label for="2fa-totp-code">Code de vérification</Label>
+          <Input
+            id="2fa-totp-code"
+            v-model="twoFactorCode"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]{6}"
+            maxlength="6"
+            placeholder="123456"
+            autocomplete="one-time-code"
+            class="font-mono tracking-widest text-lg text-center"
+          />
+        </div>
+      </div>
+
+      <DialogFooter class="flex-col sm:flex-row gap-2">
+        <Button variant="ghost" @click="cancel2faDialog">Annuler</Button>
+        <Button
+          :disabled="twoFactor.isSubmitting.value || twoFactorCode.length !== 6"
+          :class="
+            twoFactorMode === 'disable'
+              ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+              : ''
+          "
+          @click="
+            twoFactorMode === 'setup' ? submit2faSetup() : submit2faDisable()
+          "
+        >
+          {{
+            twoFactor.isSubmitting.value
+              ? '…'
+              : twoFactorMode === 'setup'
+                ? 'Activer'
+                : 'Désactiver'
+          }}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script lang="ts" setup>
@@ -633,12 +732,33 @@ import type {
 // ─── defineModel ──────────────────────────────────────────────────────────────
 const open = defineModel<boolean>('open', { default: false })
 
-// ─── Composable ───────────────────────────────────────────────────────────────
-const { preferences, updatePreferences, user, stats, sessions, revokeSession } =
-  useUser()
+// ─── Composables ──────────────────────────────────────────────────────────────
+const {
+  preferences,
+  updatePreferences,
+  user,
+  stats,
+  sessions,
+  fetchSessions,
+  fetchMe,
+  revokeSession,
+  changePassword: apiChangePassword,
+} = useUser()
+const twoFactor = use2fa()
 const colorMode = useColorMode()
 
 const prefs = computed(() => preferences.value)
+
+// ─── Fetch sessions à l'ouverture du dialog ───────────────────────────────────
+watch(open, async newVal => {
+  if (newVal) {
+    try {
+      await fetchSessions()
+    } catch (e) {
+      console.warn('[settings] fetch sessions failed', e)
+    }
+  }
+})
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
 type SectionId =
@@ -709,7 +829,7 @@ const showPasswords = reactive({ current: false, next: false, confirm: false })
 const passwordErrors = reactive({ current: '', next: '', confirm: '' })
 const passwordSuccess = ref(false)
 
-const changePassword = () => {
+const changePassword = async () => {
   passwordErrors.current = ''
   passwordErrors.next = ''
   passwordErrors.confirm = ''
@@ -736,11 +856,112 @@ const changePassword = () => {
   }
   if (hasError) return
 
-  passwordForm.current = ''
-  passwordForm.next = ''
-  passwordForm.confirm = ''
-  passwordSuccess.value = true
-  setTimeout(() => (passwordSuccess.value = false), 4000)
+  try {
+    await apiChangePassword(passwordForm.current, passwordForm.next)
+    passwordForm.current = ''
+    passwordForm.next = ''
+    passwordForm.confirm = ''
+    passwordSuccess.value = true
+    setTimeout(() => (passwordSuccess.value = false), 4000)
+  } catch (e: unknown) {
+    const err = e as { data?: Record<string, string[] | string> }
+    const data = err?.data || {}
+    if (data.current_password) {
+      passwordErrors.current = Array.isArray(data.current_password)
+        ? data.current_password[0]
+        : String(data.current_password)
+    } else if (data.new_password) {
+      passwordErrors.next = Array.isArray(data.new_password)
+        ? data.new_password[0]
+        : String(data.new_password)
+    } else if (data.new_password_confirm) {
+      passwordErrors.confirm = Array.isArray(data.new_password_confirm)
+        ? data.new_password_confirm[0]
+        : String(data.new_password_confirm)
+    } else {
+      toast.error('Impossible de changer le mot de passe.')
+    }
+  }
+}
+
+// ─── 2FA — flow setup / disable ───────────────────────────────────────────────
+const twoFactorDialogOpen = ref(false)
+const twoFactorMode = ref<'setup' | 'disable'>('setup')
+const twoFactorCode = ref('')
+const twoFactorError = ref('')
+
+async function onToggle2fa() {
+  twoFactorError.value = ''
+  twoFactorCode.value = ''
+  if (prefs.value.twoFactorEnabled) {
+    // Désactivation → demande un code
+    twoFactorMode.value = 'disable'
+    twoFactorDialogOpen.value = true
+  } else {
+    // Activation → demande au backend de générer un QR code
+    twoFactorMode.value = 'setup'
+    try {
+      await twoFactor.setup()
+      twoFactorDialogOpen.value = true
+    } catch (e: unknown) {
+      const err = e as { data?: { detail?: string } }
+      toast.error(err?.data?.detail || 'Impossible de démarrer le 2FA.')
+    }
+  }
+}
+
+async function submit2faSetup() {
+  twoFactorError.value = ''
+  if (twoFactorCode.value.length !== 6) {
+    twoFactorError.value = 'Le code fait 6 chiffres.'
+    return
+  }
+  try {
+    await twoFactor.verifySetup(twoFactorCode.value)
+    await fetchMe()
+    twoFactorDialogOpen.value = false
+    twoFactorCode.value = ''
+    toast.success('2FA activé.')
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string } }
+    twoFactorError.value = err?.data?.detail || 'Code invalide.'
+  }
+}
+
+async function submit2faDisable() {
+  twoFactorError.value = ''
+  if (twoFactorCode.value.length !== 6) {
+    twoFactorError.value = 'Le code fait 6 chiffres.'
+    return
+  }
+  try {
+    await twoFactor.disable(twoFactorCode.value)
+    await fetchMe()
+    twoFactorDialogOpen.value = false
+    twoFactorCode.value = ''
+    toast.success('2FA désactivé.')
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string } }
+    twoFactorError.value = err?.data?.detail || 'Code invalide.'
+  }
+}
+
+function cancel2faDialog() {
+  twoFactor.cancelSetup()
+  twoFactorDialogOpen.value = false
+  twoFactorCode.value = ''
+  twoFactorError.value = ''
+}
+
+// ─── Formatage relatif des sessions ───────────────────────────────────────────
+function formatLastActive(iso: string): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  const diff = Date.now() - d.getTime()
+  if (diff < 60_000) return "à l'instant"
+  if (diff < 3_600_000) return `il y a ${Math.floor(diff / 60_000)} min`
+  if (diff < 86_400_000) return `il y a ${Math.floor(diff / 3_600_000)} h`
+  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })
 }
 
 // ─── Sessions — icône selon type ─────────────────────────────────────────────

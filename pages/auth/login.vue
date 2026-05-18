@@ -31,10 +31,24 @@
         <div class="space-y-6">
           <!-- Boutons de connexion sociale -->
           <div class="grid grid-cols-2 gap-4">
-            <Button variant="outline" type="button" class="gap-2 h-11">
+            <Button
+              variant="outline"
+              type="button"
+              class="gap-2 h-11"
+              :disabled="!googleClientId || isOAuthLoading"
+              :title="!googleClientId ? 'Google OAuth non configuré' : 'Continuer avec Google'"
+              @click="handleGoogleLogin"
+            >
               <span>Google</span>
             </Button>
-            <Button variant="outline" type="button" class="gap-2 h-11">
+            <Button
+              variant="outline"
+              type="button"
+              class="gap-2 h-11"
+              :disabled="!githubClientId || isOAuthLoading"
+              :title="!githubClientId ? 'GitHub OAuth non configuré' : 'Continuer avec GitHub'"
+              @click="handleGithubLogin"
+            >
               <span>GitHub</span>
             </Button>
           </div>
@@ -52,7 +66,52 @@
 
           <Card class="shadow-xl">
             <CardContent class="pt-6">
-              <form class="space-y-5" @submit.prevent="handleSubmit">
+              <!-- Erreur globale -->
+              <div
+                v-if="submitError"
+                class="mb-4 rounded-md bg-destructive/10 border border-destructive/30 px-4 py-2 text-sm text-destructive"
+              >
+                {{ submitError }}
+              </div>
+
+              <!-- Step 2 : challenge 2FA -->
+              <form
+                v-if="twoFactorChallenge"
+                class="space-y-4"
+                @submit.prevent="handle2faSubmit"
+              >
+                <div class="space-y-2">
+                  <Label for="2fa-code" class="text-sm font-medium"
+                    >Code de vérification 2FA</Label
+                  >
+                  <Input
+                    id="2fa-code"
+                    v-model="twoFactorCode"
+                    type="text"
+                    inputmode="numeric"
+                    pattern="[0-9]{6}"
+                    maxlength="6"
+                    placeholder="123456"
+                    autocomplete="one-time-code"
+                  />
+                  <p class="text-xs text-muted-foreground">
+                    Saisis le code à 6 chiffres de ton application TOTP.
+                  </p>
+                </div>
+                <Button
+                  type="submit"
+                  class="w-full h-11"
+                  :disabled="isSubmitting || twoFactorCode.length !== 6"
+                >
+                  {{ isSubmitting ? 'Vérification…' : 'Valider le code' }}
+                </Button>
+              </form>
+
+              <form
+                v-else
+                class="space-y-5"
+                @submit.prevent="handleSubmit"
+              >
                 <div class="space-y-2">
                   <Label for="email" class="text-sm font-medium">Email</Label>
                   <div class="relative">
@@ -125,7 +184,7 @@
                 </div>
 
                 <div class="flex items-center space-x-2">
-                  <Checkbox id="remember" v-model:checked="rememberMe" />
+                  <Checkbox id="remember" v-model="rememberMe" />
                   <label
                     for="remember"
                     class="text-sm font-medium leading-none cursor-pointer"
@@ -134,7 +193,13 @@
                   </label>
                 </div>
 
-                <Button type="submit" class="w-full h-11">Se connecter</Button>
+                <Button
+                  type="submit"
+                  class="w-full h-11"
+                  :disabled="isSubmitting"
+                >
+                  {{ isSubmitting ? 'Connexion…' : 'Se connecter' }}
+                </Button>
               </form>
             </CardContent>
           </Card>
@@ -164,13 +229,34 @@ import {
   EyeIcon,
   EyeOffIcon,
 } from 'lucide-vue-next'
-import { ref, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { toast } from 'vue-sonner'
+
+definePageMeta({
+  layout: 'none',
+  middleware: 'guest',
+})
+
+const route = useRoute()
+const auth = useAuth()
+const { fetchMe } = useUser()
+const config = useRuntimeConfig()
+
+const googleClientId = computed(
+  () => (config.public.googleClientId as string) || ''
+)
+const githubClientId = computed(
+  () => (config.public.githubClientId as string) || ''
+)
+const isOAuthLoading = ref(false)
 
 // État du formulaire
 const email = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 const showPassword = ref(false)
+const isSubmitting = ref(false)
+const submitError = ref('')
 
 // Gestion des erreurs
 const formErrors = reactive({
@@ -178,13 +264,15 @@ const formErrors = reactive({
   password: '',
 })
 
-// Validation
+// État 2FA (après step 1 du login)
+const twoFactorChallenge = ref<string | null>(null)
+const twoFactorCode = ref('')
+
 const validateForm = () => {
   let isValid = true
   formErrors.email = ''
   formErrors.password = ''
 
-  // Validation de l'email
   if (!email.value) {
     formErrors.email = "L'email est requis"
     isValid = false
@@ -193,7 +281,6 @@ const validateForm = () => {
     isValid = false
   }
 
-  // Validation du mot de passe
   if (!password.value) {
     formErrors.password = 'Le mot de passe est requis'
     isValid = false
@@ -202,20 +289,131 @@ const validateForm = () => {
   return isValid
 }
 
-// Fonction de soumission du formulaire
-const handleSubmit = () => {
-  if (!validateForm()) return
-
-  console.log('Login attempt:', {
-    email: email.value,
-    password: password.value,
-    rememberMe: rememberMe.value,
-  })
-
-  // Ici vous implémenteriez la logique d'authentification
+const handleSubmit = async () => {
+  if (!validateForm() || isSubmitting.value) return
+  submitError.value = ''
+  isSubmitting.value = true
+  try {
+    const result = await auth.login(email.value, password.value)
+    if (result.require2fa) {
+      twoFactorChallenge.value = result.challengeToken
+      return // affiche le champ 2FA
+    }
+    await fetchMe()
+    toast.success(`Bienvenue ${result.user.first_name || result.user.email} !`)
+    const redirect = (route.query.redirect as string) || '/render'
+    await navigateTo(redirect)
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string }; statusCode?: number }
+    if (err?.statusCode === 429) {
+      submitError.value = err.data?.detail || 'Trop de tentatives. Réessayez plus tard.'
+    } else {
+      submitError.value = err.data?.detail || 'Email ou mot de passe incorrect.'
+    }
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
-definePageMeta({
-  layout: 'none',
-})
+const handle2faSubmit = async () => {
+  if (!twoFactorChallenge.value || twoFactorCode.value.length !== 6) return
+  isSubmitting.value = true
+  submitError.value = ''
+  try {
+    const user = await auth.verify2fa(twoFactorChallenge.value, twoFactorCode.value)
+    await fetchMe()
+    toast.success(`Bienvenue ${user.first_name || user.email} !`)
+    const redirect = (route.query.redirect as string) || '/render'
+    await navigateTo(redirect)
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string } }
+    submitError.value = err?.data?.detail || 'Code 2FA invalide.'
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+// ─── OAuth : Google Sign-In (flow id_token) ──────────────────────────────
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: {
+            client_id: string
+            callback: (resp: { credential: string }) => void
+          }) => void
+          prompt: () => void
+        }
+      }
+    }
+  }
+}
+
+let _googleScriptLoaded = false
+
+async function loadGoogleScript(): Promise<void> {
+  if (_googleScriptLoaded) return
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    script.onload = () => {
+      _googleScriptLoaded = true
+      resolve()
+    }
+    script.onerror = () => reject(new Error('Échec chargement Google Sign-In'))
+    document.head.appendChild(script)
+  })
+}
+
+async function handleGoogleLogin() {
+  if (!googleClientId.value || isOAuthLoading.value) return
+  isOAuthLoading.value = true
+  submitError.value = ''
+  try {
+    await loadGoogleScript()
+    if (!window.google) throw new Error('Google SDK indisponible')
+
+    window.google.accounts.id.initialize({
+      client_id: googleClientId.value,
+      callback: async (resp: { credential: string }) => {
+        try {
+          const user = await auth.loginGoogle(resp.credential)
+          await fetchMe()
+          toast.success(`Bienvenue ${user.first_name || user.email} !`)
+          const redirect = (route.query.redirect as string) || '/render'
+          await navigateTo(redirect)
+        } catch (e: unknown) {
+          const err = e as { data?: { detail?: string } }
+          submitError.value = err?.data?.detail || 'Connexion Google échouée.'
+        } finally {
+          isOAuthLoading.value = false
+        }
+      },
+    })
+    window.google.accounts.id.prompt()
+  } catch (e) {
+    submitError.value = e instanceof Error ? e.message : 'Erreur Google OAuth'
+    isOAuthLoading.value = false
+  }
+}
+
+// ─── OAuth : GitHub (flow authorization code) ────────────────────────────
+function handleGithubLogin() {
+  if (!githubClientId.value || isOAuthLoading.value) return
+  const redirectUri = `${window.location.origin}/auth/oauth/github/callback`
+  const state = crypto.randomUUID()
+  sessionStorage.setItem('github_oauth_state', state)
+  sessionStorage.setItem('github_oauth_redirect', (route.query.redirect as string) || '/render')
+
+  const params = new URLSearchParams({
+    client_id: githubClientId.value,
+    redirect_uri: redirectUri,
+    scope: 'read:user user:email',
+    state,
+  })
+  window.location.href = `https://github.com/login/oauth/authorize?${params}`
+}
 </script>

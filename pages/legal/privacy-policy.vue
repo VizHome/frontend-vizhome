@@ -196,4 +196,5 @@ import {
   TrashIcon,
   DownloadIcon,
 } from 'lucide-vue-next'
+
 </script>

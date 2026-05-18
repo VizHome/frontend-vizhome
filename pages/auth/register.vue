@@ -32,6 +32,12 @@
 
         <Card class="shadow-xl">
           <CardContent class="pt-6">
+            <div
+              v-if="submitError"
+              class="mb-4 rounded-md bg-destructive/10 border border-destructive/30 px-4 py-2 text-sm text-destructive"
+            >
+              {{ submitError }}
+            </div>
             <form class="space-y-5" @submit.prevent="handleSubmit">
               <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
@@ -181,7 +187,7 @@
               <div class="flex items-center space-x-2">
                 <Checkbox
                   id="terms"
-                  v-model:checked="acceptTerms"
+                  v-model="acceptTerms"
                   :class="{ 'ring-1 ring-destructive': formErrors.terms }"
                 />
                 <label for="terms" class="text-sm leading-tight cursor-pointer">
@@ -211,7 +217,13 @@
                 {{ formErrors.terms }}
               </p>
 
-              <Button type="submit" class="w-full h-11">S'inscrire</Button>
+              <Button
+                type="submit"
+                class="w-full h-11"
+                :disabled="isSubmitting"
+              >
+                {{ isSubmitting ? 'Création du compte…' : "S'inscrire" }}
+              </Button>
             </form>
           </CardContent>
         </Card>
@@ -242,6 +254,10 @@ import {
   ShareIcon,
 } from 'lucide-vue-next'
 import { ref, reactive, computed } from 'vue'
+import { toast } from 'vue-sonner'
+
+const auth = useAuth()
+const { fetchMe } = useUser()
 
 // État du formulaire
 const firstName = ref('')
@@ -252,6 +268,8 @@ const confirmPassword = ref('')
 const acceptTerms = ref(false)
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
+const isSubmitting = ref(false)
+const submitError = ref('')
 
 // Gestion des erreurs
 const formErrors = reactive({
@@ -318,21 +336,48 @@ const validateForm = () => {
 }
 
 // Fonction de soumission du formulaire
-const handleSubmit = () => {
-  if (!validateForm()) return
-
-  console.log('Registration attempt:', {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    email: email.value,
-    password: password.value,
-  })
-
-  // Ici vous implémenteriez la logique d'inscription
+const handleSubmit = async () => {
+  if (!validateForm() || isSubmitting.value) return
+  submitError.value = ''
+  isSubmitting.value = true
+  try {
+    const user = await auth.register({
+      email: email.value.trim().toLowerCase(),
+      password: password.value,
+      password_confirm: confirmPassword.value,
+      first_name: firstName.value.trim(),
+      last_name: lastName.value.trim(),
+    })
+    await fetchMe()
+    toast.success(`Compte créé. Bienvenue ${user.first_name || user.email} !`)
+    await navigateTo('/render')
+  } catch (e: unknown) {
+    const err = e as { data?: Record<string, unknown>; statusCode?: number }
+    if (err?.statusCode === 429) {
+      submitError.value = "Trop d'inscriptions depuis cette IP. Réessayez plus tard."
+    } else if (err?.data) {
+      // Mappe les erreurs DRF par champ
+      const data = err.data
+      Object.entries(data).forEach(([field, messages]) => {
+        const msg = Array.isArray(messages) ? messages.join(' ') : String(messages)
+        if (field === 'email') formErrors.email = msg
+        else if (field === 'password') formErrors.password = msg
+        else if (field === 'password_confirm') formErrors.confirmPassword = msg
+        else if (field === 'first_name') formErrors.firstName = msg
+        else if (field === 'last_name') formErrors.lastName = msg
+        else submitError.value = msg
+      })
+    } else {
+      submitError.value = "Erreur lors de l'inscription."
+    }
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 definePageMeta({
   layout: 'none',
+  middleware: 'guest',
 })
 
 // Composant pour indiquer la force du mot de passe

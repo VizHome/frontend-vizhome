@@ -1,48 +1,56 @@
 <template>
   <div>
-    <!-- Section en-tête -->
-    <section class="pt-16 pb-12 bg-muted/30">
-      <div class="container mx-auto px-4 text-center">
-        <h1 class="text-4xl font-bold mb-4">Tarification transparente</h1>
-        <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+    <!-- En-tête -->
+    <section class="py-16 px-6 border-b">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl font-bold mb-3">Tarification transparente</h1>
+        <p class="text-lg text-muted-foreground mb-8">
           Des offres adaptées à tous les besoins, de l'étudiant à l'agence
           d'architecture
         </p>
-        <div class="flex justify-center mt-8">
-          <div class="bg-card border rounded-lg p-1 inline-flex">
-            <Button
-              :variant="billingCycle === 'monthly' ? 'default' : 'ghost'"
-              class="rounded-md"
-              @click="billingCycle = 'monthly'"
+        <!-- Toggle mensuel/annuel -->
+        <div class="inline-flex items-center bg-muted rounded-full p-1 gap-1">
+          <button
+            class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
+            :class="
+              billingCycle === 'monthly'
+                ? 'bg-background shadow-sm text-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            "
+            @click="billingCycle = 'monthly'"
+          >
+            Mensuel
+          </button>
+          <button
+            class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors flex items-center gap-2"
+            :class="
+              billingCycle === 'yearly'
+                ? 'bg-background shadow-sm text-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            "
+            @click="billingCycle = 'yearly'"
+          >
+            Annuel
+            <Badge variant="secondary" class="text-xs rounded-full py-0"
+              >-20%</Badge
             >
-              Mensuel
-            </Button>
-            <Button
-              :variant="billingCycle === 'yearly' ? 'default' : 'ghost'"
-              class="rounded-md"
-              @click="billingCycle = 'yearly'"
-            >
-              Annuel <Badge variant="outline" class="ml-2">-20%</Badge>
-            </Button>
-          </div>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- Tableau de tarification -->
-    <section class="py-12">
-      <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <!-- Plan Freemium -->
-          <Card>
+    <!-- Plans -->
+    <section class="py-12 px-6 border-b">
+      <div class="max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Freemium -->
+          <Card class="rounded-xl border shadow-sm">
             <CardHeader>
               <CardTitle>Freemium</CardTitle>
-              <CardDescription
-                >Pour les débutants et les étudiants</CardDescription
-              >
+              <CardDescription>Pour les débutants et étudiants</CardDescription>
               <div class="mt-4">
-                <span class="text-3xl font-bold">0€</span>
-                <span class="text-muted-foreground">/mois</span>
+                <span class="text-4xl font-bold">0€</span>
+                <span class="text-muted-foreground text-sm">/mois</span>
               </div>
             </CardHeader>
             <CardContent class="space-y-4">
@@ -51,60 +59,43 @@
                 fonctionnalités de base.
               </p>
               <Separator />
-              <div>
-                <h4 class="font-medium mb-2">Inclus :</h4>
-                <ul class="space-y-2">
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>3 projets simultanés</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>10 rendus HD par mois</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Bibliothèque standard (500 matériaux)</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Exports JPEG/PNG</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Support communautaire</span>
-                  </li>
-                </ul>
-              </div>
+              <ul class="space-y-2 text-sm">
+                <li
+                  v-for="item in freemiumFeatures"
+                  :key="item"
+                  class="flex items-center gap-2"
+                >
+                  <CheckIcon class="h-4 w-4 text-primary shrink-0" />
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
             </CardContent>
             <CardFooter>
-              <Button class="w-full" as-child>
-                <NuxtLink to="/auth/register">
-                  Commencer gratuitement
-                </NuxtLink>
+              <Button class="w-full rounded-full" as-child>
+                <NuxtLink to="/auth/register">Commencer gratuitement</NuxtLink>
               </Button>
             </CardFooter>
           </Card>
 
-          <!-- Plan Pro -->
-          <Card class="border-primary">
-            <div class="absolute top-0 right-4 transform -translate-y-1/2">
-              <Badge>Populaire</Badge>
+          <!-- Pro -->
+          <Card class="rounded-xl border-primary border-2 shadow-sm relative">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+              <Badge class="rounded-full">Populaire</Badge>
             </div>
             <CardHeader>
               <CardTitle>Pro</CardTitle>
               <CardDescription>Pour les professionnels</CardDescription>
               <div class="mt-4">
-                <span class="text-3xl font-bold">{{
+                <span class="text-4xl font-bold">{{
                   billingCycle === 'monthly' ? '49€' : '39€'
                 }}</span>
-                <span class="text-muted-foreground">/mois</span>
-                <span
+                <span class="text-muted-foreground text-sm">/mois</span>
+                <div
                   v-if="billingCycle === 'yearly'"
-                  class="text-xs ml-2 text-muted-foreground"
+                  class="text-xs text-muted-foreground mt-1"
                 >
                   Facturé annuellement (468€)
-                </span>
+                </div>
               </div>
             </CardHeader>
             <CardContent class="space-y-4">
@@ -112,61 +103,47 @@
                 Solution complète pour les architectes et designers d'intérieur.
               </p>
               <Separator />
-              <div>
-                <h4 class="font-medium mb-2">Tout Freemium, plus :</h4>
-                <ul class="space-y-2">
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Projets illimités</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>50 rendus HD par mois</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Bibliothèque premium (5 000 matériaux)</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Export 360° et visites virtuelles</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Support prioritaire par email</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Partage sécurisé des rendus</span>
-                  </li>
-                </ul>
-              </div>
+              <p
+                class="text-xs font-medium text-muted-foreground uppercase tracking-wider"
+              >
+                Tout Freemium, plus :
+              </p>
+              <ul class="space-y-2 text-sm">
+                <li
+                  v-for="item in proFeatures"
+                  :key="item"
+                  class="flex items-center gap-2"
+                >
+                  <CheckIcon class="h-4 w-4 text-primary shrink-0" />
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
             </CardContent>
             <CardFooter>
-              <Button class="w-full" as-child>
-                <NuxtLink to="/auth/register">
-                  Essayer 14 jours gratuits
-                </NuxtLink>
+              <Button class="w-full rounded-full" as-child>
+                <NuxtLink to="/auth/register"
+                  >Essayer 14 jours gratuits</NuxtLink
+                >
               </Button>
             </CardFooter>
           </Card>
 
-          <!-- Plan Entreprise -->
-          <Card>
+          <!-- Entreprise -->
+          <Card class="rounded-xl border shadow-sm">
             <CardHeader>
               <CardTitle>Entreprise</CardTitle>
               <CardDescription>Pour les agences et studios</CardDescription>
               <div class="mt-4">
-                <span class="text-3xl font-bold">{{
+                <span class="text-4xl font-bold">{{
                   billingCycle === 'monthly' ? '199€' : '159€'
                 }}</span>
-                <span class="text-muted-foreground">/mois</span>
-                <span
+                <span class="text-muted-foreground text-sm">/mois</span>
+                <div
                   v-if="billingCycle === 'yearly'"
-                  class="text-xs ml-2 text-muted-foreground"
+                  class="text-xs text-muted-foreground mt-1"
                 >
                   Facturé annuellement (1 908€)
-                </span>
+                </div>
               </div>
             </CardHeader>
             <CardContent class="space-y-4">
@@ -174,45 +151,27 @@
                 Solution complète avec options de personnalisation avancées.
               </p>
               <Separator />
-              <div>
-                <h4 class="font-medium mb-2">Tout Pro, plus :</h4>
-                <ul class="space-y-2">
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Projets et utilisateurs illimités</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Rendus illimités</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Bibliothèque complète (10 000+ matériaux)</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Intégration VR complète</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>API développeur</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Gestion des équipes et permissions</span>
-                  </li>
-                  <li class="flex items-center">
-                    <CheckIcon class="h-4 w-4 mr-2 text-primary" />
-                    <span>Support dédié 24/7</span>
-                  </li>
-                </ul>
-              </div>
+              <p
+                class="text-xs font-medium text-muted-foreground uppercase tracking-wider"
+              >
+                Tout Pro, plus :
+              </p>
+              <ul class="space-y-2 text-sm">
+                <li
+                  v-for="item in enterpriseFeatures"
+                  :key="item"
+                  class="flex items-center gap-2"
+                >
+                  <CheckIcon class="h-4 w-4 text-primary shrink-0" />
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
             </CardContent>
             <CardFooter>
-              <Button class="w-full" variant="outline" as-child>
-                <NuxtLink to="/contact">
-                  Contacter l'équipe commerciale
-                </NuxtLink>
+              <Button class="w-full rounded-full" variant="outline" as-child>
+                <NuxtLink to="/contact"
+                  >Contacter l'équipe commerciale</NuxtLink
+                >
               </Button>
             </CardFooter>
           </Card>
@@ -220,146 +179,66 @@
       </div>
     </section>
 
-    <!-- Tableau comparatif détaillé -->
-    <section class="py-12 bg-muted/30 h-screen">
-      <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold mb-8 text-center">
-          Comparaison détaillée des fonctionnalités
+    <!-- Tableau comparatif -->
+    <section class="py-12 px-6 border-b bg-muted/30">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-xl font-bold mb-6 text-center">
+          Comparaison détaillée
         </h2>
-        <div class="overflow-x-auto">
+        <div class="rounded-xl border shadow-sm overflow-x-auto bg-background">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead class="min-w-[200px]">Fonctionnalités</TableHead>
-                <TableHead>Freemium</TableHead>
-                <TableHead>Pro</TableHead>
-                <TableHead>Entreprise</TableHead>
+                <TableHead class="text-center">Freemium</TableHead>
+                <TableHead class="text-center bg-primary/5 font-semibold"
+                  >Pro</TableHead
+                >
+                <TableHead class="text-center">Entreprise</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell class="font-medium">Nombre de projets</TableCell>
-                <TableCell>3</TableCell>
-                <TableCell>Illimité</TableCell>
-                <TableCell>Illimité</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Rendus HD par mois</TableCell>
-                <TableCell>10</TableCell>
-                <TableCell>50</TableCell>
-                <TableCell>Illimité</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium"
-                  >Bibliothèque de matériaux</TableCell
-                >
-                <TableCell>500</TableCell>
-                <TableCell>5 000</TableCell>
-                <TableCell>10 000+</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium"
-                  >Génération 3D automatique</TableCell
-                >
-                <TableCell
-                  ><CheckIcon class="h-4 w-4 text-primary"
-                /></TableCell>
-                <TableCell
-                  ><CheckIcon class="h-4 w-4 text-primary"
-                /></TableCell>
-                <TableCell
-                  ><CheckIcon class="h-4 w-4 text-primary"
-                /></TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Résolution maximale</TableCell>
-                <TableCell>HD (1080p)</TableCell>
-                <TableCell>4K</TableCell>
-                <TableCell>8K</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Export 360°</TableCell>
-                <TableCell
-                  ><XIcon class="h-4 w-4 text-muted-foreground"
-                /></TableCell>
-                <TableCell
-                  ><CheckIcon class="h-4 w-4 text-primary"
-                /></TableCell>
-                <TableCell
-                  ><CheckIcon class="h-4 w-4 text-primary"
-                /></TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Visites virtuelles</TableCell>
-                <TableCell
-                  ><XIcon class="h-4 w-4 text-muted-foreground"
-                /></TableCell>
-                <TableCell
-                  ><CheckIcon class="h-4 w-4 text-primary"
-                /></TableCell>
-                <TableCell
-                  ><CheckIcon class="h-4 w-4 text-primary"
-                /></TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Intégration VR</TableCell>
-                <TableCell
-                  ><XIcon class="h-4 w-4 text-muted-foreground"
-                /></TableCell>
-                <TableCell>Basique</TableCell>
-                <TableCell>Complète</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Formats d'export</TableCell>
-                <TableCell>JPEG, PNG</TableCell>
-                <TableCell>JPEG, PNG, TIFF</TableCell>
-                <TableCell>Tous formats</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Export des modèles 3D</TableCell>
-                <TableCell
-                  ><XIcon class="h-4 w-4 text-muted-foreground"
-                /></TableCell>
-                <TableCell>OBJ, FBX</TableCell>
-                <TableCell>Tous formats</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">API développeur</TableCell>
-                <TableCell
-                  ><XIcon class="h-4 w-4 text-muted-foreground"
-                /></TableCell>
-                <TableCell
-                  ><XIcon class="h-4 w-4 text-muted-foreground"
-                /></TableCell>
-                <TableCell
-                  ><CheckIcon class="h-4 w-4 text-primary"
-                /></TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Gestion des équipes</TableCell>
-                <TableCell
-                  ><XIcon class="h-4 w-4 text-muted-foreground"
-                /></TableCell>
-                <TableCell>Basique (3 membres)</TableCell>
-                <TableCell>Avancée (illimitée)</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Support technique</TableCell>
-                <TableCell>Communautaire</TableCell>
-                <TableCell>Email prioritaire</TableCell>
-                <TableCell>Dédié 24/7</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell class="font-medium">Marque blanche</TableCell>
-                <TableCell
-                  ><XIcon class="h-4 w-4 text-muted-foreground"
-                /></TableCell>
-                <TableCell
-                  ><XIcon class="h-4 w-4 text-muted-foreground"
-                /></TableCell>
-                <TableCell
-                  ><CheckIcon class="h-4 w-4 text-primary"
-                /></TableCell>
+              <TableRow v-for="row in comparisonRows" :key="row.label">
+                <TableCell class="font-medium text-sm">{{
+                  row.label
+                }}</TableCell>
+                <TableCell class="text-center text-sm">
+                  <CheckIcon
+                    v-if="row.free === true"
+                    class="mx-auto h-4 w-4 text-primary"
+                  />
+                  <XIcon
+                    v-else-if="row.free === false"
+                    class="mx-auto h-4 w-4 text-muted-foreground"
+                  />
+                  <span v-else class="text-muted-foreground">{{
+                    row.free
+                  }}</span>
+                </TableCell>
+                <TableCell class="text-center text-sm bg-primary/5">
+                  <CheckIcon
+                    v-if="row.pro === true"
+                    class="mx-auto h-4 w-4 text-primary"
+                  />
+                  <XIcon
+                    v-else-if="row.pro === false"
+                    class="mx-auto h-4 w-4 text-muted-foreground"
+                  />
+                  <span v-else class="font-medium">{{ row.pro }}</span>
+                </TableCell>
+                <TableCell class="text-center text-sm">
+                  <CheckIcon
+                    v-if="row.enterprise === true"
+                    class="mx-auto h-4 w-4 text-primary"
+                  />
+                  <XIcon
+                    v-else-if="row.enterprise === false"
+                    class="mx-auto h-4 w-4 text-muted-foreground"
+                  />
+                  <span v-else class="text-muted-foreground">{{
+                    row.enterprise
+                  }}</span>
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -368,87 +247,34 @@
     </section>
 
     <!-- FAQ -->
-    <section class="py-12 h-screen">
-      <div class="container mx-auto px-4 max-w-3xl">
-        <h2 class="text-2xl font-bold mb-8 text-center">
-          Questions fréquentes
-        </h2>
+    <section class="py-12 px-6 border-b">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-xl font-bold mb-6 text-center">Questions fréquentes</h2>
         <Accordion type="single" collapsible class="w-full">
-          <AccordionItem value="item-1">
-            <AccordionTrigger
-              >Puis-je changer de forfait à tout moment ?</AccordionTrigger
-            >
-            <AccordionContent>
-              Oui, vous pouvez passer à un forfait supérieur à tout moment. La
-              différence sera calculée au prorata. Pour passer à un forfait
-              inférieur, le changement prendra effet à la fin de votre période
-              de facturation.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger
-              >Comment fonctionne l'essai gratuit ?</AccordionTrigger
-            >
-            <AccordionContent>
-              L'essai gratuit de 14 jours vous donne accès à toutes les
-              fonctionnalités du forfait Pro. Aucune carte de crédit n'est
-              requise pour commencer. À la fin de la période d'essai, vous
-              pouvez choisir de passer au forfait payant ou de revenir au
-              forfait Freemium.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger
-              >Les rendus non utilisés sont-ils reportés au mois suivant
-              ?</AccordionTrigger
-            >
-            <AccordionContent>
-              Non, les rendus non utilisés ne sont pas reportés. Votre quota est
-              réinitialisé au début de chaque période de facturation.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-4">
-            <AccordionTrigger
-              >Existe-t-il des tarifs spéciaux pour les établissements
-              d'enseignement ?</AccordionTrigger
-            >
-            <AccordionContent>
-              Oui, nous proposons des remises pour les établissements
-              d'enseignement et les étudiants. Contactez notre équipe
-              commerciale pour plus d'informations.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-5">
-            <AccordionTrigger
-              >Comment fonctionne la facturation annuelle ?</AccordionTrigger
-            >
-            <AccordionContent>
-              La facturation annuelle vous permet d'économiser 20% par rapport
-              au tarif mensuel. Vous êtes facturé une fois par an et bénéficiez
-              d'un accès ininterrompu pendant 12 mois.
-            </AccordionContent>
+          <AccordionItem v-for="faq in faqs" :key="faq.q" :value="faq.q">
+            <AccordionTrigger class="text-left">{{ faq.q }}</AccordionTrigger>
+            <AccordionContent class="text-muted-foreground">{{
+              faq.a
+            }}</AccordionContent>
           </AccordionItem>
         </Accordion>
       </div>
-      <!-- CTA -->
-      <div class="py-12">
-        <div class="container mx-auto px-4">
-          <div
-            class="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 md:p-12 text-center"
-          >
-            <h2 class="text-2xl font-bold mb-4">
-              Vous avez des besoins spécifiques ?
-            </h2>
-            <p class="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Contactez notre équipe commerciale pour discuter d'une solution
-              personnalisée adaptée à votre organisation.
-            </p>
-            <Button size="lg" as-child>
-              <NuxtLink to="/contact">
-                Demander un devis personnalisé
-              </NuxtLink>
-            </Button>
-          </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-12 px-6">
+      <div class="max-w-2xl mx-auto text-center">
+        <div class="bg-primary/5 rounded-2xl border p-10">
+          <h2 class="text-xl font-bold mb-3">
+            Vous avez des besoins spécifiques ?
+          </h2>
+          <p class="text-muted-foreground mb-6">
+            Contactez notre équipe commerciale pour discuter d'une solution
+            personnalisée.
+          </p>
+          <Button size="lg" class="rounded-full" as-child>
+            <NuxtLink to="/contact">Demander un devis personnalisé</NuxtLink>
+          </Button>
         </div>
       </div>
     </section>
@@ -459,5 +285,123 @@
 import { CheckIcon, XIcon } from 'lucide-vue-next'
 import { ref } from 'vue'
 
-const billingCycle = ref('monthly')
+
+const billingCycle = ref<'monthly' | 'yearly'>('monthly')
+
+const freemiumFeatures = [
+  '3 projets simultanés',
+  '10 rendus HD par mois',
+  'Bibliothèque standard (500 matériaux)',
+  'Exports JPEG/PNG',
+  'Support communautaire',
+]
+
+const proFeatures = [
+  'Projets illimités',
+  '50 rendus HD par mois',
+  'Bibliothèque premium (5 000 matériaux)',
+  'Export 360° et visites virtuelles',
+  'Support prioritaire par email',
+  'Partage sécurisé des rendus',
+]
+
+const enterpriseFeatures = [
+  'Projets et utilisateurs illimités',
+  'Rendus illimités',
+  'Bibliothèque complète (10 000+ matériaux)',
+  'Intégration VR complète',
+  'API développeur',
+  'Gestion des équipes et permissions',
+  'Support dédié 24/7',
+]
+
+const comparisonRows = [
+  {
+    label: 'Nombre de projets',
+    free: '3',
+    pro: 'Illimité',
+    enterprise: 'Illimité',
+  },
+  {
+    label: 'Rendus HD par mois',
+    free: '10',
+    pro: '50',
+    enterprise: 'Illimité',
+  },
+  {
+    label: 'Bibliothèque de matériaux',
+    free: '500',
+    pro: '5 000',
+    enterprise: '10 000+',
+  },
+  {
+    label: 'Génération 3D automatique',
+    free: true,
+    pro: true,
+    enterprise: true,
+  },
+  {
+    label: 'Résolution maximale',
+    free: 'HD (1080p)',
+    pro: '4K',
+    enterprise: '8K',
+  },
+  { label: 'Export 360°', free: false, pro: true, enterprise: true },
+  { label: 'Visites virtuelles', free: false, pro: true, enterprise: true },
+  {
+    label: 'Intégration VR',
+    free: false,
+    pro: 'Basique',
+    enterprise: 'Complète',
+  },
+  {
+    label: "Formats d'export",
+    free: 'JPEG, PNG',
+    pro: 'JPEG, PNG, TIFF',
+    enterprise: 'Tous formats',
+  },
+  {
+    label: 'Export des modèles 3D',
+    free: false,
+    pro: 'OBJ, FBX',
+    enterprise: 'Tous formats',
+  },
+  { label: 'API développeur', free: false, pro: false, enterprise: true },
+  {
+    label: 'Gestion des équipes',
+    free: false,
+    pro: 'Basique (3)',
+    enterprise: 'Avancée (illimitée)',
+  },
+  {
+    label: 'Support technique',
+    free: 'Communautaire',
+    pro: 'Email prioritaire',
+    enterprise: 'Dédié 24/7',
+  },
+  { label: 'Marque blanche', free: false, pro: false, enterprise: true },
+]
+
+const faqs = [
+  {
+    q: 'Puis-je changer de forfait à tout moment ?',
+    a: 'Oui, vous pouvez passer à un forfait supérieur à tout moment. La différence sera calculée au prorata. Pour passer à un forfait inférieur, le changement prendra effet à la fin de votre période de facturation.',
+  },
+  {
+    q: "Comment fonctionne l'essai gratuit ?",
+    a: "L'essai gratuit de 14 jours vous donne accès à toutes les fonctionnalités du forfait Pro. Aucune carte de crédit n'est requise pour commencer.",
+  },
+  {
+    q: 'Les rendus non utilisés sont-ils reportés ?',
+    a: 'Non, les rendus non utilisés ne sont pas reportés. Votre quota est réinitialisé au début de chaque période de facturation.',
+  },
+  {
+    q: "Existe-t-il des tarifs pour les établissements d'enseignement ?",
+    a: "Oui, nous proposons des remises pour les établissements d'enseignement et les étudiants. Contactez notre équipe commerciale pour plus d'informations.",
+  },
+  {
+    q: 'Comment fonctionne la facturation annuelle ?',
+    a: "La facturation annuelle vous permet d'économiser 20% par rapport au tarif mensuel. Vous êtes facturé une fois par an.",
+  },
+]
 </script>

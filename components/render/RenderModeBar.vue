@@ -23,23 +23,11 @@
       <component :is="mode.icon" class="h-4 w-4" />
       <span class="text-sm font-medium">{{ mode.label }}</span>
     </Button>
-
-    <div class="h-5 w-px bg-border/50 mx-1" />
-
-    <Button
-      variant="ghost"
-      size="sm"
-      class="rounded-full gap-2 px-4"
-      @click="navigateTo('/gallery')"
-    >
-      <LayoutGrid class="h-4 w-4" />
-      <span class="text-sm font-medium">Galerie</span>
-    </Button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Box, LayoutGrid, Pencil, Sparkles } from 'lucide-vue-next'
+import { Box, Pencil, Sparkles } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 
 const { currentMode, setMode } = useRenderMode()

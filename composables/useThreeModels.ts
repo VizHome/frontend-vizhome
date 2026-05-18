@@ -20,6 +20,14 @@ export interface ImportedModel {
   position: { x: number; y: number; z: number }
   rotation: { x: number; y: number; z: number }
   scale: { x: number; y: number; z: number }
+  /** Référence au fichier original — gardée tant que pas encore upload sur MinIO */
+  file?: File
+  /** MTL associé si l'import était un OBJ + matériau */
+  mtlFile?: File
+  /** ID côté backend après upload réussi (string version de l'int) */
+  backendId?: number
+  /** Vrai pendant un upload en cours */
+  isSyncing?: boolean
 }
 
 // ─── État singleton ──────────────────────────────────────────────────────────
@@ -36,6 +44,12 @@ const selectedModelId = ref<string | null>(null)
 const isLoadingModel = ref(false)
 const modelLoadError = ref<string | null>(null)
 const transformMode = ref<'translate' | 'rotate' | 'scale'>('translate')
+
+// Fichiers en attente d'attache à la prochaine entry créée par _processLoadedModel.
+// Utilisés pour propager le File original depuis _loadFromFile sans modifier
+// la signature de _loadGLTF/_loadOBJ/etc.
+let _pendingFile: File | undefined
+let _pendingMtlFile: File | undefined
 
 // OBJ : fichier en attente de confirmation de mode d'import
 const pendingOBJFile = ref<File | null>(null)
@@ -211,7 +225,14 @@ export function useThreeModels() {
         z: model.rotation.z,
       },
       scale: { x: model.scale.x, y: model.scale.y, z: model.scale.z },
+      // Garde la référence aux fichiers pour upload différé éventuel
+      file: _pendingFile,
+      mtlFile: _pendingMtlFile,
     })
+    // Reset les pending files (déjà attachés à l'entry)
+    _pendingFile = undefined
+    _pendingMtlFile = undefined
+
     isLoadingModel.value = false
     selectedModelId.value = modelId
 
@@ -318,6 +339,9 @@ export function useThreeModels() {
   const _loadFromFile = (file: File, mtlFile?: File) => {
     isLoadingModel.value = true
     modelLoadError.value = null
+    // Stocke les références — _processLoadedModel les attachera à la nouvelle entry
+    _pendingFile = file
+    _pendingMtlFile = mtlFile
     const reader = new FileReader()
     reader.onload = event => {
       const buffer = event.target?.result as ArrayBuffer
@@ -364,7 +388,7 @@ export function useThreeModels() {
     input.accept = '.glb,.gltf,.obj,.fbx,.stl'
     input.style.display = 'none'
     document.body.appendChild(input)
-    input.onchange = e => {
+    input.onchange = async e => {
       document.body.removeChild(input)
       const file = (e.target as HTMLInputElement).files?.[0]
       if (!file) return
@@ -375,6 +399,7 @@ export function useThreeModels() {
         return
       }
       _loadFromFile(file)
+      await _autoUploadLastModel()
     }
     // Nettoyage si l'utilisateur annule sans choisir de fichier
     input.addEventListener('cancel', () => {
@@ -395,21 +420,106 @@ export function useThreeModels() {
       mtlInput.accept = '.mtl'
       mtlInput.style.display = 'none'
       document.body.appendChild(mtlInput)
-      mtlInput.onchange = mtlE => {
+      mtlInput.onchange = async mtlE => {
         document.body.removeChild(mtlInput)
         const mtlFile = (mtlE.target as HTMLInputElement).files?.[0]
         _loadFromFile(file, mtlFile)
+        await _autoUploadLastModel()
       }
-      mtlInput.addEventListener('cancel', () => {
+      mtlInput.addEventListener('cancel', async () => {
         if (document.body.contains(mtlInput))
           document.body.removeChild(mtlInput)
-        // Si l'utilisateur annule la sélection du MTL, charger sans matériaux
         _loadFromFile(file)
+        await _autoUploadLastModel()
       })
       mtlInput.click()
     } else {
       _loadFromFile(file)
+      _autoUploadLastModel().catch(() => {/* déjà géré */})
     }
+  }
+
+  /**
+   * Attend que _loadFromFile termine, puis upload la dernière entry vers le
+   * projet courant (si un projet est ouvert). Sinon, l'entry garde son
+   * `file` en référence en attendant un upload différé via `syncAllUnsynced()`.
+   */
+  const _autoUploadLastModel = async (): Promise<void> => {
+    // Attend la fin de _processLoadedModel
+    await new Promise<void>((resolve, reject) => {
+      const start = Date.now()
+      const interval = window.setInterval(() => {
+        if (!isLoadingModel.value) {
+          window.clearInterval(interval)
+          resolve()
+        } else if (Date.now() - start > 30_000) {
+          window.clearInterval(interval)
+          reject(new Error('Timeout import modèle'))
+        }
+      }, 100)
+    })
+
+    const entry = importedModels.value[importedModels.value.length - 1]
+    if (!entry || !entry.file) return
+
+    // Pas de projet ouvert ? On garde juste le file pour upload différé.
+    const projects = useProjects()
+    if (!projects.currentProject.value) return
+
+    await _syncEntryToBackend(entry)
+  }
+
+  const _syncEntryToBackend = async (entry: ImportedModel): Promise<void> => {
+    if (!entry.file || entry.backendId !== undefined) return
+    const projects = useProjects()
+    if (!projects.currentProject.value) return
+
+    entry.isSyncing = true
+    try {
+      const uploaded = await projects.uploadModelToCurrentProject(
+        entry.name,
+        entry.file,
+        entry.mtlFile
+      )
+      // Remplace l'id local par l'id backend (string)
+      const oldId = entry.id
+      entry.backendId = uploaded.id
+      entry.id = String(uploaded.id)
+      // Update sélection si nécessaire
+      if (selectedModelId.value === oldId) {
+        selectedModelId.value = entry.id
+      }
+      // Le fichier n'est plus nécessaire (libère la mémoire)
+      entry.file = undefined
+      entry.mtlFile = undefined
+    } finally {
+      entry.isSyncing = false
+    }
+  }
+
+  /**
+   * Upload vers le backend tous les modèles qui ont encore un `file` en
+   * référence (non synchronisés). Appelé après création d'un nouveau projet
+   * par SaveProjectDialog.
+   */
+  const syncAllUnsynced = async (): Promise<{ synced: number; failed: number }> => {
+    const projects = useProjects()
+    if (!projects.currentProject.value) {
+      return { synced: 0, failed: 0 }
+    }
+    let synced = 0
+    let failed = 0
+    for (const entry of importedModels.value) {
+      if (!entry.file || entry.backendId !== undefined) continue
+      try {
+        await _syncEntryToBackend(entry)
+        synced++
+      } catch (e) {
+        failed++
+        console.warn(`Sync échouée pour ${entry.name}:`, e)
+      }
+    }
+    return { synced, failed }
   }
 
   /** Annule l'import OBJ en attente */
@@ -427,6 +537,17 @@ export function useThreeModels() {
           transformCtrl?.detach()
           const helper = transformCtrl?.getHelper()
           if (helper) helper.visible = false
+        }
+
+        // Si modèle synchronisé backend → demande suppression côté serveur
+        // (fire-and-forget, on n'attend pas pour ne pas bloquer l'UI)
+        if (entry.backendId !== undefined) {
+          const projects = useProjects()
+          if (projects.currentProject.value) {
+            projects.deleteImportedModel(entry.backendId).catch(err => {
+              console.warn(`Échec suppression backend modèle ${entry.backendId}:`, err)
+            })
+          }
         }
 
         // Traverser le groupe et disposer géométries + matériaux
@@ -510,6 +631,94 @@ export function useThreeModels() {
     }
   }
 
+  /**
+   * Charge un modèle depuis une URL (MinIO/CDN) et l'ajoute à la scène.
+   * Utilisé pour la restauration des modèles d'un projet sauvegardé.
+   *
+   * Options.backendId remplace l'id local généré par Date.now() pour qu'on
+   * puisse référencer ce modèle côté API par la suite (transform updates,
+   * delete, etc.).
+   */
+  const loadFromUrl = async (
+    url: string,
+    name: string,
+    mtlUrl?: string,
+    options?: {
+      position?: { x: number; y: number; z: number }
+      rotation?: { x: number; y: number; z: number }
+      scale?: { x: number; y: number; z: number }
+      backendId?: number
+    }
+  ): Promise<void> => {
+    // Compte d'avant pour repérer la nouvelle entrée
+    const sizeBefore = importedModels.value.length
+
+    const fileResp = await fetch(url)
+    if (!fileResp.ok) throw new Error(`Échec téléchargement ${url}`)
+    const blob = await fileResp.blob()
+    const file = new File([blob], name, { type: blob.type })
+
+    let mtlFile: File | undefined
+    if (mtlUrl) {
+      const mtlResp = await fetch(mtlUrl)
+      if (mtlResp.ok) {
+        const mtlBlob = await mtlResp.blob()
+        const mtlName = name.replace(/\.[^.]+$/, '.mtl')
+        mtlFile = new File([mtlBlob], mtlName, { type: mtlBlob.type })
+      }
+    }
+
+    _loadFromFile(file, mtlFile)
+
+    // Attend que _processLoadedModel termine (isLoadingModel passe à false)
+    await new Promise<void>((resolve, reject) => {
+      const start = Date.now()
+      const interval = window.setInterval(() => {
+        if (!isLoadingModel.value) {
+          window.clearInterval(interval)
+          resolve()
+        } else if (Date.now() - start > 30_000) {
+          window.clearInterval(interval)
+          reject(new Error('Timeout chargement modèle'))
+        }
+      }, 50)
+    })
+
+    // Met à jour la dernière entry avec les options (transform + id backend)
+    if (importedModels.value.length > sizeBefore) {
+      const entry = importedModels.value[importedModels.value.length - 1]
+      if (entry) {
+        if (options?.backendId !== undefined) {
+          entry.id = String(options.backendId)
+        }
+        if (options?.position) {
+          entry.position = { ...options.position }
+          entry.model.position.set(
+            options.position.x,
+            options.position.y,
+            options.position.z
+          )
+        }
+        if (options?.rotation) {
+          entry.rotation = { ...options.rotation }
+          entry.model.rotation.set(
+            options.rotation.x,
+            options.rotation.y,
+            options.rotation.z
+          )
+        }
+        if (options?.scale) {
+          entry.scale = { ...options.scale }
+          entry.model.scale.set(
+            options.scale.x,
+            options.scale.y,
+            options.scale.z
+          )
+        }
+      }
+    }
+  }
+
   return {
     importedModels,
     selectedModelId,
@@ -531,5 +740,9 @@ export function useThreeModels() {
     fitCameraToModels,
     setTransformMode,
     setTransformVisible,
+    // Restore d'un projet sauvegardé
+    loadFromUrl,
+    // Synchronisation backend (auto-upload + différé)
+    syncAllUnsynced,
   }
 }

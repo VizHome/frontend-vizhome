@@ -196,4 +196,5 @@ import {
   MailQuestionIcon,
   InfoIcon,
 } from 'lucide-vue-next'
+
 </script>

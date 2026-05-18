@@ -240,8 +240,11 @@ const TABS: { id: TabId; label: string; icon: unknown }[] = [
   { id: 'shortcuts', label: 'Raccourcis', icon: Keyboard },
 ]
 
+const _config = useRuntimeConfig()
+const _docsUrl = (_config.public.docsUrl as string) || 'http://localhost:3001'
+
 const HELP_LINKS = [
-  { label: 'Documentation complète', href: '/docs', icon: BookOpen },
+  { label: 'Documentation complète', href: _docsUrl, icon: BookOpen },
   { label: 'Tutoriels vidéo', href: '#', icon: FileText },
   { label: 'Forum communautaire', href: '#', icon: HelpCircle },
   { label: 'Contacter le support', href: '/contact', icon: ScrollText },

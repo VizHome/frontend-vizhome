@@ -261,4 +261,5 @@ import {
   XSquareIcon,
   InfoIcon,
 } from 'lucide-vue-next'
+
 </script>

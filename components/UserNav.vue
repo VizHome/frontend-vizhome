@@ -94,6 +94,26 @@
 
         <DropdownMenuSeparator />
 
+        <!-- Navigation projets / galerie -->
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            class="gap-2.5 cursor-pointer"
+            @click="goTo('/projects')"
+          >
+            <FolderOpen class="h-4 w-4 text-muted-foreground" />
+            <span>Mes projets</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="gap-2.5 cursor-pointer"
+            @click="goTo('/gallery')"
+          >
+            <LayoutGrid class="h-4 w-4 text-muted-foreground" />
+            <span>Galerie de rendus</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
         <!-- Groupe aide -->
         <DropdownMenuGroup>
           <DropdownMenuSub>
@@ -176,8 +196,10 @@ import {
   BookOpen,
   Bug,
   CreditCard,
+  FolderOpen,
   HelpCircle,
   Keyboard,
+  LayoutGrid,
   LogOut,
   Settings,
   Shield,
@@ -225,9 +247,15 @@ const planBadgeClass = computed(() => {
   return classes[user.value.plan]
 })
 
-// ─── Logout ──────────────────────────────────────────────────────────────────
-const handleLogout = () => {
+// ─── Navigation ──────────────────────────────────────────────────────────────
+const goTo = async (path: string) => {
   dropdownOpen.value = false
-  logout()
+  await navigateTo(path)
+}
+
+// ─── Logout ──────────────────────────────────────────────────────────────────
+const handleLogout = async () => {
+  dropdownOpen.value = false
+  await logout()
 }
 </script>

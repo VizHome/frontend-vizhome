@@ -67,7 +67,7 @@ const { updateFrame: navFrame, setNavMode } = useThreeNavigation()
 
 // ─── Projects : chargement automatique si ?project=N dans l'URL ────────────
 const { openProject, closeCurrentProject, currentProject } = useProjects()
-const { restore: restoreScene } = useSceneSerializer()
+const { restore: restoreScene, restoreModelTransforms } = useSceneSerializer()
 
 // ─── Callback d'animation stocké pour la reprise ──────────────────────────────
 const onFrame = (delta: number) => navFrame(delta)
@@ -102,6 +102,8 @@ onMounted(async () => {
         await new Promise(r => setTimeout(r, 50)) // laisse Three init finir
         restoreScene(currentProject.value?.scene.data || {})
         await loadProjectModels()
+        // Applique les transforms sauvegardés (peuvent différer du backend)
+        restoreModelTransforms(currentProject.value?.scene.data || {})
         toast.success(`Projet « ${currentProject.value?.title} » chargé.`)
       } catch (e: unknown) {
         const err = e as { statusCode?: number; data?: { detail?: string } }

@@ -187,7 +187,7 @@
               <div class="flex items-center space-x-2">
                 <Checkbox
                   id="terms"
-                  v-model:checked="acceptTerms"
+                  v-model="acceptTerms"
                   :class="{ 'ring-1 ring-destructive': formErrors.terms }"
                 />
                 <label for="terms" class="text-sm leading-tight cursor-pointer">

@@ -130,14 +130,8 @@
                 :class="sublinkClass('/docs/interface')"
                 >Interface</NuxtLink
               >
-              <NuxtLink to="/docs/photos" :class="sublinkClass('/docs/photos')"
-                >Photos</NuxtLink
-              >
               <NuxtLink to="/docs/api" :class="sublinkStartClass('/docs/api')"
                 >API</NuxtLink
-              >
-              <NuxtLink to="/docs/sdk" :class="sublinkStartClass('/docs/sdk')"
-                >SDK</NuxtLink
               >
             </div>
           </CollapsibleContent>
@@ -409,22 +403,10 @@
                       >Interface</NuxtLink
                     >
                     <NuxtLink
-                      to="/docs/photos"
-                      :class="sublinkClass('/docs/photos')"
-                      @click="mobileOpen = false"
-                      >Photos</NuxtLink
-                    >
-                    <NuxtLink
                       to="/docs/api"
                       :class="sublinkStartClass('/docs/api')"
                       @click="mobileOpen = false"
                       >API</NuxtLink
-                    >
-                    <NuxtLink
-                      to="/docs/sdk"
-                      :class="sublinkStartClass('/docs/sdk')"
-                      @click="mobileOpen = false"
-                      >SDK</NuxtLink
                     >
                   </div>
                 </CollapsibleContent>

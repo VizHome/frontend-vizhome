@@ -184,7 +184,7 @@
                 </div>
 
                 <div class="flex items-center space-x-2">
-                  <Checkbox id="remember" v-model:checked="rememberMe" />
+                  <Checkbox id="remember" v-model="rememberMe" />
                   <label
                     for="remember"
                     class="text-sm font-medium leading-none cursor-pointer"

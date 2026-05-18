@@ -106,10 +106,10 @@
             </li>
             <li>
               <NuxtLink
-                to="/docs/sdk"
+                to="/docs/architecture"
                 class="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
-                SDK
+                Architecture
                 <ArrowUpRightIcon class="h-3 w-3" />
               </NuxtLink>
             </li>

@@ -105,10 +105,41 @@ export function useSceneSerializer() {
         /* mode inconnu, ignoré */
       }
     }
-    // Note : la restauration des modèles 3D se fait dans la page render via
-    // useProjects.currentProject.importedModels (téléchargement depuis MinIO
-    // puis appel à useThreeModels._loadFromFile pour chaque modèle).
+    // Les modèles 3D sont chargés par la page /render via loadProjectModels().
+    // Ensuite appeler restoreModelTransforms(state) pour appliquer les
+    // positions/rotations/échelles sauvegardées (qui peuvent différer des
+    // transforms initiales stockées côté backend ImportedModel).
   }
 
-  return { serialize, restore }
+  /**
+   * À appeler APRÈS loadProjectModels : applique les transforms sauvegardés
+   * dans state.models en surchargeant ceux issus du backend ImportedModel.
+   *
+   * Match par backendId (string) ←→ entry.id (string).
+   */
+  function restoreModelTransforms(state: SceneState): void {
+    const sceneModels =
+      (state.models as unknown as Array<{
+        id: number | string
+        position: { x: number; y: number; z: number }
+        rotation: { x: number; y: number; z: number }
+        scale: { x: number; y: number; z: number }
+      }>) || []
+
+    for (const m of sceneModels) {
+      const entry = models.importedModels.value.find(
+        e => e.id === String(m.id)
+      )
+      if (!entry) continue
+
+      entry.position = { ...m.position }
+      entry.rotation = { ...m.rotation }
+      entry.scale = { ...m.scale }
+      entry.model.position.set(m.position.x, m.position.y, m.position.z)
+      entry.model.rotation.set(m.rotation.x, m.rotation.y, m.rotation.z)
+      entry.model.scale.set(m.scale.x, m.scale.y, m.scale.z)
+    }
+  }
+
+  return { serialize, restore, restoreModelTransforms }
 }

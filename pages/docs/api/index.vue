@@ -1,403 +1,434 @@
 <template>
-  <div class="space-y-8">
-    <div>
-      <h1 class="text-3xl font-bold tracking-tight">Vue d'ensemble</h1>
+  <div class="space-y-8 w-full">
+    <header>
+      <h1 class="text-3xl font-bold tracking-tight">Référence API</h1>
       <p class="text-lg text-muted-foreground mt-2">
-        Présentation générale de la plateforme VizHome
+        API REST versionnée sous <code class="text-base">/api/v1/</code>.
+        Authentification JWT, format JSON, codes HTTP standards.
       </p>
-    </div>
+    </header>
 
-    <!-- Introduction -->
-    <Card>
-      <CardContent class="pt-6">
+    <!-- Source de vérité -->
+    <Card class="border-primary/30 bg-primary/5">
+      <CardHeader>
+        <CardTitle class="text-base flex items-center gap-2">
+          <InfoIcon class="h-4 w-4 text-primary" />
+          Source de vérité : Swagger / ReDoc
+        </CardTitle>
+      </CardHeader>
+      <CardContent class="text-sm space-y-2">
         <p>
-          VizHome est une plateforme innovante de visualisation 3D
-          architecturale propulsée par l'intelligence artificielle, conçue pour
-          répondre aux besoins des professionnels de l'immobilier, de
-          l'architecture et de la décoration. Cette page vous présente les
-          principales fonctionnalités et avantages de notre solution.
+          Ce guide donne une vue d'ensemble pédagogique. La référence
+          exhaustive (tous les endpoints, schémas, payloads) est
+          <strong>auto-générée</strong> depuis le code Django via
+          <code class="text-xs">drf-spectacular</code> :
         </p>
+        <ul class="pl-4 space-y-1">
+          <li>
+            • Swagger UI interactive (essaie les endpoints depuis le browser) :
+            <code class="text-xs">/api/docs/</code>
+          </li>
+          <li>
+            • ReDoc (lecture, recherche, export) :
+            <code class="text-xs">/api/redoc/</code>
+          </li>
+          <li>
+            • Schéma OpenAPI 3.0 (YAML) :
+            <code class="text-xs">/api/schema/</code>
+          </li>
+        </ul>
       </CardContent>
     </Card>
 
-    <!-- Qu'est-ce que VizHome -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Qu'est-ce que VizHome ?</h2>
+    <!-- Base URL -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Base URL</h2>
       <Card>
         <CardContent class="pt-6">
-          <p class="mb-4">
-            VizHome transforme la manière dont les professionnels visualisent et
-            présentent des espaces intérieurs grâce à une technologie de pointe
-            en intelligence artificielle et en rendu 3D. Notre plateforme vous
-            permet de :
-          </p>
-
-          <div class="space-y-4">
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Reconstruire des espaces en 3D</h3>
-              <p class="text-sm text-muted-foreground">
-                Transformez de simples photos en modèles 3D précis et détaillés
-                en quelques minutes.
-              </p>
-            </div>
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Personnaliser virtuellement</h3>
-              <p class="text-sm text-muted-foreground">
-                Modifiez les matériaux, l'éclairage, les meubles et la
-                décoration sans aucune limitation.
-              </p>
-            </div>
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Générer des rendus photoréalistes</h3>
-              <p class="text-sm text-muted-foreground">
-                Créez des visualisations de qualité professionnelle pour
-                impressionner vos clients.
-              </p>
-            </div>
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Déclencher des rendus IA</h3>
-              <p class="text-sm text-muted-foreground">
-                Soumettez des prompts ou des modèles 3D pour générer des rendus
-                photoréalistes via l'IA et récupérez les résultats.
-              </p>
-            </div>
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Collaborer efficacement</h3>
-              <p class="text-sm text-muted-foreground">
-                Partagez vos projets avec vos équipes et clients pour un
-                feedback instantané.
-              </p>
-            </div>
+          <div class="rounded-md border bg-muted/40 p-3 text-sm font-mono mb-2">
+            https://api.vizhome.fr/api/v1/
           </div>
+          <p class="text-sm text-muted-foreground">
+            En dev : <code class="text-xs">http://localhost:8000/api/v1/</code>.
+            Toutes les routes documentées ci-dessous sont relatives à cette
+            base.
+          </p>
         </CardContent>
       </Card>
-    </div>
+    </section>
 
-    <!-- Principales fonctionnalités -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Principales fonctionnalités</h2>
-      <div class="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-base"
-              >Reconstruction 3D automatique</CardTitle
+    <!-- Authentification -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Authentification</h2>
+      <Card>
+        <CardContent class="pt-6 space-y-3 text-sm">
+          <p>
+            La majorité des endpoints requièrent un token JWT dans le header :
+          </p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs font-mono"
+          >Authorization: Bearer &lt;access_token&gt;</pre>
+          <p>
+            L'access token est valide 15 minutes. Quand il expire, le client
+            doit appeler <code class="text-xs">POST /auth/refresh</code> avec
+            le refresh token (valide 7 jours, rotation activée). Le composable
+            <code class="text-xs">useApi</code> du frontend fait ce refresh
+            automatiquement sur 401.
+          </p>
+          <p>
+            Voir la
+            <NuxtLink
+              to="/docs/api/authentification"
+              class="text-primary hover:underline"
+              >page dédiée à l'authentification</NuxtLink
             >
-            <CardDescription>De la photo au modèle 3D</CardDescription>
+            pour le détail (register, login, OAuth Google/GitHub, 2FA TOTP).
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+
+    <!-- Conventions -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Conventions</h2>
+
+      <Card>
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base">Format des requêtes / réponses</CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <ul class="pl-4 space-y-1">
+            <li>
+              • Content-Type : <code class="text-xs">application/json</code>
+            </li>
+            <li>
+              • Encoding : <code class="text-xs">UTF-8</code>
+            </li>
+            <li>
+              • Snake_case partout (<code class="text-xs">created_at</code>,
+              <code class="text-xs">output_type</code>, etc.)
+            </li>
+            <li>
+              • Timestamps : ISO 8601 avec timezone
+              (<code class="text-xs">2026-05-13T08:42:13.826009+02:00</code>)
+            </li>
+            <li>
+              • Pagination DRF : <code class="text-xs">PageNumberPagination</code>,
+              20 items par défaut, modifiable via
+              <code class="text-xs">?page_size=N</code>
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base">Pagination</CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >
+GET /api/v1/projects/?page=2&amp;page_size=20
+
+200 OK
+&#123;
+  "count": 42,
+  "next": "http://localhost:8000/api/v1/projects/?page=3",
+  "previous": "http://localhost:8000/api/v1/projects/?page=1",
+  "results": [ ... ]
+&#125;</pre>
+          <p class="text-xs text-muted-foreground">
+            Endpoints sans pagination :
+            <code class="text-xs">GET /renders/history</code> (toujours 10
+            items max), <code class="text-xs">GET /billing/plans</code>
+            (catalogue fixe).
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base">Codes HTTP</CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b">
+                <th class="text-left py-2 font-semibold">Code</th>
+                <th class="text-left py-2 font-semibold">Sens</th>
+              </tr>
+            </thead>
+            <tbody class="text-muted-foreground">
+              <tr class="border-b">
+                <td class="py-2 font-mono">200 OK</td>
+                <td>Succès, payload renvoyé</td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">201 Created</td>
+                <td>Ressource créée (register, projects, share…)</td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">202 Accepted</td>
+                <td>
+                  Render en attente de traitement async (Celery picker)
+                </td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">204 No Content</td>
+                <td>
+                  Succès sans payload (logout, delete, forgot-password…)
+                </td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">400 Bad Request</td>
+                <td>Validation DRF échouée — voir les champs en erreur</td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">401 Unauthorized</td>
+                <td>Token absent / expiré / invalide → refresh ou login</td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">403 Forbidden</td>
+                <td>Pas le droit (ex : project d'un autre user)</td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">404 Not Found</td>
+                <td>Ressource inexistante (ou tu n'y as pas accès)</td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">410 Gone</td>
+                <td>Share link expiré</td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">429 Too Many Requests</td>
+                <td>
+                  Throttle DRF ou lockout
+                  <code class="text-xs">django-axes</code>
+                </td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2 font-mono">503 Service Unavailable</td>
+                <td>
+                  Stripe / Gemini non configuré côté serveur (clés absentes)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base">Format d'erreur</CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            Erreur de validation DRF — un dict avec les noms de champs :
+          </p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >
+400 Bad Request
+&#123;
+  "email": ["Un compte avec cet email existe déjà."],
+  "password": ["Trop court (8 caractères minimum)."]
+&#125;</pre>
+          <p>Erreur générique — <code class="text-xs">detail</code> + parfois <code class="text-xs">code</code> :</p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >
+503 Service Unavailable
+&#123;
+  "detail": "Stripe n'est pas configuré sur ce serveur.",
+  "code": "stripe_unavailable"
+&#125;</pre>
+        </CardContent>
+      </Card>
+    </section>
+
+    <!-- Liste endpoints -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Inventaire des endpoints</h2>
+
+      <div class="space-y-4">
+        <Card>
+          <CardHeader class="pb-3">
+            <CardTitle class="text-base">Auth</CardTitle>
           </CardHeader>
           <CardContent>
-            <p class="text-sm text-muted-foreground">
-              Notre IA analyse vos photos et génère automatiquement un modèle 3D
-              texturé complet avec une précision remarquable.
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-base">Bibliothèque de matériaux</CardTitle>
-            <CardDescription
-              >Des milliers d'options de personnalisation</CardDescription
+            <pre
+              class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
             >
-          </CardHeader>
-          <CardContent>
-            <p class="text-sm text-muted-foreground">
-              Accédez à notre vaste collection de matériaux réalistes pour
-              transformer l'apparence de n'importe quel espace.
-            </p>
+POST   /auth/register
+POST   /auth/login                          (→ 200 + JWT ou 200 + challenge 2FA)
+POST   /auth/refresh
+POST   /auth/logout
+POST   /auth/forgot-password
+POST   /auth/reset-password
+POST   /auth/2fa/verify                     (étape 2 du login 2FA)
+POST   /auth/oauth/google/exchange          (id_token Google)
+POST   /auth/oauth/github/exchange          (code GitHub)</pre>
           </CardContent>
         </Card>
+
         <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-base">Catalogue de meubles 3D</CardTitle>
-            <CardDescription
-              >Aménagez vos espaces virtuellement</CardDescription
+          <CardHeader class="pb-3">
+            <CardTitle class="text-base">Me</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <pre
+              class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
             >
-          </CardHeader>
-          <CardContent>
-            <p class="text-sm text-muted-foreground">
-              Des milliers de meubles et objets 3D pour meubler et décorer vos
-              espaces selon vos besoins.
-            </p>
+GET    /me/                                 (profil + stats + préférences)
+PATCH  /me/                                 (first_name, last_name, avatar_url)
+GET    /me/preferences
+PATCH  /me/preferences
+POST   /me/change-password
+GET    /me/sessions
+DELETE /me/sessions/&#123;id&#125;
+POST   /me/2fa/setup                        (génère QR code)
+POST   /me/2fa/verify-setup
+POST   /me/2fa/disable
+
+GET    /me/subscription
+POST   /me/subscription/checkout            (→ Stripe Checkout URL)
+POST   /me/subscription/cancel
+GET    /me/invoices
+GET    /me/payment-methods</pre>
           </CardContent>
         </Card>
+
         <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-base">Rendu avancé</CardTitle>
-            <CardDescription
-              >Images photoréalistes de haute qualité</CardDescription
+          <CardHeader class="pb-3">
+            <CardTitle class="text-base">Renders IA</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <pre
+              class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
             >
-          </CardHeader>
-          <CardContent>
-            <p class="text-sm text-muted-foreground">
-              Générez des images de qualité professionnelle avec différentes
-              ambiances d'éclairage et perspectives.
-            </p>
+POST   /renders/                            (→ 202 + render pending)
+GET    /renders/                            (galerie paginée
+                                             ?source=...&amp;status=done)
+GET    /renders/history                     (10 derniers prompts done)
+GET    /renders/&#123;id&#125;
+PATCH  /renders/&#123;id&#125;                          (title seulement)
+DELETE /renders/&#123;id&#125;</pre>
           </CardContent>
         </Card>
+
         <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-base">Édition collaborative</CardTitle>
-            <CardDescription>Travaillez en équipe efficacement</CardDescription>
+          <CardHeader class="pb-3">
+            <CardTitle class="text-base">Projects, Scènes &amp; Modèles 3D</CardTitle>
           </CardHeader>
           <CardContent>
-            <p class="text-sm text-muted-foreground">
-              Invitez des collaborateurs à modifier vos projets et suivez toutes
-              les modifications en temps réel.
-            </p>
+            <pre
+              class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+            >
+GET    /projects/
+POST   /projects/
+GET    /projects/&#123;id&#125;                         (inclut scene + modèles)
+PATCH  /projects/&#123;id&#125;                         (title, description)
+DELETE /projects/&#123;id&#125;
+POST   /projects/&#123;id&#125;/duplicate                ?copy_assets=true
+
+GET    /projects/&#123;id&#125;/scene
+PUT    /projects/&#123;id&#125;/scene                    (JSON state Three.js)
+
+GET    /projects/&#123;id&#125;/models
+POST   /projects/&#123;id&#125;/models                   (multipart, petits fichiers)
+POST   /projects/&#123;id&#125;/models/upload-url        (presigned MinIO)
+POST   /projects/&#123;id&#125;/models/confirm           (après PUT direct)
+PATCH  /projects/&#123;id&#125;/models/&#123;mid&#125;             (transform)
+DELETE /projects/&#123;id&#125;/models/&#123;mid&#125;
+
+POST   /projects/&#123;id&#125;/annotations
+GET    /projects/&#123;id&#125;/annotations
+PATCH  /projects/&#123;id&#125;/annotations/&#123;aid&#125;
+DELETE /projects/&#123;id&#125;/annotations/&#123;aid&#125;
+
+POST   /projects/&#123;id&#125;/share                    (crée un share token)
+GET    /projects/&#123;id&#125;/share
+DELETE /projects/&#123;id&#125;/share/&#123;sid&#125;
+
+GET    /shared/&#123;token&#125;                         (PUBLIC, pas d'auth)</pre>
           </CardContent>
         </Card>
+
         <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-base">API et intégrations</CardTitle>
-            <CardDescription>Connectez VizHome à vos outils</CardDescription>
+          <CardHeader class="pb-3">
+            <CardTitle class="text-base">Billing</CardTitle>
           </CardHeader>
           <CardContent>
-            <p class="text-sm text-muted-foreground">
-              Intégrez notre technologie à vos applications existantes via notre
-              API RESTful complète.
-            </p>
+            <pre
+              class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+            >
+GET    /billing/plans                       (PUBLIC, pas d'auth)
+
+POST   /webhooks/stripe/webhook/            (dj-stripe, signature validée)</pre>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader class="pb-3">
+            <CardTitle class="text-base">Healthcheck</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <pre
+              class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+            >
+GET    /health/live                         (200 si Django up)
+GET    /health/ready                        (200 si Postgres + Redis OK)</pre>
           </CardContent>
         </Card>
       </div>
-    </div>
+    </section>
 
-    <!-- Pour qui -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Pour qui ?</h2>
+    <!-- Exemple cURL -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Exemple complet (cURL)</h2>
       <Card>
         <CardContent class="pt-6">
-          <div class="space-y-4">
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                <BuildingIcon class="h-5 w-5" />
-              </div>
-              <div>
-                <h3 class="font-medium">Agents immobiliers</h3>
-                <p class="text-sm text-muted-foreground mt-1">
-                  Valorisez vos biens grâce à des visuels attrayants et des
-                  visites virtuelles, tout en réduisant les visites inutiles.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                <PencilRulerIcon class="h-5 w-5" />
-              </div>
-              <div>
-                <h3 class="font-medium">Architectes et décorateurs</h3>
-                <p class="text-sm text-muted-foreground mt-1">
-                  Présentez vos concepts de design avec un réalisme
-                  impressionnant et explorez rapidement différentes options.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                <HardHatIcon class="h-5 w-5" />
-              </div>
-              <div>
-                <h3 class="font-medium">Entreprises de rénovation</h3>
-                <p class="text-sm text-muted-foreground mt-1">
-                  Montrez le "avant/après" de vos projets de rénovation pour
-                  aider vos clients à visualiser les transformations.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                <StoreIcon class="h-5 w-5" />
-              </div>
-              <div>
-                <h3 class="font-medium">Commerce de détail et e-commerce</h3>
-                <p class="text-sm text-muted-foreground mt-1">
-                  Permettez à vos clients de visualiser vos produits dans leur
-                  propre espace avant l'achat.
-                </p>
-              </div>
-            </div>
-          </div>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono leading-relaxed"
+          >
+# 1. Register
+curl -X POST http://localhost:8000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '&#123;
+    "email": "test@vizhome.fr",
+    "first_name": "Test",
+    "last_name": "User",
+    "password": "SecurePass1!",
+    "password_confirm": "SecurePass1!"
+  &#125;'
+
+# 2. Récupère l'access token de la réponse, puis :
+TOKEN="eyJhbGciOiJIUz..."
+
+# 3. Crée un projet
+curl -X POST http://localhost:8000/api/v1/projects/ \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '&#123;"title":"Mon premier projet"&#125;'
+
+# 4. Lance un rendu IA
+curl -X POST http://localhost:8000/api/v1/renders/ \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '&#123;
+    "source": "prompt",
+    "output_type": "2d",
+    "prompt": "A modern living room with large windows"
+  &#125;'</pre>
         </CardContent>
       </Card>
-    </div>
-
-    <!-- Plans et tarifs -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Plans et tarifs</h2>
-      <Card>
-        <CardContent class="pt-6">
-          <p class="mb-4">
-            VizHome propose plusieurs formules adaptées à différents besoins et
-            budgets. Consultez notre
-            <NuxtLink to="/pricing" class="text-primary hover:underline"
-              >page de tarifs</NuxtLink
-            >
-            pour plus de détails.
-          </p>
-
-          <div class="grid gap-4 md:grid-cols-3">
-            <div class="border rounded-lg p-4">
-              <h3 class="font-medium mb-2">Freemium</h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                Idéal pour tester la plateforme
-              </p>
-              <ul class="space-y-2 text-sm">
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>3 projets gratuits</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>20 rendus par projet</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Résolution standard</span>
-                </li>
-              </ul>
-            </div>
-            <div class="border rounded-lg p-4 bg-primary/5 border-primary">
-              <h3 class="font-medium mb-2">Professionnel</h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                Pour les professionnels individuels
-              </p>
-              <ul class="space-y-2 text-sm">
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Projets illimités</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Rendus illimités</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Haute résolution</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Rendu IA illimité</span>
-                </li>
-              </ul>
-            </div>
-            <div class="border rounded-lg p-4">
-              <h3 class="font-medium mb-2">Entreprise</h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                Pour les équipes et grandes structures
-              </p>
-              <ul class="space-y-2 text-sm">
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Tout le plan Professionnel</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Utilisateurs multiples</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>API complète</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Intégrations personnalisées</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <span>Support dédié</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    <!-- Ressources complémentaires -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Ressources complémentaires</h2>
-      <div class="grid gap-4 md:grid-cols-2">
-        <NuxtLink to="/docs/projets">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Gestion des projets</CardTitle>
-              <CardDescription
-                >Organisation et suivi de vos travaux</CardDescription
-              >
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Découvrez comment organiser efficacement vos projets de
-                visualisation et partager vos travaux.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-        <NuxtLink to="/docs/rendus">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Rendus de qualité</CardTitle>
-              <CardDescription
-                >Création d'images professionnelles</CardDescription
-              >
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Apprenez à générer des rendus photoréalistes qui
-                impressionneront vos clients.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-        <NuxtLink to="/docs/modeles-3d">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Modèles 3D</CardTitle>
-              <CardDescription>Gestion et personnalisation</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Explorez notre bibliothèque de modèles 3D et apprenez à importer
-                vos propres modèles.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-        <NuxtLink to="/docs/materiaux">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Matériaux</CardTitle>
-              <CardDescription>Textures et finitions réalistes</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Transformez l'apparence de vos espaces avec notre vaste
-                bibliothèque de matériaux.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-      </div>
-    </div>
+    </section>
   </div>
 </template>
 
-<script setup>
-import {
-  BuildingIcon,
-  PencilRulerIcon,
-  HardHatIcon,
-  StoreIcon,
-  CheckIcon,
-} from 'lucide-vue-next'
+<script setup lang="ts">
+import { InfoIcon } from 'lucide-vue-next'
 
-definePageMeta({
-  layout: 'docs',
-})
+definePageMeta({ layout: 'docs' })
 </script>

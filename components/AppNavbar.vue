@@ -162,15 +162,28 @@
           <LanguageSwitcher />
           <ModeToggle />
           <div class="h-5 w-px bg-border mx-1" />
-          <NuxtLink to="/auth/login">
-            <Button variant="ghost" size="sm" class="text-sm">Connexion</Button>
-          </NuxtLink>
-          <NuxtLink to="/auth/register">
-            <Button size="sm" class="rounded-full text-sm gap-1.5">
-              <SparklesIcon class="h-3.5 w-3.5" />
-              Essayer gratuitement
-            </Button>
-          </NuxtLink>
+
+          <template v-if="isAuthenticated">
+            <NuxtLink to="/render">
+              <Button size="sm" class="rounded-full text-sm gap-1.5">
+                <LayoutDashboardIcon class="h-3.5 w-3.5" />
+                Mon espace
+              </Button>
+            </NuxtLink>
+          </template>
+          <template v-else>
+            <NuxtLink to="/auth/login">
+              <Button variant="ghost" size="sm" class="text-sm">
+                Connexion
+              </Button>
+            </NuxtLink>
+            <NuxtLink to="/auth/register">
+              <Button size="sm" class="rounded-full text-sm gap-1.5">
+                <SparklesIcon class="h-3.5 w-3.5" />
+                Essayer gratuitement
+              </Button>
+            </NuxtLink>
+          </template>
         </div>
 
         <!-- Mobile : hamburger -->
@@ -302,21 +315,32 @@
                 <!-- Footer mobile -->
                 <div class="p-4 border-t flex flex-col gap-2">
                   <LanguageSwitcher />
-                  <NuxtLink to="/auth/login" @click="mobileOpen = false">
-                    <Button
-                      variant="outline"
-                      class="w-full rounded-full"
-                      size="sm"
-                    >
-                      Connexion
-                    </Button>
-                  </NuxtLink>
-                  <NuxtLink to="/auth/register" @click="mobileOpen = false">
-                    <Button class="w-full rounded-full gap-1.5" size="sm">
-                      <SparklesIcon class="h-3.5 w-3.5" />
-                      Essayer gratuitement
-                    </Button>
-                  </NuxtLink>
+
+                  <template v-if="isAuthenticated">
+                    <NuxtLink to="/render" @click="mobileOpen = false">
+                      <Button class="w-full rounded-full gap-1.5" size="sm">
+                        <LayoutDashboardIcon class="h-3.5 w-3.5" />
+                        Mon espace
+                      </Button>
+                    </NuxtLink>
+                  </template>
+                  <template v-else>
+                    <NuxtLink to="/auth/login" @click="mobileOpen = false">
+                      <Button
+                        variant="outline"
+                        class="w-full rounded-full"
+                        size="sm"
+                      >
+                        Connexion
+                      </Button>
+                    </NuxtLink>
+                    <NuxtLink to="/auth/register" @click="mobileOpen = false">
+                      <Button class="w-full rounded-full gap-1.5" size="sm">
+                        <SparklesIcon class="h-3.5 w-3.5" />
+                        Essayer gratuitement
+                      </Button>
+                    </NuxtLink>
+                  </template>
                 </div>
               </div>
             </SheetContent>
@@ -348,6 +372,7 @@ import {
   SmartphoneIcon,
   HeartIcon,
   HelpCircleIcon,
+  LayoutDashboardIcon,
   MailIcon,
 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
@@ -362,6 +387,7 @@ import {
 } from '@/components/ui/navigation-menu'
 
 const route = useRoute()
+const { isAuthenticated } = useAuth()
 const mobileOpen = ref(false)
 const mobileFeatOpen = ref(false)
 const mobileCompanyOpen = ref(false)

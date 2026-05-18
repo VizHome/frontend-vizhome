@@ -1,540 +1,439 @@
 <template>
-  <div class="space-y-8">
-    <div>
-      <h1 class="text-3xl font-bold tracking-tight">Projets</h1>
+  <div class="space-y-8 w-full">
+    <header>
+      <h1 class="text-3xl font-bold tracking-tight">Projets &amp; Scènes</h1>
       <p class="text-lg text-muted-foreground mt-2">
-        Création et gestion de vos projets de visualisation 3D
+        CRUD projets, persistance scène Three.js, upload modèles 3D
+        presigned, annotations, share links.
       </p>
-    </div>
+    </header>
 
-    <!-- Introduction -->
+    <!-- Modèle -->
     <Card>
-      <CardContent class="pt-6">
-        <p>
-          Les projets sont au cœur de l'expérience VizHome. Un projet regroupe
-          toutes les ressources nécessaires à la visualisation d'un espace
-          spécifique : photos, modèle 3D, matériaux, meubles et rendus. Cette
-          page vous guide dans la création et la gestion efficace de vos
-          projets.
+      <CardHeader>
+        <CardTitle>Modèle de données</CardTitle>
+      </CardHeader>
+      <CardContent class="text-sm space-y-3">
+        <p>Un <code class="text-xs">Project</code> agrège :</p>
+        <ul class="pl-4 space-y-1">
+          <li>
+            • Un <code class="text-xs">Scene</code> (1-to-1) — JSON state
+            Three.js (caméra, lumières, météo, transforms…)
+          </li>
+          <li>
+            • N <code class="text-xs">ImportedModel</code> — fichiers 3D
+            (GLB/OBJ/FBX/STL/glTF) stockés sur MinIO
+          </li>
+          <li>
+            • N <code class="text-xs">Annotation</code> — notes / mesures
+            positionnées dans la scène
+          </li>
+          <li>
+            • N <code class="text-xs">ShareLink</code> — URLs publiques
+            read-only avec expiration
+          </li>
+        </ul>
+        <p class="text-muted-foreground">
+          Tous les sous-modèles sont supprimés en cascade quand le projet
+          est supprimé (signaux Django ajustent aussi les quotas storage de
+          l'utilisateur).
         </p>
       </CardContent>
     </Card>
 
-    <!-- Structure des projets -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Structure des projets</h2>
+    <!-- CRUD Projects -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">CRUD Projects</h2>
+
       <Card>
-        <CardContent class="pt-6">
-          <p class="mb-4">
-            Chaque projet VizHome suit une structure logique qui facilite
-            l'organisation de votre travail :
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">GET /projects/</CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            Liste paginée des projets du user (20 par page).
+            <code class="text-xs">ProjectListSerializer</code> renvoie une
+            vue compacte (titre, description, thumbnail, modelsCount,
+            dates).
           </p>
-
-          <div class="space-y-4">
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Informations générales</h3>
-              <p class="text-sm text-muted-foreground">
-                Nom, description, type de propriété, superficie, date de
-                création et dernière modification.
-              </p>
-            </div>
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Photos d'origine</h3>
-              <p class="text-sm text-muted-foreground">
-                Photos téléchargées utilisées comme référence pour la
-                reconstruction 3D.
-              </p>
-            </div>
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Modèle 3D</h3>
-              <p class="text-sm text-muted-foreground">
-                Reconstruction 3D de l'espace, incluant géométrie et textures.
-              </p>
-            </div>
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Personnalisation</h3>
-              <p class="text-sm text-muted-foreground">
-                Matériaux, meubles et objets ajoutés pour transformer l'espace.
-              </p>
-            </div>
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Rendus</h3>
-              <p class="text-sm text-muted-foreground">
-                Images statiques, rendus IA et autres fichiers exportés.
-              </p>
-            </div>
-            <div class="border-l-4 border-primary pl-4 py-2">
-              <h3 class="font-medium">Collaborateurs</h3>
-              <p class="text-sm text-muted-foreground">
-                Utilisateurs invités à visualiser ou modifier le projet.
-              </p>
-            </div>
-          </div>
         </CardContent>
       </Card>
-    </div>
 
-    <!-- Création d'un projet -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Création d'un projet</h2>
-      <Card>
-        <CardContent class="pt-6">
-          <div class="mb-6 overflow-x-auto">
-            <img
-              src="/images/generate/image_generate.png"
-              alt="Création de projet"
-              class="w-full max-w-2xl mx-auto rounded-lg border"
-            />
-          </div>
-
-          <p class="mb-4">
-            La création d'un nouveau projet dans VizHome est simple et intuitive
-            :
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">POST /projects/</CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            Crée un projet + sa <code class="text-xs">Scene</code> vide
+            (signal Django). Incrémente
+            <code class="text-xs">UserStats.total_projects</code>.
           </p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs font-mono"
+          >&#123;
+  "title": "Salon moderne",
+  "description": "Test maquette"
+&#125;
 
-          <div class="space-y-4">
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                1
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">Démarrer un projet</h3>
-                <p class="text-sm text-muted-foreground">
-                  Sur votre tableau de bord, cliquez sur le bouton
-                  <span class="px-2 py-1 bg-muted rounded text-xs"
-                    >+ Nouveau projet</span
-                  >
-                  ou sélectionnez l'option dans le menu principal.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                2
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">Informations de base</h3>
-                <p class="text-sm text-muted-foreground">
-                  Renseignez un nom, une description et sélectionnez le type de
-                  propriété (résidentiel, commercial, etc.).
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                3
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">Téléchargement des photos</h3>
-                <p class="text-sm text-muted-foreground">
-                  Importez au minimum 5 photos de l'espace. Consultez notre
-                  guide sur
-                  <NuxtLink
-                    to="/docs/photos"
-                    class="text-primary hover:underline"
-                    >l'optimisation des photos
-                  </NuxtLink>
-                  pour de meilleurs résultats.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                4
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">Génération du modèle 3D</h3>
-                <p class="text-sm text-muted-foreground">
-                  Lancez la génération automatique. Selon la complexité et le
-                  nombre de photos, cette étape peut prendre entre 2 et 10
-                  minutes.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                5
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">Validation</h3>
-                <p class="text-sm text-muted-foreground">
-                  Vérifiez le modèle généré et procédez aux ajustements si
-                  nécessaire. Vous pouvez demander une régénération si les
-                  résultats ne sont pas satisfaisants.
-                </p>
-              </div>
-            </div>
-          </div>
+→ 201 Created (ProjectDetailSerializer — inclut scene + models + annotations)</pre>
         </CardContent>
       </Card>
-    </div>
 
-    <!-- Organisation et gestion -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Organisation et gestion</h2>
-      <Card>
-        <CardContent class="pt-6">
-          <p class="mb-4">
-            VizHome offre plusieurs outils pour organiser et gérer efficacement
-            vos projets :
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            GET /projects/&#123;id&#125;
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            Récupère le détail complet — utilisé par /render pour restaurer
+            une scène sauvegardée.
           </p>
-
-          <div class="space-y-6">
-            <div>
-              <h3 class="text-lg font-medium mb-2">Dossiers et catégories</h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                Regroupez vos projets par client, type d'espace ou statut pour
-                faciliter leur accès.
-              </p>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div class="border rounded-lg p-3">
-                  <h4 class="text-sm font-medium mb-1">Dossiers</h4>
-                  <p class="text-xs text-muted-foreground">
-                    Créez une structure hiérarchique pour classer vos projets
-                    (par exemple, Clients > Nom du client > Projets).
-                  </p>
-                </div>
-                <div class="border rounded-lg p-3">
-                  <h4 class="text-sm font-medium mb-1">Tags</h4>
-                  <p class="text-xs text-muted-foreground">
-                    Ajoutez des étiquettes personnalisées pour faciliter la
-                    recherche et le filtrage de vos projets.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="text-lg font-medium mb-2">Statuts de projet</h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                Suivez la progression de vos projets grâce aux statuts
-                prédéfinis ou personnalisés.
-              </p>
-              <div class="flex flex-wrap gap-2 mb-4">
-                <div
-                  class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs"
-                >
-                  Brouillon
-                </div>
-                <div
-                  class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs"
-                >
-                  En cours
-                </div>
-                <div
-                  class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs"
-                >
-                  Terminé
-                </div>
-                <div
-                  class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs"
-                >
-                  En attente de validation
-                </div>
-                <div
-                  class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs"
-                >
-                  Archivé
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="text-lg font-medium mb-2">Recherche et filtres</h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                Retrouvez rapidement vos projets grâce à des options de
-                recherche et de filtrage avancées.
-              </p>
-              <div class="border rounded-lg p-4 bg-muted/30">
-                <div class="flex flex-col md:flex-row gap-3">
-                  <div class="relative grow">
-                    <SearchIcon
-                      class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                    />
-                    <div
-                      class="h-9 w-full rounded-md border border-input px-9 text-sm"
-                    >
-                      Rechercher des projets...
-                    </div>
-                  </div>
-                  <div class="flex gap-2">
-                    <div
-                      class="h-9 px-4 rounded-md border border-input flex items-center gap-2 text-sm"
-                    >
-                      <FilterIcon class="h-4 w-4 text-muted-foreground" />
-                      <span>Filtres</span>
-                    </div>
-                    <div
-                      class="h-9 px-4 rounded-md border border-input flex items-center gap-2 text-sm"
-                    >
-                      <ArrowDownUpIcon class="h-4 w-4 text-muted-foreground" />
-                      <span>Trier</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >&#123;
+  "id": 42,
+  "title": "Salon moderne",
+  "thumbnail_url": null,
+  "scene": &#123;
+    "data": &#123;
+      "camera": &#123; "position": [10,5,10], "target": [0,0,0] &#125;,
+      "lighting": &#123; "preset": "sunset" &#125;,
+      "weather": "clear",
+      "navigation": "orbit",
+      "models": [ &#123;"id": 7, "position": &#123;...&#125;, ...&#125; ]
+    &#125;,
+    "version": 12
+  &#125;,
+  "imported_models": [
+    &#123;
+      "id": 7,
+      "name": "Cube",
+      "format": "glb",
+      "file_url": "http://localhost:9000/vizhome-media/...glb",
+      "file_size_bytes": 1024,
+      "position": &#123; "x": 0, "y": 0, "z": 0 &#125;,
+      ...
+    &#125;
+  ],
+  "annotations": [ ... ]
+&#125;</pre>
         </CardContent>
       </Card>
-    </div>
 
-    <!-- Collaboration -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Collaboration sur les projets</h2>
-      <Card>
-        <CardContent class="pt-6">
-          <p class="mb-4">
-            Travaillez efficacement en équipe sur vos projets VizHome en
-            invitant des collaborateurs :
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            POST /projects/&#123;id&#125;/duplicate
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            Duplique projet + scène + annotations. Par défaut, ne copie
+            <strong>pas</strong> les modèles 3D (fichiers lourds).
           </p>
-
-          <div class="space-y-4">
-            <div>
-              <h3 class="text-lg font-medium mb-2">Niveaux d'accès</h3>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div class="border rounded-lg p-3">
-                  <h4 class="text-sm font-medium mb-1 flex items-center gap-2">
-                    <EyeIcon class="h-4 w-4 text-muted-foreground" />
-                    Visualisation
-                  </h4>
-                  <p class="text-xs text-muted-foreground">
-                    Permet uniquement de consulter le projet et les rendus sans
-                    pouvoir faire de modifications.
-                  </p>
-                </div>
-                <div class="border rounded-lg p-3">
-                  <h4 class="text-sm font-medium mb-1 flex items-center gap-2">
-                    <EditIcon class="h-4 w-4 text-muted-foreground" />
-                    Édition
-                  </h4>
-                  <p class="text-xs text-muted-foreground">
-                    Autorise la modification des matériaux, l'ajout de meubles
-                    et la création de rendus.
-                  </p>
-                </div>
-                <div class="border rounded-lg p-3">
-                  <h4 class="text-sm font-medium mb-1 flex items-center gap-2">
-                    <UserCogIcon class="h-4 w-4 text-muted-foreground" />
-                    Administration
-                  </h4>
-                  <p class="text-xs text-muted-foreground">
-                    Donne accès à toutes les fonctionnalités, y compris la
-                    gestion des collaborateurs.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="text-lg font-medium mb-2">
-                Inviter des collaborateurs
-              </h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                Pour ajouter un collaborateur à votre projet :
-              </p>
-              <ol class="list-decimal list-inside space-y-2 text-sm ml-2">
-                <li>
-                  Accédez au projet et cliquez sur l'onglet
-                  <span class="text-primary">Collaborateurs</span>
-                </li>
-                <li>
-                  Cliquez sur <span class="text-primary">Inviter</span> et
-                  saisissez l'adresse e-mail du collaborateur
-                </li>
-                <li>Sélectionnez le niveau d'accès approprié</li>
-                <li>Ajoutez un message personnalisé (optionnel)</li>
-                <li>
-                  Cliquez sur
-                  <span class="text-primary">Envoyer l'invitation</span>
-                </li>
-              </ol>
-              <p class="text-sm text-muted-foreground mt-3">
-                Le collaborateur recevra un e-mail avec un lien pour accéder
-                directement au projet.
-              </p>
-            </div>
-
-            <div>
-              <h3 class="text-lg font-medium mb-2">Suivi des modifications</h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                Toutes les modifications apportées à un projet sont enregistrées
-                dans l'historique, avec le nom du collaborateur, la date et la
-                description du changement.
-              </p>
-              <div class="border rounded-lg p-4 mb-4">
-                <div class="space-y-3">
-                  <div class="flex items-start gap-3">
-                    <div
-                      class="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium"
-                    >
-                      SP
-                    </div>
-                    <div>
-                      <p class="text-sm">
-                        <span class="font-medium">Sophie Petit</span> a modifié
-                        les matériaux du salon
-                      </p>
-                      <p class="text-xs text-muted-foreground">
-                        Aujourd'hui à 14:32
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-start gap-3">
-                    <div
-                      class="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium"
-                    >
-                      MB
-                    </div>
-                    <div>
-                      <p class="text-sm">
-                        <span class="font-medium">Marc Blanc</span> a ajouté 3
-                        meubles dans la cuisine
-                      </p>
-                      <p class="text-xs text-muted-foreground">Hier à 09:15</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <p>
+            Query param <code class="text-xs">?copy_assets=true</code> →
+            copie aussi les modèles via
+            <code class="text-xs">copy_object</code> server-side MinIO
+            (rapide). Vérifie le quota storage avant. Réponse
+            <code class="text-xs">400 storage_exceeded</code> si insuffisant.
+          </p>
         </CardContent>
       </Card>
-    </div>
+    </section>
 
-    <!-- Archivage et suppression -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Archivage et suppression</h2>
+    <!-- Scene -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Scène (état Three.js)</h2>
+
       <Card>
-        <CardContent class="pt-6">
-          <div class="space-y-4">
-            <div>
-              <h3 class="text-lg font-medium mb-2">Archivage de projets</h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                L'archivage permet de conserver vos projets terminés sans
-                encombrer votre tableau de bord principal :
-              </p>
-              <ul class="list-disc list-inside space-y-2 text-sm ml-2">
-                <li>
-                  Les projets archivés ne sont pas comptabilisés dans votre
-                  quota de projets actifs
-                </li>
-                <li>
-                  Ils restent accessibles dans la section "Archives" et peuvent
-                  être restaurés à tout moment
-                </li>
-                <li>
-                  Les projets archivés depuis plus de 12 mois peuvent être
-                  automatiquement supprimés (selon votre plan)
-                </li>
-              </ul>
-            </div>
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            PUT /projects/&#123;id&#125;/scene
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-3">
+          <p>
+            Sauvegarde l'état Three.js complet. Le backend stocke
+            <code class="text-xs">scene.data</code> en
+            <code class="text-xs">JSONField</code> Postgres,
+            <strong>sans validation de structure</strong> — le schéma est
+            owned par le frontend via le composable
+            <code class="text-xs">useSceneSerializer</code>.
+          </p>
+          <p>
+            La version est incrémentée à chaque PUT (utile pour de la
+            détection de conflits côté UI plus tard).
+          </p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >&#123;
+  "data": &#123;
+    "camera": &#123; "position": [10,5,10], "target": [0,0,0] &#125;,
+    "lighting": &#123; "preset": "sunset" &#125;,
+    "weather": "cloudy",
+    "navigation": "first_person",
+    "models": [
+      &#123; "id": 7, "position": &#123;...&#125;, "rotation": &#123;...&#125;, "scale": &#123;...&#125; &#125;
+    ]
+  &#125;
+&#125;
 
-            <div>
-              <h3 class="text-lg font-medium mb-2">Suppression définitive</h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                La suppression d'un projet est définitive et entraîne la perte
-                de toutes les données associées. Pour supprimer un projet :
-              </p>
-              <div class="border border-red-200 rounded-lg p-4 bg-red-50">
-                <div class="flex items-start gap-3">
-                  <AlertTriangleIcon class="h-5 w-5 text-red-500 mt-0.5" />
-                  <div>
-                    <p class="text-sm font-medium text-red-800">Attention</p>
-                    <p class="text-xs text-red-700 mt-1">
-                      La suppression d'un projet est irréversible. Toutes les
-                      données associées, y compris les photos, le modèle 3D et
-                      les rendus, seront définitivement perdues.
-                    </p>
-                    <p class="text-xs text-red-700 mt-2">
-                      Nous vous recommandons d'exporter vos rendus et d'archiver
-                      le projet plutôt que de le supprimer.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+→ 200 OK &#123; "data": &#123;...&#125;, "version": 13, "updated_at": "..." &#125;</pre>
         </CardContent>
       </Card>
-    </div>
+    </section>
 
-    <!-- Pages associées -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Pages associées</h2>
-      <div class="grid gap-4 md:grid-cols-3">
-        <NuxtLink to="/docs/rendus">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Rendus</CardTitle>
-              <CardDescription
-                >Création d'images professionnelles</CardDescription
-              >
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Découvrez comment générer des rendus de haute qualité pour vos
-                projets.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-        <NuxtLink to="/docs/modeles-3d">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Modèles 3D</CardTitle>
-              <CardDescription
-                >Gestion des modèles tridimensionnels</CardDescription
-              >
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Apprenez à gérer et personnaliser les modèles 3D de vos projets.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-        <NuxtLink to="/docs/photos">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Photos</CardTitle>
-              <CardDescription>Optimisation des images sources</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Guide pour prendre des photos optimales et les préparer pour la
-                reconstruction 3D.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-      </div>
-    </div>
+    <!-- Modèles 3D -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Modèles 3D</h2>
+
+      <Card>
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base">Deux méthodes d'upload</CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            <strong>1. Multipart classique</strong> (petits fichiers, &lt;
+            ~10 MB) — passe par Django, simple mais limité par la taille
+            max d'upload de l'app.
+          </p>
+          <p>
+            <strong>2. Presigned MinIO</strong> (recommandé, gros fichiers
+            jusqu'à plusieurs GB) — Django renvoie une URL pré-signée, le
+            navigateur PUT direct vers MinIO, puis confirme côté backend.
+            Pas de charge sur Django pour le transfert.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            POST /projects/&#123;id&#125;/models  (multipart)
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >Content-Type: multipart/form-data
+
+name: "Cube"
+file: &lt;binary&gt;
+mtl_file: &lt;binary&gt;   (optionnel, pour OBJ)
+
+→ 201 Created (ImportedModelSerializer)</pre>
+          <p class="text-muted-foreground">
+            Formats acceptés :
+            <code class="text-xs">.glb .gltf .obj .fbx .stl</code>
+            (validation côté serializer). Quota storage enforced.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            POST /projects/&#123;id&#125;/models/upload-url  (presigned)
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >&#123;
+  "name": "BigHouse",
+  "file_name": "house.glb",
+  "file_size_bytes": 52428800,
+  "content_type": "model/gltf-binary"
+&#125;
+
+→ 200 OK
+&#123;
+  "upload_url": "http://localhost:9000/vizhome-media/.../house.glb?X-Amz-...",
+  "key": "projects/models/2026/05/42_xyz.glb",
+  "expires_in": 3600,
+  "method": "PUT",
+  "headers": &#123; "Content-Type": "model/gltf-binary" &#125;
+&#125;</pre>
+          <p class="text-muted-foreground">
+            L'URL est signée avec le host
+            <strong>public</strong> (localhost:9000 en dev, cdn.vizhome.fr
+            en prod) pour que la signature soit valide quand le browser
+            l'utilise. Validité 1 h. Le quota storage est vérifié avant
+            génération.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            PUT &lt;upload_url&gt;  (direct vers MinIO)
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm">
+          <p>
+            Le frontend fait un <code class="text-xs">fetch(upload_url, &#123; method:'PUT', body: file &#125;)</code>.
+            <strong>Pas d'auth Authorization Bearer</strong> — la signature
+            X-Amz est dans la query string de l'URL.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            POST /projects/&#123;id&#125;/models/confirm
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            Appelé après le PUT direct. Le backend fait un
+            <code class="text-xs">HEAD object</code> sur MinIO pour vérifier
+            que le fichier existe et récupérer sa taille réelle.
+          </p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs font-mono"
+          >&#123;
+  "name": "BigHouse",
+  "key": "projects/models/2026/05/42_xyz.glb",
+  "mtl_key": ""
+&#125;
+
+→ 201 Created (ImportedModelSerializer)</pre>
+          <p class="text-muted-foreground">
+            Si la taille réelle dépasse le quota → suppression auto du
+            fichier MinIO + erreur 400
+            <code class="text-xs">storage_exceeded</code>.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            PATCH /projects/&#123;id&#125;/models/&#123;mid&#125;
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            Met à jour <code class="text-xs">name</code>,
+            <code class="text-xs">position</code>,
+            <code class="text-xs">rotation</code>,
+            <code class="text-xs">scale</code> uniquement (le fichier n'est
+            pas modifiable — supprimer + uploader pour remplacer).
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            DELETE /projects/&#123;id&#125;/models/&#123;mid&#125;
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            Supprime le modèle + le(s) fichier(s) sur MinIO (via signal
+            <code class="text-xs">post_delete</code>) + décrémente
+            <code class="text-xs">UserStats.storage_used_bytes</code>.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+
+    <!-- Annotations -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Annotations</h2>
+
+      <Card>
+        <CardContent class="pt-6 text-sm space-y-3">
+          <p>
+            Notes / mesures positionnées dans l'espace 3D. Types supportés :
+            <code class="text-xs">note</code>,
+            <code class="text-xs">measure</code>,
+            <code class="text-xs">marker</code>.
+          </p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs font-mono"
+          >POST /projects/&#123;id&#125;/annotations
+&#123;
+  "type": "note",
+  "position": &#123; "x": 1.5, "y": 0.8, "z": -2.3 &#125;,
+  "content": "Lampe à remplacer",
+  "color": "#ef4444"
+&#125;
+
+GET    /projects/&#123;id&#125;/annotations            (liste paginée)
+PATCH  /projects/&#123;id&#125;/annotations/&#123;aid&#125;       (modif content/position)
+DELETE /projects/&#123;id&#125;/annotations/&#123;aid&#125;</pre>
+        </CardContent>
+      </Card>
+    </section>
+
+    <!-- Share -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Partage public</h2>
+
+      <Card>
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            POST /projects/&#123;id&#125;/share
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            Crée un token URL-safe (256 bits d'entropie via
+            <code class="text-xs">secrets.token_urlsafe(32)</code>).
+            Permission <code class="text-xs">view</code> uniquement (mode
+            collaboratif pas implémenté).
+          </p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >&#123;
+  "permission": "view",
+  "expires_at": "2026-12-31T23:59:59Z"   // optionnel
+&#125;
+
+→ 201 Created
+&#123;
+  "id": 5,
+  "token": "Xm7-pQz...",
+  "share_url": "http://localhost:3000/shared/Xm7-pQz...",
+  "expires_at": "2026-12-31T...",
+  "is_expired": false,
+  ...
+&#125;</pre>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            GET /shared/&#123;token&#125;
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-2">
+          <p>
+            <strong>Endpoint public</strong> (pas d'auth requise). Renvoie
+            le <code class="text-xs">ProjectDetailSerializer</code> du
+            projet partagé. Met à jour
+            <code class="text-xs">last_used_at</code> du lien.
+          </p>
+          <p>
+            Renvoie <code class="text-xs">410 Gone</code> si le lien a
+            expiré, <code class="text-xs">404</code> si le token n'existe
+            pas.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
   </div>
 </template>
 
-<script setup>
-import {
-  SearchIcon,
-  FilterIcon,
-  ArrowDownUpIcon,
-  EyeIcon,
-  EditIcon,
-  UserCogIcon,
-  AlertTriangleIcon,
-} from 'lucide-vue-next'
-
-definePageMeta({
-  layout: 'docs',
-})
+<script setup lang="ts">
+definePageMeta({ layout: 'docs' })
 </script>

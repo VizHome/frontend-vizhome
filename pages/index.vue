@@ -28,15 +28,28 @@
             avec éclairage et matériaux en temps réel.
           </p>
           <div class="flex flex-col sm:flex-row gap-3">
-            <Button size="lg" class="rounded-full gap-2" as-child>
-              <NuxtLink to="/auth/register">
-                <SparklesIcon class="h-4 w-4" />
-                Commencer gratuitement
-              </NuxtLink>
-            </Button>
-            <Button size="lg" variant="outline" class="rounded-full" as-child>
-              <NuxtLink to="/render">Ouvrir l'éditeur</NuxtLink>
-            </Button>
+            <template v-if="isAuthenticated">
+              <Button size="lg" class="rounded-full gap-2" as-child>
+                <NuxtLink to="/render">
+                  <LayoutDashboardIcon class="h-4 w-4" />
+                  Aller à mon espace
+                </NuxtLink>
+              </Button>
+              <Button size="lg" variant="outline" class="rounded-full" as-child>
+                <NuxtLink to="/projects">Mes projets</NuxtLink>
+              </Button>
+            </template>
+            <template v-else>
+              <Button size="lg" class="rounded-full gap-2" as-child>
+                <NuxtLink to="/auth/register">
+                  <SparklesIcon class="h-4 w-4" />
+                  Commencer gratuitement
+                </NuxtLink>
+              </Button>
+              <Button size="lg" variant="outline" class="rounded-full" as-child>
+                <NuxtLink to="/render">Ouvrir l'éditeur</NuxtLink>
+              </Button>
+            </template>
           </div>
           <!-- Social proof -->
           <div class="flex items-center gap-4 pt-1">
@@ -543,7 +556,10 @@ import {
   CheckIcon,
   XIcon,
   StarIcon,
+  LayoutDashboardIcon,
 } from 'lucide-vue-next'
+
+const { isAuthenticated } = useAuth()
 
 // ── Social proof avatars ───────────────────────────────────────────────────
 const avatars = [

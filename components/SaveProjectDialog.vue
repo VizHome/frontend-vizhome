@@ -105,18 +105,35 @@ async function submit() {
   error.value = ''
   isSubmitting.value = true
   try {
+    const isFirstSave = !currentProject.value
+
     // 1. Si pas de projet courant, on en crée un nouveau
-    if (!currentProject.value) {
+    if (isFirstSave) {
       if (!title.value.trim()) {
         error.value = 'Le titre est requis.'
         return
       }
-      const project = await projects.create(title.value.trim(), description.value.trim())
-      // openProject pour qu'il devienne le currentProject
+      const project = await projects.create(
+        title.value.trim(),
+        description.value.trim()
+      )
       await projects.openProject(project.id)
     }
 
-    // 2. Sauvegarde la scène courante
+    // 2. Premier save → upload tous les modèles importés en mémoire
+    //    (ils n'avaient pas de projet de rattachement jusqu'ici)
+    if (isFirstSave) {
+      const { syncAllUnsynced } = useThreeModels()
+      const result = await syncAllUnsynced()
+      if (result.synced > 0) {
+        toast.info(`${result.synced} modèle(s) 3D uploadés vers le projet.`)
+      }
+      if (result.failed > 0) {
+        toast.warning(`${result.failed} modèle(s) n'ont pas pu être uploadés.`)
+      }
+    }
+
+    // 3. Sauvegarde la scène (caméra, lumières, météo, transforms…)
     const state = serialize()
     await projects.saveSceneState(state)
 

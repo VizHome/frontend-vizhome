@@ -1,633 +1,369 @@
 <template>
-  <div class="space-y-8">
-    <div>
-      <h1 class="text-3xl font-bold tracking-tight">Rendus</h1>
+  <div class="space-y-8 w-full">
+    <header>
+      <h1 class="text-3xl font-bold tracking-tight">Rendus IA</h1>
       <p class="text-lg text-muted-foreground mt-2">
-        Génération et gestion des rendus photoréalistes
+        Pipeline asynchrone Celery + Gemini, polling côté client jusqu'au
+        résultat.
       </p>
-    </div>
+    </header>
 
-    <!-- Introduction -->
+    <!-- Vue d'ensemble -->
     <Card>
-      <CardContent class="pt-6">
+      <CardHeader>
+        <CardTitle>Vue d'ensemble</CardTitle>
+      </CardHeader>
+      <CardContent class="text-sm space-y-3">
         <p>
-          Les rendus photoréalistes sont l'un des atouts majeurs de VizHome. Ils
-          vous permettent de créer des visualisations impressionnantes de vos
-          espaces réaménagés ou redécorés. Cette page vous guide dans la
-          création, la personnalisation et l'exportation de rendus de haute
-          qualité.
+          Un <strong>Render</strong> représente une demande de génération IA.
+          Il a 3 sources possibles, 2 types de sortie, et passe par 4 statuts
+          dans son cycle de vie.
         </p>
+
+        <div class="grid gap-3 sm:grid-cols-2 mt-4">
+          <div class="rounded-lg border p-3">
+            <p class="font-semibold mb-1.5">
+              <code class="text-xs">source</code>
+            </p>
+            <ul class="text-xs space-y-1 text-muted-foreground">
+              <li>
+                • <code class="text-xs">prompt</code> — texte uniquement
+              </li>
+              <li>
+                • <code class="text-xs">sketch</code> — croquis 2D + style
+                hint
+              </li>
+              <li>
+                • <code class="text-xs">screenshot</code> — capture de la
+                scène 3D + restylisation
+              </li>
+            </ul>
+          </div>
+          <div class="rounded-lg border p-3">
+            <p class="font-semibold mb-1.5">
+              <code class="text-xs">output_type</code>
+            </p>
+            <ul class="text-xs space-y-1 text-muted-foreground">
+              <li>• <code class="text-xs">2d</code> — image PNG/JPG</li>
+              <li>
+                • <code class="text-xs">3d</code> — actuellement rejeté par
+                Gemini (400)
+              </li>
+            </ul>
+          </div>
+          <div class="rounded-lg border p-3">
+            <p class="font-semibold mb-1.5">
+              <code class="text-xs">status</code>
+            </p>
+            <ul class="text-xs space-y-1 text-muted-foreground">
+              <li>• <code class="text-xs">pending</code> — créé, attend Celery</li>
+              <li>• <code class="text-xs">processing</code> — worker actif</li>
+              <li>• <code class="text-xs">done</code> — terminé avec succès</li>
+              <li>• <code class="text-xs">failed</code> — erreur, voir error_message</li>
+            </ul>
+          </div>
+          <div class="rounded-lg border p-3">
+            <p class="font-semibold mb-1.5">Provider IA</p>
+            <p class="text-xs text-muted-foreground">
+              Configurable via
+              <code class="text-xs">RENDERS_DEFAULT_PROVIDER</code> (par
+              défaut <code class="text-xs">gemini</code>). Pattern
+              abstrait : ajouter OpenAI, Replicate, Stable Diffusion
+              consiste à créer une classe
+              <code class="text-xs">BaseProvider</code> et l'enregistrer
+              dans le <code class="text-xs">registry</code>.
+            </p>
+          </div>
+        </div>
       </CardContent>
     </Card>
 
-    <!-- Types de rendus -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Types de rendus disponibles</h2>
+    <!-- Création -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Créer un rendu</h2>
       <Card>
-        <CardContent class="pt-6">
-          <p class="mb-4">
-            VizHome propose plusieurs types de rendus pour répondre à vos
-            différents besoins de présentation :
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">POST /renders/</CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-3">
+          <p>
+            Crée un <code class="text-xs">Render(status=pending)</code> en
+            DB et enqueue une tâche Celery
+            <code class="text-xs">generate_render.delay(render.pk)</code>.
+            Renvoie immédiatement (sans attendre le résultat) → idéal pour
+            une UX réactive.
           </p>
 
-          <div class="grid gap-6 md:grid-cols-2">
-            <div class="border rounded-lg overflow-hidden">
-              <div class="aspect-video bg-muted relative">
-                <img
-                  src="/images/generate/image_generate.png"
-                  alt="Rendu standard"
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <div class="p-4">
-                <h3 class="font-medium mb-1">Rendus standards</h3>
-                <p class="text-sm text-muted-foreground">
-                  Images statiques haute résolution idéales pour les
-                  présentations, sites web et documents imprimés. Disponibles en
-                  plusieurs résolutions jusqu'à 4K.
-                </p>
-              </div>
-            </div>
-            <div class="border rounded-lg overflow-hidden">
-              <div class="aspect-video bg-muted relative">
-                <img
-                  src="/images/generate/image_generate.png"
-                  alt="Rendu IA photoréaliste"
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <div class="p-4">
-                <h3 class="font-medium mb-1">Rendu IA photoréaliste</h3>
-                <p class="text-sm text-muted-foreground">
-                  Image haute résolution générée par l'IA à partir d'un modèle
-                  3D ou d'un prompt texte, exportable en PNG.
-                </p>
-              </div>
-            </div>
-            <div class="border rounded-lg overflow-hidden">
-              <div class="aspect-video bg-muted relative">
-                <img
-                  src="/images/generate/image_generate.png"
-                  alt="Export PNG"
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <div class="p-4">
-                <h3 class="font-medium mb-1">Export PNG / capture</h3>
-                <p class="text-sm text-muted-foreground">
-                  Capture de la scène 3D WebGL dans l'état courant, incluant
-                  l'éclairage, les matériaux et l'angle de caméra définis.
-                </p>
-              </div>
-            </div>
-            <div class="border rounded-lg overflow-hidden">
-              <div class="aspect-video bg-muted relative">
-                <img
-                  src="/images/generate/image_generate.png"
-                  alt="Vidéo"
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <div class="p-4">
-                <h3 class="font-medium mb-1">Parcours vidéo</h3>
-                <p class="text-sm text-muted-foreground">
-                  Animations présentant un parcours dynamique à travers
-                  l'espace. Idéales pour montrer différentes perspectives et
-                  transitions.
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    <!-- Création de rendus -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Création de rendus</h2>
-      <Card>
-        <CardContent class="pt-6">
-          <p class="mb-4">
-            Pour créer un nouveau rendu dans votre projet VizHome :
+          <p>
+            <strong>Vérifie le quota</strong>
+            <code class="text-xs">renders_this_month &lt; renders_limit</code>
+            avant la création. Le quota n'est incrémenté qu'après un succès
+            (pas en cas de
+            <code class="text-xs">failed</code>).
           </p>
 
-          <div class="space-y-4">
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                1
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">
-                  Accédez à l'éditeur de rendu
-                </h3>
-                <p class="text-sm text-muted-foreground">
-                  Dans votre projet, cliquez sur l'onglet
-                  <span class="px-2 py-1 bg-muted rounded text-xs">Rendus</span>
-                  puis sur
-                  <span class="px-2 py-1 bg-muted rounded text-xs"
-                    >+ Nouveau rendu</span
-                  >.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                2
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">
-                  Choisissez le type de rendu
-                </h3>
-                <p class="text-sm text-muted-foreground">
-                  Sélectionnez le format souhaité : rendu IA photoréaliste,
-                  export PNG de la scène ou capture vidéo du parcours.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                3
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">Positionnez la caméra</h3>
-                <p class="text-sm text-muted-foreground">
-                  Utilisez les outils de navigation pour trouver l'angle
-                  parfait. Vous pouvez régler la hauteur, l'angle, la distance
-                  focale et le champ de vision.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                4
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">Ajustez l'éclairage</h3>
-                <p class="text-sm text-muted-foreground">
-                  Personnalisez l'éclairage (naturel ou artificiel), l'heure de
-                  la journée et l'ambiance générale.
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                5
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">
-                  Configurez les paramètres de rendu
-                </h3>
-                <p class="text-sm text-muted-foreground">
-                  Définissez la résolution, la qualité et les effets spéciaux
-                  (profondeur de champ, reflets, etc.).
-                </p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                6
-              </div>
-              <div class="space-y-1">
-                <h3 class="text-base font-medium">Lancez le rendu</h3>
-                <p class="text-sm text-muted-foreground">
-                  Cliquez sur
-                  <span class="px-2 py-1 bg-muted rounded text-xs"
-                    >Générer</span
-                  >
-                  pour lancer le calcul du rendu. Vous pouvez suivre la
-                  progression en temps réel.
-                </p>
-              </div>
-            </div>
-          </div>
+          <p class="font-semibold">Request — mode prompt</p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs font-mono"
+          >&#123;
+  "source": "prompt",
+  "output_type": "2d",
+  "prompt": "A modern minimalist living room with large windows",
+  "title": "Salon"                  // optionnel
+&#125;</pre>
 
-          <div class="mt-6 bg-muted p-4 rounded-lg">
-            <div class="flex items-start gap-3">
-              <LightbulbIcon class="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <p class="text-sm font-medium">Astuce</p>
-                <p class="text-sm text-muted-foreground mt-1">
-                  Pour gagner du temps, utilisez le mode prévisualisation rapide
-                  avant de lancer un rendu haute qualité. Cela vous permet
-                  d'ajuster la composition sans attendre le calcul complet.
-                </p>
-              </div>
-            </div>
-          </div>
+          <p class="font-semibold">Request — mode sketch / screenshot</p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >&#123;
+  "source": "sketch",
+  "output_type": "2d",
+  "prompt": "Rendu photoréaliste de ce croquis",
+  "style_hint": "photoréaliste, ensoleillé",
+  "sketch_base64": "iVBORw0KGgo..."   // PNG base64 (avec ou sans préfixe data:)
+&#125;</pre>
+
+          <p class="font-semibold">Response 202 Accepted</p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >&#123;
+  "id": 42,
+  "source": "prompt",
+  "output_type": "2d",
+  "prompt": "A modern minimalist living room",
+  "status": "pending",
+  "is_terminal": false,
+  "result_url": null,
+  "input_image_url": null,
+  "error_message": "",
+  "provider": "",
+  "created_at": "2026-05-13T08:42:13.826009+02:00",
+  "completed_at": null
+&#125;</pre>
         </CardContent>
       </Card>
-    </div>
+    </section>
 
-    <!-- Optimisation des rendus -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Optimisation des rendus</h2>
+    <!-- Polling -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Suivre l'avancement (polling)</h2>
       <Card>
-        <CardContent class="pt-6">
-          <p class="mb-4">
-            Pour obtenir des rendus de qualité professionnelle, voici quelques
-            techniques d'optimisation :
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            GET /renders/&#123;id&#125;
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-3">
+          <p>
+            Le frontend poll cet endpoint toutes les
+            <strong>2 secondes</strong> tant que
+            <code class="text-xs">is_terminal === false</code>. Stratégie
+            implémentée dans
+            <code class="text-xs">useAiRender.generate()</code> avec un
+            timeout max de 3 min et une option d'annulation
+            (<code class="text-xs">cancelCurrentGeneration()</code>).
           </p>
 
-          <div class="space-y-6">
-            <div>
-              <h3 class="text-lg font-medium mb-2">Composition</h3>
-              <ul class="space-y-2 text-sm">
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Utilisez la règle des tiers pour placer les éléments
-                    importants aux points d'intérêt
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Créez de la profondeur en incluant des éléments au premier,
-                    second et arrière-plan
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Évitez de couper les objets importants aux bords de l'image
-                  </p>
-                </li>
-              </ul>
-            </div>
+          <p class="font-semibold">Pendant le traitement</p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs font-mono"
+          >&#123;
+  "status": "processing",
+  "is_terminal": false,
+  "started_at": "2026-05-13T08:42:14.012Z",
+  ...
+&#125;</pre>
 
-            <div>
-              <h3 class="text-lg font-medium mb-2">Éclairage</h3>
-              <ul class="space-y-2 text-sm">
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Utilisez trois sources d'éclairage : principale, d'appoint
-                    et d'accentuation
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Créez des contrastes pour mettre en valeur certaines zones
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Adaptez la température de couleur selon l'ambiance souhaitée
-                    (chaude ou froide)
-                  </p>
-                </li>
-              </ul>
-            </div>
+          <p class="font-semibold">Quand c'est terminé</p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs overflow-x-auto font-mono"
+          >&#123;
+  "status": "done",
+  "is_terminal": true,
+  "result_url": "http://localhost:9000/vizhome-media/renders/outputs/2026/05/render_42.png",
+  "provider": "gemini",
+  "completed_at": "2026-05-13T08:42:28.519Z",
+  ...
+&#125;</pre>
 
-            <div>
-              <h3 class="text-lg font-medium mb-2">Matériaux et textures</h3>
-              <ul class="space-y-2 text-sm">
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Vérifiez l'échelle des textures pour un réalisme optimal
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Ajustez les propriétés de réflexion et rugosité des surfaces
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Utilisez des maps de relief pour ajouter de la profondeur
-                    aux surfaces planes
-                  </p>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 class="text-lg font-medium mb-2">Post-traitement</h3>
-              <ul class="space-y-2 text-sm">
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Ajoutez une légère vignette pour diriger l'attention vers le
-                    centre
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Utilisez la correction des couleurs pour une ambiance
-                    cohérente
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <div class="min-w-[20px] mt-1">
-                    <Circle class="h-2 w-2 fill-primary text-primary" />
-                  </div>
-                  <p>
-                    Appliquez un flou de profondeur modéré pour un effet plus
-                    réaliste
-                  </p>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="mt-6">
-            <h3 class="text-lg font-medium mb-3">
-              Exemples de rendus optimisés
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="border rounded-lg overflow-hidden">
-                <div class="aspect-video bg-muted relative">
-                  <img
-                    src="/images/generate/image_generate.png"
-                    alt="Exemple de rendu 1"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-                <div class="p-3">
-                  <p class="text-xs text-muted-foreground">
-                    Salon contemporain avec éclairage naturel et accentuation
-                  </p>
-                </div>
-              </div>
-              <div class="border rounded-lg overflow-hidden">
-                <div class="aspect-video bg-muted relative">
-                  <img
-                    src="/images/generate/image_generate.png"
-                    alt="Exemple de rendu 2"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-                <div class="p-3">
-                  <p class="text-xs text-muted-foreground">
-                    Cuisine avec éclairage d'ambiance et profondeur de champ
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <p class="font-semibold">Si Gemini refuse (safety filters, etc.)</p>
+          <pre
+            class="bg-muted/50 rounded p-3 text-xs font-mono"
+          >&#123;
+  "status": "failed",
+  "is_terminal": true,
+  "error_message": "Aucune image dans la réponse Gemini (probablement bloquée par les safety filters).",
+  "completed_at": "..."
+&#125;</pre>
         </CardContent>
       </Card>
-    </div>
+    </section>
 
-    <!-- Export et partage -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Export et partage</h2>
+    <!-- Galerie -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Galerie</h2>
+      <Card>
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">GET /renders/</CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm space-y-3">
+          <p>
+            Liste paginée des rendus du user. Filtres possibles :
+          </p>
+          <ul class="pl-4 space-y-1">
+            <li>
+              • <code class="text-xs">?status=done</code> — utilisé par
+              <code class="text-xs">/gallery</code> pour ne pas montrer les
+              renders pending/failed
+            </li>
+            <li>
+              • <code class="text-xs">?source=prompt|sketch|screenshot</code>
+              — onglets de filtres dans la galerie
+            </li>
+            <li>
+              • <code class="text-xs">?page_size=N</code> — 20 par défaut
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            GET /renders/history
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm">
+          <p>
+            10 derniers prompts <code class="text-xs">status=done</code>
+            <code class="text-xs">source=prompt</code> du user. Pas de
+            pagination. Utilisé par
+            <code class="text-xs">PromptPanel</code> pour l'autocomplete.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+
+    <!-- Provider Gemini -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Provider Gemini</h2>
+
+      <Card>
+        <CardContent class="pt-6 text-sm space-y-3">
+          <p>
+            Implémentation dans
+            <code class="text-xs">apps/renders/providers/gemini.py</code>.
+            Utilise le SDK officiel
+            <code class="text-xs">google-genai</code> avec le modèle
+            <code class="text-xs">gemini-2.5-flash-image-preview</code> par
+            défaut (configurable via
+            <code class="text-xs">GEMINI_IMAGE_MODEL</code>).
+          </p>
+          <p>
+            Le même modèle gère <strong>text-to-image</strong> ET
+            <strong>image-to-image</strong> :
+          </p>
+          <ul class="pl-4 space-y-1 text-muted-foreground">
+            <li>
+              • source=<code class="text-xs">prompt</code> → contents =
+              <code class="text-xs">[prompt]</code>
+            </li>
+            <li>
+              • source=<code class="text-xs">sketch|screenshot</code> →
+              contents =
+              <code class="text-xs">[prompt + style_hint, PIL.Image]</code>
+            </li>
+          </ul>
+          <p>
+            En cas de <code class="text-xs">ProviderError</code>
+            (clé absente, safety filter, contenu refusé) → Render marqué
+            <code class="text-xs">failed</code> sans retry. En cas
+            d'erreur transitoire (réseau, rate limit) → retry 2 fois avant
+            d'abandonner.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+
+    <!-- CRUD -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Modifications &amp; suppression</h2>
+
+      <Card>
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            PATCH /renders/&#123;id&#125;
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm">
+          <p>
+            Seul le champ <code class="text-xs">title</code> est modifiable
+            (pour renommer dans la galerie). Le prompt et le résultat sont
+            immutables.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card class="mt-4">
+        <CardHeader class="pb-3">
+          <CardTitle class="text-base font-mono">
+            DELETE /renders/&#123;id&#125;
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="text-sm">
+          <p>
+            Supprime le render + son input/result image sur MinIO. Pas de
+            décrément du quota mensuel (la consommation a déjà eu lieu).
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+
+    <!-- Quotas -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Quotas par plan</h2>
       <Card>
         <CardContent class="pt-6">
-          <p class="mb-4">
-            Une fois vos rendus générés, plusieurs options s'offrent à vous pour
-            les exporter et les partager :
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="text-left py-2 font-semibold">Plan</th>
+                <th class="text-right py-2 font-semibold">Renders / mois</th>
+                <th class="text-right py-2 font-semibold">Storage</th>
+              </tr>
+            </thead>
+            <tbody class="text-muted-foreground">
+              <tr class="border-b">
+                <td class="py-2">Free</td>
+                <td class="text-right">5</td>
+                <td class="text-right">1 Go</td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2">Pro</td>
+                <td class="text-right">50</td>
+                <td class="text-right">5 Go</td>
+              </tr>
+              <tr class="border-b">
+                <td class="py-2">Enterprise</td>
+                <td class="text-right">9 999</td>
+                <td class="text-right">1 To</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="text-xs text-muted-foreground mt-3">
+            Le compteur <code class="text-xs">renders_this_month</code> est
+            reset le 1er du mois à 00:00 via une tâche Celery beat
+            (configurable depuis l'admin Django) ou via la commande
+            <code class="text-xs"
+              >python manage.py reset_monthly_counters</code
+            >.
           </p>
-
-          <div class="space-y-6">
-            <div>
-              <h3 class="text-lg font-medium mb-2">Formats d'export</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div class="border rounded-lg p-3">
-                  <h4 class="text-sm font-medium mb-1 flex items-center gap-2">
-                    <ImageIcon class="h-4 w-4 text-muted-foreground" />
-                    Images statiques
-                  </h4>
-                  <p class="text-xs text-muted-foreground">
-                    Formats disponibles : JPG, PNG, TIFF, EXR<br />
-                    Résolutions : jusqu'à 8K (abonnement Entreprise)
-                  </p>
-                </div>
-                <div class="border rounded-lg p-3">
-                  <h4 class="text-sm font-medium mb-1 flex items-center gap-2">
-                    <SparklesIcon class="h-4 w-4 text-muted-foreground" />
-                    Rendu IA
-                  </h4>
-                  <p class="text-xs text-muted-foreground">
-                    Image photoréaliste générée par l'IA depuis un prompt ou un
-                    modèle 3D<br />
-                    Livré en PNG haute résolution
-                  </p>
-                </div>
-                <div class="border rounded-lg p-3">
-                  <h4 class="text-sm font-medium mb-1 flex items-center gap-2">
-                    <BoxIcon class="h-4 w-4 text-muted-foreground" />
-                    Modèle 3D exporté
-                  </h4>
-                  <p class="text-xs text-muted-foreground">
-                    Export du modèle Three.js modifié<br />
-                    Format GLB/GLTF avec matériaux PBR intégrés
-                  </p>
-                </div>
-                <div class="border rounded-lg p-3">
-                  <h4 class="text-sm font-medium mb-1 flex items-center gap-2">
-                    <VideoIcon class="h-4 w-4 text-muted-foreground" />
-                    Vidéos
-                  </h4>
-                  <p class="text-xs text-muted-foreground">
-                    Formats disponibles : MP4, MOV<br />
-                    Résolutions : jusqu'à 4K, 30 ou 60 fps
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="text-lg font-medium mb-2">Options de partage</h3>
-              <div class="space-y-3 text-sm">
-                <div class="flex items-start gap-3">
-                  <LinkIcon class="h-5 w-5 text-primary mt-0.5" />
-                  <div>
-                    <p class="font-medium">Lien de partage</p>
-                    <p class="text-muted-foreground">
-                      Générez un lien unique pour partager directement votre
-                      rendu ou votre visite virtuelle, avec la possibilité de
-                      protéger l'accès par mot de passe.
-                    </p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <MailIcon class="h-5 w-5 text-primary mt-0.5" />
-                  <div>
-                    <p class="font-medium">Envoi par e-mail</p>
-                    <p class="text-muted-foreground">
-                      Envoyez vos rendus directement depuis la plateforme, avec
-                      un message personnalisé et la possibilité d'inclure
-                      plusieurs rendus.
-                    </p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <ShareIcon class="h-5 w-5 text-primary mt-0.5" />
-                  <div>
-                    <p class="font-medium">Partage sur réseaux sociaux</p>
-                    <p class="text-muted-foreground">
-                      Publiez directement sur Facebook, Instagram, LinkedIn ou
-                      Twitter, avec une prévisualisation optimisée.
-                    </p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <GitPullRequest class="h-5 w-5 text-primary mt-0.5" />
-                  <div>
-                    <p class="font-medium">Intégration web</p>
-                    <p class="text-muted-foreground">
-                      Incorporez vos rendus IA ou captures 3D sur votre site web
-                      via un code d'intégration personnalisable.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="text-lg font-medium mb-2">
-                Personnalisation de la présentation
-              </h3>
-              <p class="text-sm text-muted-foreground mb-3">
-                Avant de partager vos rendus, vous pouvez personnaliser leur
-                présentation :
-              </p>
-              <ul class="space-y-2 text-sm ml-2">
-                <li class="flex items-start gap-2">
-                  <CircleCheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <p>
-                    Ajoutez votre logo et vos coordonnées pour une présentation
-                    professionnelle
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CircleCheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <p>
-                    Regroupez plusieurs rendus d'un même projet en un lien de
-                    présentation unique
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CircleCheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <p>
-                    Ajoutez des annotations interactives pour mettre en avant
-                    certains détails
-                  </p>
-                </li>
-                <li class="flex items-start gap-2">
-                  <CircleCheckIcon class="h-4 w-4 text-primary mt-0.5" />
-                  <p>
-                    Personnalisez l'interface des visites virtuelles avec vos
-                    couleurs
-                  </p>
-                </li>
-              </ul>
-            </div>
-          </div>
         </CardContent>
       </Card>
-    </div>
-
-    <!-- Pages associées -->
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Pages associées</h2>
-      <div class="grid gap-4 md:grid-cols-3">
-        <NuxtLink to="/docs/modeles-3d">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Modèles 3D</CardTitle>
-              <CardDescription
-                >Gestion des modèles tridimensionnels</CardDescription
-              >
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Découvrez comment manipuler et personnaliser les modèles 3D pour
-                vos rendus.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-        <NuxtLink to="/docs/materiaux">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Matériaux</CardTitle>
-              <CardDescription>Textures et finitions réalistes</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Apprenez à utiliser les matériaux pour créer des rendus plus
-                réalistes.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-        <NuxtLink to="/docs/projets">
-          <Card class="h-full transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle class="text-base">Projets</CardTitle>
-              <CardDescription>Gestion de vos projets</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">
-                Organisez efficacement vos projets et partagez-les avec vos
-                collaborateurs.
-              </p>
-            </CardContent>
-          </Card>
-        </NuxtLink>
-      </div>
-    </div>
+    </section>
   </div>
 </template>
 
-<script setup>
-import {
-  LightbulbIcon,
-  Circle,
-  ImageIcon,
-  VideoIcon,
-  LinkIcon,
-  MailIcon,
-  ShareIcon,
-  GitPullRequest,
-  CircleCheckIcon,
-  SparklesIcon,
-  BoxIcon,
-} from 'lucide-vue-next'
-
-definePageMeta({
-  layout: 'docs',
-})
+<script setup lang="ts">
+definePageMeta({ layout: 'docs' })
 </script>

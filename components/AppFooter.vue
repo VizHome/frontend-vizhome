@@ -87,31 +87,37 @@
           <p class="text-sm font-semibold">Ressources</p>
           <ul class="flex flex-col gap-2">
             <li>
-              <NuxtLink
-                to="/docs"
+              <a
+                :href="docsUrl"
+                target="_blank"
+                rel="noopener"
                 class="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 Documentation
                 <ArrowUpRightIcon class="h-3 w-3" />
-              </NuxtLink>
+              </a>
             </li>
             <li>
-              <NuxtLink
-                to="/docs/api"
+              <a
+                :href="`${docsUrl}/api`"
+                target="_blank"
+                rel="noopener"
                 class="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 API
                 <ArrowUpRightIcon class="h-3 w-3" />
-              </NuxtLink>
+              </a>
             </li>
             <li>
-              <NuxtLink
-                to="/docs/architecture"
+              <a
+                :href="`${docsUrl}/getting-started/architecture`"
+                target="_blank"
+                rel="noopener"
                 class="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 Architecture
                 <ArrowUpRightIcon class="h-3 w-3" />
-              </NuxtLink>
+              </a>
             </li>
           </ul>
         </div>
@@ -224,4 +230,7 @@ import {
   ArrowUpRightIcon,
 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
+
+const config = useRuntimeConfig()
+const docsUrl = (config.public.docsUrl as string) || 'http://localhost:3001'
 </script>

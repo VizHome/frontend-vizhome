@@ -28,7 +28,19 @@
       "Bash(curl -s -X OPTIONS http://localhost:8000/api/v1/auth/login -H \"Origin: http://localhost:3000\" -H \"Access-Control-Request-Method: POST\" -H \"Access-Control-Request-Headers: Content-Type\" -w \"Status: %{http_code}\\\\n\" -D - -o /dev/null)",
       "Bash(curl -s -X POST http://localhost:8000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"frontend@test.fr\",\"password\":\"SecurePass1!\"}')",
       "Bash(rm -v api/materiaux.vue api/webhooks.vue api/modeles-3d.vue photos.vue)",
-      "Bash(rm -rv sdk/)"
+      "Bash(rm -rv sdk/)",
+      "Read(//c/Users/thiba/Documents/Environnement_dev/docs-vizehome/**)",
+      "Read(//c/Users/thiba/Documents/**)",
+      "Bash(rm -rf .nuxt .data)",
+      "Bash(npm run *)",
+      "Bash(tasklist //FI \"IMAGENAME eq node.exe\")",
+      "Bash(curl -s -I http://localhost:3001/)",
+      "Bash(curl -s http://localhost:3001/)",
+      "Bash(curl -s -I http://localhost:3001/getting-started/overview)",
+      "Bash(curl -s -I http://localhost:3001/api)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(npm i *)",
+      "Bash(npm uninstall *)"
     ]
   }
 }

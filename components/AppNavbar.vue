@@ -87,12 +87,17 @@
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
-              <!-- Documentation -->
+              <!-- Documentation (site externe) -->
               <NavigationMenuItem>
                 <NavigationMenuLink as-child>
-                  <NuxtLink to="/docs" :class="navLinkClass('/docs')">
+                  <a
+                    :href="docsUrl"
+                    target="_blank"
+                    rel="noopener"
+                    :class="NAV_LINK_DEFAULT"
+                  >
                     Docs
-                  </NuxtLink>
+                  </a>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
@@ -260,14 +265,16 @@
                     Tarifs
                   </NuxtLink>
 
-                  <NuxtLink
-                    to="/docs"
-                    :class="mobileLinkClass('/docs')"
+                  <a
+                    :href="docsUrl"
+                    target="_blank"
+                    rel="noopener"
+                    :class="MOBILE_LINK_DEFAULT"
                     @click="mobileOpen = false"
                   >
                     <BookOpenIcon class="h-4 w-4" />
                     Documentation
-                  </NuxtLink>
+                  </a>
 
                   <!-- Section Entreprise -->
                   <button
@@ -387,6 +394,8 @@ import {
 } from '@/components/ui/navigation-menu'
 
 const route = useRoute()
+const config = useRuntimeConfig()
+const docsUrl = (config.public.docsUrl as string) || 'http://localhost:3001'
 const { isAuthenticated } = useAuth()
 const mobileOpen = ref(false)
 const mobileFeatOpen = ref(false)

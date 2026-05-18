@@ -100,42 +100,17 @@
           Ressources
         </p>
 
-        <!-- Documentation collapsible -->
-        <Collapsible v-model:open="docsOpen">
-          <CollapsibleTrigger :class="triggerClass">
-            <BookOpenIcon class="h-4 w-4" />
-            <span class="flex-1 text-left">Documentation</span>
-            <ChevronDownIcon
-              class="h-4 w-4 transition-transform duration-200"
-              :class="{ 'rotate-180': docsOpen }"
-            />
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <div class="ml-4 mt-0.5 flex flex-col gap-0.5 border-l pl-3">
-              <NuxtLink to="/docs" :class="sublinkClass('/docs')"
-                >Introduction</NuxtLink
-              >
-              <NuxtLink
-                to="/docs/installation"
-                :class="sublinkClass('/docs/installation')"
-                >Installation</NuxtLink
-              >
-              <NuxtLink
-                to="/docs/architecture"
-                :class="sublinkClass('/docs/architecture')"
-                >Architecture</NuxtLink
-              >
-              <NuxtLink
-                to="/docs/interface"
-                :class="sublinkClass('/docs/interface')"
-                >Interface</NuxtLink
-              >
-              <NuxtLink to="/docs/api" :class="sublinkStartClass('/docs/api')"
-                >API</NuxtLink
-              >
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+        <!-- Documentation — site externe -->
+        <a
+          :href="docsUrl"
+          target="_blank"
+          rel="noopener"
+          :class="triggerClass"
+        >
+          <BookOpenIcon class="h-4 w-4" />
+          <span class="flex-1 text-left">Documentation</span>
+          <ExternalLinkIcon class="h-3 w-3 text-muted-foreground" />
+        </a>
 
         <NuxtLink to="/faq" :class="linkClass('/faq')">
           <HelpCircleIcon class="h-4 w-4" />
@@ -367,50 +342,17 @@
                 Ressources
               </p>
 
-              <Collapsible v-model:open="mobileDocsOpen">
-                <CollapsibleTrigger :class="triggerClass">
-                  <BookOpenIcon class="h-4 w-4" />
-                  <span class="flex-1 text-left">Documentation</span>
-                  <ChevronDownIcon
-                    class="h-4 w-4 transition-transform duration-200"
-                    :class="{ 'rotate-180': mobileDocsOpen }"
-                  />
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div class="ml-4 mt-0.5 flex flex-col gap-0.5 border-l pl-3">
-                    <NuxtLink
-                      to="/docs"
-                      :class="sublinkClass('/docs')"
-                      @click="mobileOpen = false"
-                      >Introduction</NuxtLink
-                    >
-                    <NuxtLink
-                      to="/docs/installation"
-                      :class="sublinkClass('/docs/installation')"
-                      @click="mobileOpen = false"
-                      >Installation</NuxtLink
-                    >
-                    <NuxtLink
-                      to="/docs/architecture"
-                      :class="sublinkClass('/docs/architecture')"
-                      @click="mobileOpen = false"
-                      >Architecture</NuxtLink
-                    >
-                    <NuxtLink
-                      to="/docs/interface"
-                      :class="sublinkClass('/docs/interface')"
-                      @click="mobileOpen = false"
-                      >Interface</NuxtLink
-                    >
-                    <NuxtLink
-                      to="/docs/api"
-                      :class="sublinkStartClass('/docs/api')"
-                      @click="mobileOpen = false"
-                      >API</NuxtLink
-                    >
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+              <a
+                :href="docsUrl"
+                target="_blank"
+                rel="noopener"
+                :class="triggerClass"
+                @click="mobileOpen = false"
+              >
+                <BookOpenIcon class="h-4 w-4" />
+                <span class="flex-1 text-left">Documentation</span>
+                <ExternalLinkIcon class="h-3 w-3 text-muted-foreground" />
+              </a>
 
               <NuxtLink
                 to="/faq"
@@ -580,17 +522,17 @@ import {
 } from '@/components/ui/collapsible'
 
 const route = useRoute()
+const config = useRuntimeConfig()
+const docsUrl = (config.public.docsUrl as string) || 'http://localhost:3001'
 
 const mobileOpen = ref(false)
 
 // Desktop collapsibles — auto-ouverts si on est sur une sous-page
 const featuresOpen = ref(route.path.startsWith('/features'))
-const docsOpen = ref(route.path.startsWith('/docs'))
 const legalOpen = ref(route.path.startsWith('/legal'))
 
 // Mobile collapsibles
 const mobileFeaturesOpen = ref(route.path.startsWith('/features'))
-const mobileDocsOpen = ref(route.path.startsWith('/docs'))
 const mobileLegalOpen = ref(route.path.startsWith('/legal'))
 
 // ── Classes utilitaires ───────────────────────────────────────────────────────

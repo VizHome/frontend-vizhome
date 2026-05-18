@@ -1,0 +1,44 @@
+# Argument pour la version de Node.js à utiliser, par défaut la version alpine 22
+ARG NODE_VERSION=24-alpine
+
+# =========================================================
+# Stage 1 — base : socle commun (Node + libs natives)
+# =========================================================
+FROM node:${NODE_VERSION} AS base
+WORKDIR /app
+
+RUN apk add --no-cache libc6-compat
+
+ENV NUXT_TELEMETRY_DISABLED=1 \
+    HOST=0.0.0.0 \
+    PORT=3000
+
+# =========================================================
+# Stage 2 — deps : installe toutes les dépendances (dev + prod)
+# Mis en cache tant que package.json / lockfile ne changent pas
+# =========================================================
+FROM base AS deps
+
+COPY package.json package-lock.json ./
+
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --no-audit --no-fund --ignore-scripts
+
+# =========================================================
+# Stage 3 — dev : environnement de développement avec HMR
+# Source montée en bind-mount via docker-compose (cf. ci-dessous)
+# =========================================================
+FROM base AS dev
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json package-lock.json ./
+
+# Lance nuxt prepare une fois (généré dans .nuxt) pour amorcer
+# Sera ré-exécuté automatiquement par Nuxt si besoin
+COPY . .
+RUN npm run postinstall
+
+# Port app + port HMR Vite
+EXPOSE 3000 24678
+
+CMD ["npm", "run", "dev"]

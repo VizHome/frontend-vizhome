@@ -31,10 +31,24 @@
         <div class="space-y-6">
           <!-- Boutons de connexion sociale -->
           <div class="grid grid-cols-2 gap-4">
-            <Button variant="outline" type="button" class="gap-2 h-11">
+            <Button
+              variant="outline"
+              type="button"
+              class="gap-2 h-11"
+              :disabled="!googleClientId || isOAuthLoading"
+              :title="!googleClientId ? 'Google OAuth non configuré' : 'Continuer avec Google'"
+              @click="handleGoogleLogin"
+            >
               <span>Google</span>
             </Button>
-            <Button variant="outline" type="button" class="gap-2 h-11">
+            <Button
+              variant="outline"
+              type="button"
+              class="gap-2 h-11"
+              :disabled="!githubClientId || isOAuthLoading"
+              :title="!githubClientId ? 'GitHub OAuth non configuré' : 'Continuer avec GitHub'"
+              @click="handleGithubLogin"
+            >
               <span>GitHub</span>
             </Button>
           </div>
@@ -215,7 +229,7 @@ import {
   EyeIcon,
   EyeOffIcon,
 } from 'lucide-vue-next'
-import { ref, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
 definePageMeta({
@@ -226,6 +240,15 @@ definePageMeta({
 const route = useRoute()
 const auth = useAuth()
 const { fetchMe } = useUser()
+const config = useRuntimeConfig()
+
+const googleClientId = computed(
+  () => (config.public.googleClientId as string) || ''
+)
+const githubClientId = computed(
+  () => (config.public.githubClientId as string) || ''
+)
+const isOAuthLoading = ref(false)
 
 // État du formulaire
 const email = ref('')
@@ -308,5 +331,89 @@ const handle2faSubmit = async () => {
   } finally {
     isSubmitting.value = false
   }
+}
+
+// ─── OAuth : Google Sign-In (flow id_token) ──────────────────────────────
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: {
+            client_id: string
+            callback: (resp: { credential: string }) => void
+          }) => void
+          prompt: () => void
+        }
+      }
+    }
+  }
+}
+
+let _googleScriptLoaded = false
+
+async function loadGoogleScript(): Promise<void> {
+  if (_googleScriptLoaded) return
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    script.onload = () => {
+      _googleScriptLoaded = true
+      resolve()
+    }
+    script.onerror = () => reject(new Error('Échec chargement Google Sign-In'))
+    document.head.appendChild(script)
+  })
+}
+
+async function handleGoogleLogin() {
+  if (!googleClientId.value || isOAuthLoading.value) return
+  isOAuthLoading.value = true
+  submitError.value = ''
+  try {
+    await loadGoogleScript()
+    if (!window.google) throw new Error('Google SDK indisponible')
+
+    window.google.accounts.id.initialize({
+      client_id: googleClientId.value,
+      callback: async (resp: { credential: string }) => {
+        try {
+          const user = await auth.loginGoogle(resp.credential)
+          await fetchMe()
+          toast.success(`Bienvenue ${user.first_name || user.email} !`)
+          const redirect = (route.query.redirect as string) || '/render'
+          await navigateTo(redirect)
+        } catch (e: unknown) {
+          const err = e as { data?: { detail?: string } }
+          submitError.value = err?.data?.detail || 'Connexion Google échouée.'
+        } finally {
+          isOAuthLoading.value = false
+        }
+      },
+    })
+    window.google.accounts.id.prompt()
+  } catch (e) {
+    submitError.value = e instanceof Error ? e.message : 'Erreur Google OAuth'
+    isOAuthLoading.value = false
+  }
+}
+
+// ─── OAuth : GitHub (flow authorization code) ────────────────────────────
+function handleGithubLogin() {
+  if (!githubClientId.value || isOAuthLoading.value) return
+  const redirectUri = `${window.location.origin}/auth/oauth/github/callback`
+  const state = crypto.randomUUID()
+  sessionStorage.setItem('github_oauth_state', state)
+  sessionStorage.setItem('github_oauth_redirect', (route.query.redirect as string) || '/render')
+
+  const params = new URLSearchParams({
+    client_id: githubClientId.value,
+    redirect_uri: redirectUri,
+    scope: 'read:user user:email',
+    state,
+  })
+  window.location.href = `https://github.com/login/oauth/authorize?${params}`
 }
 </script>

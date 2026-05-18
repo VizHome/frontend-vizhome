@@ -510,6 +510,94 @@ export function useThreeModels() {
     }
   }
 
+  /**
+   * Charge un modèle depuis une URL (MinIO/CDN) et l'ajoute à la scène.
+   * Utilisé pour la restauration des modèles d'un projet sauvegardé.
+   *
+   * Options.backendId remplace l'id local généré par Date.now() pour qu'on
+   * puisse référencer ce modèle côté API par la suite (transform updates,
+   * delete, etc.).
+   */
+  const loadFromUrl = async (
+    url: string,
+    name: string,
+    mtlUrl?: string,
+    options?: {
+      position?: { x: number; y: number; z: number }
+      rotation?: { x: number; y: number; z: number }
+      scale?: { x: number; y: number; z: number }
+      backendId?: number
+    }
+  ): Promise<void> => {
+    // Compte d'avant pour repérer la nouvelle entrée
+    const sizeBefore = importedModels.value.length
+
+    const fileResp = await fetch(url)
+    if (!fileResp.ok) throw new Error(`Échec téléchargement ${url}`)
+    const blob = await fileResp.blob()
+    const file = new File([blob], name, { type: blob.type })
+
+    let mtlFile: File | undefined
+    if (mtlUrl) {
+      const mtlResp = await fetch(mtlUrl)
+      if (mtlResp.ok) {
+        const mtlBlob = await mtlResp.blob()
+        const mtlName = name.replace(/\.[^.]+$/, '.mtl')
+        mtlFile = new File([mtlBlob], mtlName, { type: mtlBlob.type })
+      }
+    }
+
+    _loadFromFile(file, mtlFile)
+
+    // Attend que _processLoadedModel termine (isLoadingModel passe à false)
+    await new Promise<void>((resolve, reject) => {
+      const start = Date.now()
+      const interval = window.setInterval(() => {
+        if (!isLoadingModel.value) {
+          window.clearInterval(interval)
+          resolve()
+        } else if (Date.now() - start > 30_000) {
+          window.clearInterval(interval)
+          reject(new Error('Timeout chargement modèle'))
+        }
+      }, 50)
+    })
+
+    // Met à jour la dernière entry avec les options (transform + id backend)
+    if (importedModels.value.length > sizeBefore) {
+      const entry = importedModels.value[importedModels.value.length - 1]
+      if (entry) {
+        if (options?.backendId !== undefined) {
+          entry.id = String(options.backendId)
+        }
+        if (options?.position) {
+          entry.position = { ...options.position }
+          entry.model.position.set(
+            options.position.x,
+            options.position.y,
+            options.position.z
+          )
+        }
+        if (options?.rotation) {
+          entry.rotation = { ...options.rotation }
+          entry.model.rotation.set(
+            options.rotation.x,
+            options.rotation.y,
+            options.rotation.z
+          )
+        }
+        if (options?.scale) {
+          entry.scale = { ...options.scale }
+          entry.model.scale.set(
+            options.scale.x,
+            options.scale.y,
+            options.scale.z
+          )
+        }
+      }
+    }
+  }
+
   return {
     importedModels,
     selectedModelId,
@@ -531,5 +619,7 @@ export function useThreeModels() {
     fitCameraToModels,
     setTransformMode,
     setTransformVisible,
+    // Restore d'un projet sauvegardé
+    loadFromUrl,
   }
 }

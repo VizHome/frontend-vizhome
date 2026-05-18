@@ -1,23 +1,32 @@
 /**
- * useAiRender — Génération IA par prompt (2D ou 3D) + rendu depuis croquis
- * L'endpoint /api/render est un stub à remplacer par la vraie API IA
+ * useAiRender — Génération IA via le backend Django.
+ *
+ * Pipeline async :
+ *   1. POST /renders/ → 202 + render { id, status: 'pending' }
+ *   2. polling GET /renders/{id} jusqu'à status terminal (done | failed)
+ *   3. on prepend l'entry dans useGallery pour MAJ live de la galerie
+ *
+ * Signature publique compatible avec les composants existants
+ * (PromptPanel, SketchCanvas, ScreenshotRenderPanel).
  */
 import { ref } from 'vue'
-import { useGallery } from './useGallery'
+
+import { type ApiRender, toGalleryEntry, useGallery } from './useGallery'
 import type { GallerySource } from './useGallery'
 
+// ─── Types publics ────────────────────────────────────────────────────────
 export type AiOutputType = '2d' | '3d'
 
 export interface PromptHistoryEntry {
+  id: string
   prompt: string
   outputType: AiOutputType
   createdAt: number
   imageUrl: string | null
 }
 
-const STORAGE_KEY = 'vizhome_prompt_history'
-
-// ─── État singleton ──────────────────────────────────────────────────────────
+// ─── État singleton ───────────────────────────────────────────────────────
+// Mode prompt
 const prompt = ref('')
 const outputType = ref<AiOutputType>('2d')
 const isLoading = ref(false)
@@ -25,144 +34,203 @@ const result = ref<string | null>(null)
 const error = ref<string | null>(null)
 const promptHistory = ref<PromptHistoryEntry[]>([])
 
-// ─── État sketch → IA ────────────────────────────────────────────────────────
+// Mode sketch → IA
 const sketchResult = ref<string | null>(null)
 const isSketchLoading = ref(false)
 const sketchError = ref<string | null>(null)
 
-// ─── Composable ──────────────────────────────────────────────────────────────
+// Polling : id du render courant + flag de cancellation
+const currentRenderId = ref<number | null>(null)
+let _pollAborted = false
+
+// ─── Polling helper ───────────────────────────────────────────────────────
+const POLL_INTERVAL_MS = 2000
+const POLL_MAX_ATTEMPTS = 90 // ≈ 3 min max
+
+async function pollUntilTerminal(
+  api: ReturnType<typeof useApi>,
+  id: number
+): Promise<ApiRender> {
+  for (let i = 0; i < POLL_MAX_ATTEMPTS; i++) {
+    if (_pollAborted) throw new Error('Polling annulé')
+    const r = await api<ApiRender>(`/renders/${id}`)
+    if (r.is_terminal) return r
+    await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL_MS))
+  }
+  throw new Error('Génération trop longue, abandon')
+}
+
+// ─── Composable ───────────────────────────────────────────────────────────
 export function useAiRender() {
-  const loadHistory = () => {
-    if (typeof localStorage === 'undefined') return
+  const api = useApi()
+  const gallery = useGallery()
+
+  // ─── Historique des prompts (10 derniers prompts terminés) ─────────────
+  async function loadHistory(): Promise<void> {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) promptHistory.value = JSON.parse(raw) as PromptHistoryEntry[]
+      const data = await api<ApiRender[]>('/renders/history')
+      promptHistory.value = data.map(r => ({
+        id: String(r.id),
+        prompt: r.prompt,
+        outputType: r.output_type,
+        createdAt: new Date(r.created_at).getTime(),
+        imageUrl: r.result_url,
+      }))
     } catch {
-      // Ignorer les erreurs de parsing
+      promptHistory.value = []
     }
   }
 
-  const _saveHistory = () => {
-    if (typeof localStorage === 'undefined') return
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(promptHistory.value.slice(0, 10))
-    )
-  }
-
-  const generate = async () => {
-    if (!prompt.value.trim() || isLoading.value) return
-    isLoading.value = true
-    error.value = null
-    result.value = null
-
-    try {
-      const data = await $fetch<{ imageUrl: string | null }>('/api/render', {
-        method: 'POST',
-        body: { prompt: prompt.value, outputType: outputType.value },
-      })
-      result.value = data.imageUrl
-
-      promptHistory.value.unshift({
-        prompt: prompt.value,
-        outputType: outputType.value,
-        createdAt: Date.now(),
-        imageUrl: data.imageUrl,
-      })
-      if (promptHistory.value.length > 10) promptHistory.value.pop()
-      _saveHistory()
-
-      // Ajouter en galerie si c'est un rendu 2D avec image
-      if (data.imageUrl && outputType.value === '2d') {
-        useGallery().addEntry({
-          source: 'prompt',
-          imageUrl: data.imageUrl,
-          prompt: prompt.value,
-        })
-      }
-    } catch (err: unknown) {
-      error.value =
-        err instanceof Error ? err.message : 'Erreur lors de la génération'
-    } finally {
-      isLoading.value = false
-    }
+  function _prependToHistory(entry: PromptHistoryEntry): void {
+    promptHistory.value.unshift(entry)
+    if (promptHistory.value.length > 10) promptHistory.value.pop()
   }
 
   /**
-   * Envoie le croquis (base64 PNG) à l'API IA pour un rendu 2D.
-   * styleHint permet d'ajouter un style ("photoréaliste", "aquarelle", etc.)
+   * Supprime une entrée de l'historique.
+   * Accepte soit l'id backend (string), soit le timestamp createdAt (number)
+   * pour rétro-compat avec l'ancienne signature.
    */
-  const generateFromSketch = async (
-    imageBase64: string,
-    styleHint?: string,
-    source: GallerySource = 'sketch'
-  ) => {
-    if (isSketchLoading.value) return
-    isSketchLoading.value = true
-    sketchError.value = null
-    sketchResult.value = null
+  async function removeHistoryEntry(key: string | number): Promise<void> {
+    let entry: PromptHistoryEntry | undefined
+    if (typeof key === 'number') {
+      entry = promptHistory.value.find(e => e.createdAt === key)
+    } else {
+      entry = promptHistory.value.find(e => e.id === key)
+    }
+    if (!entry) return
 
     try {
-      const data = await $fetch<{ imageUrl: string | null }>('/api/render', {
-        method: 'POST',
-        body: {
-          prompt: styleHint ?? 'Rendu architectural réaliste depuis ce croquis',
-          outputType: '2d' as AiOutputType,
-          sketchBase64: imageBase64,
-        },
-      })
-      sketchResult.value = data.imageUrl
-
-      // Ajouter en galerie
-      if (data.imageUrl) {
-        useGallery().addEntry({
-          source,
-          imageUrl: data.imageUrl,
-          styleHint: styleHint,
-        })
-      }
-    } catch (err: unknown) {
-      sketchError.value =
-        err instanceof Error ? err.message : 'Erreur lors de la génération'
-    } finally {
-      isSketchLoading.value = false
+      await api(`/renders/${entry.id}`, { method: 'DELETE' })
+    } catch {
+      /* silent : on retire quand même côté UI */
     }
+    promptHistory.value = promptHistory.value.filter(e => e.id !== entry!.id)
   }
 
-  const clearSketchResult = () => {
-    sketchResult.value = null
-    sketchError.value = null
-  }
-
-  const removeHistoryEntry = (createdAt: number) => {
-    const idx = promptHistory.value.findIndex(e => e.createdAt === createdAt)
-    if (idx !== -1) {
-      promptHistory.value.splice(idx, 1)
-      _saveHistory()
-    }
-  }
-
-  const clearHistory = () => {
+  /** Vide le cache local de l'historique (les rendus restent en galerie). */
+  function clearHistory(): void {
     promptHistory.value = []
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem(STORAGE_KEY)
-    }
   }
 
-  const loadFromHistory = (entry: PromptHistoryEntry) => {
+  function loadFromHistory(entry: PromptHistoryEntry): void {
     prompt.value = entry.prompt
     outputType.value = entry.outputType
     result.value = entry.imageUrl
     error.value = null
   }
 
-  const clearResult = () => {
+  function clearResult(): void {
     result.value = null
     error.value = null
   }
 
+  // ─── Génération texte → image ──────────────────────────────────────────
+  async function generate(): Promise<void> {
+    if (!prompt.value.trim() || isLoading.value) return
+    isLoading.value = true
+    error.value = null
+    result.value = null
+    _pollAborted = false
+
+    try {
+      const created = await api<ApiRender>('/renders/', {
+        method: 'POST',
+        body: {
+          source: 'prompt',
+          output_type: outputType.value,
+          prompt: prompt.value,
+        },
+      })
+      currentRenderId.value = created.id
+
+      const finished = await pollUntilTerminal(api, created.id)
+
+      if (finished.status === 'failed') {
+        error.value = finished.error_message || 'La génération a échoué.'
+        return
+      }
+
+      result.value = finished.result_url
+      _prependToHistory({
+        id: String(finished.id),
+        prompt: finished.prompt,
+        outputType: finished.output_type,
+        createdAt: new Date(finished.created_at).getTime(),
+        imageUrl: finished.result_url,
+      })
+
+      // Rendu 2D OK → push live dans la galerie
+      if (finished.result_url && finished.output_type === '2d') {
+        gallery.prependEntry(toGalleryEntry(finished))
+      }
+    } catch (err: unknown) {
+      error.value = _formatError(err) ?? 'Erreur lors de la génération'
+    } finally {
+      isLoading.value = false
+      currentRenderId.value = null
+    }
+  }
+
+  // ─── Génération depuis croquis (sketch / screenshot) ────────────────────
+  async function generateFromSketch(
+    imageBase64: string,
+    styleHint?: string,
+    source: GallerySource = 'sketch'
+  ): Promise<void> {
+    if (isSketchLoading.value) return
+    isSketchLoading.value = true
+    sketchError.value = null
+    sketchResult.value = null
+    _pollAborted = false
+
+    try {
+      const created = await api<ApiRender>('/renders/', {
+        method: 'POST',
+        body: {
+          source,
+          output_type: '2d',
+          prompt: styleHint || 'Rendu architectural réaliste depuis ce croquis',
+          style_hint: styleHint || '',
+          sketch_base64: imageBase64,
+        },
+      })
+      currentRenderId.value = created.id
+
+      const finished = await pollUntilTerminal(api, created.id)
+
+      if (finished.status === 'failed') {
+        sketchError.value = finished.error_message || 'La génération a échoué.'
+        return
+      }
+
+      sketchResult.value = finished.result_url
+
+      if (finished.result_url) {
+        gallery.prependEntry(toGalleryEntry(finished))
+      }
+    } catch (err: unknown) {
+      sketchError.value = _formatError(err) ?? 'Erreur lors de la génération'
+    } finally {
+      isSketchLoading.value = false
+      currentRenderId.value = null
+    }
+  }
+
+  function clearSketchResult(): void {
+    sketchResult.value = null
+    sketchError.value = null
+  }
+
+  /** Stoppe le polling en cours (le job backend continue, mais on n'attend plus). */
+  function cancelCurrentGeneration(): void {
+    _pollAborted = true
+    isLoading.value = false
+    isSketchLoading.value = false
+  }
+
   return {
-    // Prompt
+    // Mode prompt
     prompt,
     outputType,
     isLoading,
@@ -173,7 +241,7 @@ export function useAiRender() {
     generate,
     loadFromHistory,
     clearResult,
-    // Sketch → IA
+    // Mode sketch → IA
     sketchResult,
     isSketchLoading,
     sketchError,
@@ -182,5 +250,31 @@ export function useAiRender() {
     // Historique
     removeHistoryEntry,
     clearHistory,
+    // Misc
+    currentRenderId,
+    cancelCurrentGeneration,
   }
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────
+function _formatError(err: unknown): string | null {
+  if (!err) return null
+  const e = err as {
+    data?: { detail?: string; code?: string; [k: string]: unknown }
+    message?: string
+    statusCode?: number
+  }
+  // Erreur quota Stripe-style
+  if (e.data?.code === 'quota_exceeded') return e.data.detail as string
+  if (e.statusCode === 400 && e.data) {
+    if (e.data.detail) return e.data.detail
+    // Premier champ d'erreur DRF (string ou array)
+    for (const v of Object.values(e.data)) {
+      if (typeof v === 'string') return v
+      if (Array.isArray(v) && typeof v[0] === 'string') return v[0]
+    }
+  }
+  if (e.statusCode === 401) return 'Session expirée. Reconnecte-toi.'
+  if (e.statusCode === 429) return 'Trop de requêtes, ralentis.'
+  return e.message || null
 }

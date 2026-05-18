@@ -1,9 +1,17 @@
 /**
- * useGallery — Galerie des rendus 2D générés
- * Singleton de module : persistance localStorage, partagé entre tous les composants
+ * useGallery — Galerie des rendus IA, hydratée depuis le backend.
+ *
+ * Le backend stocke chaque rendu généré (POST /renders/) en DB. La galerie
+ * est juste un listing paginé de ces rendus filtrés sur `status=done`.
+ *
+ * Signature publique compatible avec la version localStorage précédente :
+ * `entries`, `totalCount`, `load`, `removeEntry`, `clearGallery`,
+ * `filterBySource` restent identiques. Ajouts : `loadMore`, `refresh`,
+ * `prependEntry` (appelé par useAiRender quand un nouveau rendu est prêt).
  */
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 
+// ─── Types ────────────────────────────────────────────────────────────────
 export type GallerySource = 'sketch' | 'prompt' | 'screenshot'
 
 export interface GalleryEntry {
@@ -16,77 +24,162 @@ export interface GalleryEntry {
   title?: string
 }
 
-const STORAGE_KEY = 'vizhome_gallery'
-const MAX_ENTRIES = 100
+// ─── DTO backend ──────────────────────────────────────────────────────────
+export interface ApiRender {
+  id: number
+  source: GallerySource
+  output_type: '2d' | '3d'
+  prompt: string
+  style_hint: string
+  title: string
+  status: 'pending' | 'processing' | 'done' | 'failed'
+  is_terminal: boolean
+  result_url: string | null
+  input_image_url: string | null
+  error_message: string
+  provider: string
+  created_at: string
+  updated_at: string
+  completed_at: string | null
+}
 
-// ─── État singleton ──────────────────────────────────────────────────────────
+interface ApiPaginated<T> {
+  count: number
+  next: string | null
+  previous: string | null
+  results: T[]
+}
+
+// ─── Constantes ───────────────────────────────────────────────────────────
+const PAGE_SIZE = 20
+
+// ─── État singleton ───────────────────────────────────────────────────────
 const entries = ref<GalleryEntry[]>([])
-let _loaded = false
+const totalCount = ref(0)
+const isLoading = ref(false)
+let _loadedAt: number | null = null
 
-// ─── Composable ──────────────────────────────────────────────────────────────
+// ─── Mapper DTO → UI ──────────────────────────────────────────────────────
+export function toGalleryEntry(r: ApiRender): GalleryEntry {
+  return {
+    id: String(r.id),
+    source: r.source,
+    imageUrl: r.result_url || '',
+    prompt: r.prompt || undefined,
+    styleHint: r.style_hint || undefined,
+    createdAt: new Date(r.created_at).getTime(),
+    title: r.title || undefined,
+  }
+}
+
+// ─── Composable ───────────────────────────────────────────────────────────
 export function useGallery() {
-  const load = () => {
-    if (_loaded || typeof localStorage === 'undefined') return
-    _loaded = true
+  const api = useApi()
+
+  const hasMore = computed(() => entries.value.length < totalCount.value)
+
+  /** Charge la 1ère page (reset l'état). À appeler au mount de la page Gallery. */
+  async function load(): Promise<void> {
+    isLoading.value = true
     try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) entries.value = JSON.parse(raw) as GalleryEntry[]
-    } catch {
-      entries.value = []
+      const data = await api<ApiPaginated<ApiRender>>(
+        `/renders/?status=done&page=1&page_size=${PAGE_SIZE}`
+      )
+      entries.value = data.results.map(toGalleryEntry)
+      totalCount.value = data.count
+      _loadedAt = Date.now()
+    } finally {
+      isLoading.value = false
     }
   }
 
-  const _persist = () => {
-    if (typeof localStorage === 'undefined') return
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries.value))
+  /** Charge si rien en mémoire ou si > 5 min depuis le dernier load. */
+  async function loadIfStale(): Promise<void> {
+    const stale = !_loadedAt || Date.now() - _loadedAt > 5 * 60 * 1000
+    if (entries.value.length === 0 || stale) await load()
   }
 
-  const addEntry = (entry: Omit<GalleryEntry, 'id' | 'createdAt'>) => {
-    load()
-    const newEntry: GalleryEntry = {
-      ...entry,
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      createdAt: Date.now(),
+  /** Charge la page suivante (append). */
+  async function loadMore(): Promise<void> {
+    if (!hasMore.value || isLoading.value) return
+    isLoading.value = true
+    try {
+      const nextPage = Math.floor(entries.value.length / PAGE_SIZE) + 1
+      const data = await api<ApiPaginated<ApiRender>>(
+        `/renders/?status=done&page=${nextPage}&page_size=${PAGE_SIZE}`
+      )
+      entries.value.push(...data.results.map(toGalleryEntry))
+      totalCount.value = data.count
+    } finally {
+      isLoading.value = false
     }
-    entries.value.unshift(newEntry)
-    if (entries.value.length > MAX_ENTRIES) entries.value.splice(MAX_ENTRIES)
-    _persist()
-    return newEntry
   }
 
-  const removeEntry = (id: string) => {
+  /** Reload from scratch — utilisé après actions destructives. */
+  const refresh = load
+
+  /**
+   * Ajoute un rendu fraîchement terminé en tête de liste (appelé par
+   * useAiRender pour refléter le résultat immédiatement, sans re-fetch).
+   */
+  function prependEntry(entry: GalleryEntry): void {
+    if (!entries.value.some(e => e.id === entry.id)) {
+      entries.value.unshift(entry)
+      totalCount.value += 1
+    }
+  }
+
+  async function removeEntry(id: string): Promise<void> {
+    await api(`/renders/${id}`, { method: 'DELETE' })
     entries.value = entries.value.filter(e => e.id !== id)
-    _persist()
+    totalCount.value = Math.max(0, totalCount.value - 1)
   }
 
-  const clearGallery = () => {
-    entries.value = []
-    _persist()
-  }
+  /**
+   * Supprime TOUS les rendus du user.
+   * Charge les pages manquantes d'abord, puis DELETE par chunks de 10.
+   */
+  async function clearGallery(): Promise<void> {
+    while (hasMore.value) await loadMore()
 
-  const updateTitle = (id: string, title: string) => {
-    const entry = entries.value.find(e => e.id === id)
-    if (entry) {
-      entry.title = title
-      _persist()
+    const ids = entries.value.map(e => e.id)
+    const CHUNK = 10
+    for (let i = 0; i < ids.length; i += CHUNK) {
+      await Promise.all(
+        ids.slice(i, i + CHUNK).map(id =>
+          api(`/renders/${id}`, { method: 'DELETE' })
+        )
+      )
     }
+    entries.value = []
+    totalCount.value = 0
   }
 
-  // Filtres calculés
-  const filterBySource = (source: GallerySource | 'all') =>
-    computed(() =>
+  async function updateTitle(id: string, title: string): Promise<void> {
+    await api(`/renders/${id}`, { method: 'PATCH', body: { title } })
+    const entry = entries.value.find(e => e.id === id)
+    if (entry) entry.title = title
+  }
+
+  // ─── Filtres calculés (compat) ─────────────────────────────────────────
+  function filterBySource(source: GallerySource | 'all') {
+    return computed(() =>
       source === 'all'
         ? entries.value
         : entries.value.filter(e => e.source === source)
     )
-
-  const totalCount = computed(() => entries.value.length)
+  }
 
   return {
     entries,
     totalCount,
+    isLoading,
+    hasMore,
     load,
-    addEntry,
+    loadIfStale,
+    loadMore,
+    refresh,
+    prependEntry,
     removeEntry,
     clearGallery,
     updateTitle,

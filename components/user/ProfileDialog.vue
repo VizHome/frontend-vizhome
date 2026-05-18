@@ -51,18 +51,20 @@
           </p>
         </div>
 
-        <!-- Email -->
+        <!-- Email (read-only — la modification d'email nécessite une procédure dédiée) -->
         <div class="flex flex-col gap-1.5">
           <Label for="profile-email">Adresse email</Label>
           <Input
             id="profile-email"
-            v-model="form.email"
+            :value="form.email"
             type="email"
-            placeholder="jean@exemple.fr"
-            :class="{ 'ring-1 ring-destructive': errors.email }"
+            readonly
+            disabled
+            class="cursor-not-allowed bg-muted/50"
           />
-          <p v-if="errors.email" class="text-xs text-destructive">
-            {{ errors.email }}
+          <p class="text-xs text-muted-foreground">
+            L'email ne peut pas être modifié depuis cette page (contacte le
+            support si besoin).
           </p>
         </div>
 
@@ -129,9 +131,10 @@ const form = ref({
   avatarUrl: user.value.avatarUrl,
 })
 
-const errors = ref({ name: '', email: '' })
+const errors = ref({ name: '', avatarUrl: '' })
 const isSaving = ref(false)
 const saveSuccess = ref(false)
+const saveError = ref('')
 const avatarInputRef = ref<HTMLInputElement>()
 
 // Sync form quand le dialog s'ouvre
@@ -142,8 +145,9 @@ watch(open, val => {
       email: user.value.email,
       avatarUrl: user.value.avatarUrl,
     }
-    errors.value = { name: '', email: '' }
+    errors.value = { name: '', avatarUrl: '' }
     saveSuccess.value = false
+    saveError.value = ''
   }
 })
 
@@ -152,6 +156,13 @@ const triggerAvatarInput = () => avatarInputRef.value?.click()
 const handleAvatarFile = (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (!file) return
+  if (file.size > 2 * 1024 * 1024) {
+    errors.value.avatarUrl = 'Fichier trop volumineux (max 2 Mo)'
+    return
+  }
+  errors.value.avatarUrl = ''
+  // Note: stocke en data URI pour le moment. Un upload S3/MinIO pourrait
+  // remplacer ça plus tard pour éviter de stocker des MB en DB.
   const reader = new FileReader()
   reader.onload = ev => {
     form.value.avatarUrl = ev.target?.result as string
@@ -160,14 +171,10 @@ const handleAvatarFile = (e: Event) => {
 }
 
 const validate = () => {
-  errors.value = { name: '', email: '' }
+  errors.value = { name: '', avatarUrl: '' }
   let ok = true
   if (!form.value.name.trim()) {
     errors.value.name = 'Le nom est requis'
-    ok = false
-  }
-  if (!form.value.email.trim() || !/^\S+@\S+\.\S+$/.test(form.value.email)) {
-    errors.value.email = 'Email invalide'
     ok = false
   }
   return ok
@@ -176,17 +183,30 @@ const validate = () => {
 const save = async () => {
   if (!validate()) return
   isSaving.value = true
-  // Simule un appel API
-  await new Promise(r => setTimeout(r, 600))
-  updateProfile({
-    name: form.value.name,
-    email: form.value.email,
-    avatarUrl: form.value.avatarUrl,
-  })
-  isSaving.value = false
-  saveSuccess.value = true
-  setTimeout(() => {
-    open.value = false
-  }, 1200)
+  saveError.value = ''
+  try {
+    await updateProfile({
+      name: form.value.name,
+      avatarUrl: form.value.avatarUrl,
+    })
+    saveSuccess.value = true
+    setTimeout(() => {
+      open.value = false
+    }, 1200)
+  } catch (e: unknown) {
+    const err = e as { data?: Record<string, string[] | string> }
+    const data = err?.data || {}
+    if (data.first_name || data.last_name) {
+      errors.value.name = 'Nom invalide'
+    } else if (data.avatar_url) {
+      errors.value.avatarUrl = Array.isArray(data.avatar_url)
+        ? data.avatar_url[0]
+        : String(data.avatar_url)
+    } else {
+      saveError.value = "Impossible de sauvegarder le profil."
+    }
+  } finally {
+    isSaving.value = false
+  }
 }
 </script>

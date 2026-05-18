@@ -75,9 +75,20 @@
 
     <!-- Contenu principal -->
     <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-6">
+      <!-- Spinner initial -->
+      <div
+        v-if="isLoading && entries.length === 0"
+        class="flex flex-col items-center justify-center py-24 gap-3 text-muted-foreground"
+      >
+        <div
+          class="h-8 w-8 rounded-full border-2 border-current border-t-transparent animate-spin"
+        />
+        <span class="text-sm">Chargement…</span>
+      </div>
+
       <!-- État vide -->
       <div
-        v-if="filteredEntries.length === 0"
+        v-else-if="filteredEntries.length === 0"
         class="flex flex-col items-center justify-center py-24 gap-4 text-center"
       >
         <div
@@ -168,6 +179,18 @@
           </div>
         </div>
       </div>
+
+      <!-- Pagination "Charger plus" -->
+      <div v-if="hasMore && activeFilter === 'all'" class="flex justify-center mt-8">
+        <Button
+          variant="outline"
+          :disabled="isLoading"
+          @click="loadMore"
+        >
+          <span v-if="isLoading">Chargement…</span>
+          <span v-else>Charger plus ({{ totalCount - entries.length }} restants)</span>
+        </Button>
+      </div>
     </main>
   </div>
 </template>
@@ -197,9 +220,18 @@ import {
 } from '@/components/ui/alert-dialog'
 import type { GallerySource, GalleryEntry } from '~/composables/useGallery'
 
-definePageMeta({ layout: 'none' })
+definePageMeta({ layout: 'none', middleware: 'auth' })
 
-const { entries, totalCount, load, removeEntry, clearGallery } = useGallery()
+const {
+  entries,
+  totalCount,
+  isLoading,
+  hasMore,
+  load,
+  loadMore,
+  removeEntry,
+  clearGallery,
+} = useGallery()
 
 onMounted(() => load())
 

@@ -189,7 +189,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import {
   AlertTriangle,
   Building2,
@@ -206,9 +206,22 @@ import type { UserPlan } from '~/composables/useUser'
 const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{ 'open-billing': [] }>()
 
-const { user, planLabel, setUserPlan } = useUser()
+const { user, planLabel, fetchMe } = useUser()
+const billing = useBilling()
 
 const upgrading = ref(false)
+
+// Charge l'état d'abonnement à l'ouverture
+watch(open, async newVal => {
+  if (newVal) {
+    try {
+      await billing.fetchSubscription()
+    } catch (e) {
+      // tolérance : si Stripe pas configuré le backend renvoie quand même un fallback
+      console.warn('[subscription] fetch failed', e)
+    }
+  }
+})
 
 function openBilling() {
   open.value = false
@@ -342,34 +355,43 @@ function requestCancel() {
 async function confirmAction() {
   confirmOpen.value = false
   if (!pendingPlan.value) return
+  const target = pendingPlan.value
 
   upgrading.value = true
-  await new Promise(resolve => setTimeout(resolve, 400))
-  const target = pendingPlan.value
-  setUserPlan(target)
-  upgrading.value = false
-  pendingPlan.value = null
-
-  const targetLabel = PLANS.find(p => p.id === target)!.label
-  if (target === 'free') {
-    toast.success(
-      'Abonnement résilié. Vous êtes maintenant sur le plan Gratuit.'
-    )
-  } else if (target === 'enterprise') {
-    toast.success(
-      'Plan Entreprise activé. Notre équipe vous contacte sous 24 h.'
-    )
-  } else {
-    toast.success(`Plan ${targetLabel} activé.`)
+  try {
+    if (target === 'free') {
+      // Résiliation → cancel Stripe + refresh user (les hooks backend mettent à
+      // jour le plan en fin de période)
+      await billing.cancelSubscription()
+      toast.success(
+        "Résiliation enregistrée. Plan actif jusqu'à la fin de la période."
+      )
+    } else {
+      // Upgrade → Checkout Session Stripe → redirection
+      await billing.startCheckout(target)
+      // L'utilisateur est redirigé. Le code en-dessous ne s'exécute pas.
+    }
+    await fetchMe()
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string; code?: string }; statusCode?: number }
+    if (err?.data?.code === 'stripe_unavailable') {
+      toast.error(
+        "Stripe n'est pas configuré sur ce serveur. Contacte l'admin."
+      )
+    } else {
+      toast.error(err?.data?.detail || "Impossible de changer de plan.")
+    }
+  } finally {
+    upgrading.value = false
+    pendingPlan.value = null
   }
 }
 
 // ─── Computed affichage ───────────────────────────────────────────────────────
 const renewalDate = computed(() => {
-  if (user.value.plan === 'free') return null
-  const d = new Date()
-  d.setDate(d.getDate() + 30)
-  return d.toLocaleDateString('fr-FR', {
+  const sub = billing.subscription.value
+  if (!sub?.currentPeriodEnd) return null
+  return new Date(sub.currentPeriodEnd).toLocaleDateString('fr-FR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

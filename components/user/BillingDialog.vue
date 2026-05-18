@@ -7,126 +7,62 @@
           Facturation
         </DialogTitle>
         <DialogDescription>
-          Gérez votre méthode de paiement et consultez vos factures.
+          Consultez vos factures et votre moyen de paiement enregistré.
         </DialogDescription>
       </DialogHeader>
 
       <div class="flex flex-col gap-4 py-2">
         <!-- Prochain prélèvement -->
         <div
-          v-if="user.plan !== 'free'"
+          v-if="user.plan !== 'free' && nextRenewalDate"
           class="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 flex items-center gap-3"
         >
           <CalendarClock class="h-4 w-4 text-primary shrink-0" />
           <div class="flex-1">
             <p class="text-xs text-muted-foreground">Prochain prélèvement</p>
             <p class="text-sm font-semibold">
-              {{ nextBillingAmount }}
               <span class="font-normal text-muted-foreground"
-                >le {{ nextBillingDate }}</span
+                >le {{ nextRenewalDate }}</span
               >
             </p>
           </div>
         </div>
 
-        <!-- Méthode de paiement -->
+        <!-- Moyen de paiement (read-only — Stripe gère la modif via Checkout) -->
         <div class="flex flex-col gap-2">
           <p
             class="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
           >
-            Méthode de paiement
+            Moyen de paiement
           </p>
 
-          <!-- Affichage carte (mode lecture) -->
           <div
-            v-if="!editingCard"
+            v-if="paymentMethods.length > 0"
             class="rounded-xl border bg-muted/40 p-3 flex items-center gap-3"
           >
             <div
-              class="flex h-9 w-14 items-center justify-center rounded-md bg-background border text-xs font-bold tracking-wider text-foreground shrink-0"
+              class="flex h-9 w-14 items-center justify-center rounded-md bg-background border text-xs font-bold tracking-wider text-foreground shrink-0 uppercase"
             >
-              {{ cardType }}
+              {{ paymentMethods[0].brand }}
             </div>
             <div class="flex-1">
               <p class="text-sm font-medium">
-                •••• •••• •••• {{ card.last4 || '——' }}
+                •••• •••• •••• {{ paymentMethods[0].last4 }}
               </p>
               <p class="text-xs text-muted-foreground">
-                Expire {{ card.expiry || '——' }}
+                Expire {{ String(paymentMethods[0].expMonth).padStart(2, '0') }}/{{
+                  String(paymentMethods[0].expYear).slice(-2)
+                }}
               </p>
             </div>
-            <Button
-              variant="outline"
-              class="shrink-0 h-7 text-xs px-2.5"
-              @click="startEditCard"
-            >
-              Modifier
-            </Button>
           </div>
 
-          <!-- Formulaire modification carte -->
           <div
             v-else
-            class="rounded-xl border bg-muted/40 p-4 flex flex-col gap-3"
+            class="rounded-xl border border-dashed bg-muted/20 p-4 text-center text-xs text-muted-foreground"
           >
-            <p class="text-sm font-medium">Modifier la carte</p>
-
-            <!-- Numéro de carte -->
-            <div>
-              <Label class="text-xs mb-1 block">Numéro de carte</Label>
-              <Input
-                v-model="cardForm.number"
-                placeholder="1234 5678 9012 3456"
-                maxlength="19"
-                :class="{ 'ring-1 ring-destructive': cardErrors.number }"
-                @input="formatCardNumber"
-              />
-              <p v-if="cardErrors.number" class="mt-1 text-xs text-destructive">
-                {{ cardErrors.number }}
-              </p>
-            </div>
-
-            <div class="flex gap-3">
-              <!-- Expiration -->
-              <div class="flex-1">
-                <Label class="text-xs mb-1 block">Expiration</Label>
-                <Input
-                  v-model="cardForm.expiry"
-                  placeholder="MM/AA"
-                  maxlength="5"
-                  :class="{ 'ring-1 ring-destructive': cardErrors.expiry }"
-                  @input="formatExpiry"
-                />
-                <p
-                  v-if="cardErrors.expiry"
-                  class="mt-1 text-xs text-destructive"
-                >
-                  {{ cardErrors.expiry }}
-                </p>
-              </div>
-
-              <!-- CVV -->
-              <div class="w-24">
-                <Label class="text-xs mb-1 block">CVV</Label>
-                <Input
-                  v-model="cardForm.cvv"
-                  placeholder="123"
-                  maxlength="4"
-                  type="password"
-                  :class="{ 'ring-1 ring-destructive': cardErrors.cvv }"
-                />
-                <p v-if="cardErrors.cvv" class="mt-1 text-xs text-destructive">
-                  {{ cardErrors.cvv }}
-                </p>
-              </div>
-            </div>
-
-            <div class="flex gap-2 pt-1">
-              <Button size="sm" @click="saveCard">Enregistrer</Button>
-              <Button variant="ghost" size="sm" @click="cancelEditCard"
-                >Annuler</Button
-              >
-            </div>
+            Aucun moyen de paiement enregistré. Souscris à un plan pour ajouter
+            une carte.
           </div>
         </div>
 
@@ -137,48 +73,64 @@
           >
             Factures récentes
           </p>
-          <div class="rounded-xl border overflow-hidden">
+
+          <div
+            v-if="isLoadingInvoices"
+            class="flex justify-center py-6 text-muted-foreground"
+          >
             <div
-              v-for="(invoice, i) in MOCK_INVOICES"
+              class="h-5 w-5 rounded-full border-2 border-current border-t-transparent animate-spin"
+            />
+          </div>
+
+          <div
+            v-else-if="invoices.length === 0"
+            class="rounded-xl border border-dashed bg-muted/20 p-4 text-center text-xs text-muted-foreground"
+          >
+            Aucune facture pour le moment.
+          </div>
+
+          <div v-else class="rounded-xl border overflow-hidden">
+            <div
+              v-for="(invoice, i) in invoices"
               :key="invoice.id"
               :class="[
                 'flex items-center gap-3 px-3 py-2.5',
-                i < MOCK_INVOICES.length - 1 ? 'border-b border-border' : '',
+                i < invoices.length - 1 ? 'border-b border-border' : '',
               ]"
             >
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium truncate">
-                  {{ invoice.description }}
+                  {{ invoice.number || invoice.id }}
                 </p>
-                <p class="text-xs text-muted-foreground">{{ invoice.date }}</p>
+                <p class="text-xs text-muted-foreground">
+                  {{ formatDate(invoice.created) }}
+                </p>
               </div>
               <span class="shrink-0 text-xs font-medium tabular-nums">{{
-                invoice.amount
+                formatAmount(invoice.amountPaid, invoice.currency)
               }}</span>
               <span
                 class="shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none"
-                :class="
-                  invoice.status === 'Payé'
-                    ? 'bg-green-500/10 text-green-600'
-                    : 'bg-amber-500/10 text-amber-600'
-                "
-                >{{ invoice.status }}</span
+                :class="invoiceStatusClass(invoice.status)"
+                >{{ invoiceStatusLabel(invoice.status) }}</span
               >
-              <Button
-                variant="ghost"
-                class="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
-                :title="`Télécharger ${invoice.description}`"
-                @click="downloadInvoice(invoice)"
+              <a
+                v-if="invoice.invoicePdf"
+                :href="invoice.invoicePdf"
+                target="_blank"
+                rel="noopener"
+                class="h-7 w-7 shrink-0 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                title="Télécharger le PDF Stripe"
               >
                 <Download class="h-3.5 w-3.5" />
-              </Button>
+              </a>
             </div>
           </div>
         </div>
       </div>
 
       <DialogFooter class="flex-col sm:flex-row gap-2 sm:items-center">
-        <!-- Annuler l'abonnement (plan non-free seulement) -->
         <button
           v-if="user.plan !== 'free'"
           class="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-destructive transition-colors mr-auto"
@@ -199,8 +151,7 @@
         <AlertDialogTitle>Annuler l'abonnement ?</AlertDialogTitle>
         <AlertDialogDescription>
           Votre plan {{ planLabel }} restera actif jusqu'à la fin de la période
-          en cours. Vous serez ensuite basculé sur le plan Gratuit et perdrez
-          l'accès aux fonctionnalités avancées.
+          en cours. Vous serez ensuite basculé sur le plan Gratuit.
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
@@ -217,211 +168,98 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { CalendarClock, Download, Receipt, XCircle } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
 const open = defineModel<boolean>('open', { default: false })
 
-const { user, planLabel, setUserPlan } = useUser()
+const { user, planLabel, fetchMe } = useUser()
+const billing = useBilling()
 
 const confirmCancelOpen = ref(false)
+const isLoadingInvoices = ref(false)
 
-// ─── Carte bancaire ───────────────────────────────────────────────────────────
-const LS_CARD = 'vizhome:billing:card'
+// Aliases réactifs
+const invoices = billing.invoices
+const paymentMethods = billing.paymentMethods
 
-function loadCard() {
-  if (!import.meta.client) return { last4: '4242', expiry: '12/27' }
+// Charge les données à l'ouverture
+watch(open, async newVal => {
+  if (!newVal) return
+  isLoadingInvoices.value = true
   try {
-    const raw = localStorage.getItem(LS_CARD)
-    if (raw) return JSON.parse(raw) as { last4: string; expiry: string }
-  } catch {}
-  return { last4: '4242', expiry: '12/27' }
-}
-
-const card = ref(loadCard())
-const editingCard = ref(false)
-const cardForm = reactive({ number: '', expiry: '', cvv: '' })
-const cardErrors = reactive({ number: '', expiry: '', cvv: '' })
-
-const cardType = computed(() => {
-  const n = cardForm.number.replace(/\s/g, '') || ''
-  if (!editingCard.value) return 'VISA' // affichage par défaut
-  if (/^4/.test(n)) return 'VISA'
-  if (/^5[1-5]/.test(n)) return 'MC'
-  if (/^3[47]/.test(n)) return 'AMEX'
-  return '····'
+    await Promise.all([
+      billing.fetchSubscription(),
+      billing.fetchInvoices(),
+      billing.fetchPaymentMethods(),
+    ])
+  } catch (e) {
+    console.warn('[billing] fetch failed', e)
+  } finally {
+    isLoadingInvoices.value = false
+  }
 })
 
-function startEditCard() {
-  cardForm.number = ''
-  cardForm.expiry = ''
-  cardForm.cvv = ''
-  cardErrors.number = ''
-  cardErrors.expiry = ''
-  cardErrors.cvv = ''
-  editingCard.value = true
-}
-
-function cancelEditCard() {
-  editingCard.value = false
-}
-
-function formatCardNumber() {
-  let v = cardForm.number.replace(/\D/g, '').slice(0, 16)
-  cardForm.number = v.replace(/(.{4})/g, '$1 ').trim()
-}
-
-function formatExpiry() {
-  let v = cardForm.expiry.replace(/\D/g, '').slice(0, 4)
-  if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2)
-  cardForm.expiry = v
-}
-
-function saveCard() {
-  cardErrors.number = ''
-  cardErrors.expiry = ''
-  cardErrors.cvv = ''
-
-  const digits = cardForm.number.replace(/\s/g, '')
-  let hasError = false
-
-  if (digits.length < 13 || digits.length > 16) {
-    cardErrors.number = 'Numéro de carte invalide (13–16 chiffres)'
-    hasError = true
-  }
-
-  const expiryMatch = /^(\d{2})\/(\d{2})$/.exec(cardForm.expiry)
-  if (!expiryMatch) {
-    cardErrors.expiry = 'Format requis : MM/AA'
-    hasError = true
-  } else {
-    const month = parseInt(expiryMatch[1], 10)
-    const year = 2000 + parseInt(expiryMatch[2], 10)
-    const now = new Date()
-    if (month < 1 || month > 12) {
-      cardErrors.expiry = 'Mois invalide'
-      hasError = true
-    } else if (
-      year < now.getFullYear() ||
-      (year === now.getFullYear() && month < now.getMonth() + 1)
-    ) {
-      cardErrors.expiry = 'Carte expirée'
-      hasError = true
-    }
-  }
-
-  if (cardForm.cvv.length < 3) {
-    cardErrors.cvv = 'CVV invalide'
-    hasError = true
-  }
-
-  if (hasError) return
-
-  const newCard = {
-    last4: digits.slice(-4),
-    expiry: cardForm.expiry,
-  }
-  card.value = newCard
-  if (import.meta.client) {
-    localStorage.setItem(LS_CARD, JSON.stringify(newCard))
-  }
-  editingCard.value = false
-  toast.success('Carte mise à jour.')
-}
-
-// ─── Facturation fictive ──────────────────────────────────────────────────────
-const nextBillingDate = (() => {
-  const d = new Date()
-  d.setDate(d.getDate() + 30)
-  return d.toLocaleDateString('fr-FR', {
+const nextRenewalDate = computed(() => {
+  const sub = billing.subscription.value
+  if (!sub?.currentPeriodEnd) return null
+  return new Date(sub.currentPeriodEnd).toLocaleDateString('fr-FR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   })
-})()
-
-const nextBillingAmount = computed(() => {
-  if (user.value.plan === 'pro') return '19,00 €'
-  if (user.value.plan === 'enterprise') return 'Sur devis'
-  return null
 })
 
-interface Invoice {
-  id: number
-  description: string
-  date: string
-  amount: string
-  status: string
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
 }
 
-const MOCK_INVOICES: Invoice[] = [
-  {
-    id: 1,
-    description: 'Plan Pro — Février 2026',
-    date: '1 févr. 2026',
-    amount: '19,00 €',
-    status: 'Payé',
-  },
-  {
-    id: 2,
-    description: 'Plan Pro — Janvier 2026',
-    date: '1 janv. 2026',
-    amount: '19,00 €',
-    status: 'Payé',
-  },
-  {
-    id: 3,
-    description: 'Plan Pro — Décembre 2025',
-    date: '1 déc. 2025',
-    amount: '19,00 €',
-    status: 'Payé',
-  },
-  {
-    id: 4,
-    description: 'Plan Pro — Novembre 2025',
-    date: '1 nov. 2025',
-    amount: '19,00 €',
-    status: 'Payé',
-  },
-]
-
-function downloadInvoice(invoice: Invoice) {
-  if (!import.meta.client) return
-  const content = [
-    '================================================',
-    '                  VIZHOME',
-    '           Facture / Reçu de paiement',
-    '================================================',
-    '',
-    `  Description : ${invoice.description}`,
-    `  Date        : ${invoice.date}`,
-    `  Montant     : ${invoice.amount}`,
-    `  Statut      : ${invoice.status}`,
-    `  Client      : ${user.value.name}`,
-    `  Email       : ${user.value.email}`,
-    '',
-    '================================================',
-    '  Merci pour votre confiance.',
-    '================================================',
-  ].join('\n')
-
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `facture-vizhome-${invoice.id}.txt`
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
-  toast.success(`Facture téléchargée.`)
+function formatAmount(cents: number, currency: string): string {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(cents / 100)
 }
 
-// ─── Annulation abonnement ────────────────────────────────────────────────────
-function cancelSubscription() {
+function invoiceStatusLabel(status: string): string {
+  const labels: Record<string, string> = {
+    paid: 'Payé',
+    open: 'En attente',
+    void: 'Annulée',
+    uncollectible: 'Impayée',
+    draft: 'Brouillon',
+  }
+  return labels[status] || status
+}
+
+function invoiceStatusClass(status: string): string {
+  if (status === 'paid') return 'bg-green-500/10 text-green-600'
+  if (status === 'open') return 'bg-amber-500/10 text-amber-600'
+  if (status === 'void' || status === 'uncollectible')
+    return 'bg-destructive/10 text-destructive'
+  return 'bg-muted text-muted-foreground'
+}
+
+async function cancelSubscription() {
   confirmCancelOpen.value = false
-  setUserPlan('free')
-  toast.success('Abonnement annulé. Vous êtes maintenant sur le plan Gratuit.')
+  try {
+    await billing.cancelSubscription()
+    await fetchMe()
+    toast.success(
+      "Résiliation enregistrée. Ton plan restera actif jusqu'à la fin de la période."
+    )
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string; code?: string } }
+    if (err?.data?.code === 'stripe_unavailable') {
+      toast.error("Stripe n'est pas configuré sur ce serveur.")
+    } else {
+      toast.error(err?.data?.detail || "Impossible d'annuler l'abonnement.")
+    }
+  }
 }
 </script>

@@ -40,7 +40,14 @@
       "Bash(curl -s -I http://localhost:3001/api)",
       "Bash(taskkill //F //IM node.exe)",
       "Bash(npm i *)",
-      "Bash(npm uninstall *)"
+      "Bash(npm uninstall *)",
+      "Bash(npm install *)",
+      "WebFetch(domain:shadcn-docs-nuxt.vercel.app)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/)",
+      "Bash(mkdir -p \"/c/Users/thiba/Documents/Environnement_dev/backend-vizhome/docs\" \"/c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/docs\" \"/c/Users/thiba/Documents/Environnement_dev/docs-vizehome/docs\" && echo OK)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\thiba\\\\Documents\\\\Environnement_dev\\\\backend-vizhome\" -Force)",
+      "Bash(Select-Object -Property Name, PSIsContainer)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\thiba\\\\Documents\\\\Environnement_dev\\\\docs-vizehome\" -Force)"
     ]
   }
 }

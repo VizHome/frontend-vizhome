@@ -260,20 +260,35 @@ export function useAiRender() {
 function _formatError(err: unknown): string | null {
   if (!err) return null
   const e = err as {
-    data?: { detail?: string; code?: string; [k: string]: unknown }
+    data?: {
+      detail?: string
+      code?: string
+      non_field_errors?: string[]
+      [k: string]: unknown
+    }
     message?: string
     statusCode?: number
   }
-  // Erreur quota Stripe-style
+
+  // 503 : provider IA non configuré (pattern <provider>_unavailable)
+  if (e.statusCode === 503 && e.data?.code?.endsWith('_unavailable')) {
+    return e.data.detail || 'Service IA temporairement indisponible.'
+  }
+  if (e.statusCode === 503 && e.data?.detail) return e.data.detail
+
+  // 400 avec code structuré (quota dépassé, etc.)
   if (e.data?.code === 'quota_exceeded') return e.data.detail as string
+
+  // 400 générique : detail > non_field_errors > premier champ
   if (e.statusCode === 400 && e.data) {
     if (e.data.detail) return e.data.detail
-    // Premier champ d'erreur DRF (string ou array)
+    if (e.data.non_field_errors?.[0]) return e.data.non_field_errors[0]
     for (const v of Object.values(e.data)) {
       if (typeof v === 'string') return v
       if (Array.isArray(v) && typeof v[0] === 'string') return v[0]
     }
   }
+
   if (e.statusCode === 401) return 'Session expirée. Reconnecte-toi.'
   if (e.statusCode === 429) return 'Trop de requêtes, ralentis.'
   return e.message || null

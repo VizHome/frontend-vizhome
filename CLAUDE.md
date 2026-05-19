@@ -147,8 +147,7 @@ No `extends`. No custom dev port (uses default 3000). Experimental:
 
 - `docs/STRUCTURE.md` · `docs/ARCHITECTURE.md` · `docs/DEVELOPMENT.md` ·
   `docs/DEPLOYMENT.md` · `docs/CONTRIBUTING.md`
-- `README.md` mislabels the UI lib as "Radix Vue" — it's `reka-ui`. Fix
-  next time you touch it.
+- `README.md` — onboarding public (stack, scripts, structure)
 
 ## Conventions
 

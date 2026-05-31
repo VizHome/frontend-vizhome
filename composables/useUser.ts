@@ -17,6 +17,7 @@ export type RenderQuality = 'draft' | 'standard' | 'high'
 export type RenderFormat = 'png' | 'jpg' | 'webp'
 
 export interface UserProfile {
+  id: number | null
   name: string
   email: string
   avatarUrl: string
@@ -117,6 +118,7 @@ interface ApiSession {
 
 // ─── Valeurs par défaut (avant fetch) ───────────────────────────────────────
 const DEFAULT_PROFILE: UserProfile = {
+  id: null,
   name: '',
   email: '',
   avatarUrl: '',
@@ -225,6 +227,7 @@ export function useUser() {
     try {
       const data = await api<ApiMe>('/me/')
       user.value = {
+        id: data.id,
         name: data.name,
         email: data.email,
         avatarUrl: data.avatar_url,

@@ -83,7 +83,18 @@
       "Bash(curl -sS \"http://localhost:3000/_nuxt/pages/forum/topic/%5Bid%5D.vue\")",
       "Bash(curl -sS \"http://localhost:3000/_nuxt/components/forum/ForumEditor.vue\")",
       "Bash(curl -sS \"http://localhost:3000/_nuxt/components/forum/ForumContent.vue\")",
-      "Bash(curl -sS -X POST http://localhost:8000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"editor-test-1780246483204@example.com\",\"password\":\"EditorTest1234!\"}')"
+      "Bash(curl -sS -X POST http://localhost:8000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"editor-test-1780246483204@example.com\",\"password\":\"EditorTest1234!\"}')",
+      "Bash(curl -sS -o /dev/null -w \"%{http_code}\" http://localhost:3000/admin/users)",
+      "Bash(curl -sS http://localhost:3000/admin/users)",
+      "Bash(curl -sS http://localhost:3000/admin/users -L)",
+      "Bash(curl -sS -i http://localhost:3000/admin/users)",
+      "Skill(shadcn-vue)",
+      "Skill(shadcn-vue:*)",
+      "Bash(curl -sS -o /dev/null http://localhost:8000/api/v1/forum/categories)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('count=',d.get\\('count'\\), 'first=',d.get\\('results',[{}]\\)[0].get\\('id'\\) if d.get\\('results'\\) else 'none'\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'audit_count={d[\\\\\"count\\\\\"]}'\\); [print\\(f'  {r[\\\\\"created_at\\\\\"][:19]} {r[\\\\\"actor_email\\\\\"]} → {r[\\\\\"action\\\\\"]} \\({r[\\\\\"target_repr\\\\\"]}\\)'\\) for r in d['results'][:5]]\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'count={d[\\\\\"count\\\\\"]}, mode={d.get\\(\\\\\"mode\\\\\",\\\\\"ok\\\\\"\\)}'\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'audit_count={d[\\\\\"count\\\\\"]}'\\)\")"
     ]
   }
 }

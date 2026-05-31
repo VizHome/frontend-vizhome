@@ -160,7 +160,8 @@ shadcn-vue 2.6.2 (wrapping reka-ui 2.9.1) · Three.js 0.183.2 ·
 vee-validate 4.15.1 + yup 1.7.1 · lucide-vue-next · `@tanstack/vue-table` ·
 highlight.js (CodeBlock component, github-dark theme via `assets/css/tailwind.css`) ·
 **TipTap 2** + lowlight (forum rich text editor, `components/forum/ForumEditor.vue`) ·
-isomorphic-dompurify (HTML sanitization for forum display, `ForumContent.vue`)
+isomorphic-dompurify (HTML sanitization for forum display, `ForumContent.vue`) ·
+**@unovis/vue** + shadcn-vue `Chart` wrapper (admin analytics page, charts in `components/admin/Admin*Chart.vue`)
 
 ### `nuxt.config.ts` modules
 

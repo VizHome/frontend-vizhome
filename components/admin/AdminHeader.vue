@@ -104,8 +104,12 @@ const user = useUser()
 
 const adminNav = [
   { to: '/admin', label: 'Dashboard' },
+  { to: '/admin/analytics', label: 'Analytics' },
   { to: '/admin/users', label: 'Users' },
   { to: '/admin/renders', label: 'Renders' },
+  { to: '/admin/billing', label: 'Billing' },
+  { to: '/admin/forum', label: 'Forum' },
+  { to: '/admin/audit-log', label: 'Audit' },
 ]
 
 function initials(name: string): string {

@@ -54,7 +54,10 @@ composables/
 ├── useRenderMode.ts              mode actif (sketch | prompt | 3d)
 ├── useSketchCanvas.ts            canvas 2D vectoriel (pencil, eraser, shapes)
 ├── useForum.ts                   ★ forum communautaire — categories, topics, replies (CRUD)
-├── useAdminPanel.ts              ★ dashboard admin staff-only (1 endpoint consolidé)
+├── useAdminPanel.ts              ★ dashboard admin staff-only (overview consolidé)
+├── useAdminUsers.ts              ★ liste paginée users + actions modération (ban / promote)
+├── useAdminRenders.ts            ★ liste paginée renders (staff drill-down)
+├── useAdminTimeline.ts           ★ séries temporelles pour graphiques (/admin/analytics)
 └── useThree*.ts                  12 composables Three.js (scene, models, lighting, weather, navigation…)
 ```
 
@@ -121,7 +124,9 @@ pages/
 │   └── new.vue                   form création topic (auth requise, `?category=<slug>` pré-sélection)
 │
 ├── admin/                        ★ panel admin interne (layout: 'admin', staff-only)
-│   └── index.vue                 dashboard consolidé (users + renders + storage + billing + forum + system)
+│   ├── index.vue                 dashboard consolidé (users + renders + storage + billing + forum + system)
+│   ├── users.vue                 tableau paginé + filtres (plan, staff, actif) + actions ban/promote
+│   └── renders.vue               tableau paginé + filtres (status, source)
 │
 └── legal/
     ├── privacy-policy.vue

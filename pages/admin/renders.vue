@@ -12,12 +12,23 @@
         </h1>
       </div>
       <div class="flex flex-wrap items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-9 rounded-full gap-1.5 text-xs"
+          :disabled="isExporting"
+          @click="onExportCsv"
+        >
+          <Loader2Icon v-if="isExporting" class="size-3.5 animate-spin" />
+          <DownloadIcon v-else class="size-3.5" />
+          Export CSV
+        </Button>
         <Select v-model="statusFilter" @update:model-value="reload">
           <SelectTrigger class="h-9 w-36 text-sm rounded-full">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Tous statuts</SelectItem>
+            <SelectItem value="all">Tous statuts</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
             <SelectItem value="processing">Processing</SelectItem>
             <SelectItem value="done">Done</SelectItem>
@@ -29,7 +40,7 @@
             <SelectValue placeholder="Source" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Toutes sources</SelectItem>
+            <SelectItem value="all">Toutes sources</SelectItem>
             <SelectItem value="prompt">Prompt</SelectItem>
             <SelectItem value="sketch">Sketch</SelectItem>
             <SelectItem value="screenshot">Screenshot</SelectItem>
@@ -118,10 +129,12 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronRightIcon } from 'lucide-vue-next'
+import { ChevronRightIcon, DownloadIcon, Loader2Icon } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
+import { toast } from 'vue-sonner'
 
 import { useAdminRenders } from '~/composables/useAdminRenders'
+import { useAdminCsvExport } from '~/composables/useAdminCsvExport'
 import { relativeTime } from '~/composables/useAdminPanel'
 
 definePageMeta({
@@ -137,28 +150,37 @@ const { renders, count, page, isLoading, loadRenders } = useAdminRenders()
 const PAGE_SIZE = 25
 const totalPages = computed(() => Math.max(1, Math.ceil(count.value / PAGE_SIZE)))
 
-const statusFilter = ref('')
-const sourceFilter = ref('')
+// "all" = pas de filtre (reka-ui n'accepte pas value="" sur SelectItem)
+const statusFilter = ref('all')
+const sourceFilter = ref('all')
 
 await reload()
 
+function _filterArgs() {
+  return {
+    status: statusFilter.value === 'all' ? undefined : statusFilter.value,
+    source: sourceFilter.value === 'all' ? undefined : sourceFilter.value,
+  }
+}
+
 async function reload() {
-  await loadRenders({
-    page: 1,
-    pageSize: PAGE_SIZE,
-    status: statusFilter.value || undefined,
-    source: sourceFilter.value || undefined,
-  })
+  await loadRenders({ page: 1, pageSize: PAGE_SIZE, ..._filterArgs() })
 }
 
 async function goPage(p: number) {
   if (p < 1 || p > totalPages.value) return
-  await loadRenders({
-    page: p,
-    pageSize: PAGE_SIZE,
-    status: statusFilter.value || undefined,
-    source: sourceFilter.value || undefined,
-  })
+  await loadRenders({ page: p, pageSize: PAGE_SIZE, ..._filterArgs() })
+}
+
+const { isExporting, exportCsv } = useAdminCsvExport()
+
+async function onExportCsv() {
+  try {
+    await exportCsv('/admin/renders', 'admin-renders', _filterArgs())
+    toast.success('Export téléchargé.')
+  } catch {
+    toast.error('Export CSV échoué.')
+  }
 }
 
 const STATUS_COLORS: Record<string, string> = {

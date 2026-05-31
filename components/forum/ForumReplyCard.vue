@@ -54,6 +54,9 @@
           :title="absoluteDate(reply.created_at)"
         >
           {{ relativeTime(reply.created_at) }}
+          <span class="ml-1 text-muted-foreground/60">
+            · {{ timeOnly(reply.created_at) }}
+          </span>
         </time>
 
         <!-- Badge édité -->
@@ -115,9 +118,27 @@
 
       <!-- Actions (mode lecture uniquement) -->
       <div
-        v-if="!isEditing && (canEdit || canDelete)"
-        class="mt-3 flex items-center gap-2 text-xs"
+        v-if="!isEditing && (canEdit || canDelete || canMarkSolution)"
+        class="mt-3 flex items-center gap-2 text-xs flex-wrap"
       >
+        <!-- Marquer comme solution (owner du topic ou staff) -->
+        <button
+          v-if="canMarkSolution"
+          type="button"
+          class="transition-colors flex items-center gap-1"
+          :class="reply.is_solution
+            ? 'text-green-600 dark:text-green-400 hover:opacity-80'
+            : 'text-muted-foreground hover:text-green-600 dark:hover:text-green-400'"
+          :title="reply.is_solution ? 'Retirer le statut de solution' : 'Marquer comme solution'"
+          @click="$emit('toggleSolution', reply)"
+        >
+          <CheckCircle2Icon class="h-3 w-3" />
+          {{ reply.is_solution ? 'Retirer solution' : 'Marquer solution' }}
+        </button>
+        <span
+          v-if="canMarkSolution && (canEdit || canDelete)"
+          class="text-muted-foreground"
+        >·</span>
         <button
           v-if="canEdit"
           type="button"
@@ -160,12 +181,25 @@ const props = defineProps<{
   reply: ForumReply
   currentUserId?: number | null
   currentUserIsStaff?: boolean
+  /** Id de l'auteur du topic — autorise le marquage "solution" */
+  topicAuthorId?: number | null
 }>()
 
 const emit = defineEmits<{
   delete: [reply: ForumReply]
   updated: [reply: ForumReply]
+  toggleSolution: [reply: ForumReply]
 }>()
+
+// Peut marquer/démarquer une solution : auteur du topic OU staff
+const canMarkSolution = computed(() => {
+  if (props.currentUserIsStaff) return true
+  return (
+    props.currentUserId != null &&
+    props.topicAuthorId != null &&
+    props.currentUserId === props.topicAuthorId
+  )
+})
 
 // ─── Permissions UI (le backend vérifie aussi côté serveur) ──────────────
 // Fenêtre alignée sur EDIT_WINDOW_MINUTES backend (15 min)
@@ -282,6 +316,15 @@ function absoluteDate(iso: string): string {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+/** Affiche juste l'heure (HH:mm), utile pour distinguer 2 posts du même jour. */
+function timeOnly(iso: string): string {
+  if (!iso) return ''
+  return new Date(iso).toLocaleTimeString('fr-FR', {
     hour: '2-digit',
     minute: '2-digit',
   })

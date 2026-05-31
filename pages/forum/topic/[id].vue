@@ -69,6 +69,9 @@
               :title="new Date(topic.created_at).toLocaleString('fr-FR')"
             >
               {{ relativeTime(topic.created_at) }}
+              <span class="ml-1 text-muted-foreground/60">
+                · {{ new Date(topic.created_at).toLocaleString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) }}
+              </span>
             </time>
             <template v-if="isTopicEdited">
               <span aria-hidden="true">·</span>
@@ -90,11 +93,33 @@
               {{ topic.replies_count }}
             </span>
 
-            <!-- Actions owner / staff (édit / supprime) -->
+            <!-- Actions owner / staff (édit / supprime / pin / lock) -->
             <span
-              v-if="canEditTopic || canDeleteTopic"
+              v-if="canEditTopic || canDeleteTopic || isStaff"
               class="ml-auto flex items-center gap-2"
             >
+              <!-- Actions staff modération -->
+              <button
+                v-if="isStaff"
+                type="button"
+                class="hover:text-amber-500 transition-colors flex items-center gap-1"
+                :title="topic.is_pinned ? 'Désépingler' : 'Épingler en haut'"
+                @click="onTogglePin"
+              >
+                <PinIcon class="h-3 w-3" />
+                {{ topic.is_pinned ? 'Désépingler' : 'Épingler' }}
+              </button>
+              <button
+                v-if="isStaff"
+                type="button"
+                class="hover:text-foreground transition-colors flex items-center gap-1"
+                :title="topic.is_locked ? 'Déverrouiller (autoriser les réponses)' : 'Verrouiller (bloquer les réponses)'"
+                @click="onToggleLock"
+              >
+                <LockIcon class="h-3 w-3" />
+                {{ topic.is_locked ? 'Déverrouiller' : 'Verrouiller' }}
+              </button>
+              <!-- Actions owner -->
               <button
                 v-if="canEditTopic && !isEditingTopic"
                 type="button"
@@ -181,7 +206,9 @@
               :reply="reply"
               :current-user-id="currentUserId"
               :current-user-is-staff="isStaff"
+              :topic-author-id="topic.author.id"
               @delete="onDeleteReply"
+              @toggle-solution="onToggleSolution"
             />
           </div>
 
@@ -432,6 +459,44 @@ async function onDeleteReply(reply: { id: number }) {
     toast.success('Réponse supprimée.')
   } catch {
     toast.error('Impossible de supprimer la réponse.')
+  }
+}
+
+// ─── Modération staff (pin / lock topic) ────────────────────────────────
+async function onTogglePin() {
+  if (!topic.value) return
+  try {
+    const isPinned = await forum.toggleTopicPin(topic.value.id)
+    toast.success(isPinned ? 'Sujet épinglé.' : 'Sujet désépinglé.')
+  } catch {
+    toast.error("Impossible de modifier l'épinglage.")
+  }
+}
+
+async function onToggleLock() {
+  if (!topic.value) return
+  try {
+    const isLocked = await forum.toggleTopicLock(topic.value.id)
+    toast.success(
+      isLocked ? 'Sujet verrouillé.' : 'Sujet déverrouillé.',
+    )
+  } catch {
+    toast.error('Impossible de modifier le verrou.')
+  }
+}
+
+// ─── Marquer / unmarker une solution (owner du topic ou staff) ──────────
+async function onToggleSolution(reply: { id: number }) {
+  try {
+    const isSolution = await forum.toggleReplySolution(reply.id)
+    toast.success(
+      isSolution
+        ? 'Réponse marquée comme solution.'
+        : 'Solution retirée.',
+    )
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string } }
+    toast.error(err.data?.detail || 'Impossible de modifier la solution.')
   }
 }
 

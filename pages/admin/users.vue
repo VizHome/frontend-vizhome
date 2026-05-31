@@ -13,6 +13,17 @@
         </h1>
       </div>
       <div class="flex flex-wrap items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-9 rounded-full gap-1.5 text-xs"
+          :disabled="isExporting"
+          @click="onExportCsv"
+        >
+          <Loader2Icon v-if="isExporting" class="size-3.5 animate-spin" />
+          <DownloadIcon v-else class="size-3.5" />
+          Export CSV
+        </Button>
         <div class="relative">
           <SearchIcon
             class="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground"
@@ -30,7 +41,7 @@
             <SelectValue placeholder="Plan" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Tous plans</SelectItem>
+            <SelectItem value="all">Tous plans</SelectItem>
             <SelectItem value="free">Free</SelectItem>
             <SelectItem value="pro">Pro</SelectItem>
             <SelectItem value="enterprise">Enterprise</SelectItem>
@@ -41,7 +52,7 @@
             <SelectValue placeholder="Rôle" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Tous</SelectItem>
+            <SelectItem value="all">Tous</SelectItem>
             <SelectItem value="true">Staff</SelectItem>
             <SelectItem value="false">Users</SelectItem>
           </SelectContent>
@@ -51,7 +62,7 @@
             <SelectValue placeholder="Statut" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Tous</SelectItem>
+            <SelectItem value="all">Tous</SelectItem>
             <SelectItem value="true">Actifs</SelectItem>
             <SelectItem value="false">Bannis</SelectItem>
           </SelectContent>
@@ -193,6 +204,8 @@
 <script setup lang="ts">
 import {
   ChevronRightIcon,
+  DownloadIcon,
+  Loader2Icon,
   MoreHorizontal,
   SearchIcon,
   Shield,
@@ -206,6 +219,7 @@ import {
   type AdminUser,
   useAdminUsers,
 } from '~/composables/useAdminUsers'
+import { useAdminCsvExport } from '~/composables/useAdminCsvExport'
 import { formatBytes, relativeTime } from '~/composables/useAdminPanel'
 
 definePageMeta({
@@ -222,9 +236,10 @@ const PAGE_SIZE = 25
 const totalPages = computed(() => Math.max(1, Math.ceil(count.value / PAGE_SIZE)))
 
 const searchInput = ref('')
-const planFilter = ref('')
-const staffFilter = ref('')
-const activeFilter = ref('')
+// "all" = pas de filtre (reka-ui n'accepte pas value="" sur un SelectItem)
+const planFilter = ref('all')
+const staffFilter = ref('all')
+const activeFilter = ref('all')
 
 await reload()
 
@@ -235,27 +250,42 @@ function onSearchDebounced() {
   searchTimer = setTimeout(reload, 400)
 }
 
-async function reload() {
-  await loadUsers({
-    page: 1,
-    pageSize: PAGE_SIZE,
+function _filterArgs() {
+  return {
     search: searchInput.value.trim() || undefined,
-    plan: planFilter.value || undefined,
-    is_staff: staffFilter.value ? staffFilter.value === 'true' : undefined,
-    is_active: activeFilter.value ? activeFilter.value === 'true' : undefined,
-  })
+    plan: planFilter.value === 'all' ? undefined : planFilter.value,
+    is_staff:
+      staffFilter.value === 'all' ? undefined : staffFilter.value === 'true',
+    is_active:
+      activeFilter.value === 'all' ? undefined : activeFilter.value === 'true',
+  }
+}
+
+async function reload() {
+  await loadUsers({ page: 1, pageSize: PAGE_SIZE, ..._filterArgs() })
 }
 
 async function goPage(p: number) {
   if (p < 1 || p > totalPages.value) return
-  await loadUsers({
-    page: p,
-    pageSize: PAGE_SIZE,
-    search: searchInput.value.trim() || undefined,
-    plan: planFilter.value || undefined,
-    is_staff: staffFilter.value ? staffFilter.value === 'true' : undefined,
-    is_active: activeFilter.value ? activeFilter.value === 'true' : undefined,
-  })
+  await loadUsers({ page: p, pageSize: PAGE_SIZE, ..._filterArgs() })
+}
+
+// ─── Export CSV (avec les filtres en cours) ──────────────────────────────
+const { isExporting, exportCsv } = useAdminCsvExport()
+
+async function onExportCsv() {
+  try {
+    const f = _filterArgs()
+    await exportCsv('/admin/users', 'admin-users', {
+      search: f.search,
+      plan: f.plan,
+      is_staff: typeof f.is_staff === 'boolean' ? String(f.is_staff) : undefined,
+      is_active: typeof f.is_active === 'boolean' ? String(f.is_active) : undefined,
+    })
+    toast.success('Export téléchargé.')
+  } catch {
+    toast.error('Export CSV échoué.')
+  }
 }
 
 // ─── Actions modération ──────────────────────────────────────────────────

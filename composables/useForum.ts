@@ -235,6 +235,47 @@ export function useForum() {
     }
   }
 
+  // ─── Actions modération (staff / owner du topic) ────────────────────
+  async function toggleTopicPin(topicId: number): Promise<boolean> {
+    const res = await api<{ is_pinned: boolean }>(
+      `/forum/topics/${topicId}/toggle-pin`,
+      { method: 'POST' },
+    )
+    if (currentTopic.value?.id === topicId) {
+      currentTopic.value.is_pinned = res.is_pinned
+    }
+    return res.is_pinned
+  }
+
+  async function toggleTopicLock(topicId: number): Promise<boolean> {
+    const res = await api<{ is_locked: boolean }>(
+      `/forum/topics/${topicId}/toggle-lock`,
+      { method: 'POST' },
+    )
+    if (currentTopic.value?.id === topicId) {
+      currentTopic.value.is_locked = res.is_locked
+    }
+    return res.is_locked
+  }
+
+  async function toggleReplySolution(replyId: number): Promise<boolean> {
+    const res = await api<{ is_solution: boolean }>(
+      `/forum/replies/${replyId}/toggle-solution`,
+      { method: 'POST' },
+    )
+    // Une seule solution acceptée par topic : unset les autres côté UI aussi
+    if (res.is_solution) {
+      replies.value = replies.value.map(r => ({
+        ...r,
+        is_solution: r.id === replyId,
+      }))
+    } else {
+      const idx = replies.value.findIndex(r => r.id === replyId)
+      if (idx >= 0) replies.value[idx].is_solution = false
+    }
+    return res.is_solution
+  }
+
   return {
     // state
     categories,
@@ -260,6 +301,10 @@ export function useForum() {
     createReply,
     updateReply,
     deleteReply,
+    // modération
+    toggleTopicPin,
+    toggleTopicLock,
+    toggleReplySolution,
   }
 }
 

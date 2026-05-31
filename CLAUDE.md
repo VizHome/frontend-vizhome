@@ -55,7 +55,7 @@ export function useFoo() {
 }
 ```
 
-### The 26 composables (by domain)
+### The 34 composables (by domain)
 
 **Backend integration** (5)
 - `useApi` — `$fetch` wrapper with JWT auto-injection + 401 retry via refresh
@@ -71,6 +71,16 @@ export function useFoo() {
 - `useSceneSerializer` — marshal Three.js state to/from PostgreSQL JSONField
 - `useRenderMode` — active render page mode (sketch / prompt / screenshot)
 - `useForum` — categories, topics, replies (CRUD complet, lecture publique)
+
+**Admin panel** (8 — staff-only, `middleware: ['auth', 'staff']`)
+- `useAdminPanel` — overview consolidé (users, renders, storage, billing, forum, system)
+- `useAdminUsers` — liste paginée users + actions ban/promote
+- `useAdminRenders` — liste paginée renders (filtres status/source)
+- `useAdminTimeline` — séries temporelles pour `/admin/analytics`
+- `useAdminAuditLog` — journal d'audit staff paginé + filtres (action/actor/target)
+- `useAdminBilling` — subscriptions Stripe + factures (Promise.all, mode `no_djstripe`)
+- `useAdminForumMod` — pin/lock/delete topics (réutilise endpoints `/forum/topics/:id/...`)
+- `useAdminCsvExport` — helper export CSV (fetch + blob + `<a download>` + Authorization)
 
 **Three.js — core** (5)
 - `useThreeScene` — renderer, camera, OrbitControls, animation loop
@@ -92,18 +102,21 @@ export function useFoo() {
 - `useThreeWeather` — rain, snow, fog, smoke, fireflies
 - `useSketchCanvas` — 2D drawing (pencil/eraser/shapes/fill)
 
-### Layouts (4)
+### Layouts (5)
 
 - `default.vue` — marketing/legal pages (header + footer)
 - `sidebar.vue` — internal docs layout
 - `none.vue` — auth pages + render editor (no chrome)
 - `forum.vue` — toutes les pages `/forum/*` avec ForumHeader + ForumFooter dédiés
   (identité visuelle distincte, séparée de la nav marketing)
+- `admin.vue` — pages `/admin/*` avec AdminHeader (badge ADMIN rouge, nav drill-down,
+  bouton refresh) — toutes ces pages ont aussi `ssr: false`
 
 ### Middleware
 
 - `auth.ts` — redirects to `/auth/login` if not authenticated
 - `guest.ts` — inverse, for `/auth/*` pages
+- `staff.ts` — redirige les non-staff loin de `/admin/*` (combiner avec `auth`)
 
 ### Plugins
 

@@ -59,8 +59,8 @@ export function useAdminForumMod() {
       `/forum/topics/${id}/toggle-pin`,
       { method: 'POST' },
     )
-    const idx = topics.value.findIndex(t => t.id === id)
-    if (idx >= 0) topics.value[idx].is_pinned = res.is_pinned
+    const t = topics.value.find(x => x.id === id)
+    if (t) t.is_pinned = res.is_pinned
     return res.is_pinned
   }
 
@@ -69,8 +69,8 @@ export function useAdminForumMod() {
       `/forum/topics/${id}/toggle-lock`,
       { method: 'POST' },
     )
-    const idx = topics.value.findIndex(t => t.id === id)
-    if (idx >= 0) topics.value[idx].is_locked = res.is_locked
+    const t = topics.value.find(x => x.id === id)
+    if (t) t.is_locked = res.is_locked
     return res.is_locked
   }
 

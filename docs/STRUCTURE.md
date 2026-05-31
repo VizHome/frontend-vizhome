@@ -58,6 +58,10 @@ composables/
 ├── useAdminUsers.ts              ★ liste paginée users + actions modération (ban / promote)
 ├── useAdminRenders.ts            ★ liste paginée renders (staff drill-down)
 ├── useAdminTimeline.ts           ★ séries temporelles pour graphiques (/admin/analytics)
+├── useAdminAuditLog.ts           ★ journal d'audit staff (paginé + filtres action/actor/target)
+├── useAdminBilling.ts            ★ subscriptions Stripe actives + factures récentes (Promise.all)
+├── useAdminForumMod.ts           ★ modération forum (pin / lock / delete) — réutilise endpoints forum
+├── useAdminCsvExport.ts          ★ helper export CSV (fetch + blob + <a download> + Authorization)
 └── useThree*.ts                  12 composables Three.js (scene, models, lighting, weather, navigation…)
 ```
 
@@ -125,8 +129,12 @@ pages/
 │
 ├── admin/                        ★ panel admin interne (layout: 'admin', staff-only)
 │   ├── index.vue                 dashboard consolidé (users + renders + storage + billing + forum + system)
-│   ├── users.vue                 tableau paginé + filtres (plan, staff, actif) + actions ban/promote
-│   └── renders.vue               tableau paginé + filtres (status, source)
+│   ├── analytics.vue             graphiques séries temporelles (signups, renders, revenue)
+│   ├── users.vue                 tableau paginé + filtres + actions ban/promote + bouton Export CSV
+│   ├── renders.vue               tableau paginé + filtres (status, source) + bouton Export CSV
+│   ├── billing.vue               ★ subscriptions actives + factures Stripe (alerte si djstripe absent)
+│   ├── forum.vue                 ★ modération topics (pin/lock/delete) + lien externe vers /forum/topic/:id
+│   └── audit-log.vue             ★ journal d'audit staff paginé + filtres (action, actor email)
 │
 └── legal/
     ├── privacy-policy.vue

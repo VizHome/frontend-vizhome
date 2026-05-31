@@ -94,7 +94,10 @@
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('count=',d.get\\('count'\\), 'first=',d.get\\('results',[{}]\\)[0].get\\('id'\\) if d.get\\('results'\\) else 'none'\\)\")",
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'audit_count={d[\\\\\"count\\\\\"]}'\\); [print\\(f'  {r[\\\\\"created_at\\\\\"][:19]} {r[\\\\\"actor_email\\\\\"]} → {r[\\\\\"action\\\\\"]} \\({r[\\\\\"target_repr\\\\\"]}\\)'\\) for r in d['results'][:5]]\")",
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'count={d[\\\\\"count\\\\\"]}, mode={d.get\\(\\\\\"mode\\\\\",\\\\\"ok\\\\\"\\)}'\\)\")",
-      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'audit_count={d[\\\\\"count\\\\\"]}'\\)\")"
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'audit_count={d[\\\\\"count\\\\\"]}'\\)\")",
+      "Bash(npx nuxi *)",
+      "Bash(npx eslint *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/)"
     ]
   }
 }

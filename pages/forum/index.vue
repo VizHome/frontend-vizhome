@@ -1,101 +1,157 @@
 <template>
-  <div class="min-h-[60vh]">
-    <!-- Header -->
-    <section class="border-b py-12 px-6">
-      <div class="max-w-5xl mx-auto">
-        <div class="flex flex-wrap items-start justify-between gap-4">
+  <div>
+    <!-- Hero compact -->
+    <section class="border-b">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 class="text-3xl font-bold mb-2 flex items-center gap-3">
-              <MessagesSquareIcon class="h-8 w-8 text-primary" />
+            <h1
+              class="text-2xl sm:text-3xl font-bold mb-1 flex items-center gap-2"
+            >
               Forum
+              <Badge variant="secondary" class="text-xs font-medium rounded-full">
+                Communauté
+              </Badge>
             </h1>
-            <p class="text-muted-foreground">
-              Échange avec la communauté VizHome : nouveautés, idées, support, bugs.
+            <p class="text-sm text-muted-foreground max-w-xl">
+              Échange avec la communauté VizHome : nouveautés, idées,
+              support et bug reports.
             </p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 text-xs text-muted-foreground">
+            <span class="flex items-center gap-1.5">
+              <FolderIcon class="h-3.5 w-3.5" />
+              {{ forum.categories.value.length }}
+              {{ forum.categories.value.length > 1 ? 'catégories' : 'catégorie' }}
+            </span>
+            <span class="text-muted-foreground/40">·</span>
+            <span class="flex items-center gap-1.5">
+              <MessageSquareIcon class="h-3.5 w-3.5" />
+              {{ forum.topicsCount.value }}
+              {{ forum.topicsCount.value > 1 ? 'sujets' : 'sujet' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Layout 2 colonnes (1 sur mobile) -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,400px)] gap-6">
+        <!-- Colonne principale : Catégories -->
+        <section>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-base font-semibold">Catégories</h2>
             <Button
               v-if="isAuthenticated"
               as-child
-              class="rounded-full gap-1.5"
+              size="sm"
+              variant="outline"
+              class="rounded-full gap-1.5 h-8 text-xs"
             >
               <NuxtLink to="/forum/new">
-                <PlusIcon class="h-4 w-4" />
+                <PlusIcon class="h-3.5 w-3.5" />
                 Nouveau sujet
               </NuxtLink>
             </Button>
-            <Button v-else as-child variant="outline" class="rounded-full">
+          </div>
+
+          <!-- Empty state global (loading ou backend down) -->
+          <div
+            v-if="forum.categories.value.length === 0"
+            class="rounded-lg border bg-card p-8 text-center"
+          >
+            <CircleAlertIcon
+              class="h-8 w-8 mx-auto mb-2 text-muted-foreground/60"
+            />
+            <p class="text-sm font-medium">Aucune catégorie disponible</p>
+            <p class="text-xs text-muted-foreground mt-1">
+              Le forum n'est pas accessible pour le moment.
+            </p>
+          </div>
+
+          <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <ForumCategoryCard
+              v-for="cat in forum.categories.value"
+              :key="cat.id"
+              :category="cat"
+            />
+          </div>
+        </section>
+
+        <!-- Colonne droite : Activité récente -->
+        <section>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-base font-semibold">Activité récente</h2>
+            <span class="text-xs text-muted-foreground">
+              {{ forum.topicsCount.value }}
+              {{ forum.topicsCount.value > 1 ? 'sujets' : 'sujet' }}
+            </span>
+          </div>
+
+          <div v-if="forum.isLoading.value" class="space-y-2">
+            <div
+              v-for="i in 4"
+              :key="i"
+              class="h-16 rounded-lg border bg-card animate-pulse"
+            />
+          </div>
+
+          <div
+            v-else-if="forum.topics.value.length === 0"
+            class="rounded-lg border bg-card p-6 text-center"
+          >
+            <MessageCircleIcon
+              class="h-7 w-7 mx-auto mb-2 text-muted-foreground/60"
+            />
+            <p class="text-sm font-medium mb-1">Aucun sujet pour l'instant</p>
+            <p class="text-xs text-muted-foreground mb-3">
+              Sois le premier à lancer la discussion.
+            </p>
+            <Button
+              v-if="isAuthenticated"
+              as-child
+              size="sm"
+              class="rounded-full gap-1.5 h-8 text-xs"
+            >
+              <NuxtLink to="/forum/new">
+                <PlusIcon class="h-3 w-3" />
+                Créer un sujet
+              </NuxtLink>
+            </Button>
+            <Button
+              v-else
+              as-child
+              size="sm"
+              variant="outline"
+              class="rounded-full h-8 text-xs"
+            >
               <NuxtLink to="/auth/login?redirect=/forum">
-                Se connecter pour participer
+                Se connecter
               </NuxtLink>
             </Button>
           </div>
-        </div>
+
+          <div v-else class="space-y-2">
+            <ForumTopicCard
+              v-for="topic in forum.topics.value"
+              :key="topic.id"
+              :topic="topic"
+              compact
+            />
+          </div>
+        </section>
       </div>
-    </section>
-
-    <!-- Catégories -->
-    <section class="px-6 py-10">
-      <div class="max-w-5xl mx-auto">
-        <h2 class="text-lg font-semibold mb-4">Catégories</h2>
-
-        <div v-if="forum.categories.value.length === 0" class="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-          <CircleAlertIcon class="h-8 w-8 mx-auto mb-3 text-muted-foreground/60" />
-          <p class="text-sm">Aucune catégorie chargée.</p>
-          <p class="text-xs mt-1">Lance `python manage.py seed_forum_categories` côté backend.</p>
-        </div>
-
-        <div v-else class="grid gap-3 md:grid-cols-2">
-          <ForumCategoryCard
-            v-for="cat in forum.categories.value"
-            :key="cat.id"
-            :category="cat"
-          />
-        </div>
-      </div>
-    </section>
-
-    <!-- Topics récents -->
-    <section class="px-6 pb-16">
-      <div class="max-w-5xl mx-auto">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold">Activité récente</h2>
-          <span class="text-xs text-muted-foreground">
-            {{ forum.topicsCount.value }} sujet{{ forum.topicsCount.value > 1 ? 's' : '' }} au total
-          </span>
-        </div>
-
-        <div v-if="forum.isLoading.value" class="space-y-2">
-          <div
-            v-for="i in 4"
-            :key="i"
-            class="h-20 rounded-lg border bg-muted/30 animate-pulse"
-          />
-        </div>
-
-        <div v-else-if="forum.topics.value.length === 0" class="rounded-lg border bg-card p-8 text-center">
-          <MessageCircleIcon class="h-8 w-8 mx-auto mb-3 text-muted-foreground/60" />
-          <p class="text-sm font-medium mb-1">Aucun sujet pour l'instant</p>
-          <p class="text-xs text-muted-foreground">Sois le premier à lancer la discussion.</p>
-        </div>
-
-        <div v-else class="space-y-2">
-          <ForumTopicCard
-            v-for="topic in forum.topics.value"
-            :key="topic.id"
-            :topic="topic"
-          />
-        </div>
-      </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
   CircleAlertIcon,
+  FolderIcon,
   MessageCircleIcon,
-  MessagesSquareIcon,
+  MessageSquareIcon,
   PlusIcon,
 } from 'lucide-vue-next'
 import { computed } from 'vue'
@@ -105,7 +161,11 @@ definePageMeta({ layout: 'forum' })
 useHead({
   title: 'Forum — VizHome',
   meta: [
-    { name: 'description', content: 'Forum communautaire VizHome : annonces, idées, support, bugs.' },
+    {
+      name: 'description',
+      content:
+        'Forum communautaire VizHome : annonces produit, idées de features, entraide et bug reports.',
+    },
   ],
 })
 
@@ -113,9 +173,15 @@ const forum = useForum()
 const auth = useAuth()
 const isAuthenticated = computed(() => !!auth.tokens.value)
 
-// Charge en parallèle catégories + 10 topics les plus récents
+// Charge en parallèle catégories + 10 topics les plus récents.
+// Note : si une des 2 calls fail (backend down par ex.), l'autre continue
+// et les empty states s'affichent — pas de page cassée.
 await Promise.all([
-  forum.loadCategories(),
-  forum.loadTopics({ pageSize: 10, ordering: '-last_reply_at' }),
+  forum.loadCategories().catch(() => {
+    /* silent : empty state visible */
+  }),
+  forum.loadTopics({ pageSize: 10, ordering: '-last_reply_at' }).catch(() => {
+    /* silent */
+  }),
 ])
 </script>

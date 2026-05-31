@@ -122,36 +122,40 @@
         </div>
       </div>
 
-      <!-- Nav secondaire : raccourcis catégories (desktop only) -->
-      <nav
-        v-if="categoriesNav.length > 0"
-        class="hidden lg:flex items-center gap-1 h-10 -mt-px border-t pt-1.5 overflow-x-auto scrollbar-hide"
-      >
-        <NuxtLink
-          to="/forum"
-          :class="[
-            'rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors',
-            $route.path === '/forum'
-              ? 'bg-accent text-accent-foreground'
-              : 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
-          ]"
+      <!-- Nav secondaire : raccourcis catégories (desktop only).
+           ClientOnly : évite les hydration mismatches dûs au composable
+           singleton qui se reset entre serveur et client. -->
+      <ClientOnly>
+        <nav
+          v-if="categoriesNav.length > 0"
+          class="hidden lg:flex items-center gap-1 h-10 -mt-px border-t pt-1.5 overflow-x-auto scrollbar-hide"
         >
-          Tous
-        </NuxtLink>
-        <NuxtLink
-          v-for="cat in categoriesNav"
-          :key="cat.slug"
-          :to="`/forum/${cat.slug}`"
-          :class="[
-            'rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors',
-            $route.params.category === cat.slug
-              ? 'bg-accent text-accent-foreground'
-              : 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
-          ]"
-        >
-          {{ cat.name }}
-        </NuxtLink>
-      </nav>
+          <NuxtLink
+            to="/forum"
+            :class="[
+              'rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors',
+              $route.path === '/forum'
+                ? 'bg-accent text-accent-foreground'
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
+            ]"
+          >
+            Tous
+          </NuxtLink>
+          <NuxtLink
+            v-for="cat in categoriesNav"
+            :key="cat.slug"
+            :to="`/forum/${cat.slug}`"
+            :class="[
+              'rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors',
+              $route.params.category === cat.slug
+                ? 'bg-accent text-accent-foreground'
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
+            ]"
+          >
+            {{ cat.name }}
+          </NuxtLink>
+        </nav>
+      </ClientOnly>
     </div>
   </header>
 </template>
@@ -179,8 +183,8 @@ const forum = useForum()
 
 const isAuthenticated = computed(() => !!auth.tokens.value)
 
-// Charge les cats si pas déjà en cache (pour la nav secondaire)
-if (forum.categories.value.length === 0) {
+// Charge les cats côté client uniquement (singleton ne survit pas au SSR).
+if (import.meta.client && forum.categories.value.length === 0) {
   forum.loadCategories()
 }
 

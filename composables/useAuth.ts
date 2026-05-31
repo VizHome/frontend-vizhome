@@ -23,6 +23,7 @@ export interface AuthUser {
   name: string
   avatar_url: string
   plan: 'free' | 'pro' | 'enterprise'
+  is_staff: boolean
   date_joined: string
 }
 

@@ -40,16 +40,28 @@
           <div class="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
             <span class="flex items-center gap-1.5">
               <span
-                class="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 font-medium text-primary text-[10px]"
+                class="flex h-6 w-6 items-center justify-center rounded-full font-medium text-[10px]"
+                :class="topic.author.is_staff
+                  ? 'bg-red-500/10 text-red-500'
+                  : 'bg-primary/10 text-primary'"
               >
                 {{ initials(topic.author.name) }}
               </span>
               <span class="text-foreground/80">{{ topic.author.name }}</span>
-              <ShieldCheckIcon
+              <!-- Badge STAFF (texte) au lieu d'icône seule -->
+              <span
                 v-if="topic.author.is_staff"
-                class="h-3 w-3 text-primary"
-                aria-label="Staff"
-              />
+                class="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-red-500"
+              >
+                <ShieldCheckIcon class="h-2.5 w-2.5" />
+                Staff
+              </span>
+              <span
+                v-else-if="isTopicOwner"
+                class="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary"
+              >
+                Toi
+              </span>
             </span>
             <span aria-hidden="true">·</span>
             <time
@@ -58,6 +70,15 @@
             >
               {{ relativeTime(topic.created_at) }}
             </time>
+            <template v-if="isTopicEdited">
+              <span aria-hidden="true">·</span>
+              <span
+                class="italic"
+                :title="`Édité ${new Date(topic.updated_at).toLocaleString('fr-FR')}`"
+              >
+                édité
+              </span>
+            </template>
             <span aria-hidden="true">·</span>
             <span class="flex items-center gap-1">
               <EyeIcon class="h-3 w-3" />
@@ -69,32 +90,72 @@
               {{ topic.replies_count }}
             </span>
 
-            <!-- Actions owner / staff -->
+            <!-- Actions owner / staff (édit / supprime) -->
             <span
-              v-if="canEditTopic"
+              v-if="canEditTopic || canDeleteTopic"
               class="ml-auto flex items-center gap-2"
             >
-              <span aria-hidden="true">·</span>
               <button
+                v-if="canEditTopic && !isEditingTopic"
                 type="button"
-                class="hover:text-foreground transition-colors"
+                class="hover:text-foreground transition-colors flex items-center gap-1"
+                :title="topicEditHint"
+                @click="startEditTopic"
+              >
+                <PencilIcon class="h-3 w-3" />
+                Éditer
+              </button>
+              <button
+                v-if="canDeleteTopic"
+                type="button"
+                class="text-destructive/80 hover:text-destructive transition-colors flex items-center gap-1"
                 @click="onDeleteTopic"
               >
-                Supprimer le sujet
+                <Trash2Icon class="h-3 w-3" />
+                Supprimer
               </button>
             </span>
           </div>
         </div>
       </section>
 
-      <!-- Contenu du topic -->
+      <!-- Contenu du topic (HTML riche sanitisé via DOMPurify) -->
       <section class="border-b px-6 py-8 bg-muted/20">
         <div class="max-w-3xl mx-auto">
-          <article
-            class="text-sm leading-relaxed whitespace-pre-wrap break-words"
-          >
-            {{ topic.content }}
-          </article>
+          <!-- Lecture -->
+          <ForumContent v-if="!isEditingTopic" :html="topic.content" />
+
+          <!-- Édition inline -->
+          <div v-else class="space-y-2">
+            <ForumEditor v-model="editedTopicHtml" min-height="180px" />
+            <div
+              v-if="topicEditError"
+              class="rounded-md bg-destructive/10 border border-destructive/30 px-3 py-1.5 text-xs text-destructive"
+            >
+              {{ topicEditError }}
+            </div>
+            <div class="flex items-center justify-end gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                :disabled="isSavingTopic"
+                @click="cancelEditTopic"
+              >
+                Annuler
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                class="gap-1.5 rounded-full"
+                :disabled="isSavingTopic || !hasTopicChange"
+                @click="saveEditTopic"
+              >
+                <CheckIcon class="h-3.5 w-3.5" />
+                {{ isSavingTopic ? 'Enregistrement…' : 'Enregistrer' }}
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -153,15 +214,11 @@
               class="space-y-3"
               @submit.prevent="onSubmitReply"
             >
-              <Label for="reply" class="text-sm font-medium">Ta réponse</Label>
-              <textarea
-                id="reply"
+              <Label class="text-sm font-medium">Ta réponse</Label>
+              <ForumEditor
                 v-model="replyContent"
-                rows="5"
-                placeholder="Écris ta réponse… (Ctrl+Entrée pour envoyer)"
-                class="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-y"
-                @keydown.ctrl.enter="onSubmitReply"
-                @keydown.meta.enter="onSubmitReply"
+                placeholder="Écris ta réponse…"
+                min-height="140px"
               />
               <div
                 v-if="replyError"
@@ -172,7 +229,7 @@
               <div class="flex items-center justify-end gap-2">
                 <Button
                   type="submit"
-                  :disabled="isSubmitting || replyContent.trim().length < 2"
+                  :disabled="isSubmitting || plainTextLength(replyContent) < 2"
                   class="rounded-full gap-1.5"
                 >
                   <SendIcon class="h-3.5 w-3.5" />
@@ -189,18 +246,27 @@
 
 <script setup lang="ts">
 import {
+  CheckIcon,
   ChevronRightIcon,
   EyeIcon,
   LockIcon,
   MessageSquareIcon,
+  PencilIcon,
   PinIcon,
   SendIcon,
   ShieldCheckIcon,
+  Trash2Icon,
 } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
-definePageMeta({ layout: 'forum' })
+definePageMeta({
+  layout: 'forum',
+  // ssr: false → page rendue uniquement côté client. Évite les mismatches
+  // d'hydratation causés par le pattern composable singleton (forum state
+  // live recharge sur client) + TipTap qui requiert le DOM browser.
+  ssr: false,
+})
 
 const route = useRoute()
 const router = useRouter()
@@ -215,9 +281,44 @@ const isStaff = computed(() => !!user.user.value?.is_staff)
 const currentUserId = computed(() => user.user.value?.id ?? null)
 
 const topic = computed(() => forum.currentTopic.value)
+
+// Fenêtre d'édition propriétaire alignée avec backend (15 min)
+const TOPIC_EDIT_WINDOW_MS = 15 * 60 * 1000
+
+const isTopicOwner = computed(
+  () => !!topic.value && topic.value.author.id === currentUserId.value
+)
+
+const isWithinTopicEditWindow = computed(() => {
+  if (!topic.value) return false
+  const created = new Date(topic.value.created_at).getTime()
+  return Date.now() - created <= TOPIC_EDIT_WINDOW_MS
+})
+
 const canEditTopic = computed(() => {
   if (!topic.value || !isAuthenticated.value) return false
-  return isStaff.value || topic.value.author.id === currentUserId.value
+  if (isStaff.value) return true
+  return isTopicOwner.value && isWithinTopicEditWindow.value
+})
+
+const canDeleteTopic = computed(() => canEditTopic.value)
+
+const topicEditHint = computed(() => {
+  if (!topic.value) return ''
+  if (isStaff.value) return 'Édition staff (sans limite de temps)'
+  const created = new Date(topic.value.created_at).getTime()
+  const remaining = TOPIC_EDIT_WINDOW_MS - (Date.now() - created)
+  const min = Math.max(0, Math.floor(remaining / 60_000))
+  return `Édition possible encore ${min} min`
+})
+
+const isTopicEdited = computed(() => {
+  if (!topic.value?.updated_at || !topic.value?.created_at) return false
+  return (
+    new Date(topic.value.updated_at).getTime() -
+      new Date(topic.value.created_at).getTime() >
+    30_000
+  )
 })
 
 // Charge topic + replies en parallèle
@@ -237,12 +338,21 @@ const replyContent = ref('')
 const replyError = ref<string | null>(null)
 const isSubmitting = ref(false)
 
+/** Compte les caractères de texte du HTML rich (sans balises). */
+function plainTextLength(html: string): number {
+  return html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .trim()
+    .length
+}
+
 async function onSubmitReply() {
-  if (!topic.value || replyContent.value.trim().length < 2 || isSubmitting.value) return
+  if (!topic.value || plainTextLength(replyContent.value) < 2 || isSubmitting.value) return
   isSubmitting.value = true
   replyError.value = null
   try {
-    await forum.createReply(topic.value.id, replyContent.value.trim())
+    await forum.createReply(topic.value.id, replyContent.value)
     replyContent.value = ''
     toast.success('Réponse publiée.')
   } catch (e: unknown) {
@@ -250,6 +360,55 @@ async function onSubmitReply() {
     replyError.value = err?.data?.detail || 'Impossible de publier la réponse.'
   } finally {
     isSubmitting.value = false
+  }
+}
+
+// ─── Édition inline du topic ─────────────────────────────────────────────
+const isEditingTopic = ref(false)
+const editedTopicHtml = ref('')
+const topicEditError = ref<string | null>(null)
+const isSavingTopic = ref(false)
+
+const hasTopicChange = computed(() => {
+  if (!topic.value) return false
+  return (
+    editedTopicHtml.value.trim() !== topic.value.content.trim()
+    && plainTextLength(editedTopicHtml.value) >= 10
+  )
+})
+
+function startEditTopic() {
+  if (!topic.value) return
+  editedTopicHtml.value = topic.value.content
+  topicEditError.value = null
+  isEditingTopic.value = true
+}
+
+function cancelEditTopic() {
+  isEditingTopic.value = false
+  editedTopicHtml.value = ''
+  topicEditError.value = null
+}
+
+async function saveEditTopic() {
+  if (!topic.value || !hasTopicChange.value || isSavingTopic.value) return
+  isSavingTopic.value = true
+  topicEditError.value = null
+  try {
+    await forum.updateTopic(topic.value.id, { content: editedTopicHtml.value })
+    isEditingTopic.value = false
+    toast.success('Sujet mis à jour.')
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string }; statusCode?: number }
+    if (err.statusCode === 403) {
+      topicEditError.value =
+        err.data?.detail ||
+        "Fenêtre d'édition dépassée — seul le staff peut maintenant modifier."
+    } else {
+      topicEditError.value = err.data?.detail || 'Modification échouée.'
+    }
+  } finally {
+    isSavingTopic.value = false
   }
 }
 

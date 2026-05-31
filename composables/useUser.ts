@@ -22,6 +22,7 @@ export interface UserProfile {
   avatarUrl: string
   plan: UserPlan
   isLoggedIn: boolean
+  isStaff: boolean
   joinedAt: string
 }
 
@@ -96,6 +97,7 @@ interface ApiMe {
   name: string
   avatar_url: string
   plan: UserPlan
+  is_staff: boolean
   date_joined: string
   stats: ApiUserStats
   preferences: ApiUserPreferences
@@ -120,6 +122,7 @@ const DEFAULT_PROFILE: UserProfile = {
   avatarUrl: '',
   plan: 'free',
   isLoggedIn: false,
+  isStaff: false,
   joinedAt: '',
 }
 
@@ -227,6 +230,7 @@ export function useUser() {
         avatarUrl: data.avatar_url,
         plan: data.plan,
         isLoggedIn: true,
+        isStaff: !!data.is_staff,
         joinedAt: data.date_joined,
       }
       stats.value = mapStats(data.stats)

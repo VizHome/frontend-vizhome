@@ -1,51 +1,59 @@
 <!--
   CategoryCard — carte cliquable d'une catégorie du forum (vue index).
-  Affiche : icône colorée + nom + description + nombre de topics + badge admin si applicable.
+  Design : bordure visible + bg-card subtil + hover state évident.
 -->
 <template>
   <NuxtLink
     :to="`/forum/${category.slug}`"
-    class="group flex gap-4 rounded-xl border bg-card p-5 transition-all hover:border-primary/40 hover:shadow-sm"
+    class="group relative flex gap-3 rounded-lg border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5 dark:hover:bg-card/80"
   >
     <div
-      class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors"
+      class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset transition-colors"
       :class="iconBgClass"
     >
-      <component :is="iconComponent" class="h-6 w-6" :class="iconColorClass" />
+      <component :is="iconComponent" class="h-5 w-5" :class="iconColorClass" />
     </div>
     <div class="flex-1 min-w-0">
-      <div class="flex items-center gap-2 mb-1">
-        <h3 class="font-semibold leading-tight group-hover:text-primary transition-colors">
+      <div class="flex items-center gap-1.5 mb-0.5">
+        <h3
+          class="font-semibold text-sm leading-tight group-hover:text-primary transition-colors truncate"
+        >
           {{ category.name }}
         </h3>
         <span
           v-if="category.is_admin_only"
-          class="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary"
+          class="shrink-0 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary uppercase tracking-wider"
         >
           Staff
         </span>
       </div>
       <p
         v-if="category.description"
-        class="text-sm text-muted-foreground leading-snug mb-2 line-clamp-2"
+        class="text-xs text-muted-foreground leading-snug line-clamp-2 mb-1.5"
       >
         {{ category.description }}
       </p>
-      <p class="text-xs text-muted-foreground">
+      <p class="text-[11px] text-muted-foreground flex items-center gap-1">
+        <MessageSquareIcon class="h-3 w-3" />
         {{ category.topics_count }}
         {{ category.topics_count === 1 ? 'sujet' : 'sujets' }}
       </p>
     </div>
+    <ArrowRightIcon
+      class="h-4 w-4 text-muted-foreground/40 self-center shrink-0 group-hover:text-primary group-hover:translate-x-0.5 transition-all"
+    />
   </NuxtLink>
 </template>
 
 <script setup lang="ts">
 import {
+  ArrowRightIcon,
   Bug,
   CircleHelp,
   HelpCircle,
   Lightbulb,
   Megaphone,
+  MessageSquareIcon,
   MessagesSquare,
   type LucideIcon,
 } from 'lucide-vue-next'
@@ -69,13 +77,14 @@ const iconComponent = computed(
   () => ICON_MAP[props.category.icon] ?? CircleHelp
 )
 
-// Mapping color string → classes Tailwind (statique, ne pas concaténer dynamiquement)
+// Mapping color string → classes Tailwind statiques (pas de concat dynamique
+// pour que Tailwind les détecte au build).
 const COLOR_BG: Record<string, string> = {
-  blue: 'bg-blue-100 dark:bg-blue-950/40 group-hover:bg-blue-200 dark:group-hover:bg-blue-900/60',
-  amber: 'bg-amber-100 dark:bg-amber-950/40 group-hover:bg-amber-200 dark:group-hover:bg-amber-900/60',
-  green: 'bg-green-100 dark:bg-green-950/40 group-hover:bg-green-200 dark:group-hover:bg-green-900/60',
-  red: 'bg-red-100 dark:bg-red-950/40 group-hover:bg-red-200 dark:group-hover:bg-red-900/60',
-  slate: 'bg-slate-100 dark:bg-slate-900/40 group-hover:bg-slate-200 dark:group-hover:bg-slate-800/60',
+  blue: 'bg-blue-50 dark:bg-blue-950/30 ring-blue-200 dark:ring-blue-900',
+  amber: 'bg-amber-50 dark:bg-amber-950/30 ring-amber-200 dark:ring-amber-900',
+  green: 'bg-green-50 dark:bg-green-950/30 ring-green-200 dark:ring-green-900',
+  red: 'bg-red-50 dark:bg-red-950/30 ring-red-200 dark:ring-red-900',
+  slate: 'bg-slate-100 dark:bg-slate-800/40 ring-slate-200 dark:ring-slate-700',
 }
 const COLOR_FG: Record<string, string> = {
   blue: 'text-blue-600 dark:text-blue-400',

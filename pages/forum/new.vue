@@ -57,20 +57,21 @@
           </div>
         </div>
 
-        <!-- Contenu -->
+        <!-- Contenu (éditeur WYSIWYG) -->
         <div class="space-y-2">
-          <Label for="content">Contenu</Label>
-          <textarea
-            id="content"
+          <Label>Contenu</Label>
+          <ForumEditor
             v-model="content"
-            rows="10"
             placeholder="Expose ton sujet en détail. Si c'est une question, précise ce que tu as déjà essayé."
-            class="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-y"
+            min-height="240px"
             :class="{ 'ring-1 ring-destructive': errors.content }"
           />
-          <p v-if="errors.content" class="text-xs text-destructive">
-            {{ errors.content }}
-          </p>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-destructive">{{ errors.content }}</span>
+            <span class="text-muted-foreground">
+              Markdown, listes, images, alignement et émojis natifs supportés.
+            </span>
+          </div>
         </div>
 
         <!-- Erreur globale -->
@@ -114,6 +115,8 @@ import { toast } from 'vue-sonner'
 definePageMeta({
   layout: 'forum',
   middleware: 'auth', // requiert connexion
+  // ssr: false → TipTap browser-only + évite mismatches d'hydratation.
+  ssr: false,
 })
 
 useHead({ title: 'Nouveau sujet — Forum VizHome' })
@@ -159,8 +162,20 @@ const canSubmit = computed(
     !isSubmitting.value &&
     selectedCategory.value &&
     title.value.trim().length >= 5 &&
-    content.value.trim().length >= 10
+    plainTextLength(content.value) >= 10
 )
+
+/** Compte les caractères du contenu HTML en enlevant les tags TipTap. */
+function plainTextLength(html: string): number {
+  return html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .trim()
+    .length
+}
 
 function validate(): boolean {
   errors.title = ''
@@ -168,8 +183,8 @@ function validate(): boolean {
   if (title.value.trim().length < 5) {
     errors.title = '5 caractères minimum.'
   }
-  if (content.value.trim().length < 10) {
-    errors.content = '10 caractères minimum.'
+  if (plainTextLength(content.value) < 10) {
+    errors.content = '10 caractères minimum (hors mise en forme).'
   }
   return !errors.title && !errors.content
 }

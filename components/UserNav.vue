@@ -90,6 +90,20 @@
             <Settings class="h-4 w-4 text-muted-foreground" />
             <span>Paramètres</span>
           </DropdownMenuItem>
+          <!-- Lien admin visible uniquement si l'user est staff -->
+          <DropdownMenuItem
+            v-if="user?.isStaff"
+            class="gap-2.5 cursor-pointer"
+            @click="goTo('/admin')"
+          >
+            <Shield class="h-4 w-4 text-red-500" />
+            <span class="text-foreground">Admin</span>
+            <span
+              class="ml-auto rounded-full bg-red-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-red-500"
+            >
+              Staff
+            </span>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

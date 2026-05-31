@@ -25,16 +25,26 @@
         <!-- Forum -->
         <div>
           <p class="font-semibold mb-2 text-foreground">Forum</p>
-          <ul class="space-y-1.5 text-xs">
-            <li v-for="cat in topCategories" :key="cat.slug">
-              <NuxtLink
-                :to="`/forum/${cat.slug}`"
-                class="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {{ cat.name }}
-              </NuxtLink>
-            </li>
-          </ul>
+          <ClientOnly>
+            <ul class="space-y-1.5 text-xs">
+              <li v-for="cat in topCategories" :key="cat.slug">
+                <NuxtLink
+                  :to="`/forum/${cat.slug}`"
+                  class="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {{ cat.name }}
+                </NuxtLink>
+              </li>
+            </ul>
+            <template #fallback>
+              <ul class="space-y-1.5 text-xs opacity-50">
+                <li>Annonces</li>
+                <li>Idées &amp; suggestions</li>
+                <li>Support</li>
+                <li>Bug reports</li>
+              </ul>
+            </template>
+          </ClientOnly>
         </div>
 
         <!-- Communauté -->

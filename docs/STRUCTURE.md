@@ -54,6 +54,7 @@ composables/
 ├── useRenderMode.ts              mode actif (sketch | prompt | 3d)
 ├── useSketchCanvas.ts            canvas 2D vectoriel (pencil, eraser, shapes)
 ├── useForum.ts                   ★ forum communautaire — categories, topics, replies (CRUD)
+├── useAdminPanel.ts              ★ dashboard admin staff-only (1 endpoint consolidé)
 └── useThree*.ts                  12 composables Three.js (scene, models, lighting, weather, navigation…)
 ```
 
@@ -119,6 +120,9 @@ pages/
 │   │   └── [id].vue              détail topic + replies + form reply + actions owner/staff
 │   └── new.vue                   form création topic (auth requise, `?category=<slug>` pré-sélection)
 │
+├── admin/                        ★ panel admin interne (layout: 'admin', staff-only)
+│   └── index.vue                 dashboard consolidé (users + renders + storage + billing + forum + system)
+│
 └── legal/
     ├── privacy-policy.vue
     ├── terms-of-use.vue
@@ -173,10 +177,26 @@ components/
 └── forum/                        ★ composants spécifiques au layout forum
     ├── ForumHeader.vue           barre nav forum (logo, recherche, user menu, cats)
     ├── ForumFooter.vue           footer minimaliste forum
-    ├── CategoryCard.vue          carte cliquable d'une catégorie
-    ├── TopicCard.vue             carte d'un sujet dans une liste
-    └── ReplyCard.vue             carte d'une réponse dans le détail d'un topic
+    ├── ForumCategoryCard.vue     carte cliquable d'une catégorie
+    ├── ForumTopicCard.vue        carte d'un sujet (mode normal ou `compact`)
+    ├── ForumReplyCard.vue        carte d'une réponse dans le détail d'un topic
+    ├── ForumEditor.vue           ★ éditeur WYSIWYG TipTap (toolbar complète : bold/italic/listes/quote/codeblock/align/lien/image) — sortie HTML
+    └── ForumContent.vue          rendu HTML sanitisé via DOMPurify (display topic/reply)
+
+└── admin/                        ★ composants du panel admin staff-only
+    ├── AdminHeader.vue           barre haute (logo + badge ADMIN rouge + bouton refresh)
+    └── AdminMetricCard.vue       card de métrique réutilisable (label + value + sublabel + tone)
 ```
+
+⚠️ **Convention de nommage critique** : la config Nuxt utilise
+`components: [{ path: '~/components', pathPrefix: false }]` (cf
+`nuxt.config.ts`). Cela signifie que les composants dans des sous-dossiers
+**n'ont PAS de préfixe automatique** dans leur nom auto-importé. Donc
+`components/forum/MyCard.vue` est utilisé comme `<MyCard>`, pas
+`<ForumMyCard>`. Pour conserver une convention "namespace" (et éviter
+les collisions), les fichiers de `components/forum/` sont tous nommés
+avec le préfixe `Forum*` directement (ex: `ForumCategoryCard.vue` au
+lieu de `CategoryCard.vue`).
 
 ## Layouts
 
@@ -185,7 +205,8 @@ layouts/
 ├── default.vue                   avec AppNavbar + AppFooter (pages marketing)
 ├── sidebar.vue                   avec AppSidebar
 ├── none.vue                      sans navbar (pages métier, auth)
-└── forum.vue                     ★ ForumHeader + ForumFooter (toutes pages /forum/*)
+├── forum.vue                     ★ ForumHeader + ForumFooter (toutes pages /forum/*)
+└── admin.vue                     ★ AdminHeader (pages /admin/*, staff-only)
 ```
 
 Spécification du layout par page via `definePageMeta({ layout: 'forum' })`.
@@ -195,7 +216,8 @@ Spécification du layout par page via `definePageMeta({ layout: 'forum' })`.
 ```
 middleware/
 ├── auth.ts                       redirige vers /auth/login si !authenticated
-└── guest.ts                      redirige les connectés loin de /auth/*
+├── guest.ts                      redirige les connectés loin de /auth/*
+└── staff.ts                      redirige les non-staff loin de /admin/* (à combiner avec `auth`)
 ```
 
 Usage : `definePageMeta({ middleware: 'auth' })`.

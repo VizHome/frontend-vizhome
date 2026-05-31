@@ -132,12 +132,35 @@ export function useFoo() {
 
 5. **`<script setup lang="ts">` everywhere** — no Options API.
 
+6. **`pathPrefix: false` for auto-imported components** (`nuxt.config.ts`).
+   Subfolder components are NOT auto-prefixed with the folder name.
+   `components/forum/MyCard.vue` is used as `<MyCard>`, NOT `<ForumMyCard>`.
+   To keep a namespace convention (and avoid collisions), files in
+   `components/forum/` are all named with the `Forum*` prefix directly
+   (e.g. `ForumCategoryCard.vue`, not `CategoryCard.vue`). If you add a
+   new forum component, prefix the filename too.
+
+7. **All `/forum/*` pages use `ssr: false`** in their `definePageMeta`.
+   Reason: the composable singleton pattern (`useForum` with module-level
+   refs) doesn't survive SSR cleanly — hydration mismatches when async
+   data state diverges between server and client. TipTap also requires the
+   DOM (browser-only). The forum layout's dynamic parts (cats nav,
+   footer list) are wrapped in `<ClientOnly>` for the same reason.
+
+8. **Tailwind 4 SFC `<style>` blocks**: do NOT use `@apply` directly —
+   Tailwind 4 requires `@reference "tailwindcss"` at the top of each
+   `<style>` block to use utility classes. Simpler: use plain CSS with
+   shadcn-vue CSS variables (`hsl(var(--muted))`, `hsl(var(--primary))`,
+   etc.) like `ForumEditor.vue` and `ForumContent.vue` do.
+
 ### Stack (confirmed in `package.json`)
 
 Nuxt 4.3.1 · Vue 3.5.30 · Tailwind 4.2.1 (via `@tailwindcss/vite`) ·
 shadcn-vue 2.6.2 (wrapping reka-ui 2.9.1) · Three.js 0.183.2 ·
 vee-validate 4.15.1 + yup 1.7.1 · lucide-vue-next · `@tanstack/vue-table` ·
-highlight.js (CodeBlock component, github-dark theme via `assets/css/tailwind.css`)
+highlight.js (CodeBlock component, github-dark theme via `assets/css/tailwind.css`) ·
+**TipTap 2** + lowlight (forum rich text editor, `components/forum/ForumEditor.vue`) ·
+isomorphic-dompurify (HTML sanitization for forum display, `ForumContent.vue`)
 
 ### `nuxt.config.ts` modules
 

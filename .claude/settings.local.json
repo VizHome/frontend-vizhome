@@ -64,7 +64,10 @@
       "Bash(curl -sS -X POST http://localhost:8000/api/v1/projects/3/share -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc5MTMxMzkxLCJpYXQiOjE3NzkxMzA0OTEsImp0aSI6Ijg1MGFjYTI1Y2I3ODQzMTk4ZDljODdlMDUwNzhjMGFiIiwidXNlcl9pZCI6IjUiLCJzZXNzaW9uX2lkIjoxNX0.s2SmJBBiDHh9h694qnGtYGOOH0CyuIlXd7DOg_l4Op4' -H 'Content-Type: application/json' -d '{\"permission\":\"view\"}')",
       "Bash(curl -sS -i -X POST http://localhost:8000/api/v1/renders/ -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc5MTkyMjY0LCJpYXQiOjE3NzkxOTEzNjQsImp0aSI6IjkwZGM4ZjAxMGU4ZjRjMGI5YTM5OTViNDgxNjI4Mjk3IiwidXNlcl9pZCI6IjYiLCJzZXNzaW9uX2lkIjoxOX0.exDyxDrvb2VjLdwkX3yR9NjHoV-iKNo3Yo0mfGzqUhI' -H 'Content-Type: application/json' -d '{\"source\":\"prompt\",\"output_type\":\"2d\",\"prompt\":\"a modern minimalist living room\"}')",
       "mcp__Claude_Preview__preview_start",
-      "Bash(curl -sS http://localhost:8000/api/schema/ -o C:/Users/thiba/Documents/Environnement_dev/backend-vizhome/bruno/openapi.yml)"
+      "Bash(curl -sS http://localhost:8000/api/schema/ -o C:/Users/thiba/Documents/Environnement_dev/backend-vizhome/bruno/openapi.yml)",
+      "Bash(docker pull *)",
+      "Bash(curl -sS http://localhost:8000/api/v1/forum/categories)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'{len\\(d\\)} catégories chargées'\\); [print\\(f'  - {c[\\\\\"name\\\\\"]} \\({c[\\\\\"slug\\\\\"]}\\)'\\) for c in d]\")"
     ]
   }
 }

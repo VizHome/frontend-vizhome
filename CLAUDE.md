@@ -55,7 +55,7 @@ export function useFoo() {
 }
 ```
 
-### The 25 composables (by domain)
+### The 26 composables (by domain)
 
 **Backend integration** (5)
 - `useApi` — `$fetch` wrapper with JWT auto-injection + 401 retry via refresh
@@ -64,12 +64,13 @@ export function useFoo() {
 - `useBilling` — plans + subscription + Stripe checkout
 - `use2fa` — TOTP setup/verify/disable
 
-**Domain** (5)
+**Domain** (6)
 - `useProjects` — CRUD + scene state save + **presigned MinIO upload**
 - `useAiRender` — POST `/renders/` → poll every 2s → prepend to gallery
 - `useGallery` — paginated renders gallery
 - `useSceneSerializer` — marshal Three.js state to/from PostgreSQL JSONField
 - `useRenderMode` — active render page mode (sketch / prompt / screenshot)
+- `useForum` — categories, topics, replies (CRUD complet, lecture publique)
 
 **Three.js — core** (5)
 - `useThreeScene` — renderer, camera, OrbitControls, animation loop
@@ -91,11 +92,13 @@ export function useFoo() {
 - `useThreeWeather` — rain, snow, fog, smoke, fireflies
 - `useSketchCanvas` — 2D drawing (pencil/eraser/shapes/fill)
 
-### Layouts (3)
+### Layouts (4)
 
 - `default.vue` — marketing/legal pages (header + footer)
 - `sidebar.vue` — internal docs layout
 - `none.vue` — auth pages + render editor (no chrome)
+- `forum.vue` — toutes les pages `/forum/*` avec ForumHeader + ForumFooter dédiés
+  (identité visuelle distincte, séparée de la nav marketing)
 
 ### Middleware
 
@@ -133,7 +136,8 @@ export function useFoo() {
 
 Nuxt 4.3.1 · Vue 3.5.30 · Tailwind 4.2.1 (via `@tailwindcss/vite`) ·
 shadcn-vue 2.6.2 (wrapping reka-ui 2.9.1) · Three.js 0.183.2 ·
-vee-validate 4.15.1 + yup 1.7.1 · lucide-vue-next · `@tanstack/vue-table`
+vee-validate 4.15.1 + yup 1.7.1 · lucide-vue-next · `@tanstack/vue-table` ·
+highlight.js (CodeBlock component, github-dark theme via `assets/css/tailwind.css`)
 
 ### `nuxt.config.ts` modules
 

@@ -47,6 +47,7 @@
     "@vee-validate/zod": "^4.15.1",
     "embla-carousel-vue": "^8.6.0",
     "eslint": "^10.0.3",
+    "highlight.js": "^11.11.1",
     "motion-v": "^2.0.0",
     "nuxt": "^4.3.1",
     "reka-ui": "^2.9.1",

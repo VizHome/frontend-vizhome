@@ -53,6 +53,7 @@ composables/
 ├── useSceneSerializer.ts         capture/restaure état Three.js (caméra, lumières, etc.)
 ├── useRenderMode.ts              mode actif (sketch | prompt | 3d)
 ├── useSketchCanvas.ts            canvas 2D vectoriel (pencil, eraser, shapes)
+├── useForum.ts                   ★ forum communautaire — categories, topics, replies (CRUD)
 └── useThree*.ts                  12 composables Three.js (scene, models, lighting, weather, navigation…)
 ```
 
@@ -111,6 +112,13 @@ pages/
 │   ├── 360-views.vue
 │   └── mobile-apps.vue
 │
+├── forum/                        ★ forum communautaire (layout: 'forum')
+│   ├── index.vue                 hub : catégories + activité récente
+│   ├── [category].vue            liste topics d'une cat + search + sort + pagination
+│   ├── topic/
+│   │   └── [id].vue              détail topic + replies + form reply + actions owner/staff
+│   └── new.vue                   form création topic (auth requise, `?category=<slug>` pré-sélection)
+│
 └── legal/
     ├── privacy-policy.vue
     ├── terms-of-use.vue
@@ -129,13 +137,15 @@ components/
 │   └── (44 composants UI atomic, importés au besoin)
 │
 ├── AppLogo.vue                   logo réactif au theme
-├── AppNavbar.vue                 navbar publique (pages marketing)
+├── AppNavbar.vue                 navbar publique (pages marketing) — inclut lien /forum
 ├── AppFooter.vue
 ├── AppSidebar.vue                drawer mobile + sidebar
 ├── ModeToggle.vue                light/dark/system switcher
 ├── LanguageSwitcher.vue          fr/en/es/de
 ├── PasswordStrength.vue          indicateur force mdp
 ├── InteractiveGridPattern.vue    fond animé (auth pages)
+├── CodeBlock.vue                 ★ bloc de code coloré (highlight.js) + bouton copier
+├── FAQAccordion.vue              accordion FAQ avec support CodeBlock inline
 │
 ├── UserNav.vue                   ★ bulle utilisateur (avatar + dropdown)
 ├── ProjectCard.vue               carte projet dans /projects
@@ -152,25 +162,33 @@ components/
 │   ├── OnboardingOverlay.vue     première visite
 │   └── ToolButton.vue
 │
-└── user/                         dialogs accessibles via UserNav
-    ├── ProfileDialog.vue
-    ├── SettingsDialog.vue        7 sections (apparence, langue, notif, 2FA, sessions…)
-    ├── SubscriptionDialog.vue
-    ├── BillingDialog.vue
-    ├── StatsDialog.vue
-    └── HelpDialog.vue
+├── user/                         dialogs accessibles via UserNav
+│   ├── ProfileDialog.vue
+│   ├── SettingsDialog.vue        7 sections (apparence, langue, notif, 2FA, sessions…)
+│   ├── SubscriptionDialog.vue
+│   ├── BillingDialog.vue
+│   ├── StatsDialog.vue
+│   └── HelpDialog.vue
+│
+└── forum/                        ★ composants spécifiques au layout forum
+    ├── ForumHeader.vue           barre nav forum (logo, recherche, user menu, cats)
+    ├── ForumFooter.vue           footer minimaliste forum
+    ├── CategoryCard.vue          carte cliquable d'une catégorie
+    ├── TopicCard.vue             carte d'un sujet dans une liste
+    └── ReplyCard.vue             carte d'une réponse dans le détail d'un topic
 ```
 
 ## Layouts
 
 ```
 layouts/
-├── default.vue                   avec AppNavbar + AppFooter
+├── default.vue                   avec AppNavbar + AppFooter (pages marketing)
 ├── sidebar.vue                   avec AppSidebar
-└── none.vue                      sans navbar (pages métier, auth)
+├── none.vue                      sans navbar (pages métier, auth)
+└── forum.vue                     ★ ForumHeader + ForumFooter (toutes pages /forum/*)
 ```
 
-Spécification du layout par page via `definePageMeta({ layout: 'none' })`.
+Spécification du layout par page via `definePageMeta({ layout: 'forum' })`.
 
 ## Middleware
 

@@ -64,9 +64,9 @@
               </Avatar>
             </div>
             <div class="text-sm">
-              <div class="font-semibold">+2 500 professionnels</div>
+              <div class="font-semibold">Early access ouvert</div>
               <div class="text-muted-foreground text-xs">
-                ★★★★★ 4.9/5 · Architectes, designers, promoteurs
+                Architectes, designers, promoteurs — rejoignez les premiers utilisateurs
               </div>
             </div>
           </div>
@@ -517,8 +517,8 @@
               Prêt à transformer vos espaces ?
             </h2>
             <p class="text-muted-foreground mb-8 max-w-md mx-auto">
-              Rejoignez 2 500 professionnels qui utilisent VizHome pour créer
-              des rendus 3D photoréalistes.
+              Rejoignez les premiers utilisateurs de VizHome et façonnez avec
+              nous l'outil de rendu 3D que les architectes méritent.
             </p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" class="rounded-full gap-2" as-child>
@@ -631,12 +631,15 @@ const modes = [
   },
 ]
 
-// ── Stats ──────────────────────────────────────────────────────────────────
+// ── Stats — caractéristiques produit factuelles, pas de chiffres d'usage
+// fabriqués (l'ancienne version annonçait "2 500+ utilisateurs", "4.9/5",
+// "10K+ matériaux" qui étaient tous inventés). À remplacer par de vrais
+// chiffres une fois qu'on aura de la data réelle (renders générés, etc.).
 const stats = [
-  { value: '2 500+', label: 'Utilisateurs actifs' },
-  { value: '< 30s', label: 'Temps de génération' },
-  { value: '10K+', label: 'Matériaux disponibles' },
-  { value: '4.9/5', label: 'Note moyenne' },
+  { value: '< 30s', label: 'Temps de génération moyen' },
+  { value: '3', label: 'Modes créatifs (croquis, prompt, 3D)' },
+  { value: '5+', label: "Formats d'import (glb, gltf, obj, fbx, stl)" },
+  { value: 'Open', label: 'Early access — sans liste d\'attente' },
 ]
 
 // ── Fonctionnalités ────────────────────────────────────────────────────────

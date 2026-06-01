@@ -3,13 +3,8 @@
     <!-- Header + filtres -->
     <section class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <nav class="text-xs text-muted-foreground mb-1 flex items-center gap-1.5">
-          <NuxtLink to="/admin" class="hover:text-foreground">Admin</NuxtLink>
-          <ChevronRightIcon class="h-3 w-3" />
-          <span class="text-foreground">Utilisateurs</span>
-        </nav>
-        <h1 class="text-2xl font-bold">
-          Utilisateurs <span class="text-sm text-muted-foreground ml-1">({{ count }})</span>
+        <h1 class="text-2xl font-bold tracking-tight">
+          Utilisateurs <span class="text-sm text-muted-foreground ml-1 font-normal">({{ count }})</span>
         </h1>
       </div>
       <div class="flex flex-wrap items-center gap-2">
@@ -76,8 +71,8 @@
         <table class="w-full text-sm">
           <thead class="bg-muted/40 border-b text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
+              <th class="px-4 py-2.5 text-left font-medium">Pseudo</th>
               <th class="px-4 py-2.5 text-left font-medium">Email</th>
-              <th class="px-4 py-2.5 text-left font-medium">Nom</th>
               <th class="px-4 py-2.5 text-left font-medium">Plan</th>
               <th class="px-4 py-2.5 text-right font-medium">Renders</th>
               <th class="px-4 py-2.5 text-right font-medium">Storage</th>
@@ -105,12 +100,19 @@
             >
               <td class="px-4 py-2.5">
                 <div class="flex items-center gap-2">
-                  <span class="truncate max-w-[260px]">{{ u.email }}</span>
+                  <span class="truncate max-w-[200px] font-medium">@{{ u.pseudo }}</span>
                   <Shield v-if="u.is_staff" class="h-3.5 w-3.5 text-red-500 shrink-0" />
+                  <Badge
+                    v-if="u.is_banned_from_forum"
+                    variant="secondary"
+                    class="h-5 border-0 bg-amber-100 px-1.5 text-[10px] font-semibold uppercase tracking-wider text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+                  >
+                    Forum
+                  </Badge>
                 </div>
               </td>
-              <td class="px-4 py-2.5 text-muted-foreground">
-                {{ u.first_name }} {{ u.last_name }}
+              <td class="px-4 py-2.5 text-muted-foreground truncate max-w-[240px]">
+                {{ u.email }}
               </td>
               <td class="px-4 py-2.5">
                 <span
@@ -147,7 +149,7 @@
                       <MoreHorizontal class="h-4 w-4" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" class="w-44">
+                  <DropdownMenuContent align="end" class="w-52">
                     <DropdownMenuItem
                       class="cursor-pointer"
                       :class="!u.is_active && 'text-green-600 dark:text-green-400'"
@@ -155,8 +157,17 @@
                     >
                       <UserCheck v-if="!u.is_active" class="h-4 w-4 mr-2" />
                       <UserX v-else class="h-4 w-4 mr-2" />
-                      {{ u.is_active ? 'Bannir' : 'Réactiver' }}
+                      {{ u.is_active ? 'Bannir (compte)' : 'Réactiver' }}
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                      class="cursor-pointer"
+                      :class="u.is_banned_from_forum && 'text-green-600 dark:text-green-400'"
+                      @click="toggleForumBan(u)"
+                    >
+                      <MessagesSquareIcon class="h-4 w-4 mr-2" />
+                      {{ u.is_banned_from_forum ? 'Débannir du forum' : 'Bannir du forum' }}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem
                       class="cursor-pointer"
                       @click="toggleStaff(u)"
@@ -203,9 +214,9 @@
 
 <script setup lang="ts">
 import {
-  ChevronRightIcon,
   DownloadIcon,
   Loader2Icon,
+  MessagesSquareIcon,
   MoreHorizontal,
   SearchIcon,
   Shield,
@@ -310,6 +321,22 @@ async function toggleStaff(u: AdminUser) {
   } catch (e: unknown) {
     const err = e as { data?: { detail?: string; code?: string } }
     toast.error(err.data?.detail || 'Impossible de modifier le rôle.')
+  }
+}
+
+async function toggleForumBan(u: AdminUser) {
+  const verb = u.is_banned_from_forum ? 'débannir' : 'bannir du forum'
+  if (!confirm(`Vraiment ${verb} ${u.pseudo || u.email} ?`)) return
+  try {
+    await updateUser(u.id, { is_banned_from_forum: !u.is_banned_from_forum })
+    toast.success(
+      u.is_banned_from_forum
+        ? `${u.pseudo || u.email} peut à nouveau poster.`
+        : `${u.pseudo || u.email} banni du forum.`,
+    )
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string; code?: string } }
+    toast.error(err.data?.detail || 'Impossible de modifier le ban forum.')
   }
 }
 

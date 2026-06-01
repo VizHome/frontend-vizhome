@@ -1,349 +1,373 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-8">
-    <!-- Header section -->
-    <section>
-      <h1 class="text-2xl font-bold mb-1">Tableau de bord</h1>
-      <p class="text-sm text-muted-foreground">
-        Vue d'ensemble en temps réel de l'activité VizHome.
-        <span
-          v-if="overview"
-          class="text-xs"
-        >
-          · Données générées
-          {{ relativeTime(overview.generated_at) }}
-        </span>
-      </p>
+  <div class="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <section class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Tableau de bord</h1>
+        <p class="text-sm text-muted-foreground">
+          Vue d'ensemble en temps réel de l'activité VizHome.
+        </p>
+      </div>
+      <div v-if="overview" class="flex flex-wrap items-center gap-2">
+        <Button as-child variant="outline" size="sm" class="h-8 gap-1.5 rounded-full text-xs">
+          <NuxtLink to="/admin/analytics">
+            <LineChartIcon class="size-3.5" />
+            Voir les analytics
+          </NuxtLink>
+        </Button>
+      </div>
     </section>
 
     <!-- Loading state -->
-    <div v-if="isLoading && !overview" class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <div
-        v-for="i in 8"
-        :key="i"
-        class="h-24 rounded-xl border bg-card animate-pulse"
-      />
+    <div v-if="isLoading && !overview" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <Skeleton v-for="i in 4" :key="i" class="h-28 rounded-xl" />
     </div>
 
     <!-- Error state -->
-    <div
-      v-else-if="error && !overview"
-      class="rounded-xl border bg-card p-8 text-center"
-    >
-      <CircleAlertIcon
-        class="h-8 w-8 mx-auto mb-3 text-destructive"
-      />
-      <p class="text-sm font-medium mb-1">{{ error }}</p>
-      <p class="text-xs text-muted-foreground">
-        Vérifie que tu es bien connecté en tant que staff.
-      </p>
-    </div>
+    <Alert v-else-if="error && !overview" variant="destructive">
+      <CircleAlertIcon class="size-4" />
+      <AlertTitle>Impossible de charger le dashboard</AlertTitle>
+      <AlertDescription>
+        {{ error }} — Vérifie que tu es bien connecté en tant que staff.
+      </AlertDescription>
+    </Alert>
 
     <template v-else-if="overview">
-      <!-- ─── Section : Users ──────────────────────────────────────── -->
-      <section>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-          Utilisateurs
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <AdminMetricCard
-            label="Total"
-            :value="overview.users.total"
-            :icon="UsersIcon"
-            tone="primary"
-            :sublabel="`${overview.users.staff_count} staff · ${overview.users.two_factor_enabled} avec 2FA`"
-          />
-          <AdminMetricCard
-            label="Aujourd'hui"
-            :value="overview.users.new_today"
-            :icon="UserPlusIcon"
-            tone="success"
-            sublabel="Nouveaux inscrits"
-          />
-          <AdminMetricCard
-            label="7 derniers jours"
-            :value="overview.users.new_this_week"
-            :icon="TrendingUpIcon"
-            tone="success"
-          />
-          <AdminMetricCard
-            label="30 derniers jours"
-            :value="overview.users.new_this_month"
-            :icon="CalendarIcon"
-            tone="success"
-          />
-        </div>
-        <!-- Répartition par plan -->
-        <div class="mt-3 grid grid-cols-3 gap-3">
-          <div
-            v-for="(count, plan) in overview.users.by_plan"
-            :key="plan"
-            class="rounded-lg border bg-card p-3"
-          >
-            <div class="flex items-center justify-between">
-              <span class="text-xs uppercase tracking-wider text-muted-foreground">{{ plan }}</span>
-              <span class="text-lg font-semibold">{{ count }}</span>
-            </div>
-          </div>
-        </div>
+      <!-- ─── Alertes ──────────────────────────────────────────────────── -->
+      <Alert v-if="alerts.length > 0" variant="default" class="border-amber-200 dark:border-amber-900/50">
+        <AlertTriangleIcon class="size-4 text-amber-500" />
+        <AlertTitle>{{ alerts.length }} {{ alerts.length > 1 ? 'alertes' : 'alerte' }}</AlertTitle>
+        <AlertDescription>
+          <ul class="mt-1.5 flex flex-col gap-1 text-sm">
+            <li
+              v-for="a in alerts"
+              :key="a.label"
+              class="flex items-center gap-2"
+            >
+              <span class="text-muted-foreground">·</span>
+              <span>{{ a.label }}</span>
+              <NuxtLink
+                v-if="a.to"
+                :to="a.to"
+                class="text-primary hover:underline"
+              >
+                {{ a.action }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </AlertDescription>
+      </Alert>
+
+      <!-- ─── KPI principaux ─────────────────────────────────────────── -->
+      <section class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <AdminMetricCard
+          label="Utilisateurs"
+          :value="overview.users.total"
+          :icon="UsersIcon"
+          tone="primary"
+          :sublabel="`+${overview.users.new_this_week} cette semaine`"
+        />
+        <AdminMetricCard
+          label="Renders générés"
+          :value="overview.renders.total"
+          :icon="ImageIcon"
+          tone="primary"
+          :sublabel="`${overview.renders.this_month} ce mois`"
+        />
+        <AdminMetricCard
+          label="MRR estimé"
+          :value="`${overview.billing.mrr_eur} €`"
+          :icon="EuroIcon"
+          tone="success"
+          :sublabel="`${overview.billing.paying_users} clients payants`"
+        />
+        <AdminMetricCard
+          label="Taux de succès"
+          :value="successRateLabel"
+          :icon="CheckCircle2Icon"
+          :tone="successTone"
+          :sublabel="successSublabel"
+        />
       </section>
 
-      <!-- ─── Section : Activité ────────────────────────────────────── -->
-      <section>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-          Activité
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <AdminMetricCard
-            label="Sessions actives"
-            :value="overview.sessions.total_active"
-            :icon="ActivityIcon"
-            tone="success"
-            :sublabel="`${overview.sessions.unique_users_active} users uniques`"
-          />
-          <AdminMetricCard
-            label="Renders total"
-            :value="overview.renders.total"
-            :icon="ImageIcon"
-            :sublabel="`${overview.renders.this_month} ce mois`"
-          />
-          <AdminMetricCard
-            label="Taux de succès"
-            :value="successRateLabel"
-            :icon="CheckCircle2Icon"
-            :tone="overview.renders.success_rate && overview.renders.success_rate >= 0.9 ? 'success' : 'warning'"
-          />
-          <AdminMetricCard
-            label="Projets"
-            :value="overview.projects.total"
-            :icon="FolderIcon"
-            :sublabel="`${overview.projects.archived} archivés · ${overview.projects.avg_models_per_project} modèles/projet`"
-          />
-        </div>
-
-        <!-- Renders breakdown -->
-        <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div class="rounded-xl border bg-card p-4">
-            <p class="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
-              Renders par status
-            </p>
-            <div class="space-y-1.5">
-              <div
-                v-for="(count, status) in overview.renders.by_status"
-                :key="status"
-                class="flex items-center justify-between text-sm"
-              >
-                <span class="flex items-center gap-2">
+      <!-- ─── Distribution & santé système ───────────────────────────── -->
+      <section class="grid gap-3 lg:grid-cols-3">
+        <!-- Plans -->
+        <Card>
+          <CardHeader class="pb-3">
+            <CardTitle class="text-sm font-semibold">Plans</CardTitle>
+            <CardDescription class="text-xs">
+              Répartition des utilisateurs par offre
+            </CardDescription>
+          </CardHeader>
+          <CardContent class="flex flex-col gap-2">
+            <div
+              v-for="(count, plan) in overview.users.by_plan"
+              :key="plan"
+              class="flex flex-col gap-1"
+            >
+              <div class="flex items-center justify-between text-xs">
+                <span class="flex items-center gap-1.5 font-medium uppercase tracking-wider text-muted-foreground">
                   <span
-                    class="inline-block h-2 w-2 rounded-full"
-                    :class="STATUS_COLORS[status as string] || 'bg-muted-foreground'"
+                    class="inline-block size-2 rounded-full"
+                    :class="PLAN_COLORS[plan as string] || 'bg-muted-foreground'"
                   />
-                  {{ status }}
+                  {{ plan }}
                 </span>
-                <span class="font-medium">{{ count }}</span>
+                <span class="tabular-nums font-semibold">{{ count }}</span>
+              </div>
+              <div class="h-1.5 overflow-hidden rounded-full bg-muted">
+                <div
+                  class="h-full rounded-full transition-all"
+                  :class="PLAN_COLORS[plan as string] || 'bg-muted-foreground'"
+                  :style="{ width: planWidth(count) }"
+                />
               </div>
             </div>
-          </div>
-          <div class="rounded-xl border bg-card p-4">
-            <p class="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
-              Renders par source
-            </p>
-            <div class="space-y-1.5">
-              <div
-                v-for="(count, source) in overview.renders.by_source"
-                :key="source"
-                class="flex items-center justify-between text-sm"
-              >
-                <span>{{ source }}</span>
-                <span class="font-medium">{{ count }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+          </CardContent>
+        </Card>
 
-      <!-- ─── Section : Revenus & Storage ───────────────────────────── -->
-      <section>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-          Business
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <AdminMetricCard
-            label="MRR estimé"
-            :value="`${overview.billing.mrr_eur} €`"
-            :icon="EuroIcon"
-            tone="success"
-            :sublabel="`${overview.billing.paying_users} payants`"
-          />
-          <AdminMetricCard
-            label="Storage total"
-            :value="formatBytes(overview.storage.total_bytes)"
-            :icon="HardDriveIcon"
-            tone="primary"
-          />
-          <AdminMetricCard
-            label="Sujets forum"
-            :value="overview.forum.topics"
-            :icon="MessagesSquareIcon"
-            :sublabel="`${overview.forum.replies} réponses · ${overview.forum.categories} catégories`"
-          />
-          <AdminMetricCard
-            label="Uploads orphelins"
-            :value="overview.forum.uploads_orphan"
-            :icon="TrashIcon"
-            :tone="overview.forum.uploads_orphan > 10 ? 'warning' : 'neutral'"
-            :sublabel="`${overview.forum.uploads_total} uploads au total`"
-          />
-        </div>
-      </section>
-
-      <!-- ─── Section : System health ───────────────────────────────── -->
-      <section>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-          Intégrations
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-          <div
-            v-for="(ok, key) in systemIntegrations"
-            :key="key"
-            class="flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-xs"
-          >
-            <span
-              class="h-2 w-2 shrink-0 rounded-full"
-              :class="ok ? 'bg-green-500' : 'bg-muted-foreground/40'"
-            />
-            <span class="truncate">{{ INTEGRATION_LABELS[key] || key }}</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ─── Section : Recent activity tables ──────────────────────── -->
-      <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Users récents -->
-        <div class="rounded-xl border bg-card overflow-hidden">
-          <div class="px-4 py-3 border-b bg-muted/30">
-            <h3 class="text-sm font-semibold">Inscriptions récentes</h3>
-          </div>
-          <div class="divide-y">
+        <!-- Renders status -->
+        <Card>
+          <CardHeader class="pb-3">
+            <CardTitle class="text-sm font-semibold">Renders par status</CardTitle>
+            <CardDescription class="text-xs">
+              État actuel du pipeline de génération
+            </CardDescription>
+          </CardHeader>
+          <CardContent class="flex flex-col gap-2">
             <div
-              v-for="u in overview.users.recent"
-              :key="u.id"
-              class="px-4 py-2.5 flex items-center justify-between gap-3"
+              v-for="(count, status) in overview.renders.by_status"
+              :key="status"
+              class="flex items-center justify-between text-sm"
             >
-              <div class="min-w-0">
-                <p class="text-sm font-medium truncate">
-                  {{ u.first_name || '?' }} {{ u.last_name || '' }}
-                  <ShieldIcon
-                    v-if="u.is_staff"
-                    class="inline-block h-3 w-3 text-red-500 ml-1"
-                  />
-                </p>
-                <p class="text-xs text-muted-foreground truncate">{{ u.email }}</p>
-              </div>
-              <div class="shrink-0 text-right text-xs">
+              <span class="flex items-center gap-2">
                 <span
-                  class="rounded-full px-2 py-0.5 uppercase tracking-wider"
-                  :class="
-                    u.plan === 'pro'
-                      ? 'bg-primary/10 text-primary'
-                      : u.plan === 'enterprise'
-                        ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400'
-                        : 'bg-muted text-muted-foreground'
-                  "
-                >
-                  {{ u.plan }}
-                </span>
-                <p class="mt-0.5 text-muted-foreground">{{ relativeTime(u.date_joined) }}</p>
-              </div>
+                  class="inline-block size-2 rounded-full"
+                  :class="STATUS_COLORS[status as string] || 'bg-muted-foreground'"
+                />
+                <span class="capitalize">{{ status }}</span>
+              </span>
+              <span class="font-medium tabular-nums">{{ count }}</span>
             </div>
+          </CardContent>
+        </Card>
+
+        <!-- Système -->
+        <Card>
+          <CardHeader class="pb-3">
+            <CardTitle class="text-sm font-semibold">Intégrations</CardTitle>
+            <CardDescription class="text-xs">
+              Services externes configurés
+            </CardDescription>
+          </CardHeader>
+          <CardContent class="grid grid-cols-2 gap-2">
             <div
-              v-if="overview.users.recent.length === 0"
-              class="px-4 py-6 text-center text-sm text-muted-foreground"
+              v-for="(ok, key) in systemIntegrations"
+              :key="key"
+              class="flex items-center gap-2 rounded-md border bg-muted/30 px-2 py-1.5 text-xs"
             >
-              Aucun user inscrit.
+              <span
+                class="size-1.5 shrink-0 rounded-full"
+                :class="ok ? 'bg-green-500' : 'bg-muted-foreground/40'"
+              />
+              <span class="truncate">{{ INTEGRATION_LABELS[key] || key }}</span>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <!-- ─── Sessions + Storage + Forum (KPI secondaires) ────────────── -->
+      <section class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <AdminMetricCard
+          label="Sessions actives"
+          :value="overview.sessions.total_active"
+          :icon="ActivityIcon"
+          tone="success"
+          :sublabel="`${overview.sessions.unique_users_active} users uniques`"
+        />
+        <AdminMetricCard
+          label="Storage"
+          :value="formatBytes(overview.storage.total_bytes)"
+          :icon="HardDriveIcon"
+          tone="primary"
+        />
+        <AdminMetricCard
+          label="Sujets forum"
+          :value="overview.forum.topics"
+          :icon="MessagesSquareIcon"
+          :sublabel="`${overview.forum.replies} réponses`"
+        />
+        <AdminMetricCard
+          label="Uploads orphelins"
+          :value="overview.forum.uploads_orphan"
+          :icon="TrashIcon"
+          :tone="overview.forum.uploads_orphan > 10 ? 'warning' : 'neutral'"
+          :sublabel="`${overview.forum.uploads_total} uploads total`"
+        />
+      </section>
+
+      <!-- ─── Activité récente (2 col + 1 full width) ─────────────────── -->
+      <section class="grid gap-4 lg:grid-cols-2">
+        <!-- Users récents -->
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between pb-3">
+            <div>
+              <CardTitle class="text-sm font-semibold">Inscriptions récentes</CardTitle>
+              <CardDescription class="text-xs">
+                {{ overview.users.recent.length }} derniers utilisateurs
+              </CardDescription>
+            </div>
+            <Button as-child variant="ghost" size="sm" class="h-7 gap-1 text-xs">
+              <NuxtLink to="/admin/users">
+                Voir tout
+                <ChevronRightIcon class="size-3" />
+              </NuxtLink>
+            </Button>
+          </CardHeader>
+          <CardContent class="p-0">
+            <ul class="divide-y">
+              <li
+                v-for="u in overview.users.recent"
+                :key="u.id"
+                class="flex items-center gap-3 px-4 py-2.5"
+              >
+                <span
+                  class="flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-medium"
+                  :class="u.is_staff ? 'bg-red-500/10 text-red-500' : 'bg-primary/10 text-primary'"
+                >
+                  {{ initials(`${u.first_name || ''} ${u.last_name || ''}`) }}
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium">
+                    {{ u.first_name || u.email.split('@')[0] }}
+                    <span v-if="u.last_name" class="font-normal text-muted-foreground">
+                      {{ u.last_name }}
+                    </span>
+                  </p>
+                  <p class="truncate text-xs text-muted-foreground">{{ u.email }}</p>
+                </div>
+                <div class="shrink-0 text-right">
+                  <Badge :class="planBadgeClass(u.plan)" variant="secondary">
+                    {{ u.plan }}
+                  </Badge>
+                  <p class="mt-0.5 text-[10px] text-muted-foreground">
+                    {{ relativeTime(u.date_joined) }}
+                  </p>
+                </div>
+              </li>
+              <li
+                v-if="overview.users.recent.length === 0"
+                class="px-4 py-6 text-center text-sm text-muted-foreground"
+              >
+                Aucun utilisateur inscrit.
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
 
         <!-- Renders récents -->
-        <div class="rounded-xl border bg-card overflow-hidden">
-          <div class="px-4 py-3 border-b bg-muted/30">
-            <h3 class="text-sm font-semibold">Renders récents</h3>
-          </div>
-          <div class="divide-y">
-            <div
-              v-for="r in overview.renders.recent"
-              :key="r.id"
-              class="px-4 py-2.5 flex items-center justify-between gap-3"
-            >
-              <div class="min-w-0">
-                <p class="text-sm font-medium flex items-center gap-2">
-                  <span
-                    class="h-2 w-2 shrink-0 rounded-full"
-                    :class="STATUS_COLORS[r.status] || 'bg-muted-foreground'"
-                  />
-                  #{{ r.id }} · {{ r.source }} → {{ r.output_type }}
-                </p>
-                <p class="text-xs text-muted-foreground truncate">{{ r.user__email }}</p>
-              </div>
-              <div class="shrink-0 text-right text-xs text-muted-foreground">
-                <p>{{ r.provider }}</p>
-                <p>{{ relativeTime(r.created_at) }}</p>
-              </div>
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between pb-3">
+            <div>
+              <CardTitle class="text-sm font-semibold">Renders récents</CardTitle>
+              <CardDescription class="text-xs">
+                {{ overview.renders.recent.length }} derniers jobs
+              </CardDescription>
             </div>
-            <div
-              v-if="overview.renders.recent.length === 0"
-              class="px-4 py-6 text-center text-sm text-muted-foreground"
-            >
-              Aucun render généré.
-            </div>
-          </div>
-        </div>
+            <Button as-child variant="ghost" size="sm" class="h-7 gap-1 text-xs">
+              <NuxtLink to="/admin/renders">
+                Voir tout
+                <ChevronRightIcon class="size-3" />
+              </NuxtLink>
+            </Button>
+          </CardHeader>
+          <CardContent class="p-0">
+            <ul class="divide-y">
+              <li
+                v-for="r in overview.renders.recent"
+                :key="r.id"
+                class="flex items-center gap-3 px-4 py-2.5"
+              >
+                <span
+                  class="size-2 shrink-0 rounded-full"
+                  :class="STATUS_COLORS[r.status] || 'bg-muted-foreground'"
+                />
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium">
+                    #{{ r.id }} <span class="text-muted-foreground">·</span> {{ r.source }} → {{ r.output_type }}
+                  </p>
+                  <p class="truncate text-xs text-muted-foreground">{{ r.user__email }}</p>
+                </div>
+                <div class="shrink-0 text-right text-xs text-muted-foreground">
+                  <p class="capitalize">{{ r.provider }}</p>
+                  <p class="text-[10px]">{{ relativeTime(r.created_at) }}</p>
+                </div>
+              </li>
+              <li
+                v-if="overview.renders.recent.length === 0"
+                class="px-4 py-6 text-center text-sm text-muted-foreground"
+              >
+                Aucun render généré.
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
 
-        <!-- Topics forum récents (full width) -->
-        <div class="lg:col-span-2 rounded-xl border bg-card overflow-hidden">
-          <div class="px-4 py-3 border-b bg-muted/30 flex items-center justify-between">
-            <h3 class="text-sm font-semibold">Activité forum récente</h3>
-            <NuxtLink
-              to="/forum"
-              class="text-xs text-primary hover:underline"
-            >
-              Aller au forum →
-            </NuxtLink>
-          </div>
-          <div class="divide-y">
-            <div
-              v-for="t in overview.forum.recent_topics"
-              :key="t.id"
-              class="px-4 py-2.5 flex items-center justify-between gap-3"
-            >
-              <div class="min-w-0">
-                <p class="text-sm font-medium truncate flex items-center gap-1.5">
-                  <PinIcon v-if="t.is_pinned" class="h-3 w-3 text-amber-500 shrink-0" />
-                  <LockIcon v-if="t.is_locked" class="h-3 w-3 text-muted-foreground shrink-0" />
+        <!-- Forum activité (full-width) -->
+        <Card class="lg:col-span-2">
+          <CardHeader class="flex flex-row items-center justify-between pb-3">
+            <div>
+              <CardTitle class="text-sm font-semibold">Activité forum</CardTitle>
+              <CardDescription class="text-xs">
+                Sujets les plus récents
+              </CardDescription>
+            </div>
+            <Button as-child variant="ghost" size="sm" class="h-7 gap-1 text-xs">
+              <NuxtLink to="/admin/forum">
+                Modérer
+                <ChevronRightIcon class="size-3" />
+              </NuxtLink>
+            </Button>
+          </CardHeader>
+          <CardContent class="p-0">
+            <ul class="divide-y">
+              <li
+                v-for="t in overview.forum.recent_topics"
+                :key="t.id"
+                class="flex items-center gap-3 px-4 py-2.5"
+              >
+                <PinIcon v-if="t.is_pinned" class="size-3.5 shrink-0 text-amber-500" />
+                <LockIcon v-else-if="t.is_locked" class="size-3.5 shrink-0 text-muted-foreground" />
+                <MessageSquareIcon v-else class="size-3.5 shrink-0 text-muted-foreground" />
+                <div class="min-w-0 flex-1">
                   <NuxtLink
                     :to="`/forum/topic/${t.id}`"
-                    class="hover:text-primary transition-colors"
+                    target="_blank"
+                    class="block truncate text-sm font-medium hover:text-primary"
                   >
                     {{ t.title }}
                   </NuxtLink>
-                </p>
-                <p class="text-xs text-muted-foreground truncate">
-                  {{ t.author__email }} · {{ t.category__name }}
-                </p>
-              </div>
-              <div class="shrink-0 text-right text-xs text-muted-foreground">
-                <p>{{ t.replies_count }} ↩ · {{ t.views_count }} 👁</p>
-                <p>{{ relativeTime(t.created_at) }}</p>
-              </div>
-            </div>
-            <div
-              v-if="overview.forum.recent_topics.length === 0"
-              class="px-4 py-6 text-center text-sm text-muted-foreground"
-            >
-              Aucun sujet pour l'instant.
-            </div>
-          </div>
-        </div>
+                  <p class="truncate text-xs text-muted-foreground">
+                    {{ t.author__email }}
+                    <span class="text-muted-foreground/60">·</span>
+                    {{ t.category__name }}
+                  </p>
+                </div>
+                <div class="shrink-0 text-right text-xs text-muted-foreground tabular-nums">
+                  <p>{{ t.replies_count }} ↩ · {{ t.views_count }} 👁</p>
+                  <p class="text-[10px]">{{ relativeTime(t.created_at) }}</p>
+                </div>
+              </li>
+              <li
+                v-if="overview.forum.recent_topics.length === 0"
+                class="px-4 py-6 text-center text-sm text-muted-foreground"
+              >
+                Aucun sujet.
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
       </section>
     </template>
   </div>
@@ -352,20 +376,19 @@
 <script setup lang="ts">
 import {
   ActivityIcon,
-  CalendarIcon,
+  AlertTriangleIcon,
   CheckCircle2Icon,
+  ChevronRightIcon,
   CircleAlertIcon,
   EuroIcon,
-  FolderIcon,
   HardDriveIcon,
   ImageIcon,
+  LineChartIcon,
   LockIcon,
+  MessageSquareIcon,
   MessagesSquareIcon,
   PinIcon,
-  ShieldIcon,
   TrashIcon,
-  TrendingUpIcon,
-  UserPlusIcon,
   UsersIcon,
 } from 'lucide-vue-next'
 import { computed } from 'vue'
@@ -375,25 +398,35 @@ import { formatBytes, relativeTime } from '~/composables/useAdminPanel'
 definePageMeta({
   layout: 'admin',
   middleware: ['auth', 'staff'],
-  // SSR off : composable singleton + fetch async = mismatches d'hydratation
   ssr: false,
 })
 
 useHead({
   title: 'Admin — VizHome',
-  meta: [
-    { name: 'robots', content: 'noindex, nofollow' },
-  ],
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 })
 
 const { overview, isLoading, error, loadOverview } = useAdminPanel()
 
 await loadOverview()
 
-// ─── Helpers réactifs ────────────────────────────────────────────────────
+// ─── Computed ────────────────────────────────────────────────────────────
 const successRateLabel = computed(() => {
   const r = overview.value?.renders.success_rate
   return r === null || r === undefined ? '—' : `${Math.round(r * 100)}%`
+})
+
+const successTone = computed<'success' | 'warning' | 'danger' | 'neutral'>(() => {
+  const r = overview.value?.renders.success_rate
+  if (r === null || r === undefined) return 'neutral'
+  if (r >= 0.95) return 'success'
+  if (r >= 0.8) return 'warning'
+  return 'danger'
+})
+
+const successSublabel = computed(() => {
+  const failed = overview.value?.renders.by_status?.failed ?? 0
+  return failed > 0 ? `${failed} échec(s)` : 'aucun échec'
 })
 
 const systemIntegrations = computed(() => {
@@ -409,7 +442,45 @@ const systemIntegrations = computed(() => {
   }
 })
 
-// ─── Constants ───────────────────────────────────────────────────────────
+const alerts = computed(() => {
+  const a: { label: string; to?: string; action?: string }[] = []
+  if (!overview.value) return a
+  const o = overview.value
+  if (o.forum.uploads_orphan > 10) {
+    a.push({
+      label: `${o.forum.uploads_orphan} uploads forum orphelins en attente de cleanup`,
+      to: '/admin/forum',
+      action: 'Modérer',
+    })
+  }
+  const r = o.renders.success_rate
+  if (r !== null && r !== undefined && r < 0.8) {
+    a.push({
+      label: `Taux de succès renders bas (${Math.round(r * 100)}%)`,
+      to: '/admin/renders',
+      action: 'Voir',
+    })
+  }
+  if (!o.system.stripe_configured) {
+    a.push({
+      label: 'Stripe non configuré — pas de subscriptions actives',
+      to: '/admin/billing',
+      action: 'Détails',
+    })
+  }
+  return a
+})
+
+const maxPlanCount = computed(() => {
+  if (!overview.value) return 1
+  return Math.max(1, ...Object.values(overview.value.users.by_plan))
+})
+
+function planWidth(count: number): string {
+  return `${Math.max(4, Math.round((count / maxPlanCount.value) * 100))}%`
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-amber-500',
   processing: 'bg-blue-500',
@@ -417,12 +488,40 @@ const STATUS_COLORS: Record<string, string> = {
   failed: 'bg-red-500',
 }
 
+const PLAN_COLORS: Record<string, string> = {
+  free: 'bg-muted-foreground',
+  pro: 'bg-primary',
+  enterprise: 'bg-amber-500',
+}
+
 const INTEGRATION_LABELS: Record<string, string> = {
   gemini_configured: 'Gemini IA',
   stripe_configured: 'Stripe',
   google_oauth_configured: 'Google OAuth',
   github_oauth_configured: 'GitHub OAuth',
-  minio_configured: 'MinIO Storage',
+  minio_configured: 'MinIO',
   sentry_configured: 'Sentry',
+}
+
+function planBadgeClass(plan: string): string {
+  switch (plan) {
+    case 'pro':
+      return 'bg-primary/10 text-primary border-0'
+    case 'enterprise':
+      return 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border-0'
+    default:
+      return 'bg-muted text-muted-foreground border-0'
+  }
+}
+
+function initials(name: string): string {
+  const t = name.trim()
+  if (!t) return '?'
+  return t
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(w => w[0]?.toUpperCase())
+    .join('') || '?'
 }
 </script>

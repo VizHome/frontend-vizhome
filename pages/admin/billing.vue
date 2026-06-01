@@ -1,12 +1,7 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
     <section>
-      <nav class="text-xs text-muted-foreground mb-1 flex items-center gap-1.5">
-        <NuxtLink to="/admin" class="hover:text-foreground">Admin</NuxtLink>
-        <ChevronRightIcon class="size-3" />
-        <span class="text-foreground">Billing</span>
-      </nav>
-      <h1 class="text-2xl font-bold">Billing</h1>
+      <h1 class="text-2xl font-bold tracking-tight">Billing</h1>
       <p class="text-sm text-muted-foreground">
         Subscriptions Stripe actives et factures récentes.
       </p>
@@ -140,7 +135,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronRightIcon, CircleAlertIcon } from 'lucide-vue-next'
+import { CircleAlertIcon } from 'lucide-vue-next'
 
 import { useAdminBilling } from '~/composables/useAdminBilling'
 

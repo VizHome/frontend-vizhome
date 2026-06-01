@@ -2,13 +2,9 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-4">
     <section class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <nav class="text-xs text-muted-foreground mb-1 flex items-center gap-1.5">
-          <NuxtLink to="/admin" class="hover:text-foreground">Admin</NuxtLink>
-          <ChevronRightIcon class="size-3" />
-          <span class="text-foreground">Audit log</span>
-        </nav>
-        <h1 class="text-2xl font-bold">
-          Audit log <span class="text-sm text-muted-foreground ml-1">({{ count }})</span>
+        <h1 class="text-2xl font-bold tracking-tight">
+          Journal d'audit
+          <span class="text-sm text-muted-foreground ml-1 font-normal">({{ count }})</span>
         </h1>
         <p class="text-sm text-muted-foreground">
           Toutes les actions staff (modération, ban/unban, pin/lock, etc.)
@@ -131,7 +127,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronRightIcon, Shield } from 'lucide-vue-next'
+import { Shield } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 
 import { useAdminAuditLog } from '~/composables/useAdminAuditLog'

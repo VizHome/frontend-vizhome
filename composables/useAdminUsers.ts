@@ -7,11 +7,13 @@ import { ref } from 'vue'
 export interface AdminUser {
   id: number
   email: string
+  pseudo: string
   first_name: string
   last_name: string
   plan: 'free' | 'pro' | 'enterprise'
   is_active: boolean
   is_staff: boolean
+  is_banned_from_forum: boolean
   date_joined: string
   last_login: string | null
   storage_used_bytes: number
@@ -76,7 +78,12 @@ export function useAdminUsers() {
 
   async function updateUser(
     id: number,
-    patch: Partial<{ is_active: boolean; is_staff: boolean }>
+    patch: Partial<{
+      is_active: boolean
+      is_staff: boolean
+      is_banned_from_forum: boolean
+      pseudo: string
+    }>,
   ): Promise<AdminUser> {
     const data = await api<AdminUser>(`/admin/users/${id}`, {
       method: 'PATCH',

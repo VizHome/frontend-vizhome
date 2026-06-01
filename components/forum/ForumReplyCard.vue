@@ -1,90 +1,156 @@
 <!--
-  ForumReplyCard — réponse à un topic (vue détail topic).
+  ForumReplyCard — réponse à un topic, rendue en GitHub-style :
+  avatar externe (à gauche) + card content (à droite) avec petite flèche pointant
+  vers l'avatar. S'intègre dans la timeline du `pages/forum/topic/[id].vue`.
 
   Features :
-  - Badge STAFF (rouge) si auteur.is_staff
-  - Badge "Toi" si auteur === currentUserId
-  - Date relative (titre = date complète)
-  - Bouton "Éditer" si owner+fenêtre 15 min OU staff
-  - Bouton "Supprimer" si owner+fenêtre OU staff
-  - Mode édition inline avec ForumEditor (toggle interne)
-  - Badge "édité" si updated_at > created_at (>30s tolérance horloge)
+  - Badge STAFF (rouge) / Auteur du topic / Toi
+  - Date relative + absolue
+  - Édition inline (TipTap) + fenêtre 15 min ou staff
+  - Marquage solution (auteur du topic ou staff)
+  - Bordure verte si is_solution
 -->
 <template>
-  <article
-    class="flex gap-3 rounded-lg border bg-card p-4 transition-colors"
-    :class="reply.is_solution ? 'border-green-200 bg-green-50/30 dark:border-green-900/50 dark:bg-green-950/10' : ''"
-  >
-    <!-- Avatar — couleur staff différenciée -->
+  <li class="relative flex gap-4">
+    <!-- Avatar externe (au-dessus de la ligne timeline) -->
     <div
-      class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-medium text-sm"
+      class="z-10 flex size-10 shrink-0 items-center justify-center rounded-full font-medium text-sm border-2 border-background"
       :class="reply.author.is_staff
         ? 'bg-red-500/10 text-red-500'
         : 'bg-primary/10 text-primary'"
+      aria-hidden="true"
     >
       {{ initials(reply.author.name) }}
     </div>
 
-    <div class="flex-1 min-w-0">
+    <!-- Carte contenu avec petite flèche pointant vers l'avatar -->
+    <div
+      class="relative min-w-0 flex-1 rounded-lg border bg-card transition-colors github-arrow-left"
+      :class="reply.is_solution
+        ? 'border-green-300 bg-green-50/40 dark:border-green-900/50 dark:bg-green-950/10'
+        : ''"
+    >
       <!-- Header : auteur + badges + date -->
-      <div class="flex items-center gap-2 mb-1.5 flex-wrap text-xs">
+      <header
+        class="flex items-center gap-2 border-b bg-muted/30 px-3 py-1.5 text-xs flex-wrap"
+        :class="reply.is_solution ? 'border-green-200/70 bg-green-100/40 dark:border-green-900/40 dark:bg-green-950/20' : ''"
+      >
         <span class="font-medium text-foreground">{{ reply.author.name }}</span>
 
-        <!-- Badge STAFF (modo VizHome) -->
-        <span
+        <!-- Badge STAFF -->
+        <Badge
           v-if="reply.author.is_staff"
-          class="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-red-500"
+          variant="secondary"
+          class="h-5 gap-1 border-0 bg-red-500/10 px-1.5 text-[10px] font-semibold uppercase tracking-wider text-red-500"
         >
-          <ShieldIcon class="h-2.5 w-2.5" />
+          <ShieldIcon class="size-2.5" />
           Staff
-        </span>
+        </Badge>
 
-        <!-- Badge "Toi" (auteur connecté) -->
-        <span
+        <!-- Badge Auteur du topic -->
+        <Badge
+          v-else-if="isTopicAuthor"
+          variant="secondary"
+          class="h-5 border-0 bg-primary/10 px-1.5 text-[10px] font-semibold uppercase tracking-wider text-primary"
+        >
+          Auteur
+        </Badge>
+
+        <!-- Badge "Toi" -->
+        <Badge
           v-else-if="isOwner"
-          class="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary"
+          variant="secondary"
+          class="h-5 border-0 bg-muted px-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
         >
           Toi
+        </Badge>
+
+        <span class="text-muted-foreground">
+          a commenté
+          <time
+            :datetime="reply.created_at"
+            :title="absoluteDate(reply.created_at)"
+          >
+            {{ relativeTime(reply.created_at) }}
+          </time>
         </span>
 
-        <span class="text-muted-foreground">·</span>
-        <time
-          :datetime="reply.created_at"
-          class="text-muted-foreground"
-          :title="absoluteDate(reply.created_at)"
+        <span
+          v-if="isEdited"
+          class="text-muted-foreground italic"
+          :title="`Édité ${absoluteDate(reply.updated_at)}`"
         >
-          {{ relativeTime(reply.created_at) }}
-          <span class="ml-1 text-muted-foreground/60">
-            · {{ timeOnly(reply.created_at) }}
-          </span>
-        </time>
-
-        <!-- Badge édité -->
-        <template v-if="isEdited">
-          <span class="text-muted-foreground">·</span>
-          <span
-            class="text-muted-foreground italic"
-            :title="`Édité ${absoluteDate(reply.updated_at)}`"
-          >
-            édité
-          </span>
-        </template>
+          · édité
+        </span>
 
         <!-- Badge solution (à droite) -->
-        <span
+        <Badge
           v-if="reply.is_solution"
-          class="ml-auto flex items-center gap-1 rounded-full bg-green-100 dark:bg-green-950/40 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:text-green-400"
+          variant="secondary"
+          class="ml-auto h-5 gap-1 border-0 bg-green-100 px-1.5 text-[10px] font-semibold text-green-700 dark:bg-green-950/40 dark:text-green-400"
         >
-          <CheckCircle2Icon class="h-3 w-3" />
+          <CheckCircle2Icon class="size-3" />
           Solution
-        </span>
+        </Badge>
+
+        <!-- Actions menu (à droite, si pas de solution badge) -->
+        <DropdownMenu v-if="!reply.is_solution && (canEdit || canDelete || canMarkSolution)">
+          <DropdownMenuTrigger as-child>
+            <button
+              type="button"
+              class="ml-auto inline-flex size-6 items-center justify-center rounded-md hover:bg-accent transition-colors"
+              aria-label="Actions"
+            >
+              <MoreHorizontalIcon class="size-3.5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-44">
+            <DropdownMenuItem
+              v-if="canMarkSolution"
+              class="cursor-pointer text-green-600 dark:text-green-400"
+              @click="$emit('toggleSolution', reply)"
+            >
+              <CheckCircle2Icon class="size-4 mr-2" />
+              Marquer solution
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              v-if="canEdit"
+              class="cursor-pointer"
+              :title="editWindowHint"
+              @click="startEdit"
+            >
+              <PencilIcon class="size-4 mr-2" />
+              Éditer
+            </DropdownMenuItem>
+            <DropdownMenuSeparator v-if="canDelete" />
+            <DropdownMenuItem
+              v-if="canDelete"
+              class="cursor-pointer text-destructive focus:text-destructive"
+              @click="$emit('delete', reply)"
+            >
+              <Trash2Icon class="size-4 mr-2" />
+              Supprimer
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <!-- Si solution, action "Retirer solution" séparée -->
+        <button
+          v-else-if="reply.is_solution && canMarkSolution"
+          type="button"
+          class="text-[10px] text-green-700/80 hover:text-green-700 dark:text-green-400/80 dark:hover:text-green-400 underline-offset-2 hover:underline"
+          @click="$emit('toggleSolution', reply)"
+        >
+          retirer
+        </button>
+      </header>
+
+      <!-- Mode lecture -->
+      <div v-if="!isEditing" class="px-4 py-3">
+        <ForumContent :html="reply.content" />
       </div>
 
-      <!-- Mode lecture (HTML sanitisé) -->
-      <ForumContent v-if="!isEditing" :html="reply.content" />
-
       <!-- Mode édition inline -->
-      <div v-else class="mt-2 space-y-2">
+      <div v-else class="px-4 py-3 space-y-2">
         <ForumEditor v-model="editedHtml" min-height="120px" />
         <div
           v-if="editError"
@@ -110,64 +176,20 @@
             :disabled="isSaving || !hasMeaningfulChange"
             @click="saveEdit"
           >
-            <CheckIcon class="h-3.5 w-3.5" />
+            <CheckIcon class="size-3.5" />
             {{ isSaving ? 'Enregistrement…' : 'Enregistrer' }}
           </Button>
         </div>
       </div>
-
-      <!-- Actions (mode lecture uniquement) -->
-      <div
-        v-if="!isEditing && (canEdit || canDelete || canMarkSolution)"
-        class="mt-3 flex items-center gap-2 text-xs flex-wrap"
-      >
-        <!-- Marquer comme solution (owner du topic ou staff) -->
-        <button
-          v-if="canMarkSolution"
-          type="button"
-          class="transition-colors flex items-center gap-1"
-          :class="reply.is_solution
-            ? 'text-green-600 dark:text-green-400 hover:opacity-80'
-            : 'text-muted-foreground hover:text-green-600 dark:hover:text-green-400'"
-          :title="reply.is_solution ? 'Retirer le statut de solution' : 'Marquer comme solution'"
-          @click="$emit('toggleSolution', reply)"
-        >
-          <CheckCircle2Icon class="h-3 w-3" />
-          {{ reply.is_solution ? 'Retirer solution' : 'Marquer solution' }}
-        </button>
-        <span
-          v-if="canMarkSolution && (canEdit || canDelete)"
-          class="text-muted-foreground"
-        >·</span>
-        <button
-          v-if="canEdit"
-          type="button"
-          class="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-          :title="editWindowHint"
-          @click="startEdit"
-        >
-          <PencilIcon class="h-3 w-3" />
-          Éditer
-        </button>
-        <span v-if="canEdit && canDelete" class="text-muted-foreground">·</span>
-        <button
-          v-if="canDelete"
-          type="button"
-          class="text-destructive/80 hover:text-destructive transition-colors flex items-center gap-1"
-          @click="$emit('delete', reply)"
-        >
-          <Trash2Icon class="h-3 w-3" />
-          Supprimer
-        </button>
-      </div>
     </div>
-  </article>
+  </li>
 </template>
 
 <script setup lang="ts">
 import {
   CheckCircle2Icon,
   CheckIcon,
+  MoreHorizontalIcon,
   PencilIcon,
   ShieldIcon,
   Trash2Icon,
@@ -201,12 +223,16 @@ const canMarkSolution = computed(() => {
   )
 })
 
+// Auteur du topic (badge spécial)
+const isTopicAuthor = computed(
+  () => props.topicAuthorId != null && props.reply.author.id === props.topicAuthorId,
+)
+
 // ─── Permissions UI (le backend vérifie aussi côté serveur) ──────────────
-// Fenêtre alignée sur EDIT_WINDOW_MINUTES backend (15 min)
 const EDIT_WINDOW_MS = 15 * 60 * 1000
 
 const isOwner = computed(
-  () => props.currentUserId != null && props.currentUserId === props.reply.author.id
+  () => props.currentUserId != null && props.currentUserId === props.reply.author.id,
 )
 
 const isWithinEditWindow = computed(() => {
@@ -222,7 +248,7 @@ const canEdit = computed(() => {
 const canDelete = computed(() => canEdit.value)
 
 const editWindowHint = computed(() => {
-  if (props.currentUserIsStaff) return "Édition staff (sans limite de temps)"
+  if (props.currentUserIsStaff) return 'Édition staff (sans limite de temps)'
   const created = new Date(props.reply.created_at).getTime()
   const remaining = EDIT_WINDOW_MS - (Date.now() - created)
   const min = Math.max(0, Math.floor(remaining / 60_000))
@@ -231,7 +257,6 @@ const editWindowHint = computed(() => {
 
 const isEdited = computed(() => {
   if (!props.reply.updated_at || !props.reply.created_at) return false
-  // Tolérance 30s : auto_now vs auto_now_add ne coïncident pas exactement à la création
   return (
     new Date(props.reply.updated_at).getTime() -
       new Date(props.reply.created_at).getTime() >
@@ -321,16 +346,32 @@ function absoluteDate(iso: string): string {
   })
 }
 
-/** Affiche juste l'heure (HH:mm), utile pour distinguer 2 posts du même jour. */
-function timeOnly(iso: string): string {
-  if (!iso) return ''
-  return new Date(iso).toLocaleTimeString('fr-FR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
-
 function plainTextLength(html: string): number {
   return html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').trim().length
 }
 </script>
+
+<style>
+/* Flèche style GitHub : petit triangle blanc à gauche de la carte
+   pointant vers l'avatar, avec bordure assortie. */
+.github-arrow-left::before,
+.github-arrow-left::after {
+  content: '';
+  position: absolute;
+  top: 11px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  pointer-events: none;
+}
+.github-arrow-left::before {
+  left: -8px;
+  border-width: 8px 8px 8px 0;
+  border-color: transparent hsl(var(--border)) transparent transparent;
+}
+.github-arrow-left::after {
+  left: -7px;
+  border-width: 8px 8px 8px 0;
+  border-color: transparent hsl(var(--muted) / 0.3) transparent transparent;
+}
+</style>

@@ -62,6 +62,8 @@ composables/
 ├── useAdminBilling.ts            ★ subscriptions Stripe actives + factures récentes (Promise.all)
 ├── useAdminForumMod.ts           ★ modération forum (pin / lock / delete) — réutilise endpoints forum
 ├── useAdminCsvExport.ts          ★ helper export CSV (fetch + blob + <a download> + Authorization)
+├── useSupport.ts                 ★ tickets de support user (loadTickets + create + loadTicket + reply)
+├── useAdminSupport.ts            ★ liste paginée de tous les tickets pour staff + updateTicketStatus
 └── useThree*.ts                  12 composables Three.js (scene, models, lighting, weather, navigation…)
 ```
 
@@ -128,13 +130,19 @@ pages/
 │   └── new.vue                   form création topic (auth requise, `?category=<slug>` pré-sélection)
 │
 ├── admin/                        ★ panel admin interne (layout: 'admin', staff-only)
-│   ├── index.vue                 dashboard consolidé (users + renders + storage + billing + forum + system)
+│   ├── index.vue                 dashboard refonte : KPI + alertes + activité récente + intégrations
 │   ├── analytics.vue             graphiques séries temporelles (signups, renders, revenue)
-│   ├── users.vue                 tableau paginé + filtres + actions ban/promote + bouton Export CSV
+│   ├── users.vue                 tableau + filtres + actions ban-compte / ban-forum / promote + Export CSV
 │   ├── renders.vue               tableau paginé + filtres (status, source) + bouton Export CSV
-│   ├── billing.vue               ★ subscriptions actives + factures Stripe (alerte si djstripe absent)
-│   ├── forum.vue                 ★ modération topics (pin/lock/delete) + lien externe vers /forum/topic/:id
-│   └── audit-log.vue             ★ journal d'audit staff paginé + filtres (action, actor email)
+│   ├── billing.vue               subscriptions actives + factures Stripe (alerte si djstripe absent)
+│   ├── forum.vue                 modération topics (pin/lock/delete) + lien externe vers /forum/topic/:id
+│   ├── support.vue               ★ liste paginée de tous les tickets support (filtres status/priorité)
+│   └── audit-log.vue             journal d'audit staff paginé + filtres (action, actor email)
+│
+├── support/                      ★ ticketing helpdesk (auth requise sur toutes)
+│   ├── index.vue                 liste de mes tickets + bouton "Nouveau ticket"
+│   ├── new.vue                   form création (subject + category + priority + body)
+│   └── [id].vue                  détail timeline GitHub-style + composer reply (closed = bloqué)
 │
 └── legal/
     ├── privacy-policy.vue
@@ -193,11 +201,14 @@ components/
     ├── ForumCategoryCard.vue     carte cliquable d'une catégorie
     ├── ForumTopicCard.vue        carte d'un sujet (mode normal ou `compact`)
     ├── ForumReplyCard.vue        carte d'une réponse dans le détail d'un topic
-    ├── ForumEditor.vue           ★ éditeur WYSIWYG TipTap (toolbar complète : bold/italic/listes/quote/codeblock/align/lien/image) — sortie HTML
-    └── ForumContent.vue          rendu HTML sanitisé via DOMPurify (display topic/reply)
+    ├── ForumEditor.vue           ★ éditeur WYSIWYG TipTap (toolbar complète + tabs Édition/Aperçu) — sortie HTML
+    ├── ForumContent.vue          rendu HTML sanitisé via DOMPurify (display topic/reply)
+    └── ForumTimelineEvent.vue    ★ événement inline dans la timeline GitHub-style
+                                  (icône ronde + texte court : pinned / locked / solution)
 
 └── admin/                        ★ composants du panel admin staff-only
-    ├── AdminHeader.vue           barre haute (logo + badge ADMIN rouge + bouton refresh)
+    ├── AdminSidebar.vue          ★ sidebar verticale shadcn-vue (Pilotage/Modération/Système)
+    │                             — badge dynamique (uploads orphelins) + user footer
     └── AdminMetricCard.vue       card de métrique réutilisable (label + value + sublabel + tone)
 ```
 
@@ -219,7 +230,8 @@ layouts/
 ├── sidebar.vue                   avec AppSidebar
 ├── none.vue                      sans navbar (pages métier, auth)
 ├── forum.vue                     ★ ForumHeader + ForumFooter (toutes pages /forum/*)
-└── admin.vue                     ★ AdminHeader (pages /admin/*, staff-only)
+└── admin.vue                     ★ SidebarProvider + AdminSidebar + SidebarInset
+                                  (topbar = trigger + breadcrumb + refresh + theme)
 ```
 
 Spécification du layout par page via `definePageMeta({ layout: 'forum' })`.

@@ -3,12 +3,7 @@
     <!-- Header + sélecteur période -->
     <section class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <nav class="text-xs text-muted-foreground mb-1 flex items-center gap-1.5">
-          <NuxtLink to="/admin" class="hover:text-foreground">Admin</NuxtLink>
-          <ChevronRightIcon class="size-3" />
-          <span class="text-foreground">Analytics</span>
-        </nav>
-        <h1 class="text-2xl font-bold">Analytics</h1>
+        <h1 class="text-2xl font-bold tracking-tight">Analytics</h1>
         <p class="text-sm text-muted-foreground">
           Séries temporelles et distribution des renders.
         </p>
@@ -85,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronRightIcon, CircleAlertIcon } from 'lucide-vue-next'
+import { CircleAlertIcon } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 
 import { useAdminTimeline } from '~/composables/useAdminTimeline'

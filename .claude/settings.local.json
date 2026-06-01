@@ -97,7 +97,22 @@
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'audit_count={d[\\\\\"count\\\\\"]}'\\)\")",
       "Bash(npx nuxi *)",
       "Bash(npx eslint *)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(echo \"started pid=$!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(tail -40 /tmp/nuxt-dev.log 2>/dev/null || echo \"no log\")",
+      "Bash(curl -s http://localhost:3588/admin)",
+      "Bash(pkill -f \"nuxi dev\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}  /api/v1/support/tickets \\(no auth\\)\\\\n\" \"http://localhost:8000/api/v1/support/tickets\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}  /api/v1/admin/support/tickets \\(no auth\\)\\\\n\" \"http://localhost:8000/api/v1/admin/support/tickets\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"http://localhost:8000/api/v1/support/tickets\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/health/live)",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"thibaut.maurras34@gmail.com\",\"password\":\"test1234\"}')",
+      "Bash(curl -s -H \"Accept: application/json\" http://localhost:8000/api/schema/)",
+      "Bash(python -c \"import sys, json; s = json.load\\(sys.stdin\\); paths = [p for p in s.get\\('paths', {}\\) if 'support' in p or 'forum' in p]; print\\('\\\\n'.join\\(sorted\\(paths\\)\\)\\)\")",
+      "Bash(curl -s \"http://localhost:8000/api/schema/?format=json\")",
+      "Bash(python -c \"import sys, json; s = json.load\\(sys.stdin\\); paths = [p for p in s.get\\('paths', {}\\) if 'support' in p]; print\\('SUPPORT ENDPOINTS:'\\); print\\('\\\\n'.join\\(sorted\\(paths\\)\\)\\)\")",
+      "Bash(echo \"pid=$!\")"
     ]
   }
 }

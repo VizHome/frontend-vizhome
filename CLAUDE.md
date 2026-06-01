@@ -55,7 +55,7 @@ export function useFoo() {
 }
 ```
 
-### The 34 composables (by domain)
+### The 36 composables (by domain)
 
 **Backend integration** (5)
 - `useApi` — `$fetch` wrapper with JWT auto-injection + 401 retry via refresh
@@ -71,8 +71,9 @@ export function useFoo() {
 - `useSceneSerializer` — marshal Three.js state to/from PostgreSQL JSONField
 - `useRenderMode` — active render page mode (sketch / prompt / screenshot)
 - `useForum` — categories, topics, replies (CRUD complet, lecture publique)
+- `useSupport` — tickets helpdesk user (create + list + reply + transitions auto status)
 
-**Admin panel** (8 — staff-only, `middleware: ['auth', 'staff']`)
+**Admin panel** (9 — staff-only, `middleware: ['auth', 'staff']`)
 - `useAdminPanel` — overview consolidé (users, renders, storage, billing, forum, system)
 - `useAdminUsers` — liste paginée users + actions ban/promote
 - `useAdminRenders` — liste paginée renders (filtres status/source)
@@ -81,6 +82,7 @@ export function useFoo() {
 - `useAdminBilling` — subscriptions Stripe + factures (Promise.all, mode `no_djstripe`)
 - `useAdminForumMod` — pin/lock/delete topics (réutilise endpoints `/forum/topics/:id/...`)
 - `useAdminCsvExport` — helper export CSV (fetch + blob + `<a download>` + Authorization)
+- `useAdminSupport` — liste paginée tickets + filtres + `updateTicketStatus`
 
 **Three.js — core** (5)
 - `useThreeScene` — renderer, camera, OrbitControls, animation loop
@@ -109,8 +111,10 @@ export function useFoo() {
 - `none.vue` — auth pages + render editor (no chrome)
 - `forum.vue` — toutes les pages `/forum/*` avec ForumHeader + ForumFooter dédiés
   (identité visuelle distincte, séparée de la nav marketing)
-- `admin.vue` — pages `/admin/*` avec AdminHeader (badge ADMIN rouge, nav drill-down,
-  bouton refresh) — toutes ces pages ont aussi `ssr: false`
+- `admin.vue` — pages `/admin/*` : `SidebarProvider` + `AdminSidebar` (shadcn-vue
+  Sidebar, 3 groupes : Pilotage / Modération / Système) + `SidebarInset` avec topbar
+  (trigger + breadcrumb dynamique + refresh + theme toggle). Toutes ces pages ont
+  aussi `ssr: false`.
 
 ### Middleware
 

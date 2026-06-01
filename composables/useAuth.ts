@@ -18,12 +18,14 @@ export interface JwtTokens {
 export interface AuthUser {
   id: number
   email: string
+  pseudo: string
   first_name: string
   last_name: string
   name: string
   avatar_url: string
   plan: 'free' | 'pro' | 'enterprise'
   is_staff: boolean
+  is_banned_from_forum: boolean
   date_joined: string
 }
 
@@ -85,6 +87,7 @@ export function useAuth() {
   // ─── Register ──────────────────────────────────────────────────────────
   async function register(data: {
     email: string
+    pseudo: string
     password: string
     password_confirm: string
     first_name?: string

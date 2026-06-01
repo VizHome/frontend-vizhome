@@ -2,14 +2,9 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-4">
     <section class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <nav class="text-xs text-muted-foreground mb-1 flex items-center gap-1.5">
-          <NuxtLink to="/admin" class="hover:text-foreground">Admin</NuxtLink>
-          <ChevronRightIcon class="size-3" />
-          <span class="text-foreground">Forum</span>
-        </nav>
-        <h1 class="text-2xl font-bold">
+        <h1 class="text-2xl font-bold tracking-tight">
           Modération forum
-          <span class="text-sm text-muted-foreground ml-1">({{ count }} topics)</span>
+          <span class="text-sm text-muted-foreground ml-1 font-normal">({{ count }} topics)</span>
         </h1>
       </div>
       <div class="flex flex-wrap items-center gap-2">
@@ -139,7 +134,6 @@
 
 <script setup lang="ts">
 import {
-  ChevronRightIcon,
   LockIcon,
   MoreHorizontal,
   PinIcon,

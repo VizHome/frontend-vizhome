@@ -124,6 +124,13 @@
             <LayoutGrid class="h-4 w-4 text-muted-foreground" />
             <span>Galerie de rendus</span>
           </DropdownMenuItem>
+          <DropdownMenuItem
+            class="gap-2.5 cursor-pointer"
+            @click="goTo('/support')"
+          >
+            <LifeBuoy class="h-4 w-4 text-muted-foreground" />
+            <span>Support</span>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
@@ -214,6 +221,7 @@ import {
   HelpCircle,
   Keyboard,
   LayoutGrid,
+  LifeBuoy,
   LogOut,
   Settings,
   Shield,

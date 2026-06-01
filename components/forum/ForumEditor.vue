@@ -19,170 +19,90 @@
   <div
     class="rounded-lg border bg-background overflow-hidden focus-within:ring-2 focus-within:ring-ring transition-shadow"
   >
-    <!-- Toggle Édition / Aperçu + hint markdown -->
-    <div
-      class="flex items-center justify-between border-b bg-muted/40 px-2 py-1.5"
-    >
-      <div class="flex items-center gap-0.5">
-        <button
-          type="button"
-          :class="tabClass(mode === 'edit')"
-          @click="mode = 'edit'"
-        >
-          <PencilIcon class="h-3.5 w-3.5" />
-          Édition
-        </button>
-        <button
-          type="button"
-          :class="tabClass(mode === 'preview')"
-          @click="mode = 'preview'"
-        >
-          <EyeIcon class="h-3.5 w-3.5" />
-          Aperçu
-        </button>
-      </div>
-      <span class="hidden sm:inline text-[10px] text-muted-foreground pr-1.5">
-        Markdown :
-        <code class="font-mono">**gras**</code>,
-        <code class="font-mono">*italique*</code>,
-        <code class="font-mono">## titre</code>,
-        <code class="font-mono">- liste</code>,
-        <code class="font-mono">`code`</code>
-      </span>
+    <!-- Tabs Édition / Aperçu — ligne dédiée minimaliste -->
+    <div class="flex items-center border-b bg-muted/30 px-2 py-1">
+      <button
+        type="button"
+        :class="tabClass(mode === 'edit')"
+        @click="mode = 'edit'"
+      >
+        <PencilIcon class="size-3.5" />
+        Édition
+      </button>
+      <button
+        type="button"
+        :class="tabClass(mode === 'preview')"
+        @click="mode = 'preview'"
+      >
+        <EyeIcon class="size-3.5" />
+        Aperçu
+      </button>
     </div>
 
-    <!-- Toolbar (mode édition uniquement) -->
+    <!-- Toolbar compacte — uniquement en mode édition -->
     <div
       v-if="editor && mode === 'edit'"
-      class="flex flex-wrap items-center gap-0.5 border-b bg-muted/30 px-2 py-1.5"
+      class="flex items-center gap-0.5 border-b bg-background px-2 py-1 overflow-x-auto"
     >
-      <!-- Groupe : formatage texte -->
+      <!-- Groupe principal : formatage texte -->
       <ToolbarButton
         :is-active="editor.isActive('bold')"
         title="Gras (Ctrl+B)"
         @click="editor.chain().focus().toggleBold().run()"
       >
-        <BoldIcon class="h-4 w-4" />
+        <BoldIcon class="size-4" />
       </ToolbarButton>
       <ToolbarButton
         :is-active="editor.isActive('italic')"
         title="Italique (Ctrl+I)"
         @click="editor.chain().focus().toggleItalic().run()"
       >
-        <ItalicIcon class="h-4 w-4" />
-      </ToolbarButton>
-      <ToolbarButton
-        :is-active="editor.isActive('strike')"
-        title="Barré"
-        @click="editor.chain().focus().toggleStrike().run()"
-      >
-        <StrikethroughIcon class="h-4 w-4" />
+        <ItalicIcon class="size-4" />
       </ToolbarButton>
       <ToolbarButton
         :is-active="editor.isActive('code')"
-        title="Code inline"
+        title="Code inline (Ctrl+E)"
         @click="editor.chain().focus().toggleCode().run()"
       >
-        <CodeIcon class="h-4 w-4" />
+        <CodeIcon class="size-4" />
       </ToolbarButton>
 
       <div class="mx-1 h-5 w-px bg-border" />
 
-      <!-- Groupe : structure -->
-      <ToolbarButton
-        :is-active="editor.isActive('heading', { level: 2 })"
-        title="Titre H2"
-        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-      >
-        <Heading2Icon class="h-4 w-4" />
-      </ToolbarButton>
-      <ToolbarButton
-        :is-active="editor.isActive('heading', { level: 3 })"
-        title="Titre H3"
-        @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-      >
-        <Heading3Icon class="h-4 w-4" />
-      </ToolbarButton>
+      <!-- Listes -->
       <ToolbarButton
         :is-active="editor.isActive('bulletList')"
         title="Liste à puces"
         @click="editor.chain().focus().toggleBulletList().run()"
       >
-        <ListIcon class="h-4 w-4" />
+        <ListIcon class="size-4" />
       </ToolbarButton>
       <ToolbarButton
         :is-active="editor.isActive('orderedList')"
         title="Liste numérotée"
         @click="editor.chain().focus().toggleOrderedList().run()"
       >
-        <ListOrderedIcon class="h-4 w-4" />
-      </ToolbarButton>
-      <ToolbarButton
-        :is-active="editor.isActive('blockquote')"
-        title="Citation"
-        @click="editor.chain().focus().toggleBlockquote().run()"
-      >
-        <QuoteIcon class="h-4 w-4" />
-      </ToolbarButton>
-      <ToolbarButton
-        :is-active="editor.isActive('codeBlock')"
-        title="Bloc de code"
-        @click="editor.chain().focus().toggleCodeBlock().run()"
-      >
-        <CodeXmlIcon class="h-4 w-4" />
+        <ListOrderedIcon class="size-4" />
       </ToolbarButton>
 
       <div class="mx-1 h-5 w-px bg-border" />
 
-      <!-- Groupe : alignement -->
-      <ToolbarButton
-        :is-active="editor.isActive({ textAlign: 'left' })"
-        title="Aligner à gauche"
-        @click="editor.chain().focus().setTextAlign('left').run()"
-      >
-        <AlignLeftIcon class="h-4 w-4" />
-      </ToolbarButton>
-      <ToolbarButton
-        :is-active="editor.isActive({ textAlign: 'center' })"
-        title="Centrer"
-        @click="editor.chain().focus().setTextAlign('center').run()"
-      >
-        <AlignCenterIcon class="h-4 w-4" />
-      </ToolbarButton>
-      <ToolbarButton
-        :is-active="editor.isActive({ textAlign: 'right' })"
-        title="Aligner à droite"
-        @click="editor.chain().focus().setTextAlign('right').run()"
-      >
-        <AlignRightIcon class="h-4 w-4" />
-      </ToolbarButton>
-      <ToolbarButton
-        :is-active="editor.isActive({ textAlign: 'justify' })"
-        title="Justifier"
-        @click="editor.chain().focus().setTextAlign('justify').run()"
-      >
-        <AlignJustifyIcon class="h-4 w-4" />
-      </ToolbarButton>
-
-      <div class="mx-1 h-5 w-px bg-border" />
-
-      <!-- Groupe : médias -->
+      <!-- Médias -->
       <ToolbarButton
         :is-active="editor.isActive('link')"
-        title="Ajouter un lien"
+        title="Ajouter un lien (Ctrl+K)"
         @click="onAddLink"
       >
-        <LinkIcon class="h-4 w-4" />
+        <LinkIcon class="size-4" />
       </ToolbarButton>
       <ToolbarButton
         :disabled="isUploadingImage"
-        :title="isUploadingImage ? 'Upload en cours…' : 'Insérer une image (cliquer ou glisser-déposer)'"
+        :title="isUploadingImage ? 'Upload en cours…' : 'Insérer une image'"
         @click="onPickImage"
       >
-        <Loader2Icon v-if="isUploadingImage" class="h-4 w-4 animate-spin" />
-        <ImageIcon v-else class="h-4 w-4" />
+        <Loader2Icon v-if="isUploadingImage" class="size-4 animate-spin" />
+        <ImageIcon v-else class="size-4" />
       </ToolbarButton>
-      <!-- Input file caché — déclenché par le bouton image -->
       <input
         ref="fileInputRef"
         type="file"
@@ -191,20 +111,116 @@
         @change="onFileSelected"
       />
 
+      <div class="mx-1 h-5 w-px bg-border" />
+
+      <!-- Dropdown "Plus" : actions secondaires (headings, blockquote, codeblock, strike, align) -->
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <button
+            type="button"
+            class="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs transition-colors hover:bg-accent hover:text-accent-foreground"
+            aria-label="Plus d'options de formatage"
+            title="Plus de formatage"
+          >
+            <TypeIcon class="size-4" />
+            <ChevronDownIcon class="size-3" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" class="w-52">
+          <DropdownMenuLabel class="text-[10px] uppercase tracking-wider text-muted-foreground">
+            Structure
+          </DropdownMenuLabel>
+          <DropdownMenuItem
+            class="cursor-pointer gap-2"
+            :class="{ 'bg-accent': editor.isActive('heading', { level: 2 }) }"
+            @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
+          >
+            <Heading2Icon class="size-4" />
+            <span>Titre H2</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="cursor-pointer gap-2"
+            :class="{ 'bg-accent': editor.isActive('heading', { level: 3 }) }"
+            @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
+          >
+            <Heading3Icon class="size-4" />
+            <span>Titre H3</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="cursor-pointer gap-2"
+            :class="{ 'bg-accent': editor.isActive('blockquote') }"
+            @click="editor.chain().focus().toggleBlockquote().run()"
+          >
+            <QuoteIcon class="size-4" />
+            <span>Citation</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="cursor-pointer gap-2"
+            :class="{ 'bg-accent': editor.isActive('codeBlock') }"
+            @click="editor.chain().focus().toggleCodeBlock().run()"
+          >
+            <CodeXmlIcon class="size-4" />
+            <span>Bloc de code</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="cursor-pointer gap-2"
+            :class="{ 'bg-accent': editor.isActive('strike') }"
+            @click="editor.chain().focus().toggleStrike().run()"
+          >
+            <StrikethroughIcon class="size-4" />
+            <span>Barré</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel class="text-[10px] uppercase tracking-wider text-muted-foreground">
+            Alignement
+          </DropdownMenuLabel>
+          <DropdownMenuItem
+            class="cursor-pointer gap-2"
+            @click="editor.chain().focus().setTextAlign('left').run()"
+          >
+            <AlignLeftIcon class="size-4" />
+            <span>À gauche</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="cursor-pointer gap-2"
+            @click="editor.chain().focus().setTextAlign('center').run()"
+          >
+            <AlignCenterIcon class="size-4" />
+            <span>Centré</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="cursor-pointer gap-2"
+            @click="editor.chain().focus().setTextAlign('right').run()"
+          >
+            <AlignRightIcon class="size-4" />
+            <span>À droite</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="cursor-pointer gap-2"
+            @click="editor.chain().focus().setTextAlign('justify').run()"
+          >
+            <AlignJustifyIcon class="size-4" />
+            <span>Justifié</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <!-- Undo / Redo à droite -->
       <div class="ml-auto flex items-center gap-0.5">
         <ToolbarButton
           :disabled="!editor.can().undo()"
           title="Annuler (Ctrl+Z)"
           @click="editor.chain().focus().undo().run()"
         >
-          <Undo2Icon class="h-4 w-4" />
+          <Undo2Icon class="size-4" />
         </ToolbarButton>
         <ToolbarButton
           :disabled="!editor.can().redo()"
           title="Rétablir (Ctrl+Shift+Z)"
           @click="editor.chain().focus().redo().run()"
         >
-          <Redo2Icon class="h-4 w-4" />
+          <Redo2Icon class="size-4" />
         </ToolbarButton>
       </div>
     </div>
@@ -256,6 +272,7 @@ import {
   AlignLeftIcon,
   AlignRightIcon,
   BoldIcon,
+  ChevronDownIcon,
   CodeIcon,
   CodeXmlIcon,
   EyeIcon,
@@ -271,9 +288,10 @@ import {
   QuoteIcon,
   Redo2Icon,
   StrikethroughIcon,
+  TypeIcon,
   Undo2Icon,
 } from 'lucide-vue-next'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, defineComponent, h, onBeforeUnmount, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
 
 // ─── Setup lowlight pour la coloration syntaxique des codeBlock ──────────
@@ -428,10 +446,10 @@ const hasContent = computed(() => {
 
 function tabClass(active: boolean): string {
   return [
-    'inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+    'inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors border-b-2 -mb-px',
     active
-      ? 'bg-background text-foreground shadow-sm border'
-      : 'text-muted-foreground hover:text-foreground hover:bg-background/50',
+      ? 'border-primary text-foreground'
+      : 'border-transparent text-muted-foreground hover:text-foreground',
   ].join(' ')
 }
 
@@ -484,15 +502,11 @@ async function uploadAndInsert(file: File) {
     isUploadingImage.value = false
   }
 }
-</script>
 
-<script lang="ts">
 // ─── ToolbarButton (composant inline factor) ─────────────────────────────
 // Petit composant ré-utilisé pour chaque bouton de toolbar.
 // Défini ici pour éviter un fichier séparé.
-import { defineComponent, h } from 'vue'
-
-export const ToolbarButton = defineComponent({
+const ToolbarButton = defineComponent({
   name: 'ToolbarButton',
   props: {
     isActive: { type: Boolean, default: false },
@@ -521,7 +535,7 @@ export const ToolbarButton = defineComponent({
             if (!props.disabled) emit('click', e)
           },
         },
-        slots.default?.()
+        slots.default?.(),
       )
   },
 })

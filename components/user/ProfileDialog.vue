@@ -51,6 +51,28 @@
           </p>
         </div>
 
+        <!-- Pseudo (read-only — modifiable uniquement par staff) -->
+        <div class="flex flex-col gap-1.5">
+          <Label for="profile-pseudo">Pseudo public</Label>
+          <div class="relative">
+            <span
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground select-none"
+            >@</span>
+            <Input
+              id="profile-pseudo"
+              :value="user.pseudo"
+              type="text"
+              readonly
+              disabled
+              class="cursor-not-allowed bg-muted/50 pl-7 font-medium"
+            />
+          </div>
+          <p class="text-xs text-muted-foreground">
+            Ton identité publique sur le forum et le support. Immuable —
+            contacte le support si tu dois en changer.
+          </p>
+        </div>
+
         <!-- Email (read-only — la modification d'email nécessite une procédure dédiée) -->
         <div class="flex flex-col gap-1.5">
           <Label for="profile-email">Adresse email</Label>

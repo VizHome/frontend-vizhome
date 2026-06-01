@@ -112,7 +112,8 @@
       "Bash(python -c \"import sys, json; s = json.load\\(sys.stdin\\); paths = [p for p in s.get\\('paths', {}\\) if 'support' in p or 'forum' in p]; print\\('\\\\n'.join\\(sorted\\(paths\\)\\)\\)\")",
       "Bash(curl -s \"http://localhost:8000/api/schema/?format=json\")",
       "Bash(python -c \"import sys, json; s = json.load\\(sys.stdin\\); paths = [p for p in s.get\\('paths', {}\\) if 'support' in p]; print\\('SUPPORT ENDPOINTS:'\\); print\\('\\\\n'.join\\(sorted\\(paths\\)\\)\\)\")",
-      "Bash(echo \"pid=$!\")"
+      "Bash(echo \"pid=$!\")",
+      "Read(//c/Users/thiba/AppData/Local/Temp/claude/C--Users-thiba-Documents-Environnement-dev-frontend-vizhome/2dc69145-9bb7-4660-b73b-66ca26eeb04a/tasks/**)"
     ]
   }
 }

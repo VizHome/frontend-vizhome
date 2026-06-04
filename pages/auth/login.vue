@@ -358,116 +358,34 @@ const handle2faSubmit = async () => {
   }
 }
 
-// ─── OAuth : Google Sign-In (flow id_token) ──────────────────────────────
-declare global {
-  interface Window {
-    google?: {
-      accounts: {
-        id: {
-          initialize: (config: {
-            client_id: string
-            callback: (resp: { credential: string }) => void
-          }) => void
-          prompt: (callback?: (notification: {
-            isNotDisplayed: () => boolean
-            isSkippedMoment: () => boolean
-            getNotDisplayedReason: () => string
-            getSkippedReason: () => string
-          }) => void) => void
-        }
-      }
-    }
-  }
-}
-
-let _googleScriptLoaded = false
-
-async function loadGoogleScript(): Promise<void> {
-  if (_googleScriptLoaded) return
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script')
-    script.src = 'https://accounts.google.com/gsi/client'
-    script.async = true
-    script.defer = true
-    script.onload = () => {
-      _googleScriptLoaded = true
-      resolve()
-    }
-    script.onerror = () => reject(new Error('Échec chargement Google Sign-In'))
-    document.head.appendChild(script)
-  })
-}
-
-async function handleGoogleLogin() {
+/**
+ * Google OAuth — authorization code flow (symétrique GitHub).
+ * Redirige vers Google `/o/oauth2/v2/auth`, qui rappellera notre page
+ * `/auth/oauth/google/callback` avec un `code` à échanger côté backend.
+ *
+ * Avantages vs flow One Tap (id_token) :
+ * - Pas de cookies tiers requis (marche dans Brave/Safari/Firefox strict)
+ * - Pas de FedCM (pas de deprecation warning)
+ * - Pas de "ça fait rien" silencieux : on voit toujours la page Google
+ */
+function handleGoogleLogin() {
   if (!googleClientId.value || isOAuthLoading.value) return
-  isOAuthLoading.value = true
-  submitError.value = ''
-  try {
-    await loadGoogleScript()
-    if (!window.google) throw new Error('Google SDK indisponible')
+  const redirectUri = `${window.location.origin}/auth/oauth/google/callback`
+  const state = crypto.randomUUID()
+  sessionStorage.setItem('google_oauth_state', state)
+  sessionStorage.setItem('google_oauth_redirect', (route.query.redirect as string) || '/render')
 
-    window.google.accounts.id.initialize({
-      client_id: googleClientId.value,
-      callback: async (resp: { credential: string }) => {
-        try {
-          const user = await auth.loginGoogle(resp.credential)
-          await fetchMe()
-          toast.success(`Bienvenue ${user.first_name || user.email} !`)
-          const redirect = (route.query.redirect as string) || '/render'
-          await navigateTo(redirect)
-        } catch (e: unknown) {
-          const err = e as { data?: { detail?: string } }
-          submitError.value = err?.data?.detail || 'Connexion Google échouée.'
-        } finally {
-          isOAuthLoading.value = false
-        }
-      },
-    })
-    // Notification callback : indispensable pour diagnostiquer les
-    // silent-fail de prompt() (cookies tiers bloqués, cooldown, origin
-    // non autorisée…). Sans ce listener, le bouton "ne fait rien" sans
-    // explication visible côté UI.
-    window.google.accounts.id.prompt((notification: {
-      isNotDisplayed: () => boolean
-      isSkippedMoment: () => boolean
-      getNotDisplayedReason: () => string
-      getSkippedReason: () => string
-    }) => {
-      if (notification.isNotDisplayed()) {
-        const reason = notification.getNotDisplayedReason()
-        submitError.value = explainGoogleReason(reason)
-        isOAuthLoading.value = false
-      } else if (notification.isSkippedMoment()) {
-        const reason = notification.getSkippedReason()
-        submitError.value = explainGoogleReason(reason)
-        isOAuthLoading.value = false
-      }
-    })
-  } catch (e) {
-    submitError.value = e instanceof Error ? e.message : 'Erreur Google OAuth'
-    isOAuthLoading.value = false
-  }
-}
-
-/** Traduit les codes Google One Tap en messages user-friendly. */
-function explainGoogleReason(reason: string): string {
-  const map: Record<string, string> = {
-    browser_not_supported: "Ce navigateur ne supporte pas Google Sign-In.",
-    invalid_client: "Le client_id Google est invalide (vérifie .env + Google Cloud Console).",
-    missing_client_id: "Le client_id Google n'est pas configuré.",
-    unregistered_origin: "Cette origine n'est pas autorisée dans Google Cloud Console — ajoute "
-      + window.location.origin + " dans \"Authorized JavaScript origins\".",
-    opt_out_or_no_session: "Pas de session Google active dans ce navigateur, ou tu as opt-out. "
-      + "Connecte-toi d'abord sur google.com puis réessaie.",
-    suppressed_by_user: "Tu as refusé Google Sign-In récemment. Réessaie plus tard ou via un autre navigateur.",
-    unknown_reason: "Google Sign-In n'a pas pu s'afficher (cookies tiers bloqués ?).",
-    secure_http_required: "HTTPS requis (ou localhost).",
-    issuing_failed: "Google a refusé d'émettre un token (config app invalide).",
-    tap_outside: "Fenêtre Google fermée.",
-    user_cancel: "Connexion annulée.",
-    flow_restarted: "Flow Google relancé.",
-  }
-  return map[reason] || `Google Sign-In indisponible (${reason})`
+  const params = new URLSearchParams({
+    client_id: googleClientId.value,
+    redirect_uri: redirectUri,
+    response_type: 'code',
+    scope: 'openid email profile',
+    access_type: 'online',
+    include_granted_scopes: 'true',
+    prompt: 'select_account',
+    state,
+  })
+  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
 }
 
 // ─── OAuth : GitHub (flow authorization code) ────────────────────────────

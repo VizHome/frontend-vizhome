@@ -136,10 +136,22 @@ export function useAuth() {
   }
 
   // ─── OAuth ─────────────────────────────────────────────────────────────
-  async function loginGoogle(idToken: string): Promise<AuthUser> {
+  /**
+   * Google OAuth — supporte les deux flows :
+   * - flow `code` (recommandé, authorization code, identique GitHub) :
+   *   loginGoogle({ code, redirectUri })
+   * - flow `id_token` (legacy One Tap / SDK SPA) :
+   *   loginGoogle({ idToken })
+   */
+  async function loginGoogle(
+    payload: { code: string; redirectUri: string } | { idToken: string },
+  ): Promise<AuthUser> {
+    const body = 'idToken' in payload
+      ? { id_token: payload.idToken }
+      : { code: payload.code, redirect_uri: payload.redirectUri }
     const res = await _post<{ user: AuthUser; access: string; refresh: string }>(
       '/auth/oauth/google/exchange',
-      { id_token: idToken }
+      body,
     )
     tokens.value = { access: res.access, refresh: res.refresh }
     persist()

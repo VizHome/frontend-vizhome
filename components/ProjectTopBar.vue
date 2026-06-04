@@ -1,5 +1,10 @@
 <template>
-  <div class="absolute top-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+  <!--
+    Positionné en haut à GAUCHE pour ne pas collisionner avec le
+    RenderModeBar (qui occupe top-4 left-1/2 -translate-x-1/2 z-50).
+    z-40 ⇒ au-dessus du canvas Three.js mais sous les overlays modaux.
+  -->
+  <div class="absolute top-4 left-4 z-40 flex items-center gap-2">
     <!-- Bouton retour à la galerie projets -->
     <Button
       variant="outline"
@@ -11,14 +16,19 @@
       <span class="text-xs">Projets</span>
     </Button>
 
-    <!-- Nom du projet ouvert (si applicable) -->
+    <!-- Nom du projet ouvert (si applicable) — sinon un état "Sans titre" -->
     <div
-      v-if="currentProject"
       class="flex items-center gap-2 rounded-md border bg-background/90 backdrop-blur-sm px-3 py-1.5 shadow-sm"
     >
-      <Box class="h-3.5 w-3.5 text-primary" />
-      <span class="text-xs font-medium truncate max-w-[200px]">
-        {{ currentProject.title }}
+      <Box
+        class="h-3.5 w-3.5 shrink-0"
+        :class="currentProject ? 'text-primary' : 'text-muted-foreground'"
+      />
+      <span
+        class="text-xs font-medium truncate max-w-[200px]"
+        :class="currentProject ? '' : 'text-muted-foreground italic'"
+      >
+        {{ currentProject ? currentProject.title : 'Sans projet' }}
       </span>
       <span
         v-if="isSaving"

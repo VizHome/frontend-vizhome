@@ -131,6 +131,13 @@
             <LifeBuoy class="h-4 w-4 text-muted-foreground" />
             <span>Support</span>
           </DropdownMenuItem>
+          <DropdownMenuItem
+            class="gap-2.5 cursor-pointer"
+            @click="goTo('/account/billing')"
+          >
+            <CreditCard class="h-4 w-4 text-muted-foreground" />
+            <span>Abonnement & factures</span>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

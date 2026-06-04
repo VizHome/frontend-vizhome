@@ -248,7 +248,7 @@ import { toast } from 'vue-sonner'
 import type { PlanName } from '~/composables/useBilling'
 
 definePageMeta({
-  layout: 'default',
+  layout: 'account',
   middleware: 'auth',
   ssr: false,
 })

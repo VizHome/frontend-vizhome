@@ -233,6 +233,8 @@ layouts/
 ├── sidebar.vue                   avec AppSidebar
 ├── none.vue                      sans navbar (pages métier, auth)
 ├── forum.vue                     ★ ForumHeader + ForumFooter (toutes pages /forum/*)
+├── account.vue                   ★ topbar minimal (logo + lien retour app + UserNav)
+│                                  pour les pages /account/* (espace user connecté)
 └── admin.vue                     ★ SidebarProvider + AdminSidebar + SidebarInset
                                   (topbar = trigger + breadcrumb + refresh + theme)
 ```

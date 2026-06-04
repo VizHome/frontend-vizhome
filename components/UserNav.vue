@@ -53,36 +53,8 @@
 
         <DropdownMenuSeparator />
 
-        <!-- Groupe compte -->
+        <!-- Compte (Paramètres = tout-en-un : compte + utilisation + appearance + sécurité…) -->
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            class="gap-2.5 cursor-pointer"
-            @click="openDialog('profile')"
-          >
-            <UserIcon class="h-4 w-4 text-muted-foreground" />
-            <span>Mon profil</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            class="gap-2.5 cursor-pointer"
-            @click="openDialog('stats')"
-          >
-            <BarChart2 class="h-4 w-4 text-muted-foreground" />
-            <span>Statistiques</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            class="gap-2.5 cursor-pointer"
-            @click="openDialog('subscription')"
-          >
-            <CreditCard class="h-4 w-4 text-muted-foreground" />
-            <div class="flex flex-1 items-center justify-between">
-              <span>Abonnement</span>
-              <span
-                class="text-[10px] font-semibold rounded-full px-1.5 py-0.5 leading-none"
-                :class="planBadgeClass"
-                >{{ planLabel }}</span
-              >
-            </div>
-          </DropdownMenuItem>
           <DropdownMenuItem
             class="gap-2.5 cursor-pointer"
             @click="openDialog('settings')"
@@ -108,15 +80,8 @@
 
         <DropdownMenuSeparator />
 
-        <!-- Navigation projets / galerie -->
+        <!-- Navigation principale -->
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            class="gap-2.5 cursor-pointer"
-            @click="goTo('/projects')"
-          >
-            <FolderOpen class="h-4 w-4 text-muted-foreground" />
-            <span>Mes projets</span>
-          </DropdownMenuItem>
           <DropdownMenuItem
             class="gap-2.5 cursor-pointer"
             @click="goTo('/gallery')"
@@ -131,14 +96,23 @@
             <LifeBuoy class="h-4 w-4 text-muted-foreground" />
             <span>Support</span>
           </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <!-- CTA "Mettre à niveau l'abonnement" — visible si pas enterprise.
+             Style Claude : ligne dédiée, icône Sparkles, redirige vers la
+             vraie page billing (où live plans + factures + cancel). -->
+        <template v-if="user?.plan !== 'enterprise'">
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             class="gap-2.5 cursor-pointer"
             @click="goTo('/account/billing')"
           >
-            <CreditCard class="h-4 w-4 text-muted-foreground" />
-            <span>Abonnement & factures</span>
+            <Sparkles class="h-4 w-4 text-primary" />
+            <span class="text-foreground font-medium">
+              Mettre à niveau l'abonnement
+            </span>
           </DropdownMenuItem>
-        </DropdownMenuGroup>
+        </template>
 
         <DropdownMenuSeparator />
 
@@ -204,27 +178,17 @@
       </DropdownMenuContent>
     </DropdownMenu>
 
-    <!-- Dialogs -->
-    <ProfileDialog v-model:open="dialogs.profile" />
-    <StatsDialog v-model:open="dialogs.stats" />
-    <SubscriptionDialog
-      v-model:open="dialogs.subscription"
-      @open-billing="openDialog('billing')"
-    />
+    <!-- Dialogs (UserNav simplifié : profil/stats/subscription/billing intégrés dans Settings) -->
     <HelpDialog v-model:open="dialogs.help" :initial-tab="helpInitialTab" />
     <SettingsDialog v-model:open="dialogs.settings" />
-    <BillingDialog v-model:open="dialogs.billing" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref, computed } from 'vue'
 import {
-  BarChart2,
   BookOpen,
   Bug,
-  CreditCard,
-  FolderOpen,
   HelpCircle,
   Keyboard,
   LayoutGrid,
@@ -232,8 +196,8 @@ import {
   LogOut,
   Settings,
   Shield,
+  Sparkles,
   Tag,
-  UserIcon,
 } from 'lucide-vue-next'
 import type { UserPlan } from '~/composables/useUser'
 
@@ -243,12 +207,8 @@ const dropdownOpen = ref(false)
 
 // ─── Dialogs ─────────────────────────────────────────────────────────────────
 const dialogs = reactive({
-  profile: false,
-  stats: false,
-  subscription: false,
   help: false,
   settings: false,
-  billing: false,
 })
 
 type DialogId = keyof typeof dialogs

@@ -187,13 +187,16 @@ components/
 │   ├── OnboardingOverlay.vue     première visite
 │   └── ToolButton.vue
 │
-├── user/                         dialogs accessibles via UserNav
-│   ├── ProfileDialog.vue
-│   ├── SettingsDialog.vue        7 sections (apparence, langue, notif, 2FA, sessions…)
-│   ├── SubscriptionDialog.vue
-│   ├── BillingDialog.vue
-│   ├── StatsDialog.vue
-│   └── HelpDialog.vue
+├── user/                         dialogs accessibles via UserNav (simplifié au max)
+│   ├── SettingsDialog.vue        ★ 9 sections : Compte (profil + avatar) · Utilisation
+│   │                             (renders/storage/projets + CTA upgrade) · Apparence ·
+│   │                             Langue · Notifications · Qualité · Confidentialité ·
+│   │                             Sécurité (2FA + sessions) · Accessibilité
+│   └── HelpDialog.vue            centre d'aide + changelog + bug + shortcuts + legal
+│
+│   ⚠️ ProfileDialog / StatsDialog / SubscriptionDialog / BillingDialog SUPPRIMÉS —
+│   contenu fusionné dans SettingsDialog (Compte + Utilisation) ou déplacé sur la
+│   page dédiée /account/billing.
 │
 └── forum/                        ★ composants spécifiques au layout forum
     ├── ForumHeader.vue           barre nav forum (logo, recherche, user menu, cats)

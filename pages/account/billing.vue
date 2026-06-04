@@ -23,6 +23,17 @@
       </AlertDescription>
     </Alert>
 
+    <!-- Bandeau erreur fetch (un endpoint billing en échec) -->
+    <Alert v-if="loadErrors.length > 0" variant="destructive">
+      <CircleAlertIcon class="size-4" />
+      <AlertTitle>Certaines données n'ont pas pu être chargées</AlertTitle>
+      <AlertDescription>
+        <ul class="mt-1.5 flex flex-col gap-0.5 text-xs">
+          <li v-for="(err, i) in loadErrors" :key="i">· {{ err }}</li>
+        </ul>
+      </AlertDescription>
+    </Alert>
+
     <!-- Header -->
     <section>
       <nav class="text-xs text-muted-foreground mb-2 flex items-center gap-1.5">
@@ -269,8 +280,23 @@ const planBadgeClass = computed(() => {
   }
 })
 
-// Charge plans + subscription + invoices en parallèle
-await Promise.all([fetchPlans(), fetchSubscription(), fetchInvoices()])
+// Charge plans + subscription + invoices en parallèle — chaque fetch est
+// indépendant, on isole les erreurs pour qu'un endpoint en échec ne fasse
+// pas crasher la page entière (Suspense + ssr:false = page blanche sinon).
+const loadErrors = ref<string[]>([])
+async function _safeFetch(label: string, fn: () => Promise<void>) {
+  try { await fn() } catch (e: unknown) {
+    const err = e as { data?: { detail?: string }; statusCode?: number; message?: string }
+    const msg = err?.data?.detail || err?.message || `Erreur ${err?.statusCode ?? '?'}`
+    loadErrors.value.push(`${label} : ${msg}`)
+    console.warn(`[billing] ${label} failed`, e)
+  }
+}
+await Promise.all([
+  _safeFetch('plans', fetchPlans),
+  _safeFetch('abonnement', fetchSubscription),
+  _safeFetch('factures', fetchInvoices),
+])
 
 // Si on revient d'un checkout success, refetch le user (le webhook Stripe
 // a peut-être déjà mis à jour le plan côté backend) + toast.

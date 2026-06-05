@@ -9,16 +9,11 @@
     </Alert>
 
     <template v-else-if="ticket">
-      <!-- Header -->
+      <!-- Header (breadcrumb #ID fourni par layout) -->
       <section>
-        <nav class="text-xs text-muted-foreground mb-2 flex items-center gap-1.5">
-          <NuxtLink to="/support" class="hover:text-foreground">Support</NuxtLink>
-          <ChevronRightIcon class="size-3" />
-          <span class="text-foreground">#{{ ticket.id }}</span>
-        </nav>
-        <h1 class="text-2xl font-bold leading-tight">
+        <h1 class="text-xl font-semibold leading-tight">
           {{ ticket.subject }}
-          <span class="text-muted-foreground font-normal ml-1">#{{ ticket.id }}</span>
+          <span class="text-muted-foreground font-normal ml-1 text-base">#{{ ticket.id }}</span>
         </h1>
         <div class="mt-3 flex flex-wrap items-center gap-2 text-xs">
           <Badge
@@ -154,7 +149,6 @@
 
 <script setup lang="ts">
 import {
-  ChevronRightIcon,
   CircleAlertIcon,
   CircleDotIcon,
   CircleCheckIcon,
@@ -170,7 +164,7 @@ import { toast } from 'vue-sonner'
 import type { TicketStatus, TicketPriority } from '~/composables/useSupport'
 
 definePageMeta({
-  layout: 'default',
+  layout: 'support',
   middleware: 'auth',
   ssr: false,
 })

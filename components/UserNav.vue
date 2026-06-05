@@ -1,6 +1,11 @@
 <template>
-  <!-- Bouton avatar flottant + badge plan -->
-  <div class="absolute top-4 right-4 z-30">
+  <!--
+    Bouton avatar — deux modes :
+    - mode `floating` (défaut) : pour /render (pas de navbar) → flotte en haut à droite
+    - mode `inline` : pour layouts avec navbar (account/support/admin) → s'aligne
+      dans le flex parent, avatar plus compact (h-9 w-9)
+  -->
+  <div :class="floating ? 'absolute top-4 right-4 z-30' : 'inline-flex'">
     <DropdownMenu v-model:open="dropdownOpen">
       <DropdownMenuTrigger as-child>
         <button
@@ -8,18 +13,23 @@
           :title="user.name"
         >
           <Avatar
-            class="h-12 w-12 border-2 border-background shadow-md ring-2 ring-border transition hover:ring-primary/50"
+            :class="floating
+              ? 'h-12 w-12 border-2 border-background shadow-md ring-2 ring-border transition hover:ring-primary/50'
+              : 'h-9 w-9 ring-2 ring-border transition hover:ring-primary/50'"
           >
             <AvatarImage :src="user.avatarUrl" :alt="user.name" />
-            <AvatarFallback class="text-sm font-semibold">{{
-              initials
-            }}</AvatarFallback>
+            <AvatarFallback :class="floating ? 'text-sm font-semibold' : 'text-xs font-semibold'">
+              {{ initials }}
+            </AvatarFallback>
           </Avatar>
           <!-- Badge plan -->
           <span
-            class="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full px-1.5 py-px text-[10px] font-bold leading-none bg-background border border-border shadow-sm text-foreground"
-            >{{ planLabel }}</span
+            :class="floating
+              ? 'absolute -bottom-1 -right-1 flex items-center justify-center rounded-full px-1.5 py-px text-[10px] font-bold leading-none bg-background border border-border shadow-sm text-foreground'
+              : 'absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full px-1 py-px text-[9px] font-bold leading-none bg-background border border-border shadow-sm text-foreground'"
           >
+            {{ planLabel }}
+          </span>
         </button>
       </DropdownMenuTrigger>
 
@@ -200,6 +210,14 @@ import {
   Tag,
 } from 'lucide-vue-next'
 import type { UserPlan } from '~/composables/useUser'
+
+withDefaults(
+  defineProps<{
+    /** `false` ⇒ rendu inline (dans une navbar). `true` ⇒ flotte en absolute top/right (pour /render). */
+    floating?: boolean
+  }>(),
+  { floating: true },
+)
 
 const { user, initials, planLabel, logout } = useUser()
 

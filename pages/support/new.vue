@@ -1,16 +1,12 @@
 <template>
   <div class="mx-auto max-w-3xl px-4 sm:px-6 py-8 flex flex-col gap-6">
-    <section>
-      <nav class="text-xs text-muted-foreground mb-2 flex items-center gap-1.5">
-        <NuxtLink to="/support" class="hover:text-foreground">Support</NuxtLink>
-        <ChevronRightIcon class="size-3" />
-        <span class="text-foreground">Nouveau ticket</span>
-      </nav>
-      <h1 class="text-2xl font-bold tracking-tight">Ouvrir un ticket</h1>
+    <!-- Header simple (breadcrumb "Nouveau ticket" fourni par layout) -->
+    <div>
+      <h1 class="text-xl font-semibold tracking-tight">Ouvrir un ticket</h1>
       <p class="text-sm text-muted-foreground">
         Décris ton problème en détail — plus c'est précis, plus on peut t'aider vite.
       </p>
-    </section>
+    </div>
 
     <Card>
       <CardContent class="pt-6">
@@ -106,14 +102,14 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronRightIcon, CircleAlertIcon, SendIcon } from 'lucide-vue-next'
+import { CircleAlertIcon, SendIcon } from 'lucide-vue-next'
 import { reactive, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
 import type { TicketCategory, TicketPriority } from '~/composables/useSupport'
 
 definePageMeta({
-  layout: 'default',
+  layout: 'support',
   middleware: 'auth',
   ssr: false,
 })

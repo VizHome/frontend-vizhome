@@ -235,6 +235,9 @@ layouts/
 ├── forum.vue                     ★ ForumHeader + ForumFooter (toutes pages /forum/*)
 ├── account.vue                   ★ topbar minimal (logo + lien retour app + UserNav)
 │                                  pour les pages /account/* (espace user connecté)
+├── support.vue                   ★ topbar minimal + sous-bandeau identitaire
+│                                  (icône LifeBuoy + "Centre de support" + breadcrumb
+│                                  dynamique + CTA "Nouveau ticket" permanent) — pages /support/*
 └── admin.vue                     ★ SidebarProvider + AdminSidebar + SidebarInset
                                   (topbar = trigger + breadcrumb + refresh + theme)
 ```

@@ -36,7 +36,7 @@
       <!-- Spacer + avatar à droite -->
       <div class="ml-auto flex items-center gap-2">
         <ModeToggle />
-        <UserNav />
+        <UserNav :floating="false" />
       </div>
     </header>
 

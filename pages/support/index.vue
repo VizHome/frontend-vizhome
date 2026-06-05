@@ -1,20 +1,7 @@
 <template>
   <div class="mx-auto max-w-4xl px-4 sm:px-6 py-8 flex flex-col gap-6">
-    <section class="flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight">Mes tickets de support</h1>
-        <p class="text-sm text-muted-foreground">
-          Une question, un bug, un souci de facturation ? Notre équipe te répond
-          sous 24-48 h.
-        </p>
-      </div>
-      <Button as-child class="rounded-full gap-1.5">
-        <NuxtLink to="/support/new">
-          <PlusIcon class="size-4" />
-          Nouveau ticket
-        </NuxtLink>
-      </Button>
-    </section>
+    <!-- Header simple (le layout fournit déjà titre "Centre de support" + CTA Nouveau) -->
+    <h1 class="text-xl font-semibold tracking-tight">Mes tickets</h1>
 
     <Alert v-if="error">
       <CircleAlertIcon class="size-4" />
@@ -108,7 +95,7 @@ import type { Component } from 'vue'
 import type { TicketStatus } from '~/composables/useSupport'
 
 definePageMeta({
-  layout: 'default',
+  layout: 'support',
   middleware: 'auth',
   ssr: false,
 })

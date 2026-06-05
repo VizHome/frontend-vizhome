@@ -21,6 +21,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      - run: npm install --no-cache
       - run: npm ci
       - run: npm run lint -- --max-warnings 0
 
@@ -35,6 +36,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      - run: npm install --no-cache
       - run: npm ci
       - run: npm run typecheck || true
 
@@ -79,6 +81,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      - run: npm install --no-cache
       - run: npm ci
       - name: Build SSR
         env:

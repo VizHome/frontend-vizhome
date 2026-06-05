@@ -282,7 +282,6 @@ import {
   SunriseIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  SunsetIcon,
   ThermometerIcon,
 } from 'lucide-vue-next'
 

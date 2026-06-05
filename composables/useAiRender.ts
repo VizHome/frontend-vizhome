@@ -11,8 +11,9 @@
  */
 import { ref } from 'vue'
 
-import { type ApiRender, toGalleryEntry, useGallery } from './useGallery'
-import type { GallerySource } from './useGallery'
+import type { GallerySource, type ApiRender, toGalleryEntry, useGallery    } from './useGallery';
+
+
 
 // ─── Types publics ────────────────────────────────────────────────────────
 export type AiOutputType = '2d' | '3d'

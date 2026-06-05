@@ -128,7 +128,7 @@ export function useThreeModels() {
     })
 
     // Désactiver OrbitControls pendant le drag pour éviter les conflits
-    transformCtrl.addEventListener('dragging-changed', (event: any) => {
+    transformCtrl.addEventListener('dragging-changed', (event: { value: boolean }) => {
       if (orbitControls) orbitControls.enabled = !event.value
     })
 

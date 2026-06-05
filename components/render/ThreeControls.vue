@@ -782,6 +782,10 @@ import {
 } from 'lucide-vue-next'
 import { MATERIAL_EFFECTS } from '~/composables/useThreeMeshSelect'
 
+import type { LightPreset, Season } from '~/composables/useThreeLightingPresets'
+
+import type { NavMode } from '~/composables/useThreeNavigation'
+
 type PanelId = 'light' | 'nav' | 'models' | 'view' | 'materials'
 
 const activePanel = ref<PanelId | null>(null)
@@ -808,8 +812,6 @@ const {
   applySeason,
 } = useThreeLightingPresets()
 
-import type { LightPreset, Season } from '~/composables/useThreeLightingPresets'
-
 const {
   navMode,
   setNavMode,
@@ -821,8 +823,6 @@ const {
   tourDuration,
   togglePlayPause,
 } = useThreeNavigation()
-
-import type { NavMode } from '~/composables/useThreeNavigation'
 
 const {
   importedModels,

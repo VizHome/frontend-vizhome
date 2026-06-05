@@ -119,7 +119,12 @@
       "Bash(curl -sI -H \"Origin: http://localhost:3000\" \"http://localhost:9000/vizhome-media/projects/models/2026/06/3_d23F19rZWjzmaisK.obj\")",
       "Bash(npx vitest *)",
       "Bash(python -c 'import yaml; yaml.safe_load\\(open\\('\\\\''__TRACKED_VAR__'\\\\'', encoding='\\\\''utf-8'\\\\''\\)\\); print\\('\\\\''✓ __TRACKED_VAR__'\\\\''\\)')",
-      "Bash(python -c 'import yaml; yaml.safe_load\\(open\\('\\\\''__TRACKED_VAR__'\\\\'', encoding='\\\\''utf-8'\\\\''\\)\\); print\\('\\\\''OK '\\\\'' + '\\\\''__TRACKED_VAR__'\\\\''\\)')"
+      "Bash(python -c 'import yaml; yaml.safe_load\\(open\\('\\\\''__TRACKED_VAR__'\\\\'', encoding='\\\\''utf-8'\\\\''\\)\\); print\\('\\\\''OK '\\\\'' + '\\\\''__TRACKED_VAR__'\\\\''\\)')",
+      "Bash(sed -n '80,85p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/components/ProjectCard.vue)",
+      "Bash(sed -n '17,22p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/composables/useSceneSerializer.ts)",
+      "Bash(sed -n '327,331p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/composables/useSketchCanvas.ts)",
+      "Bash(sed -n '256,260p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/pages/auth/login.vue)",
+      "Bash(sed -n '145,150p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/pages/auth/register.vue)"
     ]
   }
 }

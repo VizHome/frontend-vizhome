@@ -45,9 +45,9 @@
                     <!-- Grille des sous-fonctionnalités -->
                     <div class="grid grid-cols-2 gap-1">
                       <NavigationMenuLink
-                        as-child
                         v-for="feat in featuresMenu"
                         :key="feat.to"
+                        as-child
                       >
                         <NuxtLink
                           :to="feat.to"
@@ -120,9 +120,9 @@
                 <NavigationMenuContent>
                   <div class="w-[300px] p-3 flex flex-col gap-1">
                     <NavigationMenuLink
-                      as-child
                       v-for="item in companyMenu"
                       :key="item.to"
+                      as-child
                     >
                       <NuxtLink
                         :to="item.to"

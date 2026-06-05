@@ -173,7 +173,7 @@
                 </p>
 
                 <div class="mt-1">
-                  <PasswordStrength :password="password" />
+                  <PasswordStrength :value="password" />
                 </div>
               </div>
 
@@ -436,29 +436,29 @@ definePageMeta({
 // Composant pour indiquer la force du mot de passe
 const PasswordStrength = defineComponent({
   props: {
-    password: {
+    value: {
       type: String,
       required: true,
     },
   },
   setup(props) {
     const strengthPercent = computed(() => {
-      if (!props.password) return 0
+      if (!props.value) return 0
 
       let strength = 0
-      const password = props.password
+      const pwd = props.value
 
       // Longueur minimale
-      if (password.length >= 8) strength += 25
+      if (pwd.length >= 8) strength += 25
 
       // Contient des chiffres
-      if (/\d/.test(password)) strength += 25
+      if (/\d/.test(pwd)) strength += 25
 
       // Contient des minuscules et des majuscules
-      if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25
+      if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) strength += 25
 
       // Contient des caractères spéciaux
-      if (/[^a-zA-Z0-9]/.test(password)) strength += 25
+      if (/[^a-zA-Z0-9]/.test(pwd)) strength += 25
 
       return strength
     })

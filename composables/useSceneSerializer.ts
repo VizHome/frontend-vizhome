@@ -16,7 +16,8 @@ import type { SceneState } from './useProjects'
 
 export function useSceneSerializer() {
   const scene = useThreeScene()
-  const lighting = useThreeLighting()
+   
+  const _lighting = useThreeLighting()
   const lightingPresets = useThreeLightingPresets()
   const weather = useThreeWeather()
   const navigation = useThreeNavigation()

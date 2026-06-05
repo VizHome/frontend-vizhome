@@ -188,6 +188,8 @@
 </template>
 
 <script setup lang="ts">
+import type {
+  LinkedinIcon} from 'lucide-vue-next';
 import {
   BoxIcon,
   BrainCircuitIcon,
@@ -195,7 +197,6 @@ import {
   CodeIcon,
   DatabaseIcon,
   GithubIcon,
-  LinkedinIcon,
   ServerIcon,
 } from 'lucide-vue-next'
 

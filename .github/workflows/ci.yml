@@ -50,6 +50,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      - run: npm install --no-cache
       - run: npm ci
       - name: Run tests + coverage
         run: npx vitest run --coverage --reporter=verbose --reporter=junit --outputFile=junit.xml

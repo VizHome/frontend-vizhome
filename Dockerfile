@@ -34,6 +34,32 @@ RUN npm run build
 FROM node:${NODE_VERSION} AS runner
 WORKDIR /app
 
+# ─── Build args injectés via docker build-push-action (release.yml) ─────
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION=dev
+
+# ─── OCI image labels ────────────────────────────────────────────────────
+# Standard : https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.title="VizHome Frontend" \
+      org.opencontainers.image.description="Application Nuxt 4 + Vue 3 pour VizHome — \
+éditeur 3D Three.js (sketch / prompt IA / 3D pro), forum communautaire, \
+support helpdesk, espace utilisateur (projets, galerie, abonnement)." \
+      org.opencontainers.image.vendor="VizHome" \
+      org.opencontainers.image.authors="VizHome team" \
+      org.opencontainers.image.url="https://vizhome.fr" \
+      org.opencontainers.image.documentation="https://github.com/VizHome/frontend-vizhome/blob/main/README.md" \
+      org.opencontainers.image.source="https://github.com/VizHome/frontend-vizhome" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.base.name="docker.io/library/node:${NODE_VERSION}" \
+      org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.revision=$VCS_REF \
+      org.opencontainers.image.version=$VERSION \
+      # Labels custom VizHome
+      fr.vizhome.component="frontend" \
+      fr.vizhome.runtime="node-22" \
+      fr.vizhome.framework="nuxt-4"
+
 ENV NODE_ENV=production \
     NUXT_TELEMETRY_DISABLED=1 \
     HOST=0.0.0.0 \

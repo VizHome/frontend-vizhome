@@ -1,187 +1,193 @@
-# VizHome — Frontend
+# VizHome Frontend
+
+> Application **Nuxt 4 + Vue 3** pour VizHome — éditeur 3D Three.js
+> (sketch / prompt IA / 3D pro), forum, support helpdesk, espace utilisateur.
+
+[![CI](https://github.com/VizHome/frontend-vizhome/actions/workflows/ci.yml/badge.svg)](https://github.com/VizHome/frontend-vizhome/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/VizHome/frontend-vizhome)](https://github.com/VizHome/frontend-vizhome/releases)
+[![Docker](https://img.shields.io/badge/ghcr.io-vizhome--frontend-blue)](https://github.com/VizHome/frontend-vizhome/pkgs/container/vizhome-frontend)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=VizHome_frontend-vizhome&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=VizHome_frontend-vizhome)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=VizHome_frontend-vizhome&metric=coverage)](https://sonarcloud.io/summary/new_code?id=VizHome_frontend-vizhome)
 
 <div align="center">
-  <img src="./public/images/logo/LogoBlack.png" alt="VizHome" width="160" height="160">
-
-  <h3>Plateforme de visualisation 3D architecturale propulsée par l'IA</h3>
-
-  <p>
-    <a href="https://app.vizhome.fr">🌐 Application</a> ·
-    <a href="https://docs.vizhome.fr">📖 Documentation</a> ·
-    <a href="https://api.vizhome.fr/api/docs/">🔧 API</a>
-  </p>
-
-  <p>
-    <img src="https://img.shields.io/badge/Nuxt-4.3-00DC82?style=flat-square&logo=nuxt.js&logoColor=white" alt="Nuxt 4">
-    <img src="https://img.shields.io/badge/Vue-3.5-4FC08D?style=flat-square&logo=vue.js&logoColor=white" alt="Vue 3">
-    <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
-    <img src="https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind 4">
-    <img src="https://img.shields.io/badge/Three.js-0.183-000000?style=flat-square&logo=three.js&logoColor=white" alt="Three.js">
-  </p>
+  <img src="./public/images/logo/LogoBlack.png" alt="VizHome" width="120">
 </div>
 
 ---
 
-## À propos
+## ✨ Features
 
-**VizHome** transforme des maquettes et descriptions textuelles en
-visualisations 3D photoréalistes via IA. Cette SPA Nuxt 4 sert d'éditeur
-de scène (canvas Three.js), de galerie de rendus et d'interface de
-facturation.
+- 🎨 **Éditeur 3D Three.js** : 3 modes (Croquis 2D / Prompt IA / 3D Pro), import GLB/OBJ/FBX/STL, TransformControls, presets éclairage, météo, navigation orbit/FPS/top-down/tour
+- 📐 **Sérialisation scène** : sauvegarde caméra/lumières/transforms/météo dans `Project.scene` (PostgreSQL JSONField)
+- 🖼 **Galerie rendus IA** : polling 2s sur status, prévisualisation, partage public
+- 💬 **Forum** : timeline GitHub-style (avatar externe + card avec arrow notch), TipTap WYSIWYG, images via MinIO
+- 🆘 **Support helpdesk** : tickets avec messages threading, ForumEditor pour formatage riche
+- 👨‍💼 **Admin panel** : sidebar shadcn-vue, dashboard KPI, drill-downs (users/renders/forum/support), audit log, charts unovis, CSV export
+- 💳 **Page billing** : plans + subscription + invoices Stripe, upgrade en 1 click
+- 🌐 **OAuth** : Google + GitHub via authorization code flow (PKCE-style)
+- 🎭 **i18n** : fr / en / es / de (vue-i18n)
+- 🌓 **Theme** : light/dark/system via `@nuxtjs/color-mode`
 
-Backend (Django + DRF) : [`backend-vizhome`](../backend-vizhome) ·
-Documentation publique : [`docs-vizehome`](../docs-vizehome)
+## 🛠 Stack
 
-## Stack
-
-| Couche | Choix |
+| Couche | Tech |
 |---|---|
-| Framework | **Nuxt 4.3** (Vue 3.5 + Vite + Nitro) |
-| Langage | TypeScript |
-| CSS | **Tailwind 4** (via `@tailwindcss/vite`) |
-| UI Components | **shadcn-vue 2.6** (wrapping **reka-ui** 2.9) |
-| Icônes | `lucide-vue-next` |
-| 3D | **Three.js 0.183** (OrbitControls, TransformControls, GLTF/OBJ/FBX/STL loaders) |
-| Formulaires | `vee-validate` + `yup` |
-| Tableaux | `@tanstack/vue-table` |
-| Carousels | `embla-carousel-vue` |
-| Dark mode | `@nuxtjs/color-mode` |
-| State | **Aucun Pinia** — pattern composables singletons (refs hoistés au niveau module) |
-| Tests | Vitest + `@nuxt/test-utils` |
-| Lint | ESLint via `@nuxt/eslint` |
+| Framework | Nuxt 4 + Vue 3 + TypeScript |
+| UI | shadcn-vue 2 (wrapping reka-ui) + Tailwind CSS 4 |
+| State | Composables singletons (refs hoistés au module-scope, **pas de Pinia**) |
+| 3D | Three.js 0.183 |
+| Forms | vee-validate + yup |
+| Rich text | TipTap 2 + lowlight (codeblock highlight) |
+| Charts | @unovis/vue |
+| Icons | lucide-vue-next |
+| Tests | Vitest + jsdom |
+| Lint | ESLint flat config |
+| Auth storage | JWT en localStorage + refresh automatique sur 401 |
 
-> ⚠️ **`reka-ui` (pas `radix-vue`)** — shadcn-vue a migré. Conséquence
-> pratique : `v-model` direct sur les composants (jamais `v-model:checked`).
+## 🚀 Quick start
 
-## Architecture en 4 points
-
-1. **25 composables singletons** organisés par domaine (backend, métier,
-   Three.js core, Three.js navigation, Three.js scene content). Les `ref()`
-   sont déclarés **au niveau module**, donc partagés entre toutes les
-   instances appelantes.
-
-2. **`useApi()`** wrappe `$fetch` avec injection JWT automatique + retry
-   sur 401 (rafraîchit le token et rejoue). Aucun caller n'a besoin de
-   gérer l'auth manuellement.
-
-3. **Upload pré-signé MinIO** : le navigateur PUT le fichier 3D
-   directement vers MinIO via une URL signée par le backend. Django ne voit
-   jamais le binaire — performant pour gros modèles.
-
-4. **Pipeline de rendu IA** : `useAiRender` POST `/renders/` → polling
-   2s sur le détail → quand `status=done`, prepend dans la galerie.
-
-Détails : [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
-
-## Démarrage rapide
-
-### Prérequis
-
-- Node.js 22+
-- Backend tournant sur `http://localhost:8000` (voir [`../backend-vizhome`](../backend-vizhome))
-
-### Installation
+### Sans Docker (dev)
 
 ```bash
-git clone <repo>
+git clone https://github.com/VizHome/frontend-vizhome.git
 cd frontend-vizhome
+
+cp .env.example .env
+# Édite .env : NUXT_API_PROXY_TARGET, NUXT_PUBLIC_GOOGLE_CLIENT_ID, etc.
+
 npm install
-cp .env.example .env       # ajuste NUXT_PUBLIC_API_URL si besoin
-npm run dev                # → http://localhost:3000
+npm run dev
+# → http://localhost:3000
 ```
 
-### Variables d'environnement
+⚠️ Le backend doit tourner en parallèle (cf `backend-vizhome/README.md`).
+Le proxy Nitro forward `/api/*` et `/webhooks/*` vers `NUXT_API_PROXY_TARGET`
+(défaut `http://localhost:8000`).
+
+### Avec Docker
 
 ```bash
-# .env
-NUXT_PUBLIC_API_URL=http://localhost:8000   # backend Django
-NUXT_PUBLIC_APP_URL=http://localhost:3000
+docker compose -f docker-compose.dev.yml up -d
 ```
 
-Voir `.env.example` pour le template complet.
-
-## Scripts
+## 📜 Commandes
 
 ```bash
-npm run dev          # nuxt dev → http://localhost:3000 (HMR)
-npm run build        # SSR build → .output/
-npm run generate     # static build → .output/public/
-npm run preview      # nuxt preview
-npm run lint         # eslint --fix .
-npm run test         # vitest (mode interactif)
-npm run typecheck    # nuxi typecheck
+npm run dev              # serveur dev avec HMR
+npm run build            # build SSR (.output/)
+npm run generate         # build statique (.output/public/)
+npm run preview          # preview de la build prod
+npm run lint             # eslint --fix .
+npm run test             # vitest (run)
+npm run test:ui          # vitest UI
+npm run test:coverage    # vitest avec coverage v8
+npm run typecheck        # nuxi typecheck
 ```
 
-Test ciblé : `npx vitest run path/to/file.spec.ts` ou
-`npx vitest run -t "test name"`.
-
-## Structure du repo
+## 📂 Structure
 
 ```
-frontend-vizhome/
-├── composables/        ← 25 composables singletons (useApi, useAuth, useThree*, etc.)
-├── pages/              ← routing auto (index, /auth/*, /projects/, /render/, /gallery/, /legal/*)
-├── components/         ← composants Vue
-│   ├── ui/             ← shadcn-vue components (Button, Card, Dialog…)
-│   └── ...             ← composants métier
-├── layouts/            ← default / sidebar / none
-├── middleware/         ← auth.ts, guest.ts
-├── plugins/            ← auth.client.ts (boot JWT depuis localStorage)
-├── public/             ← assets statiques (logo, favicon, images)
-├── assets/             ← CSS Tailwind + ressources buildées
-├── nuxt.config.ts
-├── tailwind.config.js
-├── tsconfig.json
-├── eslint.config.mjs
-├── CLAUDE.md           ← instructions IA + patterns du repo
-└── docs/               ← doc technique pour contributeurs
-    ├── STRUCTURE.md
-    ├── ARCHITECTURE.md
-    ├── DEVELOPMENT.md
-    ├── DEPLOYMENT.md
-    └── CONTRIBUTING.md
+.
+├── pages/                routing auto Nuxt
+│   ├── render/           éditeur 3D (canvas + sketch + prompt)
+│   ├── projects/         galerie projets
+│   ├── gallery/          rendus IA
+│   ├── forum/            forum (categories, topics, replies)
+│   ├── support/          tickets helpdesk
+│   ├── account/billing/  abonnement + factures
+│   └── admin/            panel admin (sidebar)
+│
+├── layouts/              none / default / app / forum / support / admin / sidebar
+├── components/
+│   ├── ui/               shadcn-vue (44 composants)
+│   ├── render/           RenderModeBar, PromptPanel, SketchCanvas, ThreeControls
+│   ├── forum/            ForumEditor (TipTap), ForumContent, ForumReplyCard…
+│   ├── admin/            AdminSidebar, AdminMetricCard
+│   └── user/             SettingsDialog (9 sections), HelpDialog
+│
+├── composables/          36 composables singletons
+│   ├── useAuth, useUser, useApi, useBilling, use2fa
+│   ├── useProjects, useRenderMode, useSceneSerializer
+│   ├── useForum, useSupport
+│   ├── useAdmin*, useThree*
+│
+├── middleware/           auth, guest, staff
+├── plugins/              auth.client.ts
+├── tests/                Vitest (unit + composables)
+└── nuxt.config.ts        proxy Nitro + SEO + Vite optim
 ```
 
-## Pages principales
+Détails : `docs/STRUCTURE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`.
 
-| Route | Rôle |
-|---|---|
-| `/` | Landing publique (hero + features + pricing CTA) |
-| `/auth/login`, `/register`, `/forgot-password`, `/reset-password` | Auth (avec flow 2FA) |
-| `/auth/oauth/github/callback` | Callback OAuth GitHub |
-| `/projects/` | Liste des projets de l'utilisateur |
-| `/render/` | Éditeur 3D (canvas Three.js + génération IA) |
-| `/gallery/` | Galerie paginée des rendus IA |
-| `/pricing`, `/features/*`, `/about`, `/contact`, `/faq` | Pages marketing |
-| `/legal/*` | Mentions légales |
+## 🧪 Tests
 
-Routes protégées : `definePageMeta({ middleware: 'auth' })`.
+```bash
+npm run test                                         # tous les tests unit
+npm run test -- tests/composables/useAuth           # un seul fichier
+npm run test:coverage                               # avec rapport coverage v8
+npm run test -- --reporter=verbose                  # détail
+```
 
-## Conventions à respecter
+Suite actuelle (12 tests passants) : `useRenderMode`, `useAuth`, `plainTextLength`.
 
-- **`<script setup lang="ts">`** uniquement — pas d'Options API
-- **Pattern composable singleton** plutôt que Pinia (refs au niveau module)
-- **`v-model` direct** sur les composants shadcn-vue (jamais `:checked`, `:value`…)
-- **Auto-import actif** pour composables + components — pas de `import` manuel
-- **Conventional Commits** (`feat`, `fix`, `refactor`, `docs`, `chore`)
+Pour ajouter un test composable :
+```ts
+// tests/composables/useXxx.test.ts
+import { describe, expect, it, vi } from 'vitest'
 
-Détail : [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
+async function freshModule() {
+  vi.resetModules()
+  return (await import('~/composables/useXxx')).useXxx()
+}
 
-## Déploiement
+describe('useXxx', () => {
+  it('foo', async () => {
+    const x = await freshModule()
+    expect(x.bar.value).toBe('baz')
+  })
+})
+```
 
-Voir [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). Options testées :
+## 🔁 CI / CD
 
-- **Vercel** — détection auto Nuxt 4, push `main` = deploy
-- **Netlify** — `netlify.toml` à créer
-- **Cloudflare Pages** — `npm run generate` (statique pur)
-- **Self-hosted** — Dockerfile multi-stage + Traefik
+| Trigger | Workflow | Action |
+|---|---|---|
+| Push `main`/`dev` ou PR | `ci.yml` | lint, typecheck, tests+coverage, build Nuxt, build Docker, smoke, Trivy, npm audit |
+| Push `main` | `release.yml` | release-please PR → tag + GitHub Release + image GHCR multi-arch + SBOM |
+| Push `dev` | `pre-release.yml` | image `dev-<sha>` + GitHub Pre-Release |
+| PR | `pr-checks.yml` | titre Conventional Commits + size label + TruffleHog |
 
-## Ressources
+Tous les commits doivent suivre **[Conventional Commits](https://www.conventionalcommits.org/)** — détails dans `.github/CONTRIBUTING_CI.md`.
 
-- 📖 Documentation publique : https://docs.vizhome.fr
-- 🔧 API live : https://api.vizhome.fr/api/docs/
-- 📧 Contact : dev@vizhome.fr
+### Secrets GitHub requis
 
-## Licence
+- `GH_PAT` : Personal Access Token (scopes `repo`, `write:packages`)
+- `SONAR_TOKEN` + `SONAR_HOST_URL` : SonarCloud/SonarQube
+- `CODECOV_TOKEN` (optionnel)
 
-Propriétaire — © VizHome 2026. Tous droits réservés.
+## 🌐 Variables d'environnement clés
+
+```env
+# Proxy backend (Nitro routeRules)
+NUXT_API_PROXY_TARGET=http://localhost:8000
+
+# Override de l'API URL côté frontend (par défaut relatif via proxy)
+# NUXT_PUBLIC_API_URL=/api/v1
+
+# OAuth (cf .env.example pour tous les détails)
+NUXT_PUBLIC_GOOGLE_CLIENT_ID=...apps.googleusercontent.com
+NUXT_PUBLIC_GITHUB_CLIENT_ID=Iv1...
+```
+
+## 🤝 Contribution
+
+1. Branche `feat/<nom>` ou `fix/<nom>` depuis `dev`
+2. Code + tests + docs si applicable
+3. PR vers `dev` avec un titre Conventional Commits (`feat(auth): …`)
+4. Merge sur `dev` → pre-release auto
+5. Quand prêt : PR `dev → main` → release-please prend le relais
+
+## 📄 License
+
+[MIT](LICENSE)

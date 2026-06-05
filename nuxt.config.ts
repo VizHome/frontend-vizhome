@@ -18,7 +18,11 @@ export default defineNuxtConfig({
   },
 
   // Dev server configuration
-  devServer: { port: 3000 },
+  devServer: {
+    host: '127.0.0.1',
+    port: 3000,
+    url: 'http://localhost:3000',
+  },
 
   // TypeScript configuration
   typescript: {

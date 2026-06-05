@@ -123,7 +123,7 @@
           <Card
             v-for="mode in modes"
             :key="mode.title"
-            class="rounded-xl border shadow-sm overflow-hidden group hover:shadow-md transition-shadow"
+            class="rounded-xl border shadow-sm overflow-hidden group hover:shadow-md transition-shadow pt-0"
           >
             <div
               class="aspect-video relative overflow-hidden"
@@ -546,7 +546,6 @@ import {
   SparklesIcon,
   PencilIcon,
   BoxIcon,
-  LightbulbIcon,
   PaletteIcon,
   Globe2Icon,
   SunIcon,

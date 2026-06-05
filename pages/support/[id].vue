@@ -87,8 +87,12 @@
                   · <time :title="absoluteDate(m.created_at)">{{ relativeTime(m.created_at) }}</time>
                 </span>
               </header>
-              <div class="px-4 py-3 whitespace-pre-wrap text-sm leading-relaxed">
-                {{ m.body }}
+              <div class="px-4 py-3 text-sm leading-relaxed">
+                <!-- Backward compat : si le body ne contient pas de balises HTML
+                     (anciens messages plain text), on l'affiche tel quel avec
+                     whitespace-pre-wrap. Sinon, ForumContent sanitise via DOMPurify. -->
+                <ForumContent v-if="isHtml(m.body)" :html="m.body" />
+                <p v-else class="whitespace-pre-wrap">{{ m.body }}</p>
               </div>
             </div>
           </li>
@@ -108,12 +112,11 @@
                 Ajouter une réponse
               </header>
               <form class="px-4 py-3 flex flex-col gap-2" @submit.prevent="onReply">
-                <Textarea
+                <!-- Éditeur riche TipTap (identique au forum, support images via MinIO) -->
+                <ForumEditor
                   v-model="reply"
-                  rows="5"
-                  placeholder="Écris ta réponse…"
-                  maxlength="10000"
-                  :disabled="isReplying"
+                  placeholder="Écris ta réponse — formatage, listes, images supportés…"
+                  min-height="140px"
                 />
                 <Alert v-if="replyError" variant="destructive">
                   <CircleAlertIcon class="size-4" />
@@ -123,7 +126,7 @@
                   <Button
                     type="submit"
                     class="rounded-full gap-1.5"
-                    :disabled="isReplying || reply.trim().length < 2"
+                    :disabled="isReplying || replyPlainLength < 2"
                   >
                     <SendIcon class="size-3.5" />
                     {{ isReplying ? 'Envoi…' : 'Répondre' }}
@@ -194,8 +197,19 @@ const reply = ref('')
 const replyError = ref<string | null>(null)
 const isReplying = ref(false)
 
+/** Détecte le HTML pour le rendu rétro-compatible des anciens messages plain text. */
+function isHtml(content: string): boolean {
+  return /<[a-z][^>]*>/i.test(content || '')
+}
+
+/** Compte les chars de texte du HTML rich (sans balises) — sert au disabled bouton. */
+function _plainTextLength(html: string): number {
+  return html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').trim().length
+}
+const replyPlainLength = computed(() => _plainTextLength(reply.value))
+
 async function onReply() {
-  if (reply.value.trim().length < 2 || isReplying.value || !ticket.value) return
+  if (replyPlainLength.value < 2 || isReplying.value || !ticket.value) return
   replyError.value = null
   isReplying.value = true
   try {

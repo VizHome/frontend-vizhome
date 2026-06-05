@@ -54,9 +54,13 @@
           :key="project.id"
           class="group relative rounded-xl border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow"
         >
-          <!-- Thumbnail (placeholder gradient si pas de thumb) -->
+          <!-- Thumbnail (capture canvas du dernier save). Si absent, juste
+               un dégradé subtil sans icône pour laisser la respiration visuelle. -->
           <div
-            class="aspect-video bg-gradient-to-br from-primary/10 via-primary/5 to-muted overflow-hidden cursor-pointer flex items-center justify-center"
+            class="aspect-video overflow-hidden cursor-pointer"
+            :class="project.thumbnailUrl
+              ? 'bg-muted'
+              : 'bg-gradient-to-br from-primary/5 via-muted/30 to-muted/10'"
             @click="openProject(project.id)"
           >
             <img
@@ -65,7 +69,6 @@
               :alt="project.title"
               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            <Box v-else class="h-12 w-12 text-primary/40" />
           </div>
 
           <!-- Infos -->

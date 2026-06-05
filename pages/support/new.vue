@@ -62,17 +62,16 @@
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <Label for="body">Description détaillée</Label>
-            <Textarea
-              id="body"
+            <Label>Description détaillée</Label>
+            <!-- Éditeur riche TipTap (identique au forum) : bold/italic/lists/quote/codeblock/images
+                 + tabs Édition/Aperçu. Output HTML sanitisé via DOMPurify côté display. -->
+            <ForumEditor
               v-model="body"
-              rows="8"
               placeholder="Décris le contexte, ce que tu as essayé, le message d'erreur si applicable…"
-              maxlength="10000"
-              :class="{ 'ring-1 ring-destructive': errors.body }"
+              min-height="220px"
             />
             <p class="text-xs text-muted-foreground text-right tabular-nums">
-              {{ body.length }} / 10 000
+              {{ bodyPlainTextLength }} caractères
             </p>
             <p v-if="errors.body" class="text-xs text-destructive">{{ errors.body }}</p>
           </div>
@@ -103,10 +102,15 @@
 
 <script setup lang="ts">
 import { CircleAlertIcon, SendIcon } from 'lucide-vue-next'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
 import type { TicketCategory, TicketPriority } from '~/composables/useSupport'
+
+/** Compte les caractères de texte du HTML rich (sans balises). */
+function plainTextLength(html: string): number {
+  return html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').trim().length
+}
 
 definePageMeta({
   layout: 'support',
@@ -127,6 +131,8 @@ const errors = reactive<{ subject: string; body: string }>({ subject: '', body: 
 const submitError = ref<string | null>(null)
 const isSubmitting = ref(false)
 
+const bodyPlainTextLength = computed(() => plainTextLength(body.value))
+
 function validate(): boolean {
   errors.subject = ''
   errors.body = ''
@@ -135,7 +141,7 @@ function validate(): boolean {
     errors.subject = 'Au moins 5 caractères.'
     ok = false
   }
-  if (body.value.trim().length < 20) {
+  if (bodyPlainTextLength.value < 20) {
     errors.body = 'Décris ton problème en au moins 20 caractères.'
     ok = false
   }

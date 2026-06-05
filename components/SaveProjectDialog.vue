@@ -85,6 +85,50 @@ const open = defineModel<boolean>('open', { default: false })
 const projects = useProjects()
 const { serialize } = useSceneSerializer()
 
+/**
+ * Capture le canvas Three.js actif et le redimensionne en 400×225 JPEG.
+ * Retourne un Blob, ou null si le canvas n'existe pas (modes sketch/prompt).
+ *
+ * Stratégie :
+ * 1. Force un re-render Three.js avant la capture (preserveDrawingBuffer
+ *    n'est pas garanti, donc on lit le canvas juste après un rAF).
+ * 2. Crée un canvas off-screen 400×225 et y dessine l'image redimensionnée.
+ * 3. Exporte en JPEG qualité 0.7 (assez net pour vignette + léger ~30-60 Ko).
+ */
+async function captureCanvasThumbnail(): Promise<Blob | null> {
+  const canvas = document.querySelector<HTMLCanvasElement>('canvas.render-canvas')
+  if (!canvas || canvas.width === 0 || canvas.height === 0) return null
+
+  // Laisse un frame Three.js se peindre avant la capture
+  await new Promise<void>(r => requestAnimationFrame(() => r()))
+
+  const TARGET_W = 400
+  const TARGET_H = 225  // ratio 16:9
+
+  const off = document.createElement('canvas')
+  off.width = TARGET_W
+  off.height = TARGET_H
+  const ctx = off.getContext('2d')
+  if (!ctx) return null
+
+  // Crop centré pour respecter le ratio 16:9
+  const srcRatio = canvas.width / canvas.height
+  const dstRatio = TARGET_W / TARGET_H
+  let sx = 0, sy = 0, sw = canvas.width, sh = canvas.height
+  if (srcRatio > dstRatio) {
+    sw = canvas.height * dstRatio
+    sx = (canvas.width - sw) / 2
+  } else {
+    sh = canvas.width / dstRatio
+    sy = (canvas.height - sh) / 2
+  }
+  ctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, TARGET_W, TARGET_H)
+
+  return await new Promise<Blob | null>(resolve => {
+    off.toBlob(b => resolve(b), 'image/jpeg', 0.7)
+  })
+}
+
 const title = ref('')
 const description = ref('')
 const isSubmitting = ref(false)
@@ -136,6 +180,15 @@ async function submit() {
     // 3. Sauvegarde la scène (caméra, lumières, météo, transforms…)
     const state = serialize()
     await projects.saveSceneState(state)
+
+    // 4. Capture une miniature du canvas Three.js pour /projects gallery.
+    //    Erreur silencieuse — un thumbnail raté ne doit pas bloquer le save.
+    try {
+      const blob = await captureCanvasThumbnail()
+      if (blob) await projects.uploadCurrentProjectThumbnail(blob)
+    } catch (e) {
+      console.warn('[save-project] thumbnail capture failed', e)
+    }
 
     toast.success('Projet sauvegardé.')
     open.value = false

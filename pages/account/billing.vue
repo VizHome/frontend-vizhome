@@ -157,7 +157,7 @@
             <div class="flex items-baseline justify-between">
               <h3 class="text-lg font-semibold">{{ p.label }}</h3>
               <span class="text-xs text-muted-foreground uppercase">
-                {{ p.priceEur === null ? 'Gratuit' : `${p.priceEur} €/mois` }}
+                {{ formatPlanPrice(p.priceEur) }}
               </span>
             </div>
             <p class="text-xs text-muted-foreground">{{ p.description }}</p>
@@ -248,7 +248,7 @@ import { toast } from 'vue-sonner'
 import type { PlanName } from '~/composables/useBilling'
 
 definePageMeta({
-  layout: 'account',
+  layout: 'app',
   middleware: 'auth',
   ssr: false,
 })
@@ -355,6 +355,16 @@ function formatDate(iso: string | null): string {
   return new Date(iso).toLocaleDateString('fr-FR', {
     day: '2-digit', month: 'short', year: 'numeric',
   })
+}
+
+/** Backend renvoie le prix plan en CENTIMES (1900 = 19 €). */
+function formatPlanPrice(cents: number | null): string {
+  if (cents === null) return 'Sur devis'
+  if (cents === 0) return 'Gratuit'
+  const euros = cents / 100
+  // Pas de décimales si entier (19 € au lieu de 19,00 €)
+  const formatted = euros % 1 === 0 ? euros.toString() : euros.toFixed(2)
+  return `${formatted} €/mois`
 }
 
 function formatMoney(amount: number, currency: string): string {

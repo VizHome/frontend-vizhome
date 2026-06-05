@@ -233,8 +233,10 @@ layouts/
 ├── sidebar.vue                   avec AppSidebar
 ├── none.vue                      sans navbar (pages métier, auth)
 ├── forum.vue                     ★ ForumHeader + ForumFooter (toutes pages /forum/*)
-├── account.vue                   ★ topbar minimal (logo + lien retour app + UserNav)
-│                                  pour les pages /account/* (espace user connecté)
+├── app.vue                       ★ topbar minimal (logo + lien retour app + UserNav inline)
+│                                  pour TOUTES les pages "espace utilisateur connecté" :
+│                                  /account/billing, /projects, /gallery
+│                                  (anciennement nommé `account.vue`)
 ├── support.vue                   ★ topbar minimal + sous-bandeau identitaire
 │                                  (icône LifeBuoy + "Centre de support" + breadcrumb
 │                                  dynamique + CTA "Nouveau ticket" permanent) — pages /support/*

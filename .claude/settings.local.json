@@ -115,7 +115,8 @@
       "Bash(echo \"pid=$!\")",
       "Read(//c/Users/thiba/AppData/Local/Temp/claude/C--Users-thiba-Documents-Environnement-dev-frontend-vizhome/2dc69145-9bb7-4660-b73b-66ca26eeb04a/tasks/**)",
       "Bash(cat \"/c/Users/thiba/AppData/Local/Temp/claude/C--Users-thiba-Documents-Environnement-dev-frontend-vizhome/a558839f-44ba-4fec-96b1-19c6e34dcf76/tasks/b1gj57t1q.output\" 2>&1 | tail -20)",
-      "Read(//c/Users/thiba/AppData/Local/Temp/claude/C--Users-thiba-Documents-Environnement-dev-frontend-vizhome/e9138352-93f4-423b-b0ea-8dc39cdf463e/tasks/**)"
+      "Read(//c/Users/thiba/AppData/Local/Temp/claude/C--Users-thiba-Documents-Environnement-dev-frontend-vizhome/e9138352-93f4-423b-b0ea-8dc39cdf463e/tasks/**)",
+      "Bash(curl -sI -H \"Origin: http://localhost:3000\" \"http://localhost:9000/vizhome-media/projects/models/2026/06/3_d23F19rZWjzmaisK.obj\")"
     ]
   }
 }

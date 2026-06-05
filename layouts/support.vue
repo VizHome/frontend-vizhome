@@ -35,11 +35,21 @@
         Retour à l'application
       </NuxtLink>
 
+      <!-- Nav sections (centrée sur desktop) -->
+      <div class="hidden lg:flex flex-1 justify-center">
+        <ServiceNav />
+      </div>
+
       <div class="ml-auto flex items-center gap-2">
         <ModeToggle />
         <UserNav :floating="false" />
       </div>
     </header>
+
+    <!-- Nav sections (mobile/tablet) -->
+    <div class="lg:hidden border-b bg-background/95 backdrop-blur px-4 py-2 overflow-x-auto">
+      <ServiceNav />
+    </div>
 
     <!-- Sous-bandeau identitaire support -->
     <section

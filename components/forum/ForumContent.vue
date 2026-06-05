@@ -11,10 +11,9 @@
     <ForumContent :html="topic.content" />
 -->
 <template>
-  <div
-    class="forum-content prose prose-sm dark:prose-invert max-w-none break-words"
-    v-html="sanitizedHtml"
-  />
+  <!-- `sanitizedHtml` est déjà filtré par DOMPurify avec whitelist stricte de tags + attrs. -->
+  <!-- eslint-disable-next-line vue/no-v-html -->
+  <div class="forum-content prose prose-sm dark:prose-invert max-w-none break-words" v-html="sanitizedHtml" />
 </template>
 
 <script setup lang="ts">

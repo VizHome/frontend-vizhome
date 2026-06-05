@@ -289,7 +289,7 @@ async function _safeFetch(label: string, fn: () => Promise<void>) {
     const err = e as { data?: { detail?: string }; statusCode?: number; message?: string }
     const msg = err?.data?.detail || err?.message || `Erreur ${err?.statusCode ?? '?'}`
     loadErrors.value.push(`${label} : ${msg}`)
-    console.warn(`[billing] ${label} failed`, e)
+    logger.warn(`[billing] ${label} failed`, e)
   }
 }
 await Promise.all([

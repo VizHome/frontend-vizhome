@@ -311,6 +311,6 @@ const schema = yup.object({
 const newsletter = ref(false)
 
 const onSubmit = (values: FormValues) => {
-  console.log({ ...values, newsletter: newsletter.value })
+  logger.log({ ...values, newsletter: newsletter.value })
 }
 </script>

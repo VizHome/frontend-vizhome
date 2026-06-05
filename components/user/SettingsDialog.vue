@@ -987,7 +987,7 @@ watch(open, async newVal => {
     try {
       await fetchSessions()
     } catch (e) {
-      console.warn('[settings] fetch sessions failed', e)
+      logger.warn('[settings] fetch sessions failed', e)
     }
   }
 })

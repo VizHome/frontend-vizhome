@@ -148,30 +148,30 @@ async function loadProjectModels() {
   if (!project) return
   const { loadFromUrl } = useThreeModels()
   if (!loadFromUrl) {
-    console.warn('[render] useThreeModels.loadFromUrl indisponible')
+    logger.warn('[render] useThreeModels.loadFromUrl indisponible')
     return
   }
 
   const total = project.importedModels.length
   if (total === 0) {
-    console.info('[render] Projet sans modèle 3D')
+    logger.info('[render] Projet sans modèle 3D')
     return
   }
 
-  console.info(`[render] Chargement de ${total} modèle(s) depuis MinIO…`)
+  logger.info(`[render] Chargement de ${total} modèle(s) depuis MinIO…`)
   let loaded = 0
   let failed = 0
   const errors: string[] = []
 
   for (const m of project.importedModels) {
     if (!m.fileUrl) {
-      console.warn(`[render] Modèle "${m.name}" sans fileUrl — skip`)
+      logger.warn(`[render] Modèle "${m.name}" sans fileUrl — skip`)
       failed += 1
       errors.push(`${m.name}: pas d'URL`)
       continue
     }
     try {
-      console.info(`[render] → ${m.name} (${m.fileUrl})`)
+      logger.info(`[render] → ${m.name} (${m.fileUrl})`)
       await loadFromUrl(m.fileUrl, m.name, m.mtlFileUrl || undefined, {
         position: m.position,
         rotation: m.rotation,
@@ -183,14 +183,14 @@ async function loadProjectModels() {
       failed += 1
       const msg = e instanceof Error ? e.message : String(e)
       errors.push(`${m.name}: ${msg}`)
-      console.error(`[render] Échec chargement modèle "${m.name}"`, e)
+      logger.error(`[render] Échec chargement modèle "${m.name}"`, e)
     }
   }
 
   if (failed > 0) {
     toast.error(`${failed}/${total} modèle(s) n'ont pas pu être chargés. Voir console.`)
   } else if (loaded > 0) {
-    console.info(`[render] ✓ ${loaded} modèle(s) chargés.`)
+    logger.info(`[render] ✓ ${loaded} modèle(s) chargés.`)
   }
 }
 

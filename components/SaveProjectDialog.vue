@@ -187,7 +187,7 @@ async function submit() {
       const blob = await captureCanvasThumbnail()
       if (blob) await projects.uploadCurrentProjectThumbnail(blob)
     } catch (e) {
-      console.warn('[save-project] thumbnail capture failed', e)
+      logger.warn('[save-project] thumbnail capture failed', e)
     }
 
     toast.success('Projet sauvegardé.')

@@ -54,7 +54,11 @@ const props = withDefaults(
     /** Couleur d'accent (icône + sublabel). Défaut : neutre. */
     tone?: 'neutral' | 'primary' | 'success' | 'warning' | 'danger'
   }>(),
-  { tone: 'neutral' }
+  {
+    sublabel: undefined,
+    icon: undefined,
+    tone: 'neutral',
+  },
 )
 
 const TONE_BG: Record<string, string> = {

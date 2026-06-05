@@ -1,5 +1,10 @@
 # VizHome Frontend
 
+<div align="center">
+  <img src="./public/images/logo/LogoBlack.png" alt="VizHome" width="120">
+</div>
+
+
 > Application **Nuxt 4 + Vue 3** pour VizHome — éditeur 3D Three.js
 > (sketch / prompt IA / 3D pro), forum, support helpdesk, espace utilisateur.
 
@@ -10,24 +15,20 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=VizHome_frontend-vizhome&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=VizHome_frontend-vizhome)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=VizHome_frontend-vizhome&metric=coverage)](https://sonarcloud.io/summary/new_code?id=VizHome_frontend-vizhome)
 
-<div align="center">
-  <img src="./public/images/logo/LogoBlack.png" alt="VizHome" width="120">
-</div>
-
 ---
 
 ## ✨ Features
 
-- 🎨 **Éditeur 3D Three.js** : 3 modes (Croquis 2D / Prompt IA / 3D Pro), import GLB/OBJ/FBX/STL, TransformControls, presets éclairage, météo, navigation orbit/FPS/top-down/tour
-- 📐 **Sérialisation scène** : sauvegarde caméra/lumières/transforms/météo dans `Project.scene` (PostgreSQL JSONField)
-- 🖼 **Galerie rendus IA** : polling 2s sur status, prévisualisation, partage public
-- 💬 **Forum** : timeline GitHub-style (avatar externe + card avec arrow notch), TipTap WYSIWYG, images via MinIO
-- 🆘 **Support helpdesk** : tickets avec messages threading, ForumEditor pour formatage riche
-- 👨‍💼 **Admin panel** : sidebar shadcn-vue, dashboard KPI, drill-downs (users/renders/forum/support), audit log, charts unovis, CSV export
-- 💳 **Page billing** : plans + subscription + invoices Stripe, upgrade en 1 click
-- 🌐 **OAuth** : Google + GitHub via authorization code flow (PKCE-style)
-- 🎭 **i18n** : fr / en / es / de (vue-i18n)
-- 🌓 **Theme** : light/dark/system via `@nuxtjs/color-mode`
+- [x] 🎨 **Éditeur 3D Three.js** : 3 modes (Croquis 2D / Prompt IA / 3D Pro), import GLB/OBJ/FBX/STL, TransformControls, presets éclairage, météo, navigation orbit/FPS/top-down/tour
+- [x] 📐 **Sérialisation scène** : sauvegarde caméra/lumières/transforms/météo dans `Project.scene` (PostgreSQL JSONField)
+- [x] 🖼 **Galerie rendus IA** : polling 2s sur status, prévisualisation, partage public
+- [x] 💬 **Forum** : timeline GitHub-style (avatar externe + card avec arrow notch), TipTap WYSIWYG, images via MinIO
+- [x] 🆘 **Support helpdesk** : tickets avec messages threading, ForumEditor pour formatage riche
+- [x] 👨‍💼 **Admin panel** : sidebar shadcn-vue, dashboard KPI, drill-downs (users/renders/forum/support), audit log, charts unovis, CSV export
+- [x] 💳 **Page billing** : plans + subscription + invoices Stripe, upgrade en 1 click
+- [x] 🌐 **OAuth** : Google + GitHub via authorization code flow (PKCE-style)
+- [x] 🎭 **i18n** : fr / en / es / de (vue-i18n)
+- [x] 🌓 **Theme** : light/dark/system via `@nuxtjs/color-mode`
 
 ## 🛠 Stack
 

@@ -18,7 +18,9 @@
               <NuxtLink to="/auth/register">Essayer gratuitement</NuxtLink>
             </Button>
             <Button size="lg" variant="outline" class="rounded-full" as-child>
-              <NuxtLink to="/docs">Explorer la documentation</NuxtLink>
+              <a :href="docsUrl" target="_blank" rel="noopener">
+                Explorer la documentation
+              </a>
             </Button>
           </div>
         </div>

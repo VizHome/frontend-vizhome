@@ -239,7 +239,7 @@
 
       <div class="mt-12 flex justify-center gap-4">
         <Button variant="outline" as-child>
-          <NuxtLink to="/legal/privacy">
+          <NuxtLink to="/legal/privacy-policy">
             Politique de Confidentialité
           </NuxtLink>
         </Button>

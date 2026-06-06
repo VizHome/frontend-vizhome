@@ -136,4 +136,10 @@
 </template>
 
 <script setup lang="ts">
+useSeo({
+  title: 'Politique de cookies',
+  description:
+    'Catégories de cookies utilisés sur VizHome (essentiels, analytiques, fonctionnels), durées de conservation et options pour gérer vos préférences.',
+})
+
 </script>

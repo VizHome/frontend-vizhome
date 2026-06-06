@@ -197,4 +197,9 @@ import {
   DownloadIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Politique de confidentialité',
+  description:
+    'Comment VizHome collecte, utilise et protège vos informations personnelles : finalités, base légale, partage de données et exercice de vos droits.',
+})
 </script>

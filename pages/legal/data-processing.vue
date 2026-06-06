@@ -262,4 +262,10 @@ import {
   InfoIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Traitement des données',
+  description:
+    'Engagements RGPD de VizHome : nature des données traitées, finalités, durées de conservation, sous-traitance et droits des personnes concernées.',
+})
+
 </script>

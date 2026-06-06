@@ -560,6 +560,39 @@ import {
 
 const { isAuthenticated } = useAuth()
 
+useSeo({
+  title: 'Rendu 3D par IA pour architectes et designers',
+  description:
+    'VizHome transforme photos, croquis et prompts en rendus 3D en moins de 30 secondes : éditeur Three.js, éclairage IA, matériaux PBR, partage instantané.',
+  ogImage: '/images/generate/image_generate.png',
+  jsonLd: [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      'name': 'VizHome',
+      'url': 'https://vizhome.fr',
+      'logo': 'https://vizhome.fr/favicon.ico',
+      'sameAs': [
+        'https://github.com/VizHome',
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      'name': 'VizHome',
+      'applicationCategory': 'DesignApplication',
+      'operatingSystem': 'Web',
+      'description':
+        'Plateforme SaaS de rendu 3D par IA : croquis 2D, génération par prompt, éditeur Three.js temps réel.',
+      'offers': {
+        '@type': 'Offer',
+        'price': '0',
+        'priceCurrency': 'EUR',
+      },
+    },
+  ],
+})
+
 // ── Social proof avatars ───────────────────────────────────────────────────
 const avatars = [
   'https://i.pravatar.cc/100?img=1',

@@ -239,4 +239,10 @@ import {
   HeadphonesIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Conditions spécifiques des services',
+  description:
+    'Modalités d\'accès aux services VizHome : abonnements, traitement d\'images, génération IA, limites d\'usage et responsabilités spécifiques par offre.',
+})
+
 </script>

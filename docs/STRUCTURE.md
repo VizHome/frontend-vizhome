@@ -19,7 +19,7 @@ frontend-vizhome/
 ├── assets/css/
 │   └── tailwind.css              imports Tailwind + customisation
 │
-├── public/                       assets statiques (favicon, images)
+├── public/                       assets statiques (favicon, images, robots.txt, sitemap.xml)
 │
 ├── composables/                  ★ logique métier réutilisable (singletons)
 ├── components/                   composants Vue (UI + métier)
@@ -64,6 +64,7 @@ composables/
 ├── useAdminCsvExport.ts          ★ helper export CSV (fetch + blob + <a download> + Authorization)
 ├── useSupport.ts                 ★ tickets de support user (loadTickets + create + loadTicket + reply)
 ├── useAdminSupport.ts            ★ liste paginée de tous les tickets pour staff + updateTicketStatus
+├── useSeo.ts                     ★ wrapper useHead unifié — title, description, OG, Twitter, canonical, JSON-LD
 └── useThree*.ts                  12 composables Three.js (scene, models, lighting, weather, navigation…)
 ```
 

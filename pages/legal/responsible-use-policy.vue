@@ -203,4 +203,10 @@ import {
   BadgeAlertIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Charte d\'utilisation responsable',
+  description:
+    'Règles d\'usage éthique de VizHome : respect des lois, contenus interdits, propriété intellectuelle et responsabilité des utilisateurs sur la plateforme.',
+})
+
 </script>

@@ -285,6 +285,13 @@ import {
   ThermometerIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Éclairage intelligent',
+  description:
+    'Préréglages d\'éclairage Three.js : ambiances naturelles, studio ou nocturnes, cycle jour/nuit, saisons automatiques et contrôles directionnels avancés.',
+  ogImage: '/images/generate/image_generate.png',
+})
+
 const ambiances = [
   'Naturelle',
   'Dramatique',

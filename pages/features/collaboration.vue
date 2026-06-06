@@ -260,6 +260,12 @@ import {
   ChevronRightIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Partage et collaboration',
+  description:
+    'Invitez clients et collaborateurs sur vos projets 3D : rôles granulaires, commentaires contextuels, liens sécurisés et synchronisation temps réel.',
+  ogImage: '/images/generate/image_generate.png',
+})
 
 const workflowSteps = [
   {

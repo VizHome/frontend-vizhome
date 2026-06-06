@@ -291,6 +291,12 @@ import {
 const config = useRuntimeConfig()
 const docsUrl = (config.public.docsUrl as string) || 'http://localhost:3001'
 
+useSeo({
+  title: 'Fonctionnalités',
+  description:
+    'Vue d\'ensemble des outils VizHome : génération 3D par IA, éclairage intelligent, matériaux PBR, vues 360°, collaboration et accès mobile.',
+  ogImage: '/images/generate/image_generate.png',
+})
 
 const mainFeatures = [
   {

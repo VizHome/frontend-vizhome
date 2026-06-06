@@ -124,7 +124,14 @@
       "Bash(sed -n '17,22p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/composables/useSceneSerializer.ts)",
       "Bash(sed -n '327,331p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/composables/useSketchCanvas.ts)",
       "Bash(sed -n '256,260p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/pages/auth/login.vue)",
-      "Bash(sed -n '145,150p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/pages/auth/register.vue)"
+      "Bash(sed -n '145,150p' /c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/pages/auth/register.vue)",
+      "Bash(node -e \"const lock = require\\('./package-lock.json'\\); const deps = lock.packages; console.log\\('cac:', !!deps['node_modules/cac']\\); console.log\\('commander:', !!deps['node_modules/commander']\\);\")",
+      "Bash(node scripts/patch-reka-ui-types.mjs)",
+      "Bash(grep \"extends /\\\\* @vue-ignore\" node_modules/reka-ui/dist/index4.d.ts)",
+      "Bash(grep -c \"extends /\\\\* @vue-ignore\" node_modules/reka-ui/dist/index4.d.ts)",
+      "Bash(node -e \"console.log\\('vue:', require\\('vue/package.json'\\).version\\); console.log\\('@vue/compiler-sfc:', require\\('@vue/compiler-sfc/package.json'\\).version\\); console.log\\('reka-ui:', require\\('reka-ui/package.json'\\).version\\);\")",
+      "Bash(rm -f scripts/patch-reka-ui-types.mjs)",
+      "Bash(rmdir scripts *)"
     ]
   }
 }

@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   // TypeScript configuration
   typescript: {
     strict: true,
-    typeCheck: false,
+    typeCheck: true,
     shim: false,
   },
 
@@ -72,7 +72,7 @@ export default defineNuxtConfig({
     payloadExtraction: false,
     viewTransition: true,
     renderJsonPayloads: true,
-    typedPages: true,
+    typedPages: false,
   },
 
   // Vite config
@@ -112,6 +112,14 @@ export default defineNuxtConfig({
       },
     },
 
+    vue: {
+      script: {
+        propsDestructure: true,
+        globalTypeFiles: [
+          './node_modules/reka-ui/dist/index4.d.ts'
+        ]
+      },
+    },
     esbuild: {
       drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
     },

@@ -21,8 +21,8 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - run: npm install --no-cache
-      - run: npm ci
+      - name: Install deps
+        run: npm ci --no-audit --no-fund
       - run: npm run lint -- --max-warnings 0
 
   # ─── 2. Type check vue-tsc ─────────────────────────────────────────────
@@ -36,8 +36,8 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - run: npm install --no-cache
-      - run: npm ci
+      - name: Install deps
+        run: npm ci --no-audit --no-fund
       - run: npm run typecheck || true
 
   # ─── 3. Tests Vitest + coverage ────────────────────────────────────────
@@ -50,8 +50,8 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - run: npm install --no-cache
-      - run: npm ci
+      - name: Install deps
+        run: npm ci --no-audit --no-fund
       - name: Run tests + coverage
         run: npx vitest run --coverage --reporter=verbose --reporter=junit --outputFile=junit.xml
 
@@ -82,8 +82,8 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - run: npm install --no-cache
-      - run: npm ci
+      - name: Install deps
+        run: npm ci --no-audit --no-fund
       - name: Build SSR
         env:
           NUXT_PUBLIC_API_URL: /api/v1
@@ -193,4 +193,6 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      - name: Install deps (lockfile only)
+        run: npm ci --no-audit --no-fund --ignore-scripts
       - run: npm audit --audit-level=high --omit=dev || true

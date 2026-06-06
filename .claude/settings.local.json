@@ -152,7 +152,8 @@
       "Bash(echo \"---TC: $?\")",
       "Bash(python -m ruff check src/apps/core/ src/apps/contact/)",
       "Bash(python -m ruff format src/apps/core/ src/apps/contact/)",
-      "Bash(python -m ruff check src/)"
+      "Bash(python -m ruff check src/)",
+      "Bash(python -c \"import yaml; yaml.safe_load\\(open\\('docker-compose.prod.yml'\\)\\)\")"
     ]
   }
 }

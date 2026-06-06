@@ -269,6 +269,10 @@
 </template>
 
 <script setup lang="ts">
+// URL du site docs séparé (projet docs-vizhome)
+const config = useRuntimeConfig()
+const docsUrl = (config.public.docsUrl as string) || 'http://localhost:3001'
+
 import {
   ChevronRightIcon,
   ImageIcon,

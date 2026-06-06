@@ -138,7 +138,21 @@
       "Bash(sed -n '383,387p' pages/forum/topic/[id].vue)",
       "Bash(echo \"---EXIT: $?\")",
       "Bash(echo \"---LINT_EXIT: $?\")",
-      "Bash(echo \"---TEST_EXIT: $?\")"
+      "Bash(echo \"---TEST_EXIT: $?\")",
+      "Bash(python -m ruff check src/apps/contact/)",
+      "Bash(python -m ruff format src/apps/contact/)",
+      "Bash(python -m ruff format --check src/apps/contact/)",
+      "Bash(python -c \"import django; print\\(django.VERSION\\)\")",
+      "Bash(DJANGO_SETTINGS_MODULE=config.settings.test python -m pytest apps/contact/ -v --no-header)",
+      "Bash(python -m pytest src/apps/contact/ -v --no-cov --no-header)",
+      "Bash(pip show *)",
+      "Bash(DJANGO_SETTINGS_MODULE=config.settings.test DJANGO_SECRET_KEY=test-key DJANGO_DEBUG=False python manage.py check)",
+      "Bash(DJANGO_SETTINGS_MODULE=config.settings.test DJANGO_SECRET_KEY=test-key DJANGO_DEBUG=False python manage.py makemigrations contact --dry-run --check)",
+      "Bash(echo \"---LINT: $?\")",
+      "Bash(echo \"---TC: $?\")",
+      "Bash(python -m ruff check src/apps/core/ src/apps/contact/)",
+      "Bash(python -m ruff format src/apps/core/ src/apps/contact/)",
+      "Bash(python -m ruff check src/)"
     ]
   }
 }

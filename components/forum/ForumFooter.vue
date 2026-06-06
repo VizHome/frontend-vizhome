@@ -52,16 +52,20 @@
           <p class="font-semibold mb-2 text-foreground">Communauté</p>
           <ul class="space-y-1.5 text-xs">
             <li>
-              <span class="text-muted-foreground">
+              <NuxtLink
+                to="/legal/community-charter"
+                class="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 Charte de la communauté
-                <span class="ml-1 text-[10px] uppercase opacity-60">À venir</span>
-              </span>
+              </NuxtLink>
             </li>
             <li>
-              <span class="text-muted-foreground">
+              <NuxtLink
+                to="/legal/code-of-conduct"
+                class="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 Code de conduite
-                <span class="ml-1 text-[10px] uppercase opacity-60">À venir</span>
-              </span>
+              </NuxtLink>
             </li>
             <li>
               <NuxtLink

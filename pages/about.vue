@@ -105,7 +105,7 @@
           <h2 class="text-2xl font-bold mb-4">Notre histoire</h2>
           <div class="space-y-4 text-muted-foreground">
             <p>
-              Fondée en 2026, VizHome est née d'une vision simple mais
+              Fondée en 2024, VizHome est née d'une vision simple mais
               puissante : démocratiser l'accès à la visualisation architecturale
               3D de haute qualité grâce à l'intelligence artificielle.
             </p>

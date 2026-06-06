@@ -1,0 +1,58 @@
+name: CodeQL
+
+# Analyse sémantique du code (TypeScript / JavaScript) pour détecter les
+# patterns de vulnérabilités (XSS, injection, SSRF, prototype pollution…)
+# et les bugs de qualité.
+#
+# Résultats : onglet Security > Code scanning du repo.
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  schedule:
+    # Re-scan hebdo (lundi 06:00 UTC) pour détecter les nouvelles CVE
+    # affectant le code existant même sans push récent.
+    - cron: "0 6 * * 1"
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # `javascript-typescript` couvre les deux langues en une seule analyse.
+        language: [javascript-typescript]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # `security-and-quality` = ruleset le plus complet (security + bugs).
+          # `security-extended` pour rester strictement sécurité.
+          queries: security-and-quality
+
+      # Pour Nuxt/Vue : pas de step de build nécessaire — CodeQL scanne
+      # directement les sources TS/JS.
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"

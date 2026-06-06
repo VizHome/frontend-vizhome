@@ -224,8 +224,6 @@ import {
   CheckIcon,
   GlobeIcon,
   StarIcon,
-  LayersIcon,
-  PaletteIcon,
 } from 'lucide-vue-next'
 
 const mainFeatures = [

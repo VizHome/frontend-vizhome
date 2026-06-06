@@ -29,11 +29,18 @@
           class="bg-background rounded-xl border shadow-sm p-6 flex flex-col items-center text-center"
         >
           <div class="bg-primary/10 p-3 rounded-full mb-3">
-            <PhoneIcon class="h-5 w-5 text-primary" />
+            <MessagesSquareIcon class="h-5 w-5 text-primary" />
           </div>
-          <h3 class="font-semibold mb-1">Téléphone</h3>
-          <p class="text-xs text-muted-foreground mb-2">Lundi au vendredi</p>
-          <p class="text-sm font-medium">+33 (0)1 23 45 67 89</p>
+          <h3 class="font-semibold mb-1">Forum</h3>
+          <p class="text-xs text-muted-foreground mb-2">
+            Communauté entraide
+          </p>
+          <NuxtLink
+            to="/forum"
+            class="text-sm font-medium text-primary hover:underline"
+          >
+            Rejoindre la discussion
+          </NuxtLink>
         </div>
         <div
           class="bg-background rounded-xl border shadow-sm p-6 flex flex-col items-center text-center"
@@ -263,7 +270,7 @@
 <script setup lang="ts">
 import {
   MailIcon,
-  PhoneIcon,
+  MessagesSquareIcon,
   MapPinIcon,
   ArrowRightIcon,
 } from 'lucide-vue-next'
@@ -303,7 +310,11 @@ const schema = yup.object({
 
 const newsletter = ref(false)
 
-const onSubmit = (values: FormValues) => {
-  console.log({ ...values, newsletter: newsletter.value })
+// vee-validate type le handler comme `SubmissionHandler<GenericObject>`
+// → on accepte le type large puis on narrow (cast via `unknown` requis car
+// `Record<string, unknown>` et `FormValues` n'ont pas d'overlap structurel).
+const onSubmit = (values: Record<string, unknown>) => {
+  const v = values as unknown as FormValues
+  logger.log({ ...v, newsletter: newsletter.value })
 }
 </script>

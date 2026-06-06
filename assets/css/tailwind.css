@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+/* Theme highlight.js — github-dark (utilisé par <CodeBlock>) */
+@import 'highlight.js/styles/github-dark.css';
+
 @font-face {
   font-family: 'Agrandir Grand';
   src: url('/fonts/agrandir/PPAgrandir-GrandHeavy.otf') format('opentype');

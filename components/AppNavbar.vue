@@ -45,9 +45,9 @@
                     <!-- Grille des sous-fonctionnalités -->
                     <div class="grid grid-cols-2 gap-1">
                       <NavigationMenuLink
-                        as-child
                         v-for="feat in featuresMenu"
                         :key="feat.to"
+                        as-child
                       >
                         <NuxtLink
                           :to="feat.to"
@@ -101,6 +101,15 @@
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
+              <!-- Forum -->
+              <NavigationMenuItem>
+                <NavigationMenuLink as-child>
+                  <NuxtLink to="/forum" :class="navLinkClass('/forum')">
+                    Forum
+                  </NuxtLink>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+
               <!-- Entreprise -->
               <NavigationMenuItem>
                 <NavigationMenuTrigger
@@ -111,9 +120,9 @@
                 <NavigationMenuContent>
                   <div class="w-[300px] p-3 flex flex-col gap-1">
                     <NavigationMenuLink
-                      as-child
                       v-for="item in companyMenu"
                       :key="item.to"
+                      as-child
                     >
                       <NuxtLink
                         :to="item.to"
@@ -276,6 +285,15 @@
                     Documentation
                   </a>
 
+                  <NuxtLink
+                    to="/forum"
+                    :class="mobileLinkClass('/forum')"
+                    @click="mobileOpen = false"
+                  >
+                    <MessagesSquareIcon class="h-4 w-4" />
+                    Forum
+                  </NuxtLink>
+
                   <!-- Section Entreprise -->
                   <button
                     class="flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm hover:bg-accent transition-colors text-left"
@@ -381,6 +399,7 @@ import {
   HelpCircleIcon,
   LayoutDashboardIcon,
   MailIcon,
+  MessagesSquareIcon,
 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'

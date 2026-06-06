@@ -207,6 +207,54 @@ export default defineNuxtPlugin(async () => {
 
 `.client.ts` ⇒ pas exécuté en SSR (pas de localStorage côté serveur).
 
+### 8. Layout admin avec sidebar shadcn-vue
+
+Le panel `/admin/*` utilise le pattern shadcn-vue `SidebarProvider` :
+
+```vue
+<!-- layouts/admin.vue -->
+<SidebarProvider>
+  <AdminSidebar />
+  <SidebarInset>
+    <header class="sticky top-0 h-14 ...">
+      <SidebarTrigger />
+      <Breadcrumb>...</Breadcrumb>
+      <Actions />  <!-- refresh + theme -->
+    </header>
+    <main><slot /></main>
+  </SidebarInset>
+</SidebarProvider>
+```
+
+`AdminSidebar.vue` expose 3 groupes :
+- **Pilotage** : Dashboard + Analytics
+- **Modération** : Users + Renders + Forum (avec badge dynamique `uploads_orphan` si > 10)
+- **Système** : Billing + Journal d'audit
+
+Le mode `collapsible="icon"` permet le repli (icônes seules) via `SidebarTrigger`.
+
+### 9. Timeline GitHub-style pour le forum
+
+Les pages `/forum/topic/:id` rendent une **timeline verticale connectée** inspirée
+de l'UI GitHub Issues :
+
+```
+[avatar]──┬── [Card: topic content]    ← 1er post (avatar + card avec arrow notch)
+          │
+          ├── [event icon] {Actor} a épinglé ce sujet  ← ForumTimelineEvent (inline)
+          │
+          ├── [avatar]── [Card: reply content]         ← ForumReplyCard
+          │
+          └── [avatar]── [Card: composer "Ajouter un commentaire"]
+```
+
+Implémentation : un `<ul>` avec une ligne verticale absolue derrière la colonne
+avatar (`absolute left-5 top-6 bottom-6 w-px bg-border`). Chaque item est un
+`<li>` avec avatar externe (z-10 par-dessus la ligne) + card via classe utilitaire
+`.github-arrow-left` (petit triangle CSS pointant vers l'avatar via `::before` +
+`::after`). Les badges Auteur / Staff / Toi remplacent les icônes simples pour
+l'identité visuelle.
+
 ## Choix techniques
 
 ### Pourquoi shadcn-vue plutôt qu'un design system pré-fait ?

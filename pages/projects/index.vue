@@ -1,33 +1,19 @@
 <template>
-  <div class="min-h-screen bg-background flex flex-col">
-    <!-- Header -->
-    <header
-      class="sticky top-0 z-10 border-b bg-background/95 backdrop-blur-sm"
-    >
-      <div class="max-w-7xl mx-auto px-4 h-14 flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          class="h-8 w-8 shrink-0"
-          @click="navigateTo('/render')"
-        >
-          <ArrowLeft class="h-4 w-4" />
-        </Button>
-
-        <div class="flex items-center gap-2 flex-1 min-w-0">
-          <FolderOpen class="h-5 w-5 text-primary shrink-0" />
-          <h1 class="text-base font-semibold truncate">Mes projets</h1>
-          <Badge variant="secondary" class="shrink-0">{{ totalCount }}</Badge>
-        </div>
-
-        <Button size="sm" class="gap-1.5" @click="openCreateDialog">
-          <Plus class="h-3.5 w-3.5" />
-          Nouveau projet
-        </Button>
+  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex flex-col gap-6">
+    <!-- Header de page (layout `app` fournit déjà le topbar avec retour + avatar) -->
+    <section class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <FolderOpen class="h-5 w-5 text-primary shrink-0" />
+        <h1 class="text-xl font-semibold tracking-tight">Mes projets</h1>
+        <Badge variant="secondary" class="shrink-0">{{ totalCount }}</Badge>
       </div>
-    </header>
+      <Button size="sm" class="gap-1.5 rounded-full" @click="openCreateDialog">
+        <Plus class="h-3.5 w-3.5" />
+        Nouveau projet
+      </Button>
+    </section>
 
-    <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-6">
+    <main class="flex flex-col gap-6">
       <!-- Spinner initial -->
       <div
         v-if="isLoading && projects.length === 0"
@@ -68,9 +54,13 @@
           :key="project.id"
           class="group relative rounded-xl border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow"
         >
-          <!-- Thumbnail (placeholder gradient si pas de thumb) -->
+          <!-- Thumbnail (capture canvas du dernier save). Si absent, juste
+               un dégradé subtil sans icône pour laisser la respiration visuelle. -->
           <div
-            class="aspect-video bg-gradient-to-br from-primary/10 via-primary/5 to-muted overflow-hidden cursor-pointer flex items-center justify-center"
+            class="aspect-video overflow-hidden cursor-pointer"
+            :class="project.thumbnailUrl
+              ? 'bg-muted'
+              : 'bg-gradient-to-br from-primary/5 via-muted/30 to-muted/10'"
             @click="openProject(project.id)"
           >
             <img
@@ -79,7 +69,6 @@
               :alt="project.title"
               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            <Box v-else class="h-12 w-12 text-primary/40" />
           </div>
 
           <!-- Infos -->
@@ -221,7 +210,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import {
-  ArrowLeft,
   Box,
   Copy,
   CopyPlus,
@@ -236,7 +224,7 @@ import {
 import { toast } from 'vue-sonner'
 import type { Project } from '~/composables/useProjects'
 
-definePageMeta({ layout: 'none', middleware: 'auth' })
+definePageMeta({ layout: 'app', middleware: 'auth' })
 
 const {
   projects,

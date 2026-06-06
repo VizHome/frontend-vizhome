@@ -12,11 +12,33 @@
  * Restore côté read :
  *  - applique chaque sous-état dans son composable d'origine
  */
+import type { LightPreset } from './useThreeLightingPresets'
+import type { NavMode } from './useThreeNavigation'
 import type { SceneState } from './useProjects'
+
+// SceneState.navigation est stocké en snake_case (compat backend),
+// mais useThreeNavigation.NavMode est en camelCase (`firstperson`,
+// `topdown`). On garde un mapping bi-directionnel ici pour éviter de
+// migrer les données existantes en DB.
+const STORED_TO_RUNTIME: Record<NonNullable<SceneState['navigation']>, NavMode> = {
+  orbit: 'orbit',
+  first_person: 'firstperson',
+  top_down: 'topdown',
+  tour: 'tour',
+}
+const RUNTIME_TO_STORED: Record<NavMode, NonNullable<SceneState['navigation']>> = {
+  orbit: 'orbit',
+  firstperson: 'first_person',
+  topdown: 'top_down',
+  tour: 'tour',
+}
+
+const VALID_LIGHT_PRESETS: ReadonlySet<LightPreset> = new Set([
+  'morning', 'noon', 'sunset', 'night', 'studio',
+])
 
 export function useSceneSerializer() {
   const scene = useThreeScene()
-  const lighting = useThreeLighting()
   const lightingPresets = useThreeLightingPresets()
   const weather = useThreeWeather()
   const navigation = useThreeNavigation()
@@ -47,8 +69,8 @@ export function useSceneSerializer() {
       state.weather = weather.currentWeather.value
     }
 
-    if (navigation.currentNavMode?.value) {
-      state.navigation = navigation.currentNavMode.value
+    if (navigation.navMode?.value) {
+      state.navigation = RUNTIME_TO_STORED[navigation.navMode.value]
     }
 
     // Référence les modèles 3D par leur transform locale.
@@ -83,26 +105,41 @@ export function useSceneSerializer() {
     }
 
     if (state.lighting?.preset && lightingPresets.applyPreset) {
-      try {
-        lightingPresets.applyPreset(state.lighting.preset)
-      } catch {
-        /* preset inconnu, ignoré */
+      const preset = state.lighting.preset as LightPreset
+      if (VALID_LIGHT_PRESETS.has(preset)) {
+        try {
+          lightingPresets.applyPreset(preset)
+        } catch {
+          /* preset inconnu, ignoré */
+        }
       }
     }
 
-    if (state.weather && weather.setWeather) {
+    if (state.weather) {
+      // `useThreeWeather` n'expose pas un setter unifié — on flip
+      // directement les refs binaires correspondantes (idempotent : on
+      // remet tout à false puis on active celle qui correspond).
       try {
-        weather.setWeather(state.weather as never)
+        weather.isRaining.value = false
+        weather.isSnowing.value = false
+        weather.showFog.value = false
+        if (state.weather === 'Pluie') weather.isRaining.value = true
+        else if (state.weather === 'Neige') weather.isSnowing.value = true
+        else if (state.weather === 'Brouillard') weather.showFog.value = true
+        // 'Ensoleillé' → tout reste off
       } catch {
         /* météo inconnue, ignorée */
       }
     }
 
     if (state.navigation && navigation.setNavMode) {
-      try {
-        navigation.setNavMode(state.navigation)
-      } catch {
-        /* mode inconnu, ignoré */
+      const runtimeMode = STORED_TO_RUNTIME[state.navigation]
+      if (runtimeMode) {
+        try {
+          navigation.setNavMode(runtimeMode)
+        } catch {
+          /* mode inconnu, ignoré */
+        }
       }
     }
     // Les modèles 3D sont chargés par la page /render via loadProjectModels().

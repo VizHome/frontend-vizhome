@@ -254,7 +254,7 @@ import {
   EyeIcon,
   EyeOffIcon,
 } from 'lucide-vue-next'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
 definePageMeta({
@@ -358,71 +358,34 @@ const handle2faSubmit = async () => {
   }
 }
 
-// ─── OAuth : Google Sign-In (flow id_token) ──────────────────────────────
-declare global {
-  interface Window {
-    google?: {
-      accounts: {
-        id: {
-          initialize: (config: {
-            client_id: string
-            callback: (resp: { credential: string }) => void
-          }) => void
-          prompt: () => void
-        }
-      }
-    }
-  }
-}
-
-let _googleScriptLoaded = false
-
-async function loadGoogleScript(): Promise<void> {
-  if (_googleScriptLoaded) return
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script')
-    script.src = 'https://accounts.google.com/gsi/client'
-    script.async = true
-    script.defer = true
-    script.onload = () => {
-      _googleScriptLoaded = true
-      resolve()
-    }
-    script.onerror = () => reject(new Error('Échec chargement Google Sign-In'))
-    document.head.appendChild(script)
-  })
-}
-
-async function handleGoogleLogin() {
+/**
+ * Google OAuth — authorization code flow (symétrique GitHub).
+ * Redirige vers Google `/o/oauth2/v2/auth`, qui rappellera notre page
+ * `/auth/oauth/google/callback` avec un `code` à échanger côté backend.
+ *
+ * Avantages vs flow One Tap (id_token) :
+ * - Pas de cookies tiers requis (marche dans Brave/Safari/Firefox strict)
+ * - Pas de FedCM (pas de deprecation warning)
+ * - Pas de "ça fait rien" silencieux : on voit toujours la page Google
+ */
+function handleGoogleLogin() {
   if (!googleClientId.value || isOAuthLoading.value) return
-  isOAuthLoading.value = true
-  submitError.value = ''
-  try {
-    await loadGoogleScript()
-    if (!window.google) throw new Error('Google SDK indisponible')
+  const redirectUri = `${window.location.origin}/auth/oauth/google/callback`
+  const state = crypto.randomUUID()
+  sessionStorage.setItem('google_oauth_state', state)
+  sessionStorage.setItem('google_oauth_redirect', (route.query.redirect as string) || '/render')
 
-    window.google.accounts.id.initialize({
-      client_id: googleClientId.value,
-      callback: async (resp: { credential: string }) => {
-        try {
-          const user = await auth.loginGoogle(resp.credential)
-          await fetchMe()
-          toast.success(`Bienvenue ${user.first_name || user.email} !`)
-          const redirect = (route.query.redirect as string) || '/render'
-          await navigateTo(redirect)
-        } catch (e: unknown) {
-          const err = e as { data?: { detail?: string } }
-          submitError.value = err?.data?.detail || 'Connexion Google échouée.'
-        } finally {
-          isOAuthLoading.value = false
-        }
-      },
-    })
-    window.google.accounts.id.prompt()
-  } catch (e) {
-    submitError.value = e instanceof Error ? e.message : 'Erreur Google OAuth'
-    isOAuthLoading.value = false
-  }
+  const params = new URLSearchParams({
+    client_id: googleClientId.value,
+    redirect_uri: redirectUri,
+    response_type: 'code',
+    scope: 'openid email profile',
+    access_type: 'online',
+    include_granted_scopes: 'true',
+    prompt: 'select_account',
+    state,
+  })
+  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
 }
 
 // ─── OAuth : GitHub (flow authorization code) ────────────────────────────

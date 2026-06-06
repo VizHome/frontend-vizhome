@@ -326,7 +326,7 @@ export function useSketchCanvas() {
     }
 
     ctx?.beginPath()
-    ctx && (ctx.globalAlpha = 1)
+    if (ctx) ctx.globalAlpha = 1
     saveSnapshot()
   }
 

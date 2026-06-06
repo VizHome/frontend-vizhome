@@ -55,7 +55,7 @@ export function useFoo() {
 }
 ```
 
-### The 25 composables (by domain)
+### The 36 composables (by domain)
 
 **Backend integration** (5)
 - `useApi` — `$fetch` wrapper with JWT auto-injection + 401 retry via refresh
@@ -64,12 +64,25 @@ export function useFoo() {
 - `useBilling` — plans + subscription + Stripe checkout
 - `use2fa` — TOTP setup/verify/disable
 
-**Domain** (5)
+**Domain** (6)
 - `useProjects` — CRUD + scene state save + **presigned MinIO upload**
 - `useAiRender` — POST `/renders/` → poll every 2s → prepend to gallery
 - `useGallery` — paginated renders gallery
 - `useSceneSerializer` — marshal Three.js state to/from PostgreSQL JSONField
 - `useRenderMode` — active render page mode (sketch / prompt / screenshot)
+- `useForum` — categories, topics, replies (CRUD complet, lecture publique)
+- `useSupport` — tickets helpdesk user (create + list + reply + transitions auto status)
+
+**Admin panel** (9 — staff-only, `middleware: ['auth', 'staff']`)
+- `useAdminPanel` — overview consolidé (users, renders, storage, billing, forum, system)
+- `useAdminUsers` — liste paginée users + actions ban/promote
+- `useAdminRenders` — liste paginée renders (filtres status/source)
+- `useAdminTimeline` — séries temporelles pour `/admin/analytics`
+- `useAdminAuditLog` — journal d'audit staff paginé + filtres (action/actor/target)
+- `useAdminBilling` — subscriptions Stripe + factures (Promise.all, mode `no_djstripe`)
+- `useAdminForumMod` — pin/lock/delete topics (réutilise endpoints `/forum/topics/:id/...`)
+- `useAdminCsvExport` — helper export CSV (fetch + blob + `<a download>` + Authorization)
+- `useAdminSupport` — liste paginée tickets + filtres + `updateTicketStatus`
 
 **Three.js — core** (5)
 - `useThreeScene` — renderer, camera, OrbitControls, animation loop
@@ -91,16 +104,23 @@ export function useFoo() {
 - `useThreeWeather` — rain, snow, fog, smoke, fireflies
 - `useSketchCanvas` — 2D drawing (pencil/eraser/shapes/fill)
 
-### Layouts (3)
+### Layouts (5)
 
 - `default.vue` — marketing/legal pages (header + footer)
 - `sidebar.vue` — internal docs layout
 - `none.vue` — auth pages + render editor (no chrome)
+- `forum.vue` — toutes les pages `/forum/*` avec ForumHeader + ForumFooter dédiés
+  (identité visuelle distincte, séparée de la nav marketing)
+- `admin.vue` — pages `/admin/*` : `SidebarProvider` + `AdminSidebar` (shadcn-vue
+  Sidebar, 3 groupes : Pilotage / Modération / Système) + `SidebarInset` avec topbar
+  (trigger + breadcrumb dynamique + refresh + theme toggle). Toutes ces pages ont
+  aussi `ssr: false`.
 
 ### Middleware
 
 - `auth.ts` — redirects to `/auth/login` if not authenticated
 - `guest.ts` — inverse, for `/auth/*` pages
+- `staff.ts` — redirige les non-staff loin de `/admin/*` (combiner avec `auth`)
 
 ### Plugins
 
@@ -129,11 +149,36 @@ export function useFoo() {
 
 5. **`<script setup lang="ts">` everywhere** — no Options API.
 
+6. **`pathPrefix: false` for auto-imported components** (`nuxt.config.ts`).
+   Subfolder components are NOT auto-prefixed with the folder name.
+   `components/forum/MyCard.vue` is used as `<MyCard>`, NOT `<ForumMyCard>`.
+   To keep a namespace convention (and avoid collisions), files in
+   `components/forum/` are all named with the `Forum*` prefix directly
+   (e.g. `ForumCategoryCard.vue`, not `CategoryCard.vue`). If you add a
+   new forum component, prefix the filename too.
+
+7. **All `/forum/*` pages use `ssr: false`** in their `definePageMeta`.
+   Reason: the composable singleton pattern (`useForum` with module-level
+   refs) doesn't survive SSR cleanly — hydration mismatches when async
+   data state diverges between server and client. TipTap also requires the
+   DOM (browser-only). The forum layout's dynamic parts (cats nav,
+   footer list) are wrapped in `<ClientOnly>` for the same reason.
+
+8. **Tailwind 4 SFC `<style>` blocks**: do NOT use `@apply` directly —
+   Tailwind 4 requires `@reference "tailwindcss"` at the top of each
+   `<style>` block to use utility classes. Simpler: use plain CSS with
+   shadcn-vue CSS variables (`hsl(var(--muted))`, `hsl(var(--primary))`,
+   etc.) like `ForumEditor.vue` and `ForumContent.vue` do.
+
 ### Stack (confirmed in `package.json`)
 
 Nuxt 4.3.1 · Vue 3.5.30 · Tailwind 4.2.1 (via `@tailwindcss/vite`) ·
 shadcn-vue 2.6.2 (wrapping reka-ui 2.9.1) · Three.js 0.183.2 ·
-vee-validate 4.15.1 + yup 1.7.1 · lucide-vue-next · `@tanstack/vue-table`
+vee-validate 4.15.1 + yup 1.7.1 · lucide-vue-next · `@tanstack/vue-table` ·
+highlight.js (CodeBlock component, github-dark theme via `assets/css/tailwind.css`) ·
+**TipTap 2** + lowlight (forum rich text editor, `components/forum/ForumEditor.vue`) ·
+isomorphic-dompurify (HTML sanitization for forum display, `ForumContent.vue`) ·
+**@unovis/vue** + shadcn-vue `Chart` wrapper (admin analytics page, charts in `components/admin/Admin*Chart.vue`)
 
 ### `nuxt.config.ts` modules
 

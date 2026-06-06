@@ -382,7 +382,7 @@ const auth = useAuth()
 const user = useUser()
 
 const isAuthenticated = computed(() => !!auth.tokens.value)
-const isStaff = computed(() => !!user.user.value?.is_staff)
+const isStaff = computed(() => !!user.user.value?.isStaff)
 const currentUserId = computed(() => user.user.value?.id ?? null)
 
 const topic = computed(() => forum.currentTopic.value)

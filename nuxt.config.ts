@@ -103,10 +103,20 @@ export default defineNuxtConfig({
       chunkSizeWarningLimit: 1500,
       rollupOptions: {
         output: {
-          manualChunks: {
-            'vendor-vue': ['vue', 'vue-router'],
-            'vendor-ui': ['reka-ui'],
-            'vendor-tiptap': ['@tiptap/vue-3', '@tiptap/starter-kit'],
+          // Form function : Rollup type `manualChunks` comme `ManualChunksFunction`
+          // dans les versions récentes (l'objet form fonctionne au runtime mais
+          // n'est plus exposé dans les types). Cette fonction donne le même résultat.
+          manualChunks(id: string): string | undefined {
+            if (id.includes('node_modules/vue/') || id.includes('node_modules/vue-router/')) {
+              return 'vendor-vue'
+            }
+            if (id.includes('node_modules/reka-ui/')) {
+              return 'vendor-ui'
+            }
+            if (id.includes('node_modules/@tiptap/')) {
+              return 'vendor-tiptap'
+            }
+            return undefined
           },
         },
       },

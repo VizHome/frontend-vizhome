@@ -81,7 +81,7 @@
             <CardContent class="pt-6">
               <div class="flex items-center gap-3 mb-4">
                 <Avatar>
-                  <AvatarImage :src="t.avatar" :alt="t.name" />
+                  <AvatarImage :src="t.avatar ?? ''" :alt="t.name" />
                   <AvatarFallback>{{ initials(t.name) }}</AvatarFallback>
                 </Avatar>
                 <div>

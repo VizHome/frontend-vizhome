@@ -404,7 +404,9 @@ watch(
     if (!editor.value) return
     const current = editor.value.getHTML()
     if (newValue !== current) {
-      editor.value.commands.setContent(newValue || '', false)
+      // TipTap 3 : signature `setContent(content, options?)` — l'ancien
+      // `setContent(content, false)` (emitUpdate boolean) n'est plus supporté.
+      editor.value.commands.setContent(newValue || '', { emitUpdate: false })
     }
   }
 )

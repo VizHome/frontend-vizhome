@@ -551,11 +551,4 @@ function linkClass(path: string) {
 function sublinkClass(path: string) {
   return route.path === path ? `${BASE_SUBLINK} ${ACTIVE}` : BASE_SUBLINK
 }
-
- 
-function _sublinkStartClass(path: string) {
-  return route.path.startsWith(path)
-    ? `${BASE_SUBLINK} ${ACTIVE}`
-    : BASE_SUBLINK
-}
 </script>

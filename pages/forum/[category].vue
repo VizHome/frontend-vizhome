@@ -159,7 +159,7 @@ const auth = useAuth()
 const user = useUser()
 
 const isAuthenticated = computed(() => !!auth.tokens.value)
-const isStaff = computed(() => !!user.user.value?.is_staff)
+const isStaff = computed(() => !!user.user.value?.isStaff)
 const category = computed(() => forum.getCategoryBySlug(categorySlug.value))
 const canPost = computed(() => {
   if (!isAuthenticated.value) return false

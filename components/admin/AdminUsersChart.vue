@@ -13,14 +13,14 @@
       :height="260"
     >
       <VisLine
-        :x="(d, i) => i"
-        :y="d => d.count"
+        :x="(_d: UsersPerDay, i: number) => i"
+        :y="(d: UsersPerDay) => d.count"
         color="hsl(var(--primary))"
         :line-width="2"
       />
       <VisArea
-        :x="(d, i) => i"
-        :y="d => d.count"
+        :x="(_d: UsersPerDay, i: number) => i"
+        :y="(d: UsersPerDay) => d.count"
         color="hsl(var(--primary))"
         :opacity="0.12"
       />

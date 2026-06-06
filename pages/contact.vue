@@ -310,7 +310,11 @@ const schema = yup.object({
 
 const newsletter = ref(false)
 
-const onSubmit = (values: FormValues) => {
-  logger.log({ ...values, newsletter: newsletter.value })
+// vee-validate type le handler comme `SubmissionHandler<GenericObject>`
+// → on accepte le type large puis on narrow (cast via `unknown` requis car
+// `Record<string, unknown>` et `FormValues` n'ont pas d'overlap structurel).
+const onSubmit = (values: Record<string, unknown>) => {
+  const v = values as unknown as FormValues
+  logger.log({ ...v, newsletter: newsletter.value })
 }
 </script>

@@ -126,7 +126,7 @@ const router = useRouter()
 
 const forum = useForum()
 const user = useUser()
-const isStaff = computed(() => !!user.user.value?.is_staff)
+const isStaff = computed(() => !!user.user.value?.isStaff)
 
 // Charge cats si pas déjà en cache
 if (forum.categories.value.length === 0) {

@@ -11,6 +11,15 @@
  */
 import type { FetchOptions } from 'ofetch'
 
+// Surcharge typée légère : on contourne le typage `NitroFetchRequest` de Nuxt
+// (avec sa route table inférée qui crée des unions énormes → TS2321/TS2345
+// sur `$fetch<T>(path, ...)` quand `typedPages` est activé). Notre wrapper
+// appelle l'API Django ; les routes Nuxt ne sont pas concernées.
+const safeFetch = $fetch as <X = unknown>(
+  path: string,
+  options?: FetchOptions,
+) => Promise<X>
+
 export function useApi() {
   const config = useRuntimeConfig()
   const apiUrl = config.public.apiUrl as string
@@ -26,7 +35,7 @@ export function useApi() {
       if (auth.tokens.value?.access) {
         headers.set('Authorization', `Bearer ${auth.tokens.value.access}`)
       }
-      return await $fetch<T>(path, {
+      return await safeFetch<T>(path, {
         ...options,
         baseURL: apiUrl,
         headers,

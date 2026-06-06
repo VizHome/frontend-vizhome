@@ -107,7 +107,20 @@ import {
   ShieldIcon,
   UsersIcon,
 } from 'lucide-vue-next'
+import type { Component } from 'vue'
 import { computed } from 'vue'
+
+interface NavItem {
+  to: string
+  label: string
+  icon: Component
+  badge?: string
+}
+
+interface NavGroup {
+  label: string
+  items: NavItem[]
+}
 
 const route = useRoute()
 const user = useUser()
@@ -120,7 +133,7 @@ const orphanCount = computed(
   () => adminPanel.overview.value?.forum.uploads_orphan ?? 0,
 )
 
-const navGroups = computed(() => [
+const navGroups = computed<NavGroup[]>(() => [
   {
     label: 'Pilotage',
     items: [
@@ -149,7 +162,7 @@ const navGroups = computed(() => [
       { to: '/admin/audit-log', label: 'Journal d\'audit', icon: ScrollTextIcon },
     ],
   },
-] as const)
+])
 
 function initials(name: string | undefined): string {
   if (!name) return '?'
@@ -161,6 +174,8 @@ function initials(name: string | undefined): string {
     .join('') || '?'
 }
 
-// Pas utilisé directement mais imported pour potentielle future activité
-const _ = ActivityIcon
+// Importé pour réutilisation future — `void` consomme le symbole pour
+// désactiver le warning `noUnusedLocals` sans déclarer de variable.
+void ActivityIcon
+void ShieldIcon
 </script>

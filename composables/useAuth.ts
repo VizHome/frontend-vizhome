@@ -81,7 +81,10 @@ export function useAuth() {
   }
 
   async function _post<T>(path: string, body: unknown): Promise<T> {
-    return await $fetch<T>(`${apiUrl}${path}`, { method: 'POST', body })
+    return await $fetch<T>(`${apiUrl}${path}`, {
+      method: 'POST',
+      body: body as Record<string, unknown>,
+    })
   }
 
   // ─── Register ──────────────────────────────────────────────────────────

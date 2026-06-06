@@ -183,17 +183,17 @@
               <Move3d class="h-4 w-4 text-muted-foreground shrink-0" />
               <span class="text-xs text-muted-foreground flex-1">Vitesse</span>
               <span class="text-xs font-mono w-6 text-right">{{
-                moveSpeed[0]
+                moveSpeed
               }}</span>
             </div>
             <input
-              :value="moveSpeed[0]"
+              :value="moveSpeed"
               type="range"
               min="1"
               max="20"
               class="w-full h-1 accent-primary cursor-pointer"
               @input="
-                moveSpeed[0] = Number(($event.target as HTMLInputElement).value)
+                moveSpeed = Number(($event.target as HTMLInputElement).value)
               "
             />
           </template>
@@ -228,17 +228,17 @@
                 >Durée (s)</span
               >
               <span class="text-xs font-mono w-8 text-right"
-                >{{ tourDuration[0] }}s</span
+                >{{ tourDuration }}s</span
               >
             </div>
             <input
-              :value="tourDuration[0]"
+              :value="tourDuration"
               type="range"
               min="10"
               max="120"
               class="w-full h-1 accent-primary cursor-pointer"
               @input="
-                tourDuration[0] = Number(
+                tourDuration = Number(
                   ($event.target as HTMLInputElement).value
                 )
               "

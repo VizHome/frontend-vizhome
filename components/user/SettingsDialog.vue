@@ -1199,15 +1199,15 @@ const changePassword = async () => {
     const data = err?.data || {}
     if (data.current_password) {
       passwordErrors.current = Array.isArray(data.current_password)
-        ? data.current_password[0]
+        ? data.current_password[0] ?? ''
         : String(data.current_password)
     } else if (data.new_password) {
       passwordErrors.next = Array.isArray(data.new_password)
-        ? data.new_password[0]
+        ? data.new_password[0] ?? ''
         : String(data.new_password)
     } else if (data.new_password_confirm) {
       passwordErrors.confirm = Array.isArray(data.new_password_confirm)
-        ? data.new_password_confirm[0]
+        ? data.new_password_confirm[0] ?? ''
         : String(data.new_password_confirm)
     } else {
       toast.error('Impossible de changer le mot de passe.')

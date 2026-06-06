@@ -239,8 +239,9 @@ export function useProjects() {
     await api(`/projects/${id}`, { method: 'PATCH', body })
 
     const idx = projects.value.findIndex(p => p.id === id)
-    if (idx !== -1) {
-      projects.value[idx] = { ...projects.value[idx], ...fields }
+    const existing = idx !== -1 ? projects.value[idx] : undefined
+    if (existing) {
+      projects.value[idx] = { ...existing, ...fields }
     }
     if (currentProject.value?.id === id) {
       currentProject.value = { ...currentProject.value, ...fields }

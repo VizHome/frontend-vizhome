@@ -11,7 +11,8 @@
  */
 import { ref } from 'vue'
 
-import type { GallerySource, type ApiRender, toGalleryEntry, useGallery    } from './useGallery';
+import { toGalleryEntry, useGallery } from './useGallery'
+import type { ApiRender, GallerySource } from './useGallery'
 
 
 

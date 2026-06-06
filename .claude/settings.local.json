@@ -131,7 +131,14 @@
       "Bash(grep -c \"extends /\\\\* @vue-ignore\" node_modules/reka-ui/dist/index4.d.ts)",
       "Bash(node -e \"console.log\\('vue:', require\\('vue/package.json'\\).version\\); console.log\\('@vue/compiler-sfc:', require\\('@vue/compiler-sfc/package.json'\\).version\\); console.log\\('reka-ui:', require\\('reka-ui/package.json'\\).version\\);\")",
       "Bash(rm -f scripts/patch-reka-ui-types.mjs)",
-      "Bash(rmdir scripts *)"
+      "Bash(rmdir scripts *)",
+      "Bash(sed -n '160,165p' pages/forum/[category].vue)",
+      "Bash(sed -n '127,132p' pages/forum/new.vue)",
+      "Bash(sed -n '115,140p' pages/forum/topic/[id].vue)",
+      "Bash(sed -n '383,387p' pages/forum/topic/[id].vue)",
+      "Bash(echo \"---EXIT: $?\")",
+      "Bash(echo \"---LINT_EXIT: $?\")",
+      "Bash(echo \"---TEST_EXIT: $?\")"
     ]
   }
 }

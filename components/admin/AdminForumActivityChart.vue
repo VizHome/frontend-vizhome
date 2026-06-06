@@ -12,8 +12,8 @@
       :height="260"
     >
       <VisStackedBar
-        :x="(d, i) => i"
-        :y="[(d: any) => d.topics, (d: any) => d.replies]"
+        :x="(_d: ForumActivityPerDay, i: number) => i"
+        :y="[(d: ForumActivityPerDay) => d.topics, (d: ForumActivityPerDay) => d.replies]"
         :color="['hsl(var(--primary))', 'hsl(var(--muted-foreground))']"
         :bar-padding="0.25"
       />

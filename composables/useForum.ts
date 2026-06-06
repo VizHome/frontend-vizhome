@@ -271,7 +271,8 @@ export function useForum() {
       }))
     } else {
       const idx = replies.value.findIndex(r => r.id === replyId)
-      if (idx >= 0) replies.value[idx].is_solution = false
+      const target = idx >= 0 ? replies.value[idx] : undefined
+      if (target) target.is_solution = false
     }
     return res.is_solution
   }

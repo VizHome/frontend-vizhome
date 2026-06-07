@@ -158,7 +158,8 @@
       "Bash(python -m ruff check src/apps/core/ src/apps/contact/ src/apps/projects/tests/test_presigned_serializer.py)",
       "Bash(python -m ruff format --check src/apps/core/throttling.py src/apps/projects/tests/test_presigned_serializer.py)",
       "Bash(python -m ruff format src/apps/projects/tests/test_presigned_serializer.py src/apps/core/ src/apps/contact/)",
-      "Bash(pip install *)"
+      "Bash(pip install *)",
+      "Bash(python -c \"import yaml; yaml.safe_load\\(open\\('.github/workflows/benchmarks.yml'\\)\\)\")"
     ]
   }
 }

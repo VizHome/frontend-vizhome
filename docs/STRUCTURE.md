@@ -49,7 +49,8 @@ composables/
 ├── use2fa.ts                     setup TOTP + verify + disable
 ├── useProjects.ts                CRUD projets + save scene + upload presigned MinIO
 ├── useGallery.ts                 galerie paginée des renders
-├── useAiRender.ts                pipeline async POST /renders + polling 2s
+├── useAiRender.ts                pipeline async POST /renders + flux SSE temps réel
+├── useSSE.ts                     ★ helper EventSource (polyfill) + Bearer JWT, cleanup auto
 ├── useSceneSerializer.ts         capture/restaure état Three.js (caméra, lumières, etc.)
 ├── useRenderMode.ts              mode actif (sketch | prompt | 3d)
 ├── useSketchCanvas.ts            canvas 2D vectoriel (pencil, eraser, shapes)

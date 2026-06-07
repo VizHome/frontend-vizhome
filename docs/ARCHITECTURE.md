@@ -311,8 +311,32 @@ via `runtimeConfig.public.apiUrl` (env `NUXT_PUBLIC_API_URL`).
 | `useBilling` | `/billing/plans`, `/me/subscription/*`, `/me/invoices` |
 | `use2fa` | `/me/2fa/*`, `/auth/2fa/verify` |
 | `useProjects` | `/projects/*` |
-| `useAiRender` | `/renders/*` |
+| `useAiRender` | `/renders/*`, `/renders/{id}/events` (SSE) |
 | `useGallery` | `/renders/?status=done` |
+| `useSSE` (helper) | flux Server-Sent Events Django authentifié (Bearer JWT) |
+
+### Suivi temps réel des rendus IA (Server-Sent Events)
+
+Le pipeline de génération IA utilise un flux SSE plutôt qu'un polling
+HTTP. Le frontend ouvre `/api/v1/renders/{id}/events` après le `POST
+/renders/` et reçoit un événement à chaque changement de statut. Le
+backend (`apps/renders/sse.py`) implémente la vue en `StreamingHttpResponse`
+Django pur (pas de Channels) avec un re-poll DB côté serveur toutes les
+1.5s : suffisant pour un job IA, trivial à wiring, compatible WSGI sync.
+
+`EventSource` natif n'accepte pas de headers, donc côté navigateur on
+utilise `event-source-polyfill` pour injecter le Bearer JWT. La logique
+est encapsulée dans `useSSE.ts` (cleanup automatique en `onScopeDispose`).
+
+`useAiRender` persiste `currentRenderId` dans `localStorage` (clé
+`vizhome:current_render_id`) : si l'utilisateur refresh la page pendant
+une génération en cours, le composable reconnecte le flux SSE
+automatiquement au mount et termine la promesse comme si rien ne s'était
+passé.
+
+Limite de scaling : chaque connexion SSE bloque un worker gunicorn sync.
+En prod, basculer sur `gunicorn -k gthread --threads 4 --workers 4`
+permet d'absorber ~16 connexions concurrentes par instance.
 
 ## Internationalisation
 

@@ -1,0 +1,113 @@
+name: E2E (Playwright)
+
+# Triggered manually for now, plus on every push to main as a smoke pass.
+# Once the backend seed step is wired (see TODO below), we can promote
+# this workflow to gate pull requests by removing `continue-on-error`.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    continue-on-error: true # Remove once backend seeding lands.
+    timeout-minutes: 25
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: vizhome
+          POSTGRES_USER: vizhome
+          POSTGRES_PASSWORD: vizhome
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      PLAYWRIGHT_BASE_URL: http://localhost:3000
+      NUXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+      # Test accounts (TODO : wire to backend seed script, see below).
+      E2E_USER_EMAIL: e2e-user@vizhome.test
+      E2E_USER_PASSWORD: TestPassword!234
+      E2E_FREE_USER_EMAIL: e2e-free@vizhome.test
+      E2E_FREE_USER_PASSWORD: TestPassword!234
+
+    steps:
+      - name: Checkout frontend
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install frontend deps
+        run: npm ci
+
+      # TODO : remplacer ce bloc par un checkout du repo backend + setup
+      # Python + `python manage.py migrate` + `python manage.py seed_e2e_users`
+      # (commande à créer côté backend) qui doit créer :
+      #   - un compte E2E_USER_EMAIL (plan libre)
+      #   - un compte E2E_FREE_USER_EMAIL (plan free, forcé)
+      # Tant que ce step n'est pas en place, les tests E2E ne valent pas
+      # grand chose en CI ; d'où `continue-on-error: true` plus haut.
+      - name: Backend (TODO seed)
+        run: |
+          echo "::warning::Backend seeding not yet wired. Tests will run but most will fail until 'manage.py seed_e2e_users' is added to the backend."
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build frontend (production)
+        run: npm run build
+
+      - name: Start frontend (background)
+        run: |
+          node .output/server/index.mjs &
+          echo $! > .nuxt-pid
+        env:
+          PORT: '3000'
+          HOST: '0.0.0.0'
+
+      - name: Wait for frontend to be reachable
+        run: npx wait-on http://localhost:3000 -t 60000
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+
+      - name: Stop frontend
+        if: always()
+        run: |
+          if [ -f .nuxt-pid ]; then kill $(cat .nuxt-pid) || true; fi
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Upload Playwright test results (screenshots, videos)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+          retention-days: 7

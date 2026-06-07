@@ -87,14 +87,14 @@
               <CardDescription>Pour les professionnels</CardDescription>
               <div class="mt-4">
                 <span class="text-4xl font-bold">{{
-                  billingCycle === 'monthly' ? '49€' : '39€'
+                  billingCycle === 'monthly' ? '19€' : '15€'
                 }}</span>
                 <span class="text-muted-foreground text-sm">/mois</span>
                 <div
                   v-if="billingCycle === 'yearly'"
                   class="text-xs text-muted-foreground mt-1"
                 >
-                  Facturé annuellement (468€)
+                  Facturé annuellement (180€)
                 </div>
               </div>
             </CardHeader>
@@ -135,14 +135,14 @@
               <CardDescription>Pour les agences et studios</CardDescription>
               <div class="mt-4">
                 <span class="text-4xl font-bold">{{
-                  billingCycle === 'monthly' ? '199€' : '159€'
+                  billingCycle === 'monthly' ? '99€' : '79€'
                 }}</span>
                 <span class="text-muted-foreground text-sm">/mois</span>
                 <div
                   v-if="billingCycle === 'yearly'"
                   class="text-xs text-muted-foreground mt-1"
                 >
-                  Facturé annuellement (1 908€)
+                  Facturé annuellement (948€) — sur devis pour plus
                 </div>
               </div>
             </CardHeader>
@@ -288,18 +288,21 @@ import { ref } from 'vue'
 
 const billingCycle = ref<'monthly' | 'yearly'>('monthly')
 
+// ⚠️ Aligné avec apps/billing/plans.py côté backend.
+// Si tu modifies ici, modifie aussi PLAN_CONFIG côté Django + relance
+// `setup_stripe_products` pour propager les changements à Stripe.
 const freemiumFeatures = [
-  '3 projets simultanés',
-  '10 rendus HD par mois',
-  'Bibliothèque standard (500 matériaux)',
+  'Projets illimités',
+  '5 rendus IA par mois',
+  '1 GB de stockage',
   'Exports JPEG/PNG',
-  'Support communautaire',
+  'Support communautaire (forum)',
 ]
 
 const proFeatures = [
   'Projets illimités',
-  '50 rendus HD par mois',
-  'Bibliothèque premium (5 000 matériaux)',
+  '50 rendus IA par mois',
+  '5 GB de stockage',
   'Export 360° et visites virtuelles',
   'Support prioritaire par email',
   'Partage sécurisé des rendus',
@@ -307,32 +310,32 @@ const proFeatures = [
 
 const enterpriseFeatures = [
   'Projets et utilisateurs illimités',
-  'Rendus illimités',
-  'Bibliothèque complète (10 000+ matériaux)',
+  'Rendus IA quasi-illimités (9 999/mois)',
+  '1 TB de stockage',
   'Intégration VR complète',
   'API développeur',
   'Gestion des équipes et permissions',
-  'Support dédié 24/7',
+  'Support dédié',
 ]
 
 const comparisonRows = [
   {
     label: 'Nombre de projets',
-    free: '3',
+    free: 'Illimité',
     pro: 'Illimité',
     enterprise: 'Illimité',
   },
   {
-    label: 'Rendus HD par mois',
-    free: '10',
+    label: 'Rendus IA par mois',
+    free: '5',
     pro: '50',
-    enterprise: 'Illimité',
+    enterprise: '9 999',
   },
   {
-    label: 'Bibliothèque de matériaux',
-    free: '500',
-    pro: '5 000',
-    enterprise: '10 000+',
+    label: 'Stockage',
+    free: '1 GB',
+    pro: '5 GB',
+    enterprise: '1 TB',
   },
   {
     label: 'Génération 3D automatique',

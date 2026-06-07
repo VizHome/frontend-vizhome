@@ -78,6 +78,40 @@
               </div>
 
               <div class="space-y-2">
+                <Label for="pseudo" class="text-sm font-medium">
+                  Pseudo
+                  <span class="text-muted-foreground font-normal">
+                    (public, immuable)
+                  </span>
+                </Label>
+                <div class="relative">
+                  <AtSignIcon
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                  />
+                  <Input
+                    id="pseudo"
+                    v-model="pseudo"
+                    type="text"
+                    autocomplete="username"
+                    placeholder="jean_dupont"
+                    class="pl-10"
+                    :class="{ 'ring-1 ring-destructive': formErrors.pseudo }"
+                    @input="onPseudoInput"
+                  />
+                </div>
+                <p
+                  v-if="formErrors.pseudo"
+                  class="text-xs text-destructive mt-1"
+                >
+                  {{ formErrors.pseudo }}
+                </p>
+                <p v-else class="text-xs text-muted-foreground mt-1">
+                  3 à 30 caractères, lettres/chiffres/-/_, commence par une lettre.
+                  C'est ton identité publique (forum, support).
+                </p>
+              </div>
+
+              <div class="space-y-2">
                 <Label for="email" class="text-sm font-medium">Email</Label>
                 <div class="relative">
                   <MailIcon
@@ -139,7 +173,7 @@
                 </p>
 
                 <div class="mt-1">
-                  <PasswordStrength :password="password" />
+                  <PasswordStrength :value="password" />
                 </div>
               </div>
 
@@ -244,14 +278,11 @@
 
 <script lang="ts" setup>
 import {
+  AtSignIcon,
   MailIcon,
   LockIcon,
   EyeIcon,
   EyeOffIcon,
-  RocketIcon,
-  PaletteIcon,
-  CloudIcon,
-  ShareIcon,
 } from 'lucide-vue-next'
 import { ref, reactive, computed } from 'vue'
 import { toast } from 'vue-sonner'
@@ -262,11 +293,17 @@ const { fetchMe } = useUser()
 // État du formulaire
 const firstName = ref('')
 const lastName = ref('')
+const pseudo = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const acceptTerms = ref(false)
 const showPassword = ref(false)
+
+// Sanitize input pseudo : minuscule + retire les chars non autorisés à la volée
+function onPseudoInput() {
+  pseudo.value = pseudo.value.replace(/[^a-zA-Z0-9_-]/g, '')
+}
 const showConfirmPassword = ref(false)
 const isSubmitting = ref(false)
 const submitError = ref('')
@@ -275,11 +312,15 @@ const submitError = ref('')
 const formErrors = reactive({
   firstName: '',
   lastName: '',
+  pseudo: '',
   email: '',
   password: '',
   confirmPassword: '',
   terms: '',
 })
+
+// Regex unique (cohérente avec le validator backend)
+const PSEUDO_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]{2,29}$/
 
 // Validation
 const validateForm = () => {
@@ -299,6 +340,16 @@ const validateForm = () => {
   // Nom
   if (!lastName.value.trim()) {
     formErrors.lastName = 'Le nom est requis'
+    isValid = false
+  }
+
+  // Pseudo
+  if (!pseudo.value.trim()) {
+    formErrors.pseudo = 'Le pseudo est requis'
+    isValid = false
+  } else if (!PSEUDO_REGEX.test(pseudo.value.trim())) {
+    formErrors.pseudo =
+      '3-30 caractères : commence par une lettre, puis lettres/chiffres/-/_'
     isValid = false
   }
 
@@ -343,13 +394,14 @@ const handleSubmit = async () => {
   try {
     const user = await auth.register({
       email: email.value.trim().toLowerCase(),
+      pseudo: pseudo.value.trim(),
       password: password.value,
       password_confirm: confirmPassword.value,
       first_name: firstName.value.trim(),
       last_name: lastName.value.trim(),
     })
     await fetchMe()
-    toast.success(`Compte créé. Bienvenue ${user.first_name || user.email} !`)
+    toast.success(`Compte créé. Bienvenue ${user.pseudo || user.email} !`)
     await navigateTo('/render')
   } catch (e: unknown) {
     const err = e as { data?: Record<string, unknown>; statusCode?: number }
@@ -361,6 +413,7 @@ const handleSubmit = async () => {
       Object.entries(data).forEach(([field, messages]) => {
         const msg = Array.isArray(messages) ? messages.join(' ') : String(messages)
         if (field === 'email') formErrors.email = msg
+        else if (field === 'pseudo') formErrors.pseudo = msg
         else if (field === 'password') formErrors.password = msg
         else if (field === 'password_confirm') formErrors.confirmPassword = msg
         else if (field === 'first_name') formErrors.firstName = msg
@@ -383,29 +436,29 @@ definePageMeta({
 // Composant pour indiquer la force du mot de passe
 const PasswordStrength = defineComponent({
   props: {
-    password: {
+    value: {
       type: String,
       required: true,
     },
   },
   setup(props) {
     const strengthPercent = computed(() => {
-      if (!props.password) return 0
+      if (!props.value) return 0
 
       let strength = 0
-      const password = props.password
+      const pwd = props.value
 
       // Longueur minimale
-      if (password.length >= 8) strength += 25
+      if (pwd.length >= 8) strength += 25
 
       // Contient des chiffres
-      if (/\d/.test(password)) strength += 25
+      if (/\d/.test(pwd)) strength += 25
 
       // Contient des minuscules et des majuscules
-      if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25
+      if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) strength += 25
 
       // Contient des caractères spéciaux
-      if (/[^a-zA-Z0-9]/.test(password)) strength += 25
+      if (/[^a-zA-Z0-9]/.test(pwd)) strength += 25
 
       return strength
     })

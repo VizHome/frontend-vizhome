@@ -207,6 +207,54 @@ export default defineNuxtPlugin(async () => {
 
 `.client.ts` ⇒ pas exécuté en SSR (pas de localStorage côté serveur).
 
+### 8. Layout admin avec sidebar shadcn-vue
+
+Le panel `/admin/*` utilise le pattern shadcn-vue `SidebarProvider` :
+
+```vue
+<!-- layouts/admin.vue -->
+<SidebarProvider>
+  <AdminSidebar />
+  <SidebarInset>
+    <header class="sticky top-0 h-14 ...">
+      <SidebarTrigger />
+      <Breadcrumb>...</Breadcrumb>
+      <Actions />  <!-- refresh + theme -->
+    </header>
+    <main><slot /></main>
+  </SidebarInset>
+</SidebarProvider>
+```
+
+`AdminSidebar.vue` expose 3 groupes :
+- **Pilotage** : Dashboard + Analytics
+- **Modération** : Users + Renders + Forum (avec badge dynamique `uploads_orphan` si > 10)
+- **Système** : Billing + Journal d'audit
+
+Le mode `collapsible="icon"` permet le repli (icônes seules) via `SidebarTrigger`.
+
+### 9. Timeline GitHub-style pour le forum
+
+Les pages `/forum/topic/:id` rendent une **timeline verticale connectée** inspirée
+de l'UI GitHub Issues :
+
+```
+[avatar]──┬── [Card: topic content]    ← 1er post (avatar + card avec arrow notch)
+          │
+          ├── [event icon] {Actor} a épinglé ce sujet  ← ForumTimelineEvent (inline)
+          │
+          ├── [avatar]── [Card: reply content]         ← ForumReplyCard
+          │
+          └── [avatar]── [Card: composer "Ajouter un commentaire"]
+```
+
+Implémentation : un `<ul>` avec une ligne verticale absolue derrière la colonne
+avatar (`absolute left-5 top-6 bottom-6 w-px bg-border`). Chaque item est un
+`<li>` avec avatar externe (z-10 par-dessus la ligne) + card via classe utilitaire
+`.github-arrow-left` (petit triangle CSS pointant vers l'avatar via `::before` +
+`::after`). Les badges Auteur / Staff / Toi remplacent les icônes simples pour
+l'identité visuelle.
+
 ## Choix techniques
 
 ### Pourquoi shadcn-vue plutôt qu'un design system pré-fait ?
@@ -263,8 +311,32 @@ via `runtimeConfig.public.apiUrl` (env `NUXT_PUBLIC_API_URL`).
 | `useBilling` | `/billing/plans`, `/me/subscription/*`, `/me/invoices` |
 | `use2fa` | `/me/2fa/*`, `/auth/2fa/verify` |
 | `useProjects` | `/projects/*` |
-| `useAiRender` | `/renders/*` |
+| `useAiRender` | `/renders/*`, `/renders/{id}/events` (SSE) |
 | `useGallery` | `/renders/?status=done` |
+| `useSSE` (helper) | flux Server-Sent Events Django authentifié (Bearer JWT) |
+
+### Suivi temps réel des rendus IA (Server-Sent Events)
+
+Le pipeline de génération IA utilise un flux SSE plutôt qu'un polling
+HTTP. Le frontend ouvre `/api/v1/renders/{id}/events` après le `POST
+/renders/` et reçoit un événement à chaque changement de statut. Le
+backend (`apps/renders/sse.py`) implémente la vue en `StreamingHttpResponse`
+Django pur (pas de Channels) avec un re-poll DB côté serveur toutes les
+1.5s : suffisant pour un job IA, trivial à wiring, compatible WSGI sync.
+
+`EventSource` natif n'accepte pas de headers, donc côté navigateur on
+utilise `event-source-polyfill` pour injecter le Bearer JWT. La logique
+est encapsulée dans `useSSE.ts` (cleanup automatique en `onScopeDispose`).
+
+`useAiRender` persiste `currentRenderId` dans `localStorage` (clé
+`vizhome:current_render_id`) : si l'utilisateur refresh la page pendant
+une génération en cours, le composable reconnecte le flux SSE
+automatiquement au mount et termine la promesse comme si rien ne s'était
+passé.
+
+Limite de scaling : chaque connexion SSE bloque un worker gunicorn sync.
+En prod, basculer sur `gunicorn -k gthread --threads 4 --workers 4`
+permet d'absorber ~16 connexions concurrentes par instance.
 
 ## Internationalisation
 

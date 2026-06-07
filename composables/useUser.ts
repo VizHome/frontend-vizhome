@@ -17,11 +17,15 @@ export type RenderQuality = 'draft' | 'standard' | 'high'
 export type RenderFormat = 'png' | 'jpg' | 'webp'
 
 export interface UserProfile {
+  id: number | null
   name: string
+  pseudo: string
   email: string
   avatarUrl: string
   plan: UserPlan
   isLoggedIn: boolean
+  isStaff: boolean
+  isBannedFromForum: boolean
   joinedAt: string
 }
 
@@ -91,11 +95,14 @@ interface ApiUserPreferences {
 interface ApiMe {
   id: number
   email: string
+  pseudo: string
   first_name: string
   last_name: string
   name: string
   avatar_url: string
   plan: UserPlan
+  is_staff: boolean
+  is_banned_from_forum: boolean
   date_joined: string
   stats: ApiUserStats
   preferences: ApiUserPreferences
@@ -115,11 +122,15 @@ interface ApiSession {
 
 // ─── Valeurs par défaut (avant fetch) ───────────────────────────────────────
 const DEFAULT_PROFILE: UserProfile = {
+  id: null,
   name: '',
+  pseudo: '',
   email: '',
   avatarUrl: '',
   plan: 'free',
   isLoggedIn: false,
+  isStaff: false,
+  isBannedFromForum: false,
   joinedAt: '',
 }
 
@@ -222,11 +233,15 @@ export function useUser() {
     try {
       const data = await api<ApiMe>('/me/')
       user.value = {
+        id: data.id,
         name: data.name,
+        pseudo: data.pseudo || '',
         email: data.email,
         avatarUrl: data.avatar_url,
         plan: data.plan,
         isLoggedIn: true,
+        isStaff: !!data.is_staff,
+        isBannedFromForum: !!data.is_banned_from_forum,
         joinedAt: data.date_joined,
       }
       stats.value = mapStats(data.stats)

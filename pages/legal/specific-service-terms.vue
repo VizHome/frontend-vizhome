@@ -212,7 +212,7 @@
 
       <div class="mt-12 flex flex-wrap justify-center gap-4">
         <Button variant="outline" as-child>
-          <NuxtLink to="/legal/terms"> Conditions Générales </NuxtLink>
+          <NuxtLink to="/legal/terms-of-use"> Conditions Générales </NuxtLink>
         </Button>
         <Button variant="outline" as-child>
           <NuxtLink to="/legal/privacy-policy">
@@ -220,7 +220,7 @@
           </NuxtLink>
         </Button>
         <Button variant="outline" as-child>
-          <NuxtLink to="/marketing/pricing"> Nos Tarifs </NuxtLink>
+          <NuxtLink to="/pricing"> Nos Tarifs </NuxtLink>
         </Button>
       </div>
     </div>
@@ -238,5 +238,11 @@ import {
   AlertCircleIcon,
   HeadphonesIcon,
 } from 'lucide-vue-next'
+
+useSeo({
+  title: 'Conditions spécifiques des services',
+  description:
+    'Modalités d\'accès aux services VizHome : abonnements, traitement d\'images, génération IA, limites d\'usage et responsabilités spécifiques par offre.',
+})
 
 </script>

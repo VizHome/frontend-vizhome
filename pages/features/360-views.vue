@@ -225,6 +225,13 @@ import {
   ScanSearchIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Vues 360 et navigation 3D immersive',
+  description:
+    'Quatre modes de navigation 3D : orbite, première personne, visite guidée, vue de dessus. Importez GLB, GLTF, OBJ, FBX, STL et explorez vos espaces.',
+  ogImage: '/images/generate/image_generate.png',
+})
+
 const navModesBadges = [
   { icon: RotateCcwIcon, label: 'Orbite' },
   { icon: PersonStandingIcon, label: 'Première personne' },

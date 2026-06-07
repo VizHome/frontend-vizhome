@@ -64,9 +64,9 @@
               </Avatar>
             </div>
             <div class="text-sm">
-              <div class="font-semibold">+2 500 professionnels</div>
+              <div class="font-semibold">Early access ouvert</div>
               <div class="text-muted-foreground text-xs">
-                ★★★★★ 4.9/5 · Architectes, designers, promoteurs
+                Architectes, designers, promoteurs — rejoignez les premiers utilisateurs
               </div>
             </div>
           </div>
@@ -123,7 +123,7 @@
           <Card
             v-for="mode in modes"
             :key="mode.title"
-            class="rounded-xl border shadow-sm overflow-hidden group hover:shadow-md transition-shadow"
+            class="rounded-xl border shadow-sm overflow-hidden group hover:shadow-md transition-shadow pt-0"
           >
             <div
               class="aspect-video relative overflow-hidden"
@@ -517,8 +517,8 @@
               Prêt à transformer vos espaces ?
             </h2>
             <p class="text-muted-foreground mb-8 max-w-md mx-auto">
-              Rejoignez 2 500 professionnels qui utilisent VizHome pour créer
-              des rendus 3D photoréalistes.
+              Rejoignez les premiers utilisateurs de VizHome et façonnez avec
+              nous l'outil de rendu 3D que les architectes méritent.
             </p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" class="rounded-full gap-2" as-child>
@@ -546,7 +546,6 @@ import {
   SparklesIcon,
   PencilIcon,
   BoxIcon,
-  LightbulbIcon,
   PaletteIcon,
   Globe2Icon,
   SunIcon,
@@ -560,6 +559,39 @@ import {
 } from 'lucide-vue-next'
 
 const { isAuthenticated } = useAuth()
+
+useSeo({
+  title: 'Rendu 3D par IA pour architectes et designers',
+  description:
+    'VizHome transforme photos, croquis et prompts en rendus 3D en moins de 30 secondes : éditeur Three.js, éclairage IA, matériaux PBR, partage instantané.',
+  ogImage: '/images/generate/image_generate.png',
+  jsonLd: [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      'name': 'VizHome',
+      'url': 'https://vizhome.fr',
+      'logo': 'https://vizhome.fr/favicon.ico',
+      'sameAs': [
+        'https://github.com/VizHome',
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      'name': 'VizHome',
+      'applicationCategory': 'DesignApplication',
+      'operatingSystem': 'Web',
+      'description':
+        'Plateforme SaaS de rendu 3D par IA : croquis 2D, génération par prompt, éditeur Three.js temps réel.',
+      'offers': {
+        '@type': 'Offer',
+        'price': '0',
+        'priceCurrency': 'EUR',
+      },
+    },
+  ],
+})
 
 // ── Social proof avatars ───────────────────────────────────────────────────
 const avatars = [
@@ -631,12 +663,15 @@ const modes = [
   },
 ]
 
-// ── Stats ──────────────────────────────────────────────────────────────────
+// ── Stats — caractéristiques produit factuelles, pas de chiffres d'usage
+// fabriqués (l'ancienne version annonçait "2 500+ utilisateurs", "4.9/5",
+// "10K+ matériaux" qui étaient tous inventés). À remplacer par de vrais
+// chiffres une fois qu'on aura de la data réelle (renders générés, etc.).
 const stats = [
-  { value: '2 500+', label: 'Utilisateurs actifs' },
-  { value: '< 30s', label: 'Temps de génération' },
-  { value: '10K+', label: 'Matériaux disponibles' },
-  { value: '4.9/5', label: 'Note moyenne' },
+  { value: '< 30s', label: 'Temps de génération moyen' },
+  { value: '3', label: 'Modes créatifs (croquis, prompt, 3D)' },
+  { value: '5+', label: "Formats d'import (glb, gltf, obj, fbx, stl)" },
+  { value: 'Open', label: 'Early access — sans liste d\'attente' },
 ]
 
 // ── Fonctionnalités ────────────────────────────────────────────────────────

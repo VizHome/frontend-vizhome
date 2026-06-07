@@ -4,25 +4,42 @@ Guide de mise en production du frontend Nuxt 4.
 
 ## Architecture cible
 
+Le frontend Nuxt rejoint le **Traefik géré par le repo `backend-vizhome`**.
+Pas de Traefik dédié côté frontend : on partage le network Docker externe
+`vizhome_proxy` créé par le backend.
+
 ```
-                Internet
-                   │
-                   ▼
-         ┌────────────────┐
-         │    Traefik     │  HTTPS + Let's Encrypt
-         └────┬───────────┘
-              │
-              ▼  Host(`app.vizhome.fr`)
-         ┌────────────────┐
-         │ vizhome-app    │  Nuxt 4 SSR (node)
-         │ port 3000      │
-         └────┬───────────┘
-              │
-              ▼  Bearer JWT
-         ┌────────────────┐
-         │ api.vizhome.fr │  → backend Django séparé
-         └────────────────┘
+                Internet (HTTPS + HTTP/3)
+                       │
+                       ▼
+              ┌──────────────────┐
+              │     Traefik      │  géré par backend-vizhome
+              │  vizhome_proxy   │
+              └────────┬─────────┘
+                       │
+       Host(`vizhome.fr`) + Host(`www.vizhome.fr` → redirect apex)
+                       │
+                       ▼
+              ┌──────────────────┐
+              │   vizhome-frontend│  Nuxt 4 SSR (port 3000)
+              │  - security headers (Traefik)
+              │  - compress (Traefik)
+              │  - rate-limit (Traefik)
+              │  - /api/* proxy Nitro → api.vizhome.fr
+              └────────┬─────────┘
+                       │
+                       ▼  via proxy Nitro côté serveur OU appel direct côté browser
+              ┌──────────────────┐
+              │  api.vizhome.fr  │  → Django (backend-vizhome)
+              └──────────────────┘
 ```
+
+Avantage de cette architecture :
+* Un **seul** instance Traefik à gérer pour tout l'écosystème
+* Certificats Let's Encrypt mutualisés
+* Middlewares uniformes (security headers, compress, rate-limit) appliqués
+  partout sans duplication
+* HTTP/3 et HTTP/2 pour le frontend "gratuitement"
 
 ## Build Docker
 
@@ -74,36 +91,49 @@ côté backend.
 
 ## Déploiement avec Docker Compose + Traefik
 
-Compose dédié `docker-compose.prod.yml` :
+Le fichier `docker-compose.prod.yml` ne contient **que le service Nuxt**.
+Il rejoint le network `vizhome_proxy` (external) déjà créé par le backend.
 
-```yaml
-services:
-  app:
-    image: vizhome-app:prod
-    container_name: vizhome-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file: .env.prod
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:3000/"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.app.rule=Host(`app.vizhome.fr`)
-      - traefik.http.routers.app.entrypoints=websecure
-      - traefik.http.routers.app.tls.certresolver=letsencrypt
-      - traefik.http.services.app.loadbalancer.server.port=3000
+### Pré-requis
+
+Le stack backend doit déjà tourner (cf `backend-vizhome/docs/DEPLOYMENT.md`).
+En particulier :
+* `docker network create vizhome_proxy` a été lancé
+* Traefik est up avec sa config dynamique (`security-headers`, `compress`,
+  `rate-limit-global`, `redirect-www-to-apex`)
+
+### Démarrage
+
+```bash
+cd /opt/frontend-vizhome
+cp .env.example .env.prod
+nano .env.prod  # remplir les NUXT_PUBLIC_* + FRONTEND_HOST
+
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
 ```
 
-::: tip
-Si tu déploies le frontend, le backend et la doc sur le **même serveur**,
-ajoute ce service au `docker-compose.prod.yml` du backend pour avoir
-un seul Traefik partagé.
-:::
+### Variables d'env spécifiques au compose prod
+
+| Variable | Défaut | Rôle |
+|---|---|---|
+| `FRONTEND_HOST` | `vizhome.fr` | Host servi par Traefik (apex) |
+| `NUXT_API_PROXY_TARGET` | `https://api.vizhome.fr` | Backend cible du proxy Nitro `/api/*` |
+| `NUXT_PUBLIC_API_URL` | `/api/v1` | URL d'API côté browser (relative → passe par proxy Nitro) |
+| `VIZHOME_FRONTEND_IMAGE` | `ghcr.io/vizhome/vizhome-frontend:latest` | Image à puller |
+
+### Routage géré côté Traefik (cf backend-vizhome)
+
+| Host | Service | Middlewares |
+|---|---|---|
+| `vizhome.fr` | frontend (Nuxt) | security-headers, compress, rate-limit-global |
+| `www.vizhome.fr` | frontend (redirect 301 → apex) | redirect-www-to-apex |
+| `api.vizhome.fr` | api Django | security-headers, compress, rate-limit-global |
+| `cdn.vizhome.fr` | minio S3 API | security-headers, compress |
+| `minio.vizhome.fr` | minio console admin | security-headers |
+| `traefik.vizhome.fr` | dashboard Traefik | dashboard-auth + security-headers |
+
+Pas besoin de définir le router sur `www.vizhome.fr` côté frontend : le
+backend Traefik gère la redirection via le middleware `redirect-www-to-apex`.
 
 ## Déploiement sur Vercel
 

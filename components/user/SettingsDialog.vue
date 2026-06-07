@@ -30,6 +30,219 @@
 
         <!-- Contenu section -->
         <div class="flex-1 overflow-y-auto p-6">
+          <!-- ── Compte (profil édition + email/pseudo read-only) ─── -->
+          <section v-if="activeSection === 'account'">
+            <div class="mb-4">
+              <p class="text-sm font-semibold">Compte</p>
+              <p class="text-xs text-muted-foreground mt-0.5">
+                Modifie ton nom et ton avatar. Le pseudo et l'email sont
+                immuables — contacte le support si tu dois en changer.
+              </p>
+            </div>
+
+            <div class="flex flex-col gap-5">
+              <!-- Avatar -->
+              <div class="flex flex-col items-center gap-3">
+                <div class="relative">
+                  <Avatar class="h-20 w-20">
+                    <AvatarImage :src="accountForm.avatarUrl" :alt="accountForm.name" />
+                    <AvatarFallback class="text-lg">{{ accountInitials }}</AvatarFallback>
+                  </Avatar>
+                  <button
+                    type="button"
+                    class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-sm transition hover:bg-primary/90"
+                    title="Changer l'avatar"
+                    @click="triggerAvatarInput"
+                  >
+                    <Camera class="h-3.5 w-3.5" />
+                  </button>
+                  <input
+                    ref="avatarInputRef"
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    @change="handleAvatarFile"
+                  />
+                </div>
+                <p class="text-[10px] text-muted-foreground">
+                  JPG, PNG — max 2 Mo
+                </p>
+                <p v-if="accountErrors.avatar" class="text-xs text-destructive">
+                  {{ accountErrors.avatar }}
+                </p>
+              </div>
+
+              <!-- Nom -->
+              <div class="flex flex-col gap-1.5">
+                <Label for="acct-name">Nom complet</Label>
+                <Input
+                  id="acct-name"
+                  v-model="accountForm.name"
+                  type="text"
+                  placeholder="Jean Dupont"
+                  :class="{ 'ring-1 ring-destructive': accountErrors.name }"
+                />
+                <p v-if="accountErrors.name" class="text-xs text-destructive">
+                  {{ accountErrors.name }}
+                </p>
+              </div>
+
+              <!-- Pseudo (read-only, immuable) -->
+              <div class="flex flex-col gap-1.5">
+                <Label for="acct-pseudo">Pseudo public</Label>
+                <div class="relative">
+                  <AtSign class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input
+                    id="acct-pseudo"
+                    :value="user.pseudo"
+                    readonly
+                    disabled
+                    class="cursor-not-allowed bg-muted/50 pl-9 font-medium"
+                  />
+                </div>
+                <p class="text-[10px] text-muted-foreground">
+                  Ton identité publique sur le forum et le support.
+                </p>
+              </div>
+
+              <!-- Email (read-only) -->
+              <div class="flex flex-col gap-1.5">
+                <Label for="acct-email">Email</Label>
+                <Input
+                  id="acct-email"
+                  :value="user.email"
+                  type="email"
+                  readonly
+                  disabled
+                  class="cursor-not-allowed bg-muted/50"
+                />
+              </div>
+
+              <!-- Footer actions -->
+              <div class="flex items-center justify-end gap-2">
+                <span
+                  v-if="accountSaveSuccess"
+                  class="flex items-center gap-1.5 text-xs text-green-600 mr-auto"
+                >
+                  <CheckCircle2 class="h-3.5 w-3.5" />
+                  Profil mis à jour
+                </span>
+                <Button
+                  :disabled="isSavingAccount || accountSaveSuccess"
+                  @click="saveAccount"
+                >
+                  <Loader2 v-if="isSavingAccount" class="h-4 w-4 mr-2 animate-spin" />
+                  {{ isSavingAccount ? 'Sauvegarde…' : 'Sauvegarder' }}
+                </Button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ── Utilisation ──────────────────────────────────────── -->
+          <section v-if="activeSection === 'usage'">
+            <div class="mb-4">
+              <p class="text-sm font-semibold">Utilisation</p>
+              <p class="text-xs text-muted-foreground mt-0.5">
+                Ta consommation ce mois — plan actuel
+                <span
+                  class="ml-1 inline-flex rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                  :class="planBadgeClass"
+                >{{ planLabel }}</span>
+              </p>
+            </div>
+
+            <div class="flex flex-col gap-4">
+              <!-- Renders -->
+              <div class="rounded-lg border p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <div>
+                    <p class="text-sm font-medium">Renders ce mois</p>
+                    <p class="text-xs text-muted-foreground">
+                      Quota mensuel selon ton plan
+                    </p>
+                  </div>
+                  <p class="text-lg font-bold tabular-nums">
+                    {{ stats?.rendersThisMonth ?? 0 }}
+                    <span class="text-xs font-normal text-muted-foreground">
+                      / {{ stats?.rendersLimit ?? 0 }}
+                    </span>
+                  </p>
+                </div>
+                <div class="h-2 overflow-hidden rounded-full bg-muted">
+                  <div
+                    class="h-full rounded-full transition-all"
+                    :class="usageTone(rendersUsedPct)"
+                    :style="{ width: `${Math.max(2, rendersUsedPct)}%` }"
+                  />
+                </div>
+                <p class="mt-1.5 text-[10px] text-muted-foreground">
+                  {{ rendersUsedPct }} % utilisé
+                </p>
+              </div>
+
+              <!-- Stockage -->
+              <div class="rounded-lg border p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <div>
+                    <p class="text-sm font-medium">Stockage</p>
+                    <p class="text-xs text-muted-foreground">
+                      Espace occupé par tes projets et modèles 3D
+                    </p>
+                  </div>
+                  <p class="text-lg font-bold tabular-nums">
+                    {{ (stats?.storageUsedGb ?? 0).toFixed(2) }} Go
+                    <span class="text-xs font-normal text-muted-foreground">
+                      / {{ stats?.storageLimitGb ?? 0 }} Go
+                    </span>
+                  </p>
+                </div>
+                <div class="h-2 overflow-hidden rounded-full bg-muted">
+                  <div
+                    class="h-full rounded-full transition-all"
+                    :class="usageTone(storageUsedPct)"
+                    :style="{ width: `${Math.max(2, storageUsedPct)}%` }"
+                  />
+                </div>
+                <p class="mt-1.5 text-[10px] text-muted-foreground">
+                  {{ storageUsedPct }} % utilisé
+                </p>
+              </div>
+
+              <!-- Projets totaux + CTA upgrade si free -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="rounded-lg border p-4">
+                  <p class="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                    Projets sauvegardés
+                  </p>
+                  <p class="mt-1 text-2xl font-bold tabular-nums">
+                    {{ stats?.totalProjects ?? 0 }}
+                  </p>
+                </div>
+                <div class="rounded-lg border bg-primary/5 p-4 flex flex-col justify-between">
+                  <div>
+                    <p class="text-xs uppercase tracking-wider text-primary font-semibold">
+                      Besoin de plus ?
+                    </p>
+                    <p class="mt-1 text-xs text-muted-foreground">
+                      Passe sur Pro ou Enterprise pour augmenter tes quotas.
+                    </p>
+                  </div>
+                  <Button
+                    v-if="user?.plan !== 'enterprise'"
+                    as-child
+                    size="sm"
+                    class="mt-3 w-fit rounded-full gap-1.5"
+                  >
+                    <NuxtLink to="/account/billing" @click="open = false">
+                      <Sparkles class="h-3.5 w-3.5" />
+                      Mettre à niveau
+                    </NuxtLink>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <!-- ── Apparence ─────────────────────────────────────────── -->
           <section v-if="activeSection === 'appearance'">
             <div class="mb-4">
@@ -706,21 +919,27 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, type Component } from 'vue'
 import {
+  Accessibility,
+  Activity,
+  AtSign,
+  Bell,
+  Camera,
   CheckCircle2,
   Eye,
   EyeOff,
+  Globe,
+  Image,
+  Loader2,
+  Lock,
   Monitor,
-  Smartphone,
-  Tablet,
-  Sun,
   Moon,
   Palette,
-  Globe,
-  Bell,
-  Image,
-  Lock,
   ShieldCheck,
-  Accessibility,
+  Smartphone,
+  Sparkles,
+  Sun,
+  Tablet,
+  User as UserIcon,
 } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import type {
@@ -743,7 +962,20 @@ const {
   fetchMe,
   revokeSession,
   changePassword: apiChangePassword,
+  planLabel,
 } = useUser()
+
+// Couleur du badge plan (cohérent avec UserNav)
+const planBadgeClass = computed(() => {
+  switch (user.value?.plan) {
+    case 'pro':
+      return 'bg-primary/10 text-primary'
+    case 'enterprise':
+      return 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'
+    default:
+      return 'bg-muted text-muted-foreground'
+  }
+})
 const twoFactor = use2fa()
 const colorMode = useColorMode()
 
@@ -755,13 +987,15 @@ watch(open, async newVal => {
     try {
       await fetchSessions()
     } catch (e) {
-      console.warn('[settings] fetch sessions failed', e)
+      logger.warn('[settings] fetch sessions failed', e)
     }
   }
 })
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
 type SectionId =
+  | 'account'
+  | 'usage'
   | 'appearance'
   | 'language'
   | 'notifications'
@@ -770,9 +1004,11 @@ type SectionId =
   | 'security'
   | 'accessibility'
 
-const activeSection = ref<SectionId>('appearance')
+const activeSection = ref<SectionId>('account')
 
 const navItems: { id: SectionId; icon: Component; label: string }[] = [
+  { id: 'account', icon: UserIcon, label: 'Compte' },
+  { id: 'usage', icon: Activity, label: 'Utilisation' },
   { id: 'appearance', icon: Palette, label: 'Apparence' },
   { id: 'language', icon: Globe, label: 'Langue' },
   { id: 'notifications', icon: Bell, label: 'Notifications' },
@@ -781,6 +1017,101 @@ const navItems: { id: SectionId; icon: Component; label: string }[] = [
   { id: 'security', icon: ShieldCheck, label: 'Sécurité' },
   { id: 'accessibility', icon: Accessibility, label: 'Accessibilité' },
 ]
+
+// ─── Compte : form local (name + avatar uploadable) ─────────────────────
+const accountForm = reactive({
+  name: '',
+  avatarUrl: '',
+})
+const accountErrors = reactive({ name: '', avatar: '' })
+const isSavingAccount = ref(false)
+const accountSaveSuccess = ref(false)
+const avatarInputRef = ref<HTMLInputElement>()
+
+// Sync form depuis user à l'ouverture du dialog (et au switch section)
+watch(
+  [open, () => user.value.id],
+  () => {
+    accountForm.name = user.value.name
+    accountForm.avatarUrl = user.value.avatarUrl
+    accountErrors.name = ''
+    accountErrors.avatar = ''
+  },
+  { immediate: true },
+)
+
+function triggerAvatarInput() {
+  avatarInputRef.value?.click()
+}
+
+function handleAvatarFile(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  if (file.size > 2 * 1024 * 1024) {
+    accountErrors.avatar = 'Fichier trop volumineux (max 2 Mo).'
+    return
+  }
+  accountErrors.avatar = ''
+  const reader = new FileReader()
+  reader.onload = ev => {
+    accountForm.avatarUrl = (ev.target?.result as string) || ''
+  }
+  reader.readAsDataURL(file)
+}
+
+async function saveAccount() {
+  accountErrors.name = ''
+  if (!accountForm.name.trim()) {
+    accountErrors.name = 'Le nom est requis.'
+    return
+  }
+  isSavingAccount.value = true
+  try {
+    const { updateProfile } = useUser()
+    await updateProfile({
+      name: accountForm.name.trim(),
+      avatarUrl: accountForm.avatarUrl,
+    })
+    accountSaveSuccess.value = true
+    toast.success('Profil mis à jour.')
+    setTimeout(() => { accountSaveSuccess.value = false }, 2000)
+  } catch (e: unknown) {
+    const err = e as { data?: { detail?: string } }
+    toast.error(err.data?.detail || 'Impossible de sauvegarder le profil.')
+  } finally {
+    isSavingAccount.value = false
+  }
+}
+
+const accountInitials = computed(() => {
+  const n = accountForm.name.trim() || user.value.name
+  if (!n) return '?'
+  return n
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(w => w[0]?.toUpperCase())
+    .join('') || '?'
+})
+
+// ─── Utilisation : helpers de jauges (renders + storage) ─────────────────
+const rendersUsedPct = computed(() => {
+  const s = stats.value
+  if (!s || !s.rendersLimit) return 0
+  return Math.min(100, Math.round((s.rendersThisMonth / s.rendersLimit) * 100))
+})
+
+const storageUsedPct = computed(() => {
+  const s = stats.value
+  if (!s || !s.storageLimitGb) return 0
+  return Math.min(100, Math.round((s.storageUsedGb / s.storageLimitGb) * 100))
+})
+
+function usageTone(pct: number): string {
+  if (pct >= 90) return 'bg-destructive'
+  if (pct >= 70) return 'bg-amber-500'
+  return 'bg-primary'
+}
 
 // ─── Apparence ────────────────────────────────────────────────────────────────
 const themes = [
@@ -868,15 +1199,15 @@ const changePassword = async () => {
     const data = err?.data || {}
     if (data.current_password) {
       passwordErrors.current = Array.isArray(data.current_password)
-        ? data.current_password[0]
+        ? data.current_password[0] ?? ''
         : String(data.current_password)
     } else if (data.new_password) {
       passwordErrors.next = Array.isArray(data.new_password)
-        ? data.new_password[0]
+        ? data.new_password[0] ?? ''
         : String(data.new_password)
     } else if (data.new_password_confirm) {
       passwordErrors.confirm = Array.isArray(data.new_password_confirm)
-        ? data.new_password_confirm[0]
+        ? data.new_password_confirm[0] ?? ''
         : String(data.new_password_confirm)
     } else {
       toast.error('Impossible de changer le mot de passe.')

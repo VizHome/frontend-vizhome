@@ -380,4 +380,11 @@ import {
   FileTypeIcon,
   StarIcon,
 } from 'lucide-vue-next'
+
+useSeo({
+  title: 'Génération 3D par IA',
+  description:
+    'Convertissez photos et descriptions en modèles 3D interactifs. Prompt IA, import multi-formats, scènes Three.js prêtes en moins de 30 secondes.',
+  ogImage: '/images/generate/image_generate.png',
+})
 </script>

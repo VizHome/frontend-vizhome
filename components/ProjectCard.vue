@@ -79,7 +79,7 @@ import {
   ImageIcon,
 } from 'lucide-vue-next'
 
-const props = defineProps({
+defineProps({
   project: {
     type: Object,
     required: true,

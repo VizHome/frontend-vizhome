@@ -18,11 +18,14 @@ export interface JwtTokens {
 export interface AuthUser {
   id: number
   email: string
+  pseudo: string
   first_name: string
   last_name: string
   name: string
   avatar_url: string
   plan: 'free' | 'pro' | 'enterprise'
+  is_staff: boolean
+  is_banned_from_forum: boolean
   date_joined: string
 }
 
@@ -78,12 +81,16 @@ export function useAuth() {
   }
 
   async function _post<T>(path: string, body: unknown): Promise<T> {
-    return await $fetch<T>(`${apiUrl}${path}`, { method: 'POST', body })
+    return await $fetch<T>(`${apiUrl}${path}`, {
+      method: 'POST',
+      body: body as Record<string, unknown>,
+    })
   }
 
   // ─── Register ──────────────────────────────────────────────────────────
   async function register(data: {
     email: string
+    pseudo: string
     password: string
     password_confirm: string
     first_name?: string
@@ -132,10 +139,22 @@ export function useAuth() {
   }
 
   // ─── OAuth ─────────────────────────────────────────────────────────────
-  async function loginGoogle(idToken: string): Promise<AuthUser> {
+  /**
+   * Google OAuth — supporte les deux flows :
+   * - flow `code` (recommandé, authorization code, identique GitHub) :
+   *   loginGoogle({ code, redirectUri })
+   * - flow `id_token` (legacy One Tap / SDK SPA) :
+   *   loginGoogle({ idToken })
+   */
+  async function loginGoogle(
+    payload: { code: string; redirectUri: string } | { idToken: string },
+  ): Promise<AuthUser> {
+    const body = 'idToken' in payload
+      ? { id_token: payload.idToken }
+      : { code: payload.code, redirect_uri: payload.redirectUri }
     const res = await _post<{ user: AuthUser; access: string; refresh: string }>(
       '/auth/oauth/google/exchange',
-      { id_token: idToken }
+      body,
     )
     tokens.value = { access: res.access, refresh: res.refresh }
     persist()

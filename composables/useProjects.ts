@@ -239,8 +239,9 @@ export function useProjects() {
     await api(`/projects/${id}`, { method: 'PATCH', body })
 
     const idx = projects.value.findIndex(p => p.id === id)
-    if (idx !== -1) {
-      projects.value[idx] = { ...projects.value[idx], ...fields }
+    const existing = idx !== -1 ? projects.value[idx] : undefined
+    if (existing) {
+      projects.value[idx] = { ...existing, ...fields }
     }
     if (currentProject.value?.id === id) {
       currentProject.value = { ...currentProject.value, ...fields }
@@ -274,6 +275,26 @@ export function useProjects() {
 
   function closeCurrentProject(): void {
     currentProject.value = null
+  }
+
+  // ─── Thumbnail ──────────────────────────────────────────────────────────
+  /**
+   * Upload la miniature du projet courant (généralement capturée depuis le
+   * canvas Three.js juste après un save). Met à jour `currentProject.thumbnailUrl`
+   * pour que l'UI reflète immédiatement la nouvelle vignette dans /projects.
+   *
+   * Le caller fournit un Blob déjà préparé (resized + compressed côté browser
+   * pour éviter d'uploader un canvas 4K).
+   */
+  async function uploadCurrentProjectThumbnail(blob: Blob): Promise<void> {
+    if (!currentProject.value) return
+    const form = new FormData()
+    form.append('thumbnail', blob, 'thumbnail.jpg')
+    const data = await api<{ thumbnail_url: string | null }>(
+      `/projects/${currentProject.value.id}/thumbnail`,
+      { method: 'POST', body: form },
+    )
+    currentProject.value.thumbnailUrl = data.thumbnail_url
   }
 
   // ─── Sauvegarde scène ───────────────────────────────────────────────────
@@ -489,6 +510,7 @@ export function useProjects() {
     closeCurrentProject,
     // scene
     saveSceneState,
+    uploadCurrentProjectThumbnail,
     // modèles 3D
     uploadModelToCurrentProject,
     updateImportedModelTransform,

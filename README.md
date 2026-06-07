@@ -1,277 +1,194 @@
-# VizHome - Frontend
+# VizHome Frontend
 
 <div align="center">
-  <img src="./src/public/images/logo/LogoBlack.png" alt="VizHome Logo" width="200" height="200">
-  
-  <h3>Plateforme de visualisation 3D architecturale propulsée par l'IA</h3>
-  
-  <p>
-    <a href="https://app.vizhome.fr">🌐 Application Live</a> •
-    <a href="https://docs.vizhome.fr">📖 Documentation</a> •
-    <a href="https://discord.gg/vizhome">💬 Discord</a>
-  </p>
-
-  <p>
-    <img src="https://img.shields.io/badge/Vue.js-3.x-4FC08D?style=flat-square&logo=vue.js&logoColor=white" alt="Vue.js">
-    <img src="https://img.shields.io/badge/Nuxt.js-3.x-00DC82?style=flat-square&logo=nuxt.js&logoColor=white" alt="Nuxt.js">
-    <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
-    <img src="https://img.shields.io/badge/Tailwind-3.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
-  </p>
+  <img src="./public/images/logo/LogoBlack.png" alt="VizHome" width="120">
 </div>
+
+
+> Application **Nuxt 4 + Vue 3** pour VizHome — éditeur 3D Three.js
+> (sketch / prompt IA / 3D pro), forum, support helpdesk, espace utilisateur.
+
+[![CI](https://github.com/VizHome/frontend-vizhome/actions/workflows/ci.yml/badge.svg)](https://github.com/VizHome/frontend-vizhome/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/VizHome/frontend-vizhome)](https://github.com/VizHome/frontend-vizhome/releases)
+[![Docker](https://img.shields.io/badge/ghcr.io-vizhome--frontend-blue)](https://github.com/VizHome/frontend-vizhome/pkgs/container/vizhome-frontend)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=VizHome_frontend-vizhome&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=VizHome_frontend-vizhome)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=VizHome_frontend-vizhome&metric=coverage)](https://sonarcloud.io/summary/new_code?id=VizHome_frontend-vizhome)
 
 ---
 
-## 🚀 À propos
+## ✨ Features
 
-VizHome est une solution SaaS innovante qui transforme vos photos d'intérieur en modèles 3D photoréalistes grâce à l'intelligence artificielle. Notre plateforme permet aux architectes, designers d'intérieur et professionnels de l'immobilier de créer des visualisations 3D exceptionnelles en quelques clics.
+- [x] 🎨 **Éditeur 3D Three.js** : 3 modes (Croquis 2D / Prompt IA / 3D Pro), import GLB/OBJ/FBX/STL, TransformControls, presets éclairage, météo, navigation orbit/FPS/top-down/tour
+- [x] 📐 **Sérialisation scène** : sauvegarde caméra/lumières/transforms/météo dans `Project.scene` (PostgreSQL JSONField)
+- [x] 🖼 **Galerie rendus IA** : polling 2s sur status, prévisualisation, partage public
+- [x] 💬 **Forum** : timeline GitHub-style (avatar externe + card avec arrow notch), TipTap WYSIWYG, images via MinIO
+- [x] 🆘 **Support helpdesk** : tickets avec messages threading, ForumEditor pour formatage riche
+- [x] 👨‍💼 **Admin panel** : sidebar shadcn-vue, dashboard KPI, drill-downs (users/renders/forum/support), audit log, charts unovis, CSV export
+- [x] 💳 **Page billing** : plans + subscription + invoices Stripe, upgrade en 1 click
+- [x] 🌐 **OAuth** : Google + GitHub via authorization code flow (PKCE-style)
+- [x] 🎭 **i18n** : fr / en / es / de (vue-i18n)
+- [x] 🌓 **Theme** : light/dark/system via `@nuxtjs/color-mode`
 
-### ✨ Fonctionnalités principales
+## 🛠 Stack
 
-- 🤖 **Génération 3D automatique** - IA avancée pour reconstruction 3D à partir de photos
-- 🎨 **Éditeur 3D intégré** - Personnalisation complète des matériaux et objets
-- 📱 **Applications mobiles** - iOS et Android avec support AR
-- 🔄 **Collaboration en temps réel** - Travail d'équipe et partage client
-- 🌐 **Vues 360° et VR** - Expériences immersives
-- 📊 **API et SDK complets** - Intégration avec vos outils existants
+| Couche | Tech |
+|---|---|
+| Framework | Nuxt 4 + Vue 3 + TypeScript |
+| UI | shadcn-vue 2 (wrapping reka-ui) + Tailwind CSS 4 |
+| State | Composables singletons (refs hoistés au module-scope, **pas de Pinia**) |
+| 3D | Three.js 0.183 |
+| Forms | vee-validate + yup |
+| Rich text | TipTap 2 + lowlight (codeblock highlight) |
+| Charts | @unovis/vue |
+| Icons | lucide-vue-next |
+| Tests | Vitest + jsdom |
+| Lint | ESLint flat config |
+| Auth storage | JWT en localStorage + refresh automatique sur 401 |
 
-## 🛠️ Technologies
+## 🚀 Quick start
 
-- **Frontend**: Vue.js 3, Nuxt.js 3, TypeScript
-- **Styling**: Tailwind CSS, Radix Vue (composants UI)
-- **3D**: Three.js, WebGL
-- **État**: Pinia
-- **Authentification**: JWT, OAuth 2.0
-- **Outils**: Vite, ESLint, Prettier
-
-## 📦 Installation
-
-### Prérequis
-
-- Node.js 18+
-- npm/yarn/pnpm
-- Git
-
-### Installation locale
+### Sans Docker (dev)
 
 ```bash
-# Cloner le repository
-git clone https://github.com/vizhome/frontend-vizhome.git
+git clone https://github.com/VizHome/frontend-vizhome.git
 cd frontend-vizhome
 
-# Installer les dépendances
+cp .env.example .env
+# Édite .env : NUXT_API_PROXY_TARGET, NUXT_PUBLIC_GOOGLE_CLIENT_ID, etc.
+
 npm install
-# ou
-yarn install
-# ou
-pnpm install
-
-# Copier et configurer les variables d'environnement
-cp .env.example .env.local
-
-# Démarrer le serveur de développement
 npm run dev
+# → http://localhost:3000
 ```
 
-### Variables d'environnement
+⚠️ Le backend doit tourner en parallèle (cf `backend-vizhome/README.md`).
+Le proxy Nitro forward `/api/*` et `/webhooks/*` vers `NUXT_API_PROXY_TARGET`
+(défaut `http://localhost:8000`).
+
+### Avec Docker
 
 ```bash
-# .env.local
-NUXT_PUBLIC_API_URL=https://api.vizhome.fr/v1
-NUXT_PUBLIC_APP_URL=https://app.vizhome.fr
-NUXT_PUBLIC_CDN_URL=https://cdn.vizhome.fr
-NUXT_API_SECRET=your_api_secret
-NUXT_JWT_SECRET=your_jwt_secret
+docker compose -f docker-compose.dev.yml up -d
 ```
 
-## 🚀 Utilisation
-
-### Développement
+## 📜 Commandes
 
 ```bash
-# Démarrer en mode développement
-npm run dev
-
-# Build pour la production
-npm run build
-
-# Prévisualiser la build de production
-npm run preview
-
-# Linter et formatter
-npm run lint
-npm run lint:fix
+npm run dev              # serveur dev avec HMR
+npm run build            # build SSR (.output/)
+npm run generate         # build statique (.output/public/)
+npm run preview          # preview de la build prod
+npm run lint             # eslint --fix .
+npm run test             # vitest (run)
+npm run test:ui          # vitest UI
+npm run test:coverage    # vitest avec coverage v8
+npm run typecheck        # nuxi typecheck
 ```
 
-### Déploiement
-
-```bash
-# Build et génération statique
-npm run generate
-
-# Build pour serveur
-npm run build
-
-# Démarrer en production
-npm run start
-```
-
-## 📁 Structure du projet
+## 📂 Structure
 
 ```
-frontend-vizhome/
-├── .nuxt/                    # Fichiers générés par Nuxt
-├── assets/                   # Assets non traités (SCSS, images)
-├── components/               # Composants Vue réutilisables
-│   ├── ui/                  # Composants UI de base
-│   ├── layout/              # Composants de mise en page
-│   └── features/            # Composants spécifiques aux fonctionnalités
-├── composables/             # Composables Vue
-├── layouts/                 # Layouts de pages
-│   ├── default.vue         # Layout par défaut
-│   └── docs.vue            # Layout pour la documentation
-├── middleware/              # Middleware Nuxt
-├── pages/                   # Pages et routing auto-généré
-│   ├── index.vue           # Page d'accueil
-│   ├── docs/               # Documentation
-│   ├── features/           # Pages fonctionnalités
-│   ├── legal/              # Pages légales
-│   └── testimonials.vue    # Témoignages
-├── plugins/                 # Plugins Nuxt
-├── public/                  # Fichiers statiques
-├── server/                  # API routes côté serveur
-├── stores/                  # Stores Pinia
-├── types/                   # Définitions TypeScript
-├── utils/                   # Utilitaires et helpers
-├── nuxt.config.ts          # Configuration Nuxt
-├── tailwind.config.js      # Configuration Tailwind
-└── package.json            # Dépendances et scripts
+.
+├── pages/                routing auto Nuxt
+│   ├── render/           éditeur 3D (canvas + sketch + prompt)
+│   ├── projects/         galerie projets
+│   ├── gallery/          rendus IA
+│   ├── forum/            forum (categories, topics, replies)
+│   ├── support/          tickets helpdesk
+│   ├── account/billing/  abonnement + factures
+│   └── admin/            panel admin (sidebar)
+│
+├── layouts/              none / default / app / forum / support / admin / sidebar
+├── components/
+│   ├── ui/               shadcn-vue (44 composants)
+│   ├── render/           RenderModeBar, PromptPanel, SketchCanvas, ThreeControls
+│   ├── forum/            ForumEditor (TipTap), ForumContent, ForumReplyCard…
+│   ├── admin/            AdminSidebar, AdminMetricCard
+│   └── user/             SettingsDialog (9 sections), HelpDialog
+│
+├── composables/          36 composables singletons
+│   ├── useAuth, useUser, useApi, useBilling, use2fa
+│   ├── useProjects, useRenderMode, useSceneSerializer
+│   ├── useForum, useSupport
+│   ├── useAdmin*, useThree*
+│
+├── middleware/           auth, guest, staff
+├── plugins/              auth.client.ts
+├── tests/                Vitest (unit + composables)
+└── nuxt.config.ts        proxy Nitro + SEO + Vite optim
 ```
 
-## 🎯 Pages principales
-
-### Frontend public
-
-- `/` - Page d'accueil avec présentation
-- `/features` - Fonctionnalités détaillées
-- `/pricing` - Plans et tarification
-- `/testimonials` - Témoignages clients
-- `/faq` - Questions fréquentes
-
-### Documentation
-
-- `/docs` - Documentation complète
-- `/docs/api` - Référence API
-- `/docs/sdk/*` - SDKs (JavaScript, Python, Unity)
-- `/docs/interface` - Guide d'interface
-
-### Légal
-
-- `/legal/privacy-policy` - Politique de confidentialité
-- `/legal/terms-of-service` - Conditions d'utilisation
-- `/legal/data-processing` - Traitement des données
-
-## 🧩 Composants principaux
-
-### Components UI (`components/ui/`)
-
-Bibliothèque de composants basée sur Radix Vue :
-
-- `Button`, `Card`, `Dialog`, `Input`
-- `Tabs`, `Accordion`, `Command`
-- `Table`, `Alert`, `Badge`
-
-### Layout Components (`components/layout/`)
-
-- `Header` - Navigation principale
-- `Footer` - Pied de page
-- `Sidebar` - Barre latérale docs
-
-### Feature Components (`components/features/`)
-
-- Composants spécifiques aux fonctionnalités VizHome
-
-## 🔗 API et intégrations
-
-### API Routes
-
-L'application utilise l'API VizHome pour :
-
-- Authentification utilisateur
-- Gestion des projets
-- Génération de modèles 3D
-- Rendus et exports
-- Gestion des matériaux
-
-### SDK disponibles
-
-- **JavaScript/TypeScript** - Pour intégrations web
-- **Python** - Pour scripts et automatisation
-- **Unity** - Pour applications temps réel
+Détails : `docs/STRUCTURE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`.
 
 ## 🧪 Tests
 
 ```bash
-# Lancer les tests unitaires
-npm run test
-
-# Tests e2e avec Playwright
-npm run test:e2e
-
-# Coverage
-npm run test:coverage
+npm run test                                         # tous les tests unit
+npm run test -- tests/composables/useAuth           # un seul fichier
+npm run test:coverage                               # avec rapport coverage v8
+npm run test -- --reporter=verbose                  # détail
 ```
 
-## 📚 Documentation
+Suite actuelle (12 tests passants) : `useRenderMode`, `useAuth`, `plainTextLength`.
 
-- 📖 [Documentation complète](https://docs.vizhome.fr)
-- 🔧 [API Reference](https://docs.vizhome.fr/api)
-- 💻 [SDK JavaScript](https://docs.vizhome.fr/sdk/javascript)
-- 🐍 [SDK Python](https://docs.vizhome.fr/sdk/python)
-- 🎮 [SDK Unity](https://docs.vizhome.fr/sdk/unity)
+Pour ajouter un test composable :
+```ts
+// tests/composables/useXxx.test.ts
+import { describe, expect, it, vi } from 'vitest'
+
+async function freshModule() {
+  vi.resetModules()
+  return (await import('~/composables/useXxx')).useXxx()
+}
+
+describe('useXxx', () => {
+  it('foo', async () => {
+    const x = await freshModule()
+    expect(x.bar.value).toBe('baz')
+  })
+})
+```
+ 
+## 🔁 CI / CD
+
+| Trigger | Workflow | Action |
+|---|---|---|
+| Push `main`/`dev` ou PR | `ci.yml` | lint, typecheck, tests+coverage, build Nuxt, build Docker, smoke, Trivy, npm audit |
+| Push `main` | `release.yml` | release-please PR → tag + GitHub Release + image GHCR multi-arch + SBOM |
+| Push `dev` | `pre-release.yml` | image `dev-<sha>` + GitHub Pre-Release |
+| PR | `pr-checks.yml` | titre Conventional Commits + size label + TruffleHog |
+
+Tous les commits doivent suivre **[Conventional Commits](https://www.conventionalcommits.org/)** — détails dans `.github/CONTRIBUTING_CI.md`.
+
+### Secrets GitHub requis
+
+- `GH_PAT` : Personal Access Token (scopes `repo`, `write:packages`)
+- `SONAR_TOKEN` + `SONAR_HOST_URL` : SonarCloud/SonarQube
+- `CODECOV_TOKEN` (optionnel)
+
+## 🌐 Variables d'environnement clés
+
+```env
+# Proxy backend (Nitro routeRules)
+NUXT_API_PROXY_TARGET=http://localhost:8000
+
+# Override de l'API URL côté frontend (par défaut relatif via proxy)
+# NUXT_PUBLIC_API_URL=/api/v1
+
+# OAuth (cf .env.example pour tous les détails)
+NUXT_PUBLIC_GOOGLE_CLIENT_ID=...apps.googleusercontent.com
+NUXT_PUBLIC_GITHUB_CLIENT_ID=Iv1...
+```
 
 ## 🤝 Contribution
 
-### Guidelines
+1. Branche `feat/<nom>` ou `fix/<nom>` depuis `dev`
+2. Code + tests + docs si applicable
+3. PR vers `dev` avec un titre Conventional Commits (`feat(auth): …`)
+4. Merge sur `dev` → pre-release auto
+5. Quand prêt : PR `dev → main` → release-please prend le relais
 
-1. Fork le projet
-2. Créez une branche feature (`git checkout -b feature/nouvelle-fonctionnalite`)
-3. Committez vos changements (`git commit -m 'Ajout nouvelle fonctionnalité'`)
-4. Push vers la branche (`git push origin feature/nouvelle-fonctionnalite`)
-5. Ouvrez une Pull Request
+## 📄 License
 
-### Standards de code
-
-- Utiliser TypeScript pour tous les nouveaux fichiers
-- Suivre les conventions ESLint configurées
-- Ajouter des tests pour les nouvelles fonctionnalités
-- Documenter les composants complexes
-
-## 📄 Licence
-
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-## 🆘 Support
-
-- 💬 [Discord Community](https://discord.gg/vizhome)
-- 📧 Email: support@vizhome.fr
-- 🐛 [GitHub Issues](https://github.com/vizhome/frontend-vizhome/issues)
-- 📖 [Documentation](https://docs.vizhome.fr)
-
-## 🙏 Remerciements
-
-- [Vue.js](https://vuejs.org/) - Framework frontend
-- [Nuxt.js](https://nuxt.com/) - Meta-framework Vue
-- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS
-- [Radix Vue](https://www.radix-vue.com/) - Composants UI
-- [Three.js](https://threejs.org/) - Rendu 3D WebGL
-
----
-
-<div align="center">
-  <p>Fait avec ❤️ par l'équipe VizHome</p>
-  <p>
-    <a href="https://vizhome.fr">Site web</a> •
-    <a href="https://twitter.com/vizhome">Twitter</a> •
-    <a href="https://linkedin.com/company/vizhome">LinkedIn</a>
-  </p>
-</div>
+[MIT](LICENSE)

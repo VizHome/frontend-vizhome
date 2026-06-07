@@ -110,7 +110,7 @@
 <script setup lang="ts">
 import { SearchIcon } from 'lucide-vue-next'
 import { ref, computed } from 'vue'
-import FAQAccordion from '@/components/FAQAccordion.vue'
+import FAQAccordion, { type FAQItem } from '@/components/FAQAccordion.vue'
 
 
 const searchQuery = ref('')
@@ -143,7 +143,7 @@ const generalFAQs = [
   },
 ]
 
-const technicalFAQs = [
+const technicalFAQs: FAQItem[] = [
   {
     question: 'Quels types de photos puis-je utiliser ?',
     answer:
@@ -169,6 +169,48 @@ const technicalFAQs = [
     question: 'Est-ce que VizHome fonctionne hors ligne ?',
     answer:
       'Non, VizHome est un service cloud qui nécessite une connexion internet pour fonctionner. Cependant, une fois générés, vos rendus peuvent être téléchargés et utilisés hors ligne.',
+  },
+  {
+    question: "Comment lancer un rendu via l'API ?",
+    answer:
+      "Notre API REST permet de générer des rendus IA de façon programmatique. Tu fais un POST sur /api/v1/renders/ avec un prompt, le backend répond 202 avec status \"pending\", puis tu poll /api/v1/renders/{id} toutes les 2 secondes jusqu'à status \"done\" ou \"failed\".",
+    code: {
+      language: 'bash',
+      filename: 'create-render.sh',
+      code: `# 1. Lance la génération (réponse 202 immédiate)
+curl -X POST https://api.vizhome.fr/api/v1/renders/ \\
+  -H "Authorization: Bearer $VIZHOME_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "source": "prompt",
+    "output_type": "2d",
+    "prompt": "Salon scandinave avec parquet chêne et grandes baies"
+  }'
+# → { "id": 42, "status": "pending", ... }
+
+# 2. Récupère le résultat (poll toutes les 2s)
+curl https://api.vizhome.fr/api/v1/renders/42 \\
+  -H "Authorization: Bearer $VIZHOME_TOKEN"
+# → { "status": "done", "result_url": "https://cdn.vizhome.fr/..." }`,
+    },
+  },
+  {
+    question: 'Comment authentifier mes requêtes API ?',
+    answer:
+      'Toutes les routes /api/v1/* (sauf /auth/* et /billing/plans) requièrent un JWT dans le header Authorization. Tu obtiens un access token et un refresh token via /api/v1/auth/login. Le access token expire après 15 minutes — utilise /api/v1/auth/refresh pour le rafraîchir.',
+    code: {
+      language: 'bash',
+      filename: 'auth-flow.sh',
+      code: `# Login → récupère access + refresh tokens
+TOKEN=$(curl -s -X POST https://api.vizhome.fr/api/v1/auth/login \\
+  -H "Content-Type: application/json" \\
+  -d '{"email":"toi@example.com","password":"..."}' \\
+  | jq -r '.access')
+
+# Utilise le token sur n'importe quel endpoint
+curl https://api.vizhome.fr/api/v1/me/ \\
+  -H "Authorization: Bearer $TOKEN"`,
+    },
   },
 ]
 

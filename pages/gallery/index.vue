@@ -1,27 +1,13 @@
 <template>
-  <div class="min-h-screen bg-background flex flex-col">
-    <!-- Header -->
-    <header
-      class="sticky top-0 z-10 border-b bg-background/95 backdrop-blur-sm"
-    >
-      <div class="max-w-7xl mx-auto px-4 h-14 flex items-center gap-4">
-        <!-- Bouton retour -->
-        <Button
-          variant="ghost"
-          size="icon"
-          class="h-8 w-8 shrink-0"
-          @click="navigateTo('/render')"
-        >
-          <ArrowLeft class="h-4 w-4" />
-        </Button>
-
-        <div class="flex items-center gap-2 flex-1 min-w-0">
-          <LayoutGrid class="h-5 w-5 text-primary shrink-0" />
-          <h1 class="text-base font-semibold truncate">Galerie</h1>
-          <Badge variant="secondary" class="shrink-0">{{ totalCount }}</Badge>
-        </div>
-
-        <!-- Filtres -->
+  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex flex-col gap-6">
+    <!-- Header de page (layout `app` fournit déjà topbar + retour + avatar) -->
+    <section class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <LayoutGrid class="h-5 w-5 text-primary shrink-0" />
+        <h1 class="text-xl font-semibold tracking-tight">Galerie</h1>
+        <Badge variant="secondary" class="shrink-0">{{ totalCount }}</Badge>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
         <div class="flex items-center gap-1">
           <button
             v-for="f in filters"
@@ -37,8 +23,6 @@
             {{ f.label }}
           </button>
         </div>
-
-        <!-- Tout supprimer -->
         <AlertDialog>
           <AlertDialogTrigger as-child>
             <Button
@@ -71,10 +55,10 @@
           </AlertDialogContent>
         </AlertDialog>
       </div>
-    </header>
+    </section>
 
     <!-- Contenu principal -->
-    <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-6">
+    <main class="flex flex-col gap-6">
       <!-- Spinner initial -->
       <div
         v-if="isLoading && entries.length === 0"
@@ -198,7 +182,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import {
-  ArrowLeft,
   Download,
   ImageOff,
   LayoutGrid,
@@ -220,7 +203,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import type { GallerySource, GalleryEntry } from '~/composables/useGallery'
 
-definePageMeta({ layout: 'none', middleware: 'auth' })
+definePageMeta({ layout: 'app', middleware: 'auth' })
 
 const {
   entries,

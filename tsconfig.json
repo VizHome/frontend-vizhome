@@ -4,8 +4,12 @@
   "compilerOptions": {
     // Type checking strict
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // noUnusedLocals/noUnusedParameters désactivés côté TS car ils génèrent
+    // des faux positifs dans `components/ui/**` (shadcn-vue, qu'on ne modifie
+    // pas) — `@typescript-eslint/no-unused-vars` reprend le rôle côté lint
+    // avec un comportement plus fin (préfixe `_` toléré).
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true

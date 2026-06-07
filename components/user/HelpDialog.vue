@@ -145,6 +145,9 @@
               class="w-full rounded-lg border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
             />
           </div>
+          <p v-if="bugError" class="text-xs text-destructive">
+            {{ bugError }}
+          </p>
           <Button
             :disabled="
               !bugForm.subject.trim() ||
@@ -345,22 +348,43 @@ const SHORTCUTS = [
   },
 ]
 
-// ── Bug report ───────────────────────────────────────────────────────────────
+// ── Bug report → crée un SupportTicket via useSupport ─────────────────────
 const bugForm = ref({ subject: '', description: '' })
 const isSendingBug = ref(false)
 const bugSent = ref(false)
+const bugError = ref<string | null>(null)
+const support = useSupport()
 
 const sendBug = async () => {
   if (!bugForm.value.subject.trim() || !bugForm.value.description.trim()) return
   isSendingBug.value = true
-  // TODO: appel API réel
-  await new Promise(r => setTimeout(r, 800))
-  isSendingBug.value = false
-  bugSent.value = true
+  bugError.value = null
+  try {
+    await support.createTicket({
+      subject: bugForm.value.subject.trim(),
+      category: 'technical',
+      // Priorité par défaut "medium" : un bug report ouvert depuis le help
+      // dialog est un signal user, mais on évite "high" pour ne pas
+      // saturer la file. Le staff peut réajuster.
+      priority: 'medium',
+      body: bugForm.value.description.trim(),
+    })
+    bugSent.value = true
+  }
+  catch (err: unknown) {
+    const errObj = err as { data?: { detail?: string } }
+    bugError.value
+      = errObj?.data?.detail
+        ?? 'Impossible d\'envoyer le rapport pour le moment. Réessaye plus tard.'
+  }
+  finally {
+    isSendingBug.value = false
+  }
 }
 
 const resetBug = () => {
   bugForm.value = { subject: '', description: '' }
   bugSent.value = false
+  bugError.value = null
 }
 </script>

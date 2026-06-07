@@ -29,11 +29,18 @@
           class="bg-background rounded-xl border shadow-sm p-6 flex flex-col items-center text-center"
         >
           <div class="bg-primary/10 p-3 rounded-full mb-3">
-            <PhoneIcon class="h-5 w-5 text-primary" />
+            <MessagesSquareIcon class="h-5 w-5 text-primary" />
           </div>
-          <h3 class="font-semibold mb-1">Téléphone</h3>
-          <p class="text-xs text-muted-foreground mb-2">Lundi au vendredi</p>
-          <p class="text-sm font-medium">+33 (0)1 23 45 67 89</p>
+          <h3 class="font-semibold mb-1">Forum</h3>
+          <p class="text-xs text-muted-foreground mb-2">
+            Communauté entraide
+          </p>
+          <NuxtLink
+            to="/forum"
+            class="text-sm font-medium text-primary hover:underline"
+          >
+            Rejoindre la discussion
+          </NuxtLink>
         </div>
         <div
           class="bg-background rounded-xl border shadow-sm p-6 flex flex-col items-center text-center"
@@ -184,8 +191,31 @@
                   </div>
                 </div>
 
-                <Button type="submit" class="w-full rounded-full mt-2">
-                  Envoyer le message
+                <!-- Feedback : succès ou erreur de l'envoi -->
+                <Alert v-if="sent" class="border-emerald-500/40">
+                  <CheckCircleIcon class="h-4 w-4 text-emerald-500" />
+                  <AlertTitle>Message envoyé</AlertTitle>
+                  <AlertDescription>
+                    Merci ! Nous avons bien reçu votre demande et reviendrons
+                    vers vous sous 48h ouvrées.
+                  </AlertDescription>
+                </Alert>
+                <Alert v-else-if="contact.lastError.value" variant="destructive">
+                  <CircleAlertIcon class="h-4 w-4" />
+                  <AlertTitle>Envoi impossible</AlertTitle>
+                  <AlertDescription>
+                    {{ contact.lastError.value }}
+                  </AlertDescription>
+                </Alert>
+
+                <Button
+                  type="submit"
+                  class="w-full rounded-full mt-2"
+                  :disabled="contact.isSending.value || sent"
+                >
+                  <span v-if="contact.isSending.value">Envoi en cours…</span>
+                  <span v-else-if="sent">Envoyé</span>
+                  <span v-else>Envoyer le message</span>
                 </Button>
               </div>
             </Form>
@@ -262,15 +292,16 @@
 
 <script setup lang="ts">
 import {
-  MailIcon,
-  PhoneIcon,
-  MapPinIcon,
   ArrowRightIcon,
+  CheckCircleIcon,
+  CircleAlertIcon,
+  MailIcon,
+  MapPinIcon,
+  MessagesSquareIcon,
 } from 'lucide-vue-next'
 import { Form, Field } from 'vee-validate'
 import { ref } from 'vue'
 import * as yup from 'yup'
-
 
 interface FormValues {
   name: string
@@ -302,8 +333,29 @@ const schema = yup.object({
 })
 
 const newsletter = ref(false)
+const sent = ref(false)
+const contact = useContact()
 
-const onSubmit = (values: FormValues) => {
-  console.log({ ...values, newsletter: newsletter.value })
+// vee-validate type le handler comme `SubmissionHandler<GenericObject>`
+// → on accepte le type large puis on narrow (cast via `unknown` requis car
+// `Record<string, unknown>` et `FormValues` n'ont pas d'overlap structurel).
+const onSubmit = async (values: Record<string, unknown>) => {
+  const v = values as unknown as FormValues
+  try {
+    await contact.send({
+      name: v.name,
+      email: v.email,
+      subject: v.subject,
+      message: v.message,
+      privacy: v.privacy,
+      newsletter: newsletter.value,
+    })
+    sent.value = true
+  }
+  catch (err) {
+    logger.error('[contact] envoi échoué', err)
+    // L'erreur est déjà capturée dans `contact.lastError.value`,
+    // l'UI affiche un Alert destructive en conséquence.
+  }
 }
 </script>

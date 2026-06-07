@@ -197,4 +197,10 @@ import {
   InfoIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Remboursement et annulation',
+  description:
+    'Conditions de remboursement et d\'annulation des abonnements VizHome : délai légal, modalités, prorata, cas d\'éligibilité et procédure à suivre.',
+})
+
 </script>

@@ -72,14 +72,22 @@
               <p class="text-xs text-muted-foreground mt-0.5">
                 {{ member.role }}
               </p>
+              <!-- Liens sociaux : rendus uniquement si une URL réelle est fournie.
+                   TODO : remplir `socials` sur chaque fiche pour activer les boutons. -->
               <div
+                v-if="member.socials?.length"
                 class="flex justify-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                <a href="#" class="text-muted-foreground hover:text-primary">
-                  <LinkedinIcon class="h-3.5 w-3.5" />
-                </a>
-                <a href="#" class="text-muted-foreground hover:text-primary">
-                  <component :is="member.socialIcon" class="h-3.5 w-3.5" />
+                <a
+                  v-for="s in member.socials"
+                  :key="s.url"
+                  :href="s.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-muted-foreground hover:text-primary"
+                  :aria-label="s.label"
+                >
+                  <component :is="s.icon" class="h-3.5 w-3.5" />
                 </a>
               </div>
             </div>
@@ -97,25 +105,25 @@
           <h2 class="text-2xl font-bold mb-4">Notre histoire</h2>
           <div class="space-y-4 text-muted-foreground">
             <p>
-              Fondée en 2024, VizHome est née d'une vision simple mais puissante
-              : démocratiser l'accès à la visualisation architecturale 3D de
-              haute qualité.
+              Fondée en 2024, VizHome est née d'une vision simple mais
+              puissante : démocratiser l'accès à la visualisation architecturale
+              3D de haute qualité grâce à l'intelligence artificielle.
             </p>
             <p>
               Lucas Messina, notre fondateur, a constaté que de nombreux
               professionnels de l'architecture et du design d'intérieur étaient
-              limités par les outils de rendu complexes et coûteux disponibles
-              sur le marché.
+              limités par des outils de rendu complexes et coûteux.
             </p>
             <p>
-              En réunissant une équipe d'experts en IA, en développement et en
+              Avec une équipe d'experts en IA, développement web et
               architecture, nous avons créé une plateforme qui permet à
               n'importe qui de créer des visualisations 3D photoréalistes sans
               compétences techniques spécifiques.
             </p>
             <p>
-              Aujourd'hui, VizHome sert des milliers de professionnels dans plus
-              de 30 pays.
+              Nous sommes actuellement en early access — quelques dizaines
+              d'utilisateurs nous aident à façonner le produit avant le
+              lancement public.
             </p>
           </div>
         </div>
@@ -131,25 +139,26 @@
       </div>
     </section>
 
-    <!-- Partenaires -->
+    <!-- Stack technique : remplace l'ancienne section "Partenaires" (logos sans
+         vrais partnerships commerciaux, chargés depuis CDN externes fragiles). -->
     <section class="py-16 px-6 border-b bg-muted/30">
       <div class="max-w-5xl mx-auto text-center">
-        <h2 class="text-2xl font-bold mb-2">Nos partenaires</h2>
+        <h2 class="text-2xl font-bold mb-2">Construit avec</h2>
         <p class="text-muted-foreground max-w-xl mx-auto mb-10">
-          Nous collaborons avec les meilleures entreprises pour vous offrir un
-          service d'excellence.
+          Les technologies open source qui font tourner VizHome au quotidien.
         </p>
-        <div class="flex flex-wrap justify-center items-center gap-10">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 max-w-3xl mx-auto">
           <div
-            v-for="partner in partners"
-            :key="partner.name"
-            class="w-28 h-14 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 flex items-center justify-center"
+            v-for="tech in stack"
+            :key="tech.name"
+            class="rounded-xl border bg-background p-4 flex flex-col items-center justify-center text-center hover:border-primary/30 transition-colors"
           >
-            <img
-              :src="partner.logo"
-              :alt="partner.name"
-              class="max-h-full max-w-full object-contain"
+            <component
+              :is="tech.icon"
+              class="h-6 w-6 mb-2 text-primary"
             />
+            <p class="text-xs font-medium">{{ tech.name }}</p>
+            <p class="text-[10px] text-muted-foreground">{{ tech.role }}</p>
           </div>
         </div>
       </div>
@@ -179,75 +188,82 @@
 </template>
 
 <script setup lang="ts">
+import type {
+  LinkedinIcon} from 'lucide-vue-next';
 import {
+  BoxIcon,
+  BrainCircuitIcon,
   BuildingIcon,
   CodeIcon,
-  BrainCircuitIcon,
-  LinkedinIcon,
-  TwitterIcon,
+  DatabaseIcon,
   GithubIcon,
-  ShieldIcon,
+  ServerIcon,
 } from 'lucide-vue-next'
 
 
-const team = [
+interface TeamSocial {
+  url: string
+  icon: typeof LinkedinIcon
+  label: string
+}
+
+interface TeamMember {
+  name: string
+  role: string
+  photo: string
+  icon: typeof BuildingIcon
+  socials?: TeamSocial[]
+}
+
+const team: TeamMember[] = [
   {
     name: 'Lucas Messina',
     role: 'Fondateur & CEO',
     photo: '/images/teams/profile_luca.jpg',
     icon: BuildingIcon,
-    socialIcon: TwitterIcon,
+    // socials: [{ url: 'https://linkedin.com/in/...', icon: LinkedinIcon, label: 'LinkedIn' }],
   },
   {
     name: 'Thibaut Maurras',
     role: 'CTO & Intégrateur',
     photo: '/images/teams/profile_thibaut.jpg',
     icon: CodeIcon,
-    socialIcon: GithubIcon,
+    socials: [
+      {
+        url: 'https://github.com/Foufou-exe',
+        icon: GithubIcon,
+        label: 'GitHub',
+      },
+    ],
   },
   {
     name: 'Nathan Marques Da Fontes',
     role: 'Directeur Cybersécurité',
     photo: '/images/teams/profile_nathan.jpeg',
     icon: BrainCircuitIcon,
-    socialIcon: ShieldIcon,
   },
   {
     name: 'Korto Grinda',
     role: 'Stagiaire IA',
     photo: '/images/teams/profile_kortos.jpg',
     icon: BrainCircuitIcon,
-    socialIcon: GithubIcon,
   },
   {
     name: 'Maod Mabrouk',
     role: 'Développeur Full Stack',
     photo: '/images/teams/profile_moad.jpg',
     icon: BrainCircuitIcon,
-    socialIcon: GithubIcon,
   },
 ]
 
-const partners = [
-  {
-    name: 'Autodesk',
-    logo: 'https://companieslogo.com/img/orig/ADSK-7966e9ee.png?t=1633504999',
-  },
-  {
-    name: 'Blender',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Blender_logo_no_text.svg/2503px-Blender_logo_no_text.svg.png',
-  },
-  {
-    name: 'Unity',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Logo_Unity.svg/1200px-Logo_Unity.svg.png',
-  },
-  {
-    name: 'Nvidia',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/2/21/Nvidia_logo.svg',
-  },
-  {
-    name: 'Adobe',
-    logo: 'https://logos-world.net/wp-content/uploads/2020/11/Adobe-Logo.png',
-  },
+// Stack technique factuelle (vs ancienne section "Partenaires" qui prétendait
+// des partnerships avec Autodesk / Adobe / Nvidia inexistants).
+const stack = [
+  { name: 'Nuxt 4', role: 'Frontend', icon: BoxIcon },
+  { name: 'Vue 3', role: 'UI', icon: CodeIcon },
+  { name: 'Django 5', role: 'Backend API', icon: ServerIcon },
+  { name: 'PostgreSQL', role: 'Base de données', icon: DatabaseIcon },
+  { name: 'Three.js', role: 'Rendu 3D', icon: BoxIcon },
+  { name: 'Gemini', role: 'IA générative', icon: BrainCircuitIcon },
 ]
 </script>

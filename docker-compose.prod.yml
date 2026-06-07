@@ -1,18 +1,45 @@
+# =============================================================================
+# Production — Frontend Nuxt 4 derrière Traefik (géré par backend-vizhome).
+#
+# Architecture :
+#   Internet → Traefik (dans backend-vizhome) → ce service Nuxt
+#                                            └→ api Django
+#
+# Prérequis :
+#   - Le stack backend-vizhome doit être up (avec son Traefik et le network
+#     externe `vizhome_proxy` créé).
+#   - DNS A record pointant vers le serveur pour : vizhome.fr, www.vizhome.fr.
+#
+# Démarrage :
+#   # Sur le serveur où tourne déjà backend-vizhome :
+#   cd frontend-vizhome
+#   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+#
+# Note : le www → apex (redirect-www-to-apex middleware) est géré par Traefik.
+# =============================================================================
+
 services:
   app:
-    container_name: vizhome-prod
+    container_name: vizhome-frontend
+    image: ${VIZHOME_FRONTEND_IMAGE:-ghcr.io/vizhome/vizhome-frontend:latest}
     build:
       context: .
       dockerfile: Dockerfile
       target: runner
-    image: vizhome:prod
-    ports:
-      - "3000:3000"
     environment:
-      - NODE_ENV=production
-      - HOST=0.0.0.0
-      - PORT=3000
-      - NUXT_TELEMETRY_DISABLED=1
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      NUXT_TELEMETRY_DISABLED: "1"
+      # En prod le frontend appelle l'API via le proxy Nitro :
+      # /api/* → ${NUXT_API_PROXY_TARGET}/api/* (config dans nuxt.config.ts).
+      # Si tu veux que le browser tape directement api.vizhome.fr (CORS),
+      # défini NUXT_PUBLIC_API_URL=https://api.vizhome.fr/api/v1 à la place.
+      NUXT_API_PROXY_TARGET: ${NUXT_API_PROXY_TARGET:-https://api.vizhome.fr}
+      NUXT_PUBLIC_API_URL: ${NUXT_PUBLIC_API_URL:-/api/v1}
+      NUXT_PUBLIC_DOCS_URL: ${NUXT_PUBLIC_DOCS_URL}
+      NUXT_PUBLIC_GOOGLE_CLIENT_ID: ${NUXT_PUBLIC_GOOGLE_CLIENT_ID}
+      NUXT_PUBLIC_GITHUB_CLIENT_ID: ${NUXT_PUBLIC_GITHUB_CLIENT_ID}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:3000/"]
@@ -28,3 +55,41 @@ services:
         reservations:
           cpus: "0.25"
           memory: 128M
+    networks:
+      - vizhome_proxy
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "vizhome_proxy"
+
+      # ─── Router principal : apex domain vizhome.fr ─────────────────────
+      traefik.http.routers.frontend.rule: "Host(`${FRONTEND_HOST:-vizhome.fr}`)"
+      traefik.http.routers.frontend.entrypoints: "websecure"
+      traefik.http.routers.frontend.tls.certresolver: "letsencrypt"
+      traefik.http.routers.frontend.tls.options: "modern@file"
+      traefik.http.routers.frontend.middlewares: "security-headers@file,compress@file,rate-limit-global@file"
+      traefik.http.routers.frontend.service: "frontend"
+
+      # ─── Router www → redirect vers apex via middleware ────────────────
+      traefik.http.routers.frontend-www.rule: "Host(`www.${FRONTEND_HOST:-vizhome.fr}`)"
+      traefik.http.routers.frontend-www.entrypoints: "websecure"
+      traefik.http.routers.frontend-www.tls.certresolver: "letsencrypt"
+      traefik.http.routers.frontend-www.tls.options: "modern@file"
+      traefik.http.routers.frontend-www.middlewares: "redirect-www-to-apex@file"
+      traefik.http.routers.frontend-www.service: "frontend"
+
+      # ─── Service Nuxt ──────────────────────────────────────────────────
+      traefik.http.services.frontend.loadbalancer.server.port: "3000"
+      # Sticky sessions désactivées (Nuxt SSR est stateless) : utile si
+      # on scale-out un jour.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+networks:
+  # External : créé par backend-vizhome (cf docker-compose.prod.yml côté backend)
+  # Si tu démarres ce stack en standalone : `docker network create vizhome_proxy`
+  vizhome_proxy:
+    name: vizhome_proxy
+    external: true

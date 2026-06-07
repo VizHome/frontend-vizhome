@@ -20,13 +20,8 @@ pas de Docker pour Chrome headless ici).
 |---|---|
 | `npm run analyze` (nouveau) | À chaque PR qui touche au bundle (deps, plugins Vite, manualChunks) |
 | `lighthouse-ci` GitHub Action | Sur les PR contre `main`, avec budget JSON (`assertions: { interactive: 3000ms }`) |
-| Sentry Performance + Web Vitals | En prod, mesure les vraies métriques LCP/CLS/INP par route |
-| `web-vitals` lib + endpoint Sentry custom | Pour collecter Core Web Vitals côté browser et les envoyer comme spans |
+| `web-vitals` lib + endpoint custom | Pour collecter Core Web Vitals côté browser et les POST vers un endpoint backend `/api/v1/_metrics/web-vitals` |
 | Nuxt Devtools `Vite Inspector` | Localement, pour voir les transformations Vue/CSS chunk par chunk |
-
-> Un agent parallèle traite l'instrumentation Sentry / Web Vitals côté
-> frontend (voir issue #5). Coordonner pour brancher `web-vitals` →
-> `Sentry.metrics.distribution('webvitals.lcp', value)` quand son PR atterrit.
 
 ---
 
@@ -366,7 +361,9 @@ Génère :
 
 ### 4.3 Instrumentation prod (web-vitals)
 
-À brancher quand l'agent Sentry parallèle a livré sa config :
+À brancher via un endpoint backend dédié (`POST /api/v1/_metrics/web-vitals`,
+à créer côté Django) qui aggrège les métriques pour les exposer à
+OpenTelemetry ou un futur dashboard Grafana.
 
 ```ts
 // plugins/web-vitals.client.ts
@@ -374,7 +371,6 @@ import { onCLS, onINP, onLCP, onFCP, onTTFB } from 'web-vitals'
 
 export default defineNuxtPlugin(() => {
   const reporter = (metric) => {
-    // À remplacer par Sentry.metrics.distribution(...) une fois le SDK Sentry installé
     navigator.sendBeacon('/api/v1/_metrics/web-vitals', JSON.stringify({
       name: metric.name,
       value: metric.value,

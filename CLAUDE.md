@@ -202,3 +202,51 @@ No `extends`. No custom dev port (uses default 3000). Experimental:
 - Auto-imports active for composables + components — no manual `import`
 - Protected routes: `definePageMeta({ middleware: 'auth' })`
 - Commits: Conventional Commits
+
+## Workflow de validation obligatoire (avant tout commit / fin de tâche)
+
+**Ne jamais déclarer une tâche "done" sans avoir lancé ces 3 checks**. Si
+l'un d'eux échoue, fix avant de continuer. Pas de "je laisse passer cette
+fois, on verra plus tard" : la CI cassera et le fix sera plus douloureux.
+
+```bash
+npm run lint        # eslint --fix . ; doit sortir 0 erreur 0 warning
+npm run typecheck   # nuxi typecheck (vue-tsc) ; doit sortir 0 erreur
+npx vitest run      # tous les tests unitaires ; doit sortir 0 fail
+```
+
+### TypeScript strict — règles non négociables
+
+Le projet est en `strict: true` dans `tsconfig.json` (hérité via Nuxt) avec
+`noUncheckedIndexedAccess`. Conséquences :
+
+- **Pas d'`any` implicite ni explicite**. Utiliser `unknown` puis narrow
+  avec un `instanceof`, `typeof`, ou un type guard custom.
+- **Pas de `@ts-ignore`**. Utiliser `@ts-expect-error` avec un commentaire
+  qui explique pourquoi (ex: `@ts-expect-error pkg may not be installed`).
+  ESLint refuse `@ts-ignore` via `@typescript-eslint/ban-ts-comment`.
+- **Accès indexé tableau/dict** : toujours assumer `T | undefined` et
+  narrower. `arr[0]!.id` n'est acceptable qu'après un `expect(...).toHaveLength(N)`
+  ou un `if (arr[0])`. En code applicatif, préférer le narrowing explicite.
+- **Pas de `as Foo` "à l'aveugle"**. Si un cast est nécessaire, justifier
+  par un commentaire (ex: DTO mappé manuellement, narrowing après check
+  runtime).
+
+### Style transverse
+
+- **Pas de tirets cadratins `—` (em-dash)** dans le code, les commentaires,
+  les docstrings, les chaînes user-facing, ou la doc markdown. Utiliser
+  `:`, `>`, `,`, parenthèses ou liste à puces. C'est un tell IA banni par
+  le projet.
+- **Pas de `console.log` direct**. Utiliser `logger.debug/info/log/warn/error`
+  depuis `utils/logger.ts` (no-op en prod sauf `error`).
+- **Composants `components/ui/`** : ne JAMAIS modifier (générés par
+  shadcn-vue CLI, écrasés au prochain `add`). Si bug à fixer : passer
+  par la config Vite/Vue ou patcher en `lib/` plutôt que toucher le
+  fichier UI.
+
+### Quand un test échoue, ne PAS le skip
+
+Si `vitest` ou un test E2E échoue, comprendre la cause racine. Skipper
+un test avec `it.skip` est interdit sauf si on documente pourquoi
+(`it.skip('blocked by issue #N', ...)`) et qu'on crée l'issue.

@@ -47,7 +47,7 @@
   "dependencies": {
     "@lucide/vue": "^1.17.0",
     "@nuxt/eslint": "^1.15.2",
-    "@sentry/browser": "^9.0.0",
+    "@sentry/browser": "^10.56.0",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/vue-table": "^8.21.3",
     "@tiptap/extension-code-block-lowlight": "^3.24.0",
@@ -82,9 +82,10 @@
   },
   "devDependencies": {
     "@nuxt/test-utils": "^4.0.0",
-    "@playwright/test": "^1.49.0",
     "@nuxtjs/color-mode": "^4.0.0",
+    "@playwright/test": "^1.49.0",
     "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/event-source-polyfill": "^1.0.5",
     "@types/node": "^25.4.0",
     "@types/three": "^0.183.1",
     "@vitest/coverage-v8": "^4.1.8",

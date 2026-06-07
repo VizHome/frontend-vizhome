@@ -101,7 +101,7 @@ export interface AdminOverviewSystem {
   google_oauth_configured: boolean
   github_oauth_configured: boolean
   minio_configured: boolean
-  sentry_configured: boolean
+  otel_configured: boolean
   render_provider: string
 }
 

@@ -52,10 +52,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GH_PAT }}
 
+      # Docker registry exige des hostnames en lowercase (`VizHome` → `vizhome`).
+      - name: Compute lowercase owner
+        id: owner
+        run: echo "lc=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
       - id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/vizhome-frontend
+          images: ghcr.io/${{ steps.owner.outputs.lc }}/vizhome-frontend
           tags: |
             type=semver,pattern={{version}},value=${{ needs.release-please.outputs.tag_name }}
             type=semver,pattern={{major}}.{{minor}},value=${{ needs.release-please.outputs.tag_name }}
@@ -100,7 +105,11 @@ jobs:
     if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: Compute lowercase owner
+        id: owner
+        run: echo "lc=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
       - run: |
           echo "## 🚀 Frontend release publiée" >> $GITHUB_STEP_SUMMARY
           echo "- Tag : \`${{ needs.release-please.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- Image : \`ghcr.io/${{ github.repository_owner }}/vizhome-frontend:${{ needs.release-please.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Image : \`ghcr.io/${{ steps.owner.outputs.lc }}/vizhome-frontend:${{ needs.release-please.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY

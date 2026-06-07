@@ -216,24 +216,6 @@ curl -fsS https://app.vizhome.fr/
 # → HTTP 200 + HTML
 ```
 
-### Sentry (optionnel)
-
-Le frontend n'a pas de Sentry configuré par défaut. Pour l'ajouter :
-
-```bash
-npm install @sentry/nuxt
-```
-
-```ts
-// nuxt.config.ts
-modules: ['@sentry/nuxt/module']
-sentry: {
-  sourceMapsUploadOptions: { ... }
-}
-```
-
-Et créer `sentry.client.config.ts` + `sentry.server.config.ts`.
-
 ## Performance — bundle size
 
 ```bash

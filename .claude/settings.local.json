@@ -159,7 +159,18 @@
       "Bash(python -m ruff format --check src/apps/core/throttling.py src/apps/projects/tests/test_presigned_serializer.py)",
       "Bash(python -m ruff format src/apps/projects/tests/test_presigned_serializer.py src/apps/core/ src/apps/contact/)",
       "Bash(pip install *)",
-      "Bash(python -c \"import yaml; yaml.safe_load\\(open\\('.github/workflows/benchmarks.yml'\\)\\)\")"
+      "Bash(python -c \"import yaml; yaml.safe_load\\(open\\('.github/workflows/benchmarks.yml'\\)\\)\")",
+      "Bash(python -m ruff check src/apps/gdpr/ src/config/otel.py src/config/settings/prod.py src/config/settings/base.py src/config/urls.py src/apps/core/tests.py src/apps/renders/sse.py src/apps/renders/urls.py)",
+      "Bash(python -m ruff check src/apps/gdpr/views.py)",
+      "Bash(python -m ruff check src/apps/gdpr/ src/config/otel.py src/config/settings/ src/config/urls.py src/apps/core/tests.py src/apps/renders/sse.py src/apps/renders/urls.py)",
+      "Bash(python -m ruff check src/config/settings/prod.py src/requirements.txt)",
+      "Bash(python -m ruff check src/config/settings/prod.py src/config/otel.py)",
+      "Bash(python -m ruff check src/apps/admin_panel/views.py src/apps/admin_panel/tests/test_overview.py src/config/settings/prod.py)",
+      "Bash(gh run *)",
+      "Bash(python -m ruff check src/ --fix --unsafe-fixes)",
+      "Bash(python -m ruff check src/ --statistics)",
+      "Bash(python -m ruff format --check src/)",
+      "Bash(python -c \"import yaml; yaml.safe_load\\(open\\('C:/Users/thiba/Documents/Environnement_dev/frontend-vizhome/.github/workflows/ossar.yml'\\)\\)\")"
     ]
   }
 }

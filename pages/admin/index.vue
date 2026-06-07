@@ -438,7 +438,7 @@ const systemIntegrations = computed(() => {
     google_oauth_configured: s.google_oauth_configured,
     github_oauth_configured: s.github_oauth_configured,
     minio_configured: s.minio_configured,
-    sentry_configured: s.sentry_configured,
+    otel_configured: s.otel_configured,
   }
 })
 
@@ -500,7 +500,7 @@ const INTEGRATION_LABELS: Record<string, string> = {
   google_oauth_configured: 'Google OAuth',
   github_oauth_configured: 'GitHub OAuth',
   minio_configured: 'MinIO',
-  sentry_configured: 'Sentry',
+  otel_configured: 'OpenTelemetry',
 }
 
 function planBadgeClass(plan: string): string {

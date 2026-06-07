@@ -18,7 +18,9 @@
               <NuxtLink to="/auth/register">Essayer gratuitement</NuxtLink>
             </Button>
             <Button size="lg" variant="outline" class="rounded-full" as-child>
-              <NuxtLink to="/docs">Explorer la documentation</NuxtLink>
+              <a :href="docsUrl" target="_blank" rel="noopener">
+                Explorer la documentation
+              </a>
             </Button>
           </div>
         </div>
@@ -267,6 +269,7 @@
 </template>
 
 <script setup lang="ts">
+// URL du site docs séparé (projet docs-vizhome)
 import {
   ChevronRightIcon,
   ImageIcon,
@@ -285,6 +288,15 @@ import {
   SparklesIcon,
 } from 'lucide-vue-next'
 
+const config = useRuntimeConfig()
+const docsUrl = (config.public.docsUrl as string) || 'http://localhost:3001'
+
+useSeo({
+  title: 'Fonctionnalités',
+  description:
+    'Vue d\'ensemble des outils VizHome : génération 3D par IA, éclairage intelligent, matériaux PBR, vues 360°, collaboration et accès mobile.',
+  ogImage: '/images/generate/image_generate.png',
+})
 
 const mainFeatures = [
   {

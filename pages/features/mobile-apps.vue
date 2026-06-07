@@ -226,6 +226,13 @@ import {
   StarIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Accès multi-appareils : desktop, tablette, mobile',
+  description:
+    'VizHome tourne dans le navigateur sur ordinateur, tablette et smartphone. Aucune installation : éditeur tactile, partage rapide, WebGL 2.0 partout.',
+  ogImage: '/images/generate/image_generate.png',
+})
+
 const mainFeatures = [
   {
     icon: MonitorIcon,

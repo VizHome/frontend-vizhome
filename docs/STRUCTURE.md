@@ -19,7 +19,7 @@ frontend-vizhome/
 ├── assets/css/
 │   └── tailwind.css              imports Tailwind + customisation
 │
-├── public/                       assets statiques (favicon, images)
+├── public/                       assets statiques (favicon, images, robots.txt, sitemap.xml)
 │
 ├── composables/                  ★ logique métier réutilisable (singletons)
 ├── components/                   composants Vue (UI + métier)
@@ -49,7 +49,8 @@ composables/
 ├── use2fa.ts                     setup TOTP + verify + disable
 ├── useProjects.ts                CRUD projets + save scene + upload presigned MinIO
 ├── useGallery.ts                 galerie paginée des renders
-├── useAiRender.ts                pipeline async POST /renders + polling 2s
+├── useAiRender.ts                pipeline async POST /renders + flux SSE temps réel
+├── useSSE.ts                     ★ helper EventSource (polyfill) + Bearer JWT, cleanup auto
 ├── useSceneSerializer.ts         capture/restaure état Three.js (caméra, lumières, etc.)
 ├── useRenderMode.ts              mode actif (sketch | prompt | 3d)
 ├── useSketchCanvas.ts            canvas 2D vectoriel (pencil, eraser, shapes)
@@ -64,6 +65,7 @@ composables/
 ├── useAdminCsvExport.ts          ★ helper export CSV (fetch + blob + <a download> + Authorization)
 ├── useSupport.ts                 ★ tickets de support user (loadTickets + create + loadTicket + reply)
 ├── useAdminSupport.ts            ★ liste paginée de tous les tickets pour staff + updateTicketStatus
+├── useSeo.ts                     ★ wrapper useHead unifié — title, description, OG, Twitter, canonical, JSON-LD
 └── useThree*.ts                  12 composables Three.js (scene, models, lighting, weather, navigation…)
 ```
 

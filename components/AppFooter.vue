@@ -12,24 +12,8 @@
             photoréalistes.
           </p>
           <div class="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              class="h-8 w-8"
-              aria-label="LinkedIn"
-            >
-              <LinkedinIcon class="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="h-8 w-8"
-              aria-label="Twitter"
-            >
-              <TwitterIcon class="h-4 w-4" />
-            </Button>
             <a
-              href="https://github.com/vizhome"
+              href="https://github.com/VizHome"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -224,10 +208,8 @@
 
 <script setup lang="ts">
 import {
-  LinkedinIcon,
-  TwitterIcon,
-  GithubIcon,
   ArrowUpRightIcon,
+  GithubIcon,
 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 

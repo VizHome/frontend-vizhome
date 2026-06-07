@@ -22,6 +22,7 @@ logs
 .env
 .env.*
 !.env.example
+!.env.example.e2e
 
 # Coverage
 coverage
@@ -47,3 +48,12 @@ Thumbs.db
 
 # Claude
 settings.local.json
+
+# Bundle analyzer output (généré par `npm run analyze`)
+analyze-bundle.html
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+.env.local.e2e

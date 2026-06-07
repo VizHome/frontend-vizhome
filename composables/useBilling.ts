@@ -91,6 +91,16 @@ const plans = ref<Plan[]>([])
 const subscription = ref<Subscription | null>(null)
 const invoices = ref<Invoice[]>([])
 const paymentMethods = ref<PaymentMethod[]>([])
+// État d'erreur partagé — permet aux pages billing d'afficher un Alert
+// destructive cohérent (cf. pattern existant dans useProjects, useGallery,
+// useForum, useSupport, useAdmin*).
+const isLoading = ref(false)
+const error = ref<string | null>(null)
+
+function setError(err: unknown, fallback: string): void {
+  const e = err as { data?: { detail?: string }, statusCode?: number }
+  error.value = e?.data?.detail ?? fallback
+}
 
 // ─── Composable ───────────────────────────────────────────────────────────
 export function useBilling() {
@@ -99,28 +109,50 @@ export function useBilling() {
 
   // ─── Plans (public, pas d'auth) ────────────────────────────────────────
   async function fetchPlans(): Promise<void> {
-    // Cet endpoint est public — pas besoin de token
-    const data = await $fetch<ApiPlan[]>(`${config.public.apiUrl}/billing/plans`)
-    plans.value = data.map(p => ({
-      name: p.name,
-      label: p.label,
-      description: p.description,
-      priceEur: p.price_eur,
-      rendersLimit: p.renders_limit,
-      storageLimitBytes: p.storage_limit_bytes,
-      isBillable: p.is_billable,
-    }))
+    isLoading.value = true
+    error.value = null
+    try {
+      // Cet endpoint est public — pas besoin de token
+      const data = await $fetch<ApiPlan[]>(`${config.public.apiUrl}/billing/plans`)
+      plans.value = data.map(p => ({
+        name: p.name,
+        label: p.label,
+        description: p.description,
+        priceEur: p.price_eur,
+        rendersLimit: p.renders_limit,
+        storageLimitBytes: p.storage_limit_bytes,
+        isBillable: p.is_billable,
+      }))
+    }
+    catch (err) {
+      setError(err, 'Impossible de charger les plans tarifaires.')
+      throw err
+    }
+    finally {
+      isLoading.value = false
+    }
   }
 
   // ─── Subscription ──────────────────────────────────────────────────────
   async function fetchSubscription(): Promise<void> {
-    const data = await api<ApiSubscription>('/me/subscription')
-    subscription.value = {
-      hasSubscription: data.has_subscription,
-      plan: data.plan,
-      status: data.status,
-      currentPeriodEnd: data.current_period_end,
-      cancelAtPeriodEnd: data.cancel_at_period_end,
+    isLoading.value = true
+    error.value = null
+    try {
+      const data = await api<ApiSubscription>('/me/subscription')
+      subscription.value = {
+        hasSubscription: data.has_subscription,
+        plan: data.plan,
+        status: data.status,
+        currentPeriodEnd: data.current_period_end,
+        cancelAtPeriodEnd: data.cancel_at_period_end,
+      }
+    }
+    catch (err) {
+      setError(err, 'Impossible de récupérer votre abonnement.')
+      throw err
+    }
+    finally {
+      isLoading.value = false
     }
   }
 
@@ -129,47 +161,83 @@ export function useBilling() {
    * Redirige le navigateur vers Stripe (returns void).
    */
   async function startCheckout(plan: 'pro' | 'enterprise'): Promise<void> {
-    const res = await api<{ checkout_url: string; session_id: string }>(
-      '/me/subscription/checkout',
-      { method: 'POST', body: { plan } }
-    )
-    // Redirection vers Stripe — l'utilisateur revient sur /account/billing après
-    if (import.meta.client) {
-      window.location.href = res.checkout_url
+    error.value = null
+    try {
+      const res = await api<{ checkout_url: string; session_id: string }>(
+        '/me/subscription/checkout',
+        { method: 'POST', body: { plan } }
+      )
+      // Redirection vers Stripe — l'utilisateur revient sur /account/billing après
+      if (import.meta.client) {
+        window.location.href = res.checkout_url
+      }
+    }
+    catch (err) {
+      setError(err, 'Le checkout Stripe est temporairement indisponible.')
+      throw err
     }
   }
 
   /** Annule l'abonnement à la fin de la période en cours. */
   async function cancelSubscription(): Promise<void> {
-    await api('/me/subscription/cancel', { method: 'POST' })
-    await fetchSubscription()
+    error.value = null
+    try {
+      await api('/me/subscription/cancel', { method: 'POST' })
+      await fetchSubscription()
+    }
+    catch (err) {
+      setError(err, "L'annulation a échoué. Réessayez plus tard.")
+      throw err
+    }
   }
 
   // ─── Invoices ──────────────────────────────────────────────────────────
   async function fetchInvoices(): Promise<void> {
-    const data = await api<ApiInvoice[]>('/me/invoices')
-    invoices.value = data.map(i => ({
-      id: i.id,
-      number: i.number,
-      amountPaid: i.amount_paid,
-      currency: i.currency,
-      status: i.status,
-      created: i.created,
-      hostedInvoiceUrl: i.hosted_invoice_url,
-      invoicePdf: i.invoice_pdf,
-    }))
+    isLoading.value = true
+    error.value = null
+    try {
+      const data = await api<ApiInvoice[]>('/me/invoices')
+      invoices.value = data.map(i => ({
+        id: i.id,
+        number: i.number,
+        amountPaid: i.amount_paid,
+        currency: i.currency,
+        status: i.status,
+        created: i.created,
+        hostedInvoiceUrl: i.hosted_invoice_url,
+        invoicePdf: i.invoice_pdf,
+      }))
+    }
+    catch (err) {
+      setError(err, 'Impossible de charger les factures.')
+      throw err
+    }
+    finally {
+      isLoading.value = false
+    }
   }
 
   // ─── Payment methods ───────────────────────────────────────────────────
   async function fetchPaymentMethods(): Promise<void> {
-    const data = await api<ApiPaymentMethod[]>('/me/payment-methods')
-    paymentMethods.value = data.map(pm => ({
-      id: pm.id,
-      brand: pm.brand,
-      last4: pm.last4,
-      expMonth: pm.exp_month,
-      expYear: pm.exp_year,
-    }))
+    isLoading.value = true
+    error.value = null
+    try {
+      const data = await api<ApiPaymentMethod[]>('/me/payment-methods')
+      paymentMethods.value = data.map(pm => ({
+        id: pm.id,
+        brand: pm.brand,
+        last4: pm.last4,
+        expMonth: pm.exp_month,
+        expYear: pm.exp_year,
+      }))
+    }
+    catch (err) {
+      setError(err, 'Impossible de charger les moyens de paiement.')
+      throw err
+    }
+    finally {
+      isLoading.value = false
+    }
   }
 
   // ─── Computed utilitaires ──────────────────────────────────────────────
@@ -190,6 +258,8 @@ export function useBilling() {
     subscription,
     invoices,
     paymentMethods,
+    isLoading,
+    error,
     // actions
     fetchPlans,
     fetchSubscription,

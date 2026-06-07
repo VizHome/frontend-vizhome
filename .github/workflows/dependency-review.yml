@@ -1,0 +1,41 @@
+name: Dependency Review
+
+# Scanne les dépendances introduites/modifiées par une PR et alerte sur :
+#  - Vulnérabilités (advisory GitHub) ≥ seuil
+#  - Licences non-conformes
+#  - Versions trop vieilles / déprecated
+#
+# Bloque la PR si severity ≥ `fail-on-severity`. Commente la PR avec le détail.
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: depreview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-review:
+    name: Dependency review
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Review dependencies
+        uses: actions/dependency-review-action@v4
+        with:
+          # Bloque la PR si une dep introduit une CVE ≥ high.
+          fail-on-severity: high
+          # Refuse les licences incompatibles avec MIT / proprio commercial.
+          # cf. https://spdx.org/licenses/
+          deny-licenses: AGPL-3.0, GPL-2.0, GPL-3.0
+          comment-summary-in-pr: always
+          # Skip les dev deps si tu veux uniquement scanner ce qui ship en prod :
+          # filter-dev-dependencies: true

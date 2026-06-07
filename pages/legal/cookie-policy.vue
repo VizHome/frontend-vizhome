@@ -126,7 +126,7 @@
 
       <div class="mt-12 flex justify-center">
         <Button variant="outline" as-child>
-          <NuxtLink to="/legal/privacy">
+          <NuxtLink to="/legal/privacy-policy">
             Consulter notre Politique de Confidentialité
           </NuxtLink>
         </Button>
@@ -136,4 +136,10 @@
 </template>
 
 <script setup lang="ts">
+useSeo({
+  title: 'Politique de cookies',
+  description:
+    'Catégories de cookies utilisés sur VizHome (essentiels, analytiques, fonctionnels), durées de conservation et options pour gérer vos préférences.',
+})
+
 </script>

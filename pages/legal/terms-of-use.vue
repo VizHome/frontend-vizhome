@@ -193,4 +193,10 @@ import {
   MessageSquareIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Conditions d\'utilisation',
+  description:
+    'Conditions générales d\'utilisation de VizHome : acceptation, description du moteur de rendu IA, comptes utilisateurs, obligations et limitations.',
+})
+
 </script>

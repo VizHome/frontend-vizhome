@@ -226,6 +226,13 @@ import {
   ChevronRightIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Bibliothèque de matériaux PBR',
+  description:
+    'Plus de 10 000 matériaux photoréalistes (bois, pierre, métal, tissus, verre) avec textures PBR, sélection raycastée et import de vos propres textures.',
+  ogImage: '/images/generate/image_generate.png',
+})
+
 const categories = [
   { name: 'Bois' },
   { name: 'Pierre' },

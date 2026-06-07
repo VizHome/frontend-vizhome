@@ -165,7 +165,7 @@
 
       <div class="mt-12 flex flex-wrap justify-center gap-4">
         <Button variant="outline" as-child>
-          <NuxtLink to="/legal/terms"> Conditions d'utilisation </NuxtLink>
+          <NuxtLink to="/legal/terms-of-use"> Conditions d'utilisation </NuxtLink>
         </Button>
         <Button variant="outline" as-child>
           <NuxtLink to="/legal/cookie-policy"> Politique de Cookies </NuxtLink>
@@ -197,4 +197,9 @@ import {
   DownloadIcon,
 } from 'lucide-vue-next'
 
+useSeo({
+  title: 'Politique de confidentialité',
+  description:
+    'Comment VizHome collecte, utilise et protège vos informations personnelles : finalités, base légale, partage de données et exercice de vos droits.',
+})
 </script>

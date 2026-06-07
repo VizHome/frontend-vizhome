@@ -239,7 +239,7 @@
 
       <div class="mt-12 flex justify-center gap-4">
         <Button variant="outline" as-child>
-          <NuxtLink to="/legal/privacy">
+          <NuxtLink to="/legal/privacy-policy">
             Politique de Confidentialité
           </NuxtLink>
         </Button>
@@ -261,5 +261,11 @@ import {
   XSquareIcon,
   InfoIcon,
 } from 'lucide-vue-next'
+
+useSeo({
+  title: 'Traitement des données',
+  description:
+    'Engagements RGPD de VizHome : nature des données traitées, finalités, durées de conservation, sous-traitance et droits des personnes concernées.',
+})
 
 </script>

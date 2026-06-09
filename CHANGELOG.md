@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.3.0](https://github.com/VizHome/frontend-vizhome/compare/v0.2.0...v0.3.0) (2026-06-09)
+
+
+### ✨ Features
+
+* add Bash commands for workflow results and update npm version ([030aebb](https://github.com/VizHome/frontend-vizhome/commit/030aebbd331cb5621ea60785d210404df8d368f5))
+* ajouter des commandes Bash pour afficher les résultats des exécutions de workflows ([6e48533](https://github.com/VizHome/frontend-vizhome/commit/6e48533c7b9afd0459223e0467a0d6139c56025a))
+* ajouter des commandes Bash pour la gestion des dépendances et l'intégration continue ([ec6bc49](https://github.com/VizHome/frontend-vizhome/commit/ec6bc495a27ad80623a925b78569496225f3271f))
+* ajouter une commande Bash pour exécuter un script Node.js et corriger la syntaxe de la commande Python ([c1b7b48](https://github.com/VizHome/frontend-vizhome/commit/c1b7b4855ea4c54827891fea39780a16ad365133))
+* enhance user experience with refactor, fixes, and Bash commands ([818006d](https://github.com/VizHome/frontend-vizhome/commit/818006d76e3468aef52d3d0e5c3b73ce429eba53))
+
+
+### 🐛 Bug fixes
+
+* corriger les commentaires pour la conformité des noms d'hôte en minuscules dans le workflow de publication Docker ([1746409](https://github.com/VizHome/frontend-vizhome/commit/1746409ed1e5c41d31d995d29e19416b9d2e40fb))
+* **types:** resolve typecheck errors in useSSE and nuxt.config.analyze ([901358f](https://github.com/VizHome/frontend-vizhome/commit/901358fe8ec7662726a1929128354106c14ce5c7))
+* **vitest:** exclude tests/e2e/** from unit test scan ([e72da96](https://github.com/VizHome/frontend-vizhome/commit/e72da9618c3cee96d14e4b7f9b74bede199c657c))
+
+
+### ♻️ Refactoring
+
+* remove Sentry integration and update observability documentation ([692fc8f](https://github.com/VizHome/frontend-vizhome/commit/692fc8fede32f0bfa1615e10befdeb2bded5c1ae))
+
 ## [0.2.0](https://github.com/VizHome/frontend-vizhome/compare/v0.1.0...v0.2.0) (2026-06-07)
 
 

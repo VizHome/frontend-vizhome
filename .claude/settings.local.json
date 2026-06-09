@@ -193,7 +193,15 @@
       "Bash(git push *)",
       "Bash(python -c \"import sys, json; [print\\(f\\\\\"{r['conclusion'] or 'pending':10s} | {r['headSha'][:7]} | {r['headBranch']:20s} | {r['name']:35s} | id={r['databaseId']}\\\\\"\\) for r in json.loads\\(sys.stdin.read\\(\\)\\)]\")",
       "Bash(python -c \"import sys, json; runs=json.loads\\(sys.stdin.read\\(\\)\\); [print\\(f\\\\\"{r['conclusion'] or 'pending':10s} | {r['headSha'][:7]} | {r['headBranch']:20s} | {r['name']:35s} | id={r['databaseId']}\\\\\"\\) for r in runs if r['headSha'].startswith\\('d805f07'\\) or r['headBranch']=='fix/all-project']\")",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(curl -s https://api.github.com/repos/aquasecurity/trivy-action/releases/latest)",
+      "Bash(python -c \"import sys,json; r=json.load\\(sys.stdin\\); print\\('Latest trivy-action:', r['tag_name']\\)\")",
+      "Bash(curl -s https://api.github.com/repos/github/codeql-action/releases/latest)",
+      "Bash(python -c \"import sys,json; r=json.load\\(sys.stdin\\); print\\('Latest codeql-action:', r['tag_name']\\)\")",
+      "Bash(curl -s https://api.github.com/repos/github/codeql-action/tags)",
+      "Bash(python -c \"import sys,json; tags=[t['name'] for t in json.load\\(sys.stdin\\)]; print\\([t for t in tags if t.startswith\\('v'\\) and '.' not in t.replace\\('v',''\\)][:5]\\)\")",
+      "Bash(curl -s \"https://api.github.com/repos/github/codeql-action/tags?per_page=30\")",
+      "Bash(python -c \"import sys,json,re; tags=[t['name'] for t in json.load\\(sys.stdin\\)]; majors=[t for t in tags if re.match\\(r'^v\\\\d+$', t\\)]; print\\('majors:', majors\\)\")"
     ]
   }
 }

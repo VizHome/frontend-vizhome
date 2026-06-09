@@ -54,8 +54,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
+
+      # Le runner GitHub-hosted node@22 vient avec npm 10. Lock régénéré
+      # avec npm 11 => on bump pour rester compatible.
+      - name: Bump npm to v11
+        run: npm install -g npm@11
 
       - name: Install frontend deps
         run: npm ci

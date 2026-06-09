@@ -21,6 +21,12 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      # Le runner GitHub-hosted node@22 vient avec npm 10. Notre lockfile a
+      # été régénéré avec npm 11 qui résout différemment certains nested
+      # deps (notamment nitropack/rollup-plugin-visualizer). On bump npm
+      # pour rester compatible avec le format du lock.
+      - name: Bump npm to v11
+        run: npm install -g npm@11
       - name: Install deps
         run: npm ci --no-audit --no-fund
       - run: npm run lint -- --max-warnings 0
@@ -36,6 +42,12 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      # Le runner GitHub-hosted node@22 vient avec npm 10. Notre lockfile a
+      # été régénéré avec npm 11 qui résout différemment certains nested
+      # deps (notamment nitropack/rollup-plugin-visualizer). On bump npm
+      # pour rester compatible avec le format du lock.
+      - name: Bump npm to v11
+        run: npm install -g npm@11
       - name: Install deps
         run: npm ci --no-audit --no-fund
       - run: npm run typecheck || true
@@ -50,6 +62,12 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      # Le runner GitHub-hosted node@22 vient avec npm 10. Notre lockfile a
+      # été régénéré avec npm 11 qui résout différemment certains nested
+      # deps (notamment nitropack/rollup-plugin-visualizer). On bump npm
+      # pour rester compatible avec le format du lock.
+      - name: Bump npm to v11
+        run: npm install -g npm@11
       - name: Install deps
         run: npm ci --no-audit --no-fund
       - name: Run tests + coverage
@@ -82,6 +100,12 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      # Le runner GitHub-hosted node@22 vient avec npm 10. Notre lockfile a
+      # été régénéré avec npm 11 qui résout différemment certains nested
+      # deps (notamment nitropack/rollup-plugin-visualizer). On bump npm
+      # pour rester compatible avec le format du lock.
+      - name: Bump npm to v11
+        run: npm install -g npm@11
       - name: Install deps
         run: npm ci --no-audit --no-fund
       - name: Build SSR
@@ -193,6 +217,8 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+      - name: Bump npm to v11
+        run: npm install -g npm@11
       - name: Install deps (lockfile only)
         run: npm ci --no-audit --no-fund --ignore-scripts
       - run: npm audit --audit-level=high --omit=dev || true

@@ -47,7 +47,6 @@
   "dependencies": {
     "@lucide/vue": "^1.17.0",
     "@nuxt/eslint": "^1.15.2",
-    "@sentry/browser": "^10.56.0",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/vue-table": "^8.21.3",
     "@tiptap/extension-code-block-lowlight": "^3.24.0",

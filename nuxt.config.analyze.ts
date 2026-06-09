@@ -16,10 +16,26 @@
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { visualizer } from 'rollup-plugin-visualizer'
+import type { PluginOption } from 'vite'
 import baseConfig from './nuxt.config'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const outputFile = resolve(__dirname, 'analyze-bundle.html')
+
+// `rollup-plugin-visualizer` retourne un `Plugin` Rollup ; côté Vite ça
+// matche `PluginOption`. On cast pour réconcilier les types des deux libs.
+const visualizerPlugin = visualizer({
+  filename: outputFile,
+  template: 'treemap',
+  gzipSize: true,
+  brotliSize: true,
+  open: false,
+  title: 'VizHome - Bundle analyzer',
+}) as PluginOption
+
+// Spread Vite plugins existants en gardant le bon type côté Nuxt.
+const basePlugins
+  = ((baseConfig.vite as { plugins?: PluginOption[] })?.plugins ?? [])
 
 export default defineNuxtConfig({
   ...baseConfig,
@@ -28,16 +44,6 @@ export default defineNuxtConfig({
   // `gzipSize`/`brotliSize` pour comparer aux seuils Web Vitals.
   vite: {
     ...(baseConfig.vite ?? {}),
-    plugins: [
-      ...((baseConfig.vite as { plugins?: unknown[] })?.plugins ?? []),
-      visualizer({
-        filename: outputFile,
-        template: 'treemap',
-        gzipSize: true,
-        brotliSize: true,
-        open: false,
-        title: 'VizHome — Bundle analyzer',
-      }),
-    ],
+    plugins: [...basePlugins, visualizerPlugin],
   },
 })

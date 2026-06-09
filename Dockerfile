@@ -9,6 +9,11 @@ WORKDIR /app
 
 RUN apk add --no-cache libc6-compat
 
+# Le lock a été régénéré avec npm 11 ; node:22-alpine vient avec npm 10
+# qui refuse certains nested deps de nitropack. Bump npm pour rester
+# compatible avec le format du lockfile.
+RUN npm install -g npm@11
+
 COPY package.json package-lock.json ./
 
 RUN --mount=type=cache,target=/root/.npm \

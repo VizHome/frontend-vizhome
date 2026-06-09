@@ -16,6 +16,17 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./tests/setup.ts'],
+    // `tests/e2e/**` sont des tests Playwright (`@playwright/test`) qui
+    // ne doivent PAS être exécutés par Vitest. Sans cette exclusion,
+    // Vitest scan les `*.spec.ts` du dossier et plante avec
+    // "Playwright Test did not expect test.describe() to be called here".
+    // Les E2E se lancent via `npm run test:e2e` (cf package.json).
+    exclude: [
+      '**/node_modules/**',
+      '**/.nuxt/**',
+      '**/.output/**',
+      'tests/e2e/**',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'lcov', 'html'],

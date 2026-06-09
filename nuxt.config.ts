@@ -81,6 +81,7 @@ export default defineNuxtConfig({
     optimizeDeps: {
       // Cold-start dev : pre-bundle les libs lourdes pour éviter le full reload sur 1er hit
       include: [
+        '@lucide/vue',
         '@tiptap/starter-kit',
         '@tiptap/vue-3',
         '@vue/devtools-core',

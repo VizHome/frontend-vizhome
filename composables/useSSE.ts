@@ -23,21 +23,22 @@
 import { onScopeDispose, ref } from 'vue'
 import type { Ref } from 'vue'
 
-// ─── Module declaration locale ────────────────────────────────────────────
-// Le paquet `event-source-polyfill` ne fournit pas ses propres types ; on
-// déclare juste la surface minimum dont on a besoin pour que `tsc` valide
-// l'import dynamique. Pas de `any` côté consommateur.
-declare module 'event-source-polyfill' {
-  export const EventSourcePolyfill: new (
-    url: string,
-    init?: { headers?: Record<string, string>; withCredentials?: boolean }
-  ) => {
-    onopen: ((this: unknown, ev: Event) => unknown) | null
-    onmessage: ((this: unknown, ev: MessageEvent<string>) => unknown) | null
-    onerror: ((this: unknown, ev: Event) => unknown) | null
-    close(): void
-  }
+// ─── Types polyfill ──────────────────────────────────────────────────────
+// Surface minimum dont on a besoin pour `EventSourcePolyfill`. Le paquet
+// `event-source-polyfill` ne fournit pas ses propres types ; on garde
+// une description souple (`Function | null`) pour éviter les frictions de
+// signature `this` entre EventSource natif et le polyfill.
+interface EventSourceLike {
+  onopen: ((ev: Event) => void) | null
+  onmessage: ((ev: { data: string }) => void) | null
+  onerror: ((ev: Event) => void) | null
+  close(): void
 }
+
+type EventSourcePolyfillCtor = new (
+  url: string,
+  init?: { headers?: Record<string, string>, withCredentials?: boolean },
+) => EventSourceLike
 
 // ─── Types ────────────────────────────────────────────────────────────────
 export interface SSEOptions<T> {
@@ -56,14 +57,6 @@ export interface SSEHandle {
   close: () => void
 }
 
-// ─── Types polyfill ──────────────────────────────────────────────────────
-type EventSourceLike = {
-  onopen: ((this: unknown, ev: Event) => unknown) | null
-  onmessage: ((this: unknown, ev: MessageEvent<string>) => unknown) | null
-  onerror: ((this: unknown, ev: Event) => unknown) | null
-  close(): void
-}
-
 // ─── Composable ───────────────────────────────────────────────────────────
 /**
  * Ouvre une connexion SSE authentifiée. La connexion est fermée
@@ -76,7 +69,7 @@ type EventSourceLike = {
  */
 export function useSSE<T = unknown>(
   url: string | (() => string),
-  options: SSEOptions<T>
+  options: SSEOptions<T>,
 ): SSEHandle {
   const isConnected = ref(false)
   const error = ref<string | null>(null)
@@ -107,33 +100,42 @@ export function useSSE<T = unknown>(
     const token = auth.tokens.value?.access ?? ''
 
     // Import dynamique : SSR-safe + le polyfill n'est touché que côté client.
-    const { EventSourcePolyfill } = await import('event-source-polyfill')
+    // On cast l'export sur notre `Ctor` pour rester typé côté caller.
+    const mod = await import('event-source-polyfill')
+    const Ctor = (mod as unknown as { EventSourcePolyfill: EventSourcePolyfillCtor })
+      .EventSourcePolyfill
 
     if (closed) return // peut avoir été fermé pendant l'await
 
     const headers: Record<string, string> = {}
     if (token) headers.Authorization = `Bearer ${token}`
 
-    source = new EventSourcePolyfill(_absoluteUrl(resolved), { headers })
+    // Capture la nouvelle instance dans une const locale narrow puis stocke.
+    // Ça évite des accès `source.foo` ambigus pour TS (qui ne sait pas que
+    // `source` reste non-null entre les setters synchrones suivants).
+    const instance: EventSourceLike = new Ctor(_absoluteUrl(resolved), { headers })
 
-    source.onopen = () => {
+    instance.onopen = () => {
       isConnected.value = true
       error.value = null
       options.onOpen?.()
     }
-    source.onmessage = (ev: MessageEvent<string>) => {
+    instance.onmessage = (ev) => {
       try {
         const parsed = JSON.parse(ev.data) as T
         options.onMessage(parsed)
-      } catch (e) {
+      }
+      catch (e) {
         error.value = (e as Error).message || 'Réponse SSE non parsable'
       }
     }
-    source.onerror = (ev: Event) => {
+    instance.onerror = (ev) => {
       isConnected.value = false
       error.value = 'Connexion SSE interrompue'
       options.onError?.(ev)
     }
+
+    source = instance
   }
 
   function close(): void {

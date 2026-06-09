@@ -190,7 +190,10 @@
       "Bash(python -c \"import sys,json; lock=json.loads\\(sys.stdin.read\\(\\)\\); print\\('remote lock cac:', lock['packages'].get\\('node_modules/cac',{}\\).get\\('version','MISSING'\\)\\); print\\('remote lock rollup-vis:', lock['packages'].get\\('node_modules/rollup-plugin-visualizer',{}\\).get\\('version','MISSING'\\)\\);\")",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(python -c \"import sys, json; [print\\(f\\\\\"{r['conclusion'] or 'pending':10s} | {r['headSha'][:7]} | {r['headBranch']:20s} | {r['name']:35s} | id={r['databaseId']}\\\\\"\\) for r in json.loads\\(sys.stdin.read\\(\\)\\)]\")",
+      "Bash(python -c \"import sys, json; runs=json.loads\\(sys.stdin.read\\(\\)\\); [print\\(f\\\\\"{r['conclusion'] or 'pending':10s} | {r['headSha'][:7]} | {r['headBranch']:20s} | {r['name']:35s} | id={r['databaseId']}\\\\\"\\) for r in runs if r['headSha'].startswith\\('d805f07'\\) or r['headBranch']=='fix/all-project']\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

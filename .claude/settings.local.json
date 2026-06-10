@@ -201,7 +201,12 @@
       "Bash(curl -s https://api.github.com/repos/github/codeql-action/tags)",
       "Bash(python -c \"import sys,json; tags=[t['name'] for t in json.load\\(sys.stdin\\)]; print\\([t for t in tags if t.startswith\\('v'\\) and '.' not in t.replace\\('v',''\\)][:5]\\)\")",
       "Bash(curl -s \"https://api.github.com/repos/github/codeql-action/tags?per_page=30\")",
-      "Bash(python -c \"import sys,json,re; tags=[t['name'] for t in json.load\\(sys.stdin\\)]; majors=[t for t in tags if re.match\\(r'^v\\\\d+$', t\\)]; print\\('majors:', majors\\)\")"
+      "Bash(python -c \"import sys,json,re; tags=[t['name'] for t in json.load\\(sys.stdin\\)]; majors=[t for t in tags if re.match\\(r'^v\\\\d+$', t\\)]; print\\('majors:', majors\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(npm view *)",
+      "Bash(npx vue-tsc *)",
+      "Bash(file public/images/logo/*.png)",
+      "Bash(grep -lE \"getQuery\\\\\\\\\\(event\\\\\\\\\\)\" node_modules/@ztl-uwu/nuxt-content/dist/runtime/ -r)"
     ]
   }
 }

@@ -87,6 +87,7 @@ export default defineNuxtConfig({
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'clsx',
+        'event-source-polyfill', // CJS
         'lucide-vue-next',
         'reka-ui',
         'tailwind-merge',

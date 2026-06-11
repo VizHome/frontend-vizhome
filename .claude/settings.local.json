@@ -230,7 +230,10 @@
       "Bash(pip list *)",
       "Bash(set DJANGO_SETTINGS_MODULE=config.settings.test)",
       "Bash(python -m pytest src/apps/support -q --no-cov -p no:cacheprovider)",
-      "Bash(venv/Scripts/python.exe -m pytest src/apps/support src/apps/accounts src/apps/gdpr src/apps/core -q --no-cov)"
+      "Bash(venv/Scripts/python.exe -m pytest src/apps/support src/apps/accounts src/apps/gdpr src/apps/core -q --no-cov)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(stripe trigger *)"
     ]
   }
 }

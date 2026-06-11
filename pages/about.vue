@@ -266,4 +266,10 @@ const stack = [
   { name: 'Three.js', role: 'Rendu 3D', icon: BoxIcon },
   { name: 'Gemini', role: 'IA générative', icon: BrainCircuitIcon },
 ]
+
+useSeo({
+  title: 'A propos',
+  description:
+    'Decouvrez VizHome, la plateforme de visualisation 3D architecturale propulsee par IA.',
+})
 </script>

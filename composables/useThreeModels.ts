@@ -657,7 +657,17 @@ export function useThreeModels() {
     const fileResp = await fetch(url)
     if (!fileResp.ok) throw new Error(`Échec téléchargement ${url}`)
     const blob = await fileResp.blob()
-    const file = new File([blob], name, { type: blob.type })
+
+    // `name` est le nom AFFICHABLE du modèle ("Cube"), en général sans
+    // extension. Or _loadFromFile route vers le bon loader d'après
+    // l'extension du filename : sans elle, il échoue en silence
+    // ("Format non supporté"). On dérive l'extension depuis l'URL du
+    // fichier (la clé S3 conserve le nom d'origine, ex 42_xyz.obj).
+    const urlPath = new URL(url, window.location.origin).pathname
+    const urlExt = urlPath.split('.').pop()?.toLowerCase() ?? ''
+    const hasExt = /\.(glb|gltf|obj|fbx|stl)$/i.test(name)
+    const fileName = hasExt || !urlExt ? name : `${name}.${urlExt}`
+    const file = new File([blob], fileName, { type: blob.type })
 
     let mtlFile: File | undefined
     if (mtlUrl) {
@@ -684,6 +694,15 @@ export function useThreeModels() {
         }
       }, 50)
     })
+
+    // _loadFromFile signale ses échecs via modelLoadError (pas d'exception) :
+    // on les remonte en erreur pour que loadProjectModels les comptabilise
+    // au lieu d'un échec silencieux.
+    if (importedModels.value.length === sizeBefore) {
+      throw new Error(
+        modelLoadError.value || `Le modèle "${name}" n'a pas pu être chargé.`
+      )
+    }
 
     // Met à jour la dernière entry avec les options (transform + id backend)
     if (importedModels.value.length > sizeBefore) {

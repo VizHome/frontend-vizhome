@@ -77,4 +77,10 @@ onMounted(async () => {
     errorMessage.value = err?.data?.detail || 'Connexion Google échouée.'
   }
 })
+
+useSeo({
+  title: 'Connexion Google',
+  description:
+    'Finalisation de la connexion via Google.',
+})
 </script>

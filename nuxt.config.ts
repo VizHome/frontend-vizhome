@@ -34,7 +34,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'VizHome',
-      titleTemplate: '%s | VizHome',
+      titleTemplate: '%s - VizHome',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },

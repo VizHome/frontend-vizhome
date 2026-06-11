@@ -184,7 +184,7 @@
     <!-- Lightbox : rendu agrandi -->
     <Dialog v-model:open="lightboxOpen">
       <DialogContent
-        class="max-w-5xl w-[calc(100vw-2rem)] p-0 overflow-hidden gap-0"
+        class="sm:max-w-[min(96vw,1600px)] w-[96vw] p-0 overflow-hidden gap-0"
       >
         <DialogHeader class="px-4 py-3 border-b">
           <DialogTitle class="flex items-center gap-2 text-base">
@@ -209,12 +209,12 @@
           </DialogDescription>
         </DialogHeader>
 
-        <div class="bg-muted/40 flex items-center justify-center max-h-[70vh] overflow-hidden">
+        <div class="bg-muted/40 flex items-center justify-center max-h-[82vh] overflow-hidden">
           <img
             v-if="lightboxEntry"
             :src="lightboxEntry.imageUrl"
             :alt="lightboxEntry.title || 'Rendu IA agrandi'"
-            class="max-h-[70vh] w-auto max-w-full object-contain"
+            class="max-h-[82vh] w-auto max-w-full object-contain"
           />
         </div>
 
@@ -341,4 +341,10 @@ const downloadEntry = (entry: GalleryEntry) => {
   link.href = entry.imageUrl
   link.click()
 }
+
+useSeo({
+  title: 'Galerie',
+  description:
+    'Retrouvez tous vos rendus IA : croquis transformes, generations par prompt et captures 3D.',
+})
 </script>

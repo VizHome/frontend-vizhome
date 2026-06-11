@@ -316,4 +316,10 @@ const filteredFAQs = computed(() => {
       faq.answer.toLowerCase().includes(query)
   )
 })
+
+useSeo({
+  title: 'FAQ',
+  description:
+    'Les reponses aux questions les plus frequentes sur VizHome : rendus IA, quotas, formats 3D.',
+})
 </script>

@@ -211,7 +211,26 @@
       "Bash(python -c \"import urllib.parse as u; p=u.urlparse\\('redis://:secret@redis:6379/0'\\); print\\('host=%s port=%s' % \\(p.hostname, p.port\\)\\)\")",
       "Bash(ruff check *)",
       "Bash(ruff format *)",
-      "Bash(python -c \"import sys; sys.path.insert\\(0, 'src'\\)\")"
+      "Bash(python -c \"import sys; sys.path.insert\\(0, 'src'\\)\")",
+      "Bash(sed -n '120,220p' src/apps/accounts/views.py)",
+      "Bash(sed -n '180,320p' src/apps/gdpr/tasks.py)",
+      "Bash(sed -n '1,60p' src/config/settings/base.py)",
+      "Bash(sed -n '130,180p' src/config/settings/base.py)",
+      "Read(//c/c/Users/thiba/Documents/Environnement_dev/frontend-vizhome/pages/**)",
+      "Bash(sed -n '115,145p' composables/useUser.ts)",
+      "Bash(sed -n '220,260p' composables/useUser.ts)",
+      "Bash(grep -v \"//\")",
+      "Bash(grep -rn '<Input[^>]*$' -A3 components/ pages/ --include=\"*.vue\")",
+      "Bash(sed -n '150,180p' src/apps/accounts/views.py)",
+      "Bash(sed -n '235,265p' src/apps/gdpr/tasks.py)",
+      "Bash(sed -n '35,115p' src/apps/support/notifications.py)",
+      "Bash(python -)",
+      "Bash(python -m pytest src/apps/support src/apps/accounts src/apps/gdpr src/apps/core -q)",
+      "Bash(src/venv/Scripts/python.exe -m pytest src/apps/support src/apps/accounts src/apps/gdpr src/apps/core -q --no-cov)",
+      "Bash(pip list *)",
+      "Bash(set DJANGO_SETTINGS_MODULE=config.settings.test)",
+      "Bash(python -m pytest src/apps/support -q --no-cov -p no:cacheprovider)",
+      "Bash(venv/Scripts/python.exe -m pytest src/apps/support src/apps/accounts src/apps/gdpr src/apps/core -q --no-cov)"
     ]
   }
 }

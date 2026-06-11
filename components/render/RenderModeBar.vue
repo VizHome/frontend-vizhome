@@ -1,6 +1,13 @@
 <template>
+  <!--
+    `fixed` (et non `absolute`) : la barre est ancrée au viewport. Avec
+    `absolute`, elle se positionnait à 50% du container ; si la page débordait
+    horizontalement (canvas trop large, etc.), la barre partait hors écran à
+    droite. `w-max` + `flex-nowrap` garantissent qu'elle ne s'empile jamais
+    verticalement même dans un contexte compressé.
+  -->
   <div
-    class="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 rounded-full border bg-background/80 backdrop-blur-sm shadow-lg px-2 py-1.5"
+    class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-nowrap items-center gap-1 w-max rounded-full border bg-background/80 backdrop-blur-sm shadow-lg px-2 py-1.5"
   >
     <!-- Logo -->
     <NuxtLink

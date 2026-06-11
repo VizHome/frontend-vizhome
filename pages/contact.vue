@@ -358,4 +358,10 @@ const onSubmit = async (values: Record<string, unknown>) => {
     // l'UI affiche un Alert destructive en conséquence.
   }
 }
+
+useSeo({
+  title: 'Contact',
+  description:
+    'Une question, un projet, un partenariat ? Contactez l equipe VizHome.',
+})
 </script>

@@ -338,4 +338,10 @@ function formatDate(iso: string): string {
   if (diffDays < 7) return `il y a ${diffDays} j`
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
 }
+
+useSeo({
+  title: 'Mes projets',
+  description:
+    'Gerez vos projets 3D : scenes sauvegardees, modeles importes et rendus associes.',
+})
 </script>

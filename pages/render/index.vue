@@ -200,13 +200,23 @@ const saveDialogOpen = ref(false)
 function openSaveDialog() {
   saveDialogOpen.value = true
 }
+
+useSeo({
+  title: 'Studio de rendu',
+  description:
+    'Croquis 2D, prompt IA ou editeur 3D temps reel : creez vos visuels architecturaux.',
+})
 </script>
 
 <style scoped>
 .render-container {
   position: relative;
-  width: 100%;
-  height: 100vh;
+  /* 100vw + max-width 100% : verrouille la largeur au viewport même si un
+     enfant (canvas Three avec attributs px physiques) tente de déborder.
+     dvh : évite le jump de 100vh avec les barres dynamiques mobiles. */
+  width: 100vw;
+  max-width: 100%;
+  height: 100dvh;
   overflow: hidden;
 }
 

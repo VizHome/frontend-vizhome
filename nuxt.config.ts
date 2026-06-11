@@ -34,7 +34,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'VizHome',
-      titleTemplate: '%s | VizHome',
+      titleTemplate: '%s - VizHome',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -81,11 +81,13 @@ export default defineNuxtConfig({
     optimizeDeps: {
       // Cold-start dev : pre-bundle les libs lourdes pour éviter le full reload sur 1er hit
       include: [
+        '@lucide/vue',
         '@tiptap/starter-kit',
         '@tiptap/vue-3',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'clsx',
+        'event-source-polyfill', // CJS
         'lucide-vue-next',
         'reka-ui',
         'tailwind-merge',

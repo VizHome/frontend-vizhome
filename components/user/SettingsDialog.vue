@@ -92,9 +92,12 @@
                 <Label for="acct-pseudo">Pseudo public</Label>
                 <div class="relative">
                   <AtSign class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <!-- `:model-value` et non `:value` : le composant shadcn Input
+                       bind en interne `:value="modelValue"`, donc un attribut
+                       `value` fallthrough est écrasé et le champ reste vide. -->
                   <Input
                     id="acct-pseudo"
-                    :value="user.pseudo"
+                    :model-value="user.pseudo"
                     readonly
                     disabled
                     class="cursor-not-allowed bg-muted/50 pl-9 font-medium"
@@ -110,7 +113,7 @@
                 <Label for="acct-email">Email</Label>
                 <Input
                   id="acct-email"
-                  :value="user.email"
+                  :model-value="user.email"
                   type="email"
                   readonly
                   disabled

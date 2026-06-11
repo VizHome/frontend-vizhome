@@ -407,4 +407,10 @@ const faqs = [
     a: "La facturation annuelle vous permet d'économiser 20% par rapport au tarif mensuel. Vous êtes facturé une fois par an.",
   },
 ]
+
+useSeo({
+  title: 'Tarifs',
+  description:
+    'Plans Free, Pro et Enterprise : choisissez la formule VizHome adaptee a vos besoins.',
+})
 </script>

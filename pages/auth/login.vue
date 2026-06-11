@@ -404,4 +404,10 @@ function handleGithubLogin() {
   })
   window.location.href = `https://github.com/login/oauth/authorize?${params}`
 }
+
+useSeo({
+  title: 'Connexion',
+  description:
+    'Connectez-vous a votre compte VizHome pour acceder a vos projets et rendus IA.',
+})
 </script>

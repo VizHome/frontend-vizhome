@@ -150,4 +150,10 @@ function initials(name: string): string {
     .map(w => w[0]?.toUpperCase())
     .join('')
 }
+
+useSeo({
+  title: 'Temoignages',
+  description:
+    'Ce que les architectes, designers et agents immobiliers disent de VizHome.',
+})
 </script>

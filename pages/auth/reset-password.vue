@@ -161,4 +161,10 @@ async function handleSubmit() {
     loading.value = false
   }
 }
+
+useSeo({
+  title: 'Reinitialiser le mot de passe',
+  description:
+    'Definissez un nouveau mot de passe pour votre compte VizHome.',
+})
 </script>

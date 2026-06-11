@@ -123,4 +123,10 @@ function reset() {
   emailError.value = ''
   submitted.value = false
 }
+
+useSeo({
+  title: 'Mot de passe oublie',
+  description:
+    'Recevez un lien de reinitialisation de votre mot de passe VizHome par email.',
+})
 </script>

@@ -178,3 +178,36 @@ html[data-font-size='medium'] {
 html[data-font-size='large'] {
   font-size: 18px;
 }
+
+/* ── Scrollbars fines et discrètes (couleurs du theme) ───────────────────── */
+/* Firefox + standard */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Chrome / Edge / Safari */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 9999px;
+  /* Bordure transparente = padding visuel, la barre paraît plus fine */
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--muted-foreground);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

@@ -503,6 +503,12 @@ const PasswordStrength = defineComponent({
         </div>
       `,
 })
+
+useSeo({
+  title: 'Inscription',
+  description:
+    'Creez votre compte VizHome gratuit et generez vos premiers rendus IA en quelques secondes.',
+})
 </script>
 
 <style scoped>

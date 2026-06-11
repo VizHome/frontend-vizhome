@@ -66,4 +66,10 @@ onMounted(async () => {
     errorMessage.value = err?.data?.detail || 'Connexion GitHub échouée.'
   }
 })
+
+useSeo({
+  title: 'Connexion GitHub',
+  description:
+    'Finalisation de la connexion via GitHub.',
+})
 </script>

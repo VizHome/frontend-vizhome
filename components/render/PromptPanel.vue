@@ -1,8 +1,14 @@
 <template>
+  <!--
+    `items-center-safe` (et non `items-center`) : avec un conteneur scrollable,
+    `center` classique pousse le haut du contenu HORS de la zone visible quand
+    il dépasse la hauteur (titre coupé, impossible de scroller jusqu'en haut).
+    `safe center` centre seulement si tout rentre, sinon aligne en haut.
+  -->
   <div
-    class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-background to-muted/30 p-4 overflow-y-auto"
+    class="absolute inset-0 flex items-center-safe justify-center bg-gradient-to-br from-background to-muted/30 p-4 overflow-y-auto"
   >
-    <div class="w-full max-w-2xl flex flex-col gap-4 py-16">
+    <div class="w-full max-w-2xl flex flex-col gap-4 py-8 md:py-14">
       <!-- Header -->
       <div class="text-center">
         <h2 class="text-2xl font-bold">Génération par prompt</h2>
@@ -91,12 +97,16 @@
           <AlertCircle class="h-4 w-4 shrink-0" />
           {{ error }}
         </div>
-        <div v-else-if="result">
+        <div v-else-if="result" class="flex flex-col gap-3">
           <img
             :src="result"
             alt="Rendu généré"
-            class="w-full rounded-xl object-contain max-h-64"
+            class="w-full rounded-xl object-contain max-h-[60vh] bg-muted/40"
           />
+          <Button variant="outline" size="sm" class="self-end" @click="downloadResult">
+            <Download data-icon="inline-start" />
+            Télécharger
+          </Button>
         </div>
         <div v-else class="text-center text-sm text-muted-foreground py-6">
           <Box class="h-10 w-10 mx-auto mb-3 opacity-30" />
@@ -267,6 +277,7 @@ import { computed, onMounted, ref } from 'vue'
 import {
   AlertCircle,
   Box,
+  Download,
   ImageIcon,
   Loader2,
   Sparkles,
@@ -333,5 +344,13 @@ const handleLoad = (entry: Parameters<typeof loadFromHistory>[0]) => {
   loadFromHistory(entry)
   // Scroll vers le haut pour voir le résultat rechargé
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const downloadResult = () => {
+  if (!result.value) return
+  const link = document.createElement('a')
+  link.download = `rendu-prompt-${Date.now()}.png`
+  link.href = result.value
+  link.click()
 }
 </script>

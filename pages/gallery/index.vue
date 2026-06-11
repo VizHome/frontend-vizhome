@@ -107,14 +107,18 @@
           :key="entry.id"
           class="group relative rounded-xl border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow"
         >
-          <!-- Image -->
-          <div class="aspect-video bg-muted overflow-hidden">
+          <!-- Image (clic = lightbox) -->
+          <button
+            class="aspect-video bg-muted overflow-hidden w-full cursor-zoom-in block"
+            :aria-label="`Agrandir le rendu ${entry.title || entry.prompt || entry.id}`"
+            @click="openLightbox(entry)"
+          >
             <img
               :src="entry.imageUrl"
               :alt="entry.title || 'Rendu IA'"
               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-          </div>
+          </button>
 
           <!-- Infos -->
           <div class="p-3 flex flex-col gap-1.5">
@@ -176,6 +180,60 @@
         </Button>
       </div>
     </main>
+
+    <!-- Lightbox : rendu agrandi -->
+    <Dialog v-model:open="lightboxOpen">
+      <DialogContent
+        class="max-w-5xl w-[calc(100vw-2rem)] p-0 overflow-hidden gap-0"
+      >
+        <DialogHeader class="px-4 py-3 border-b">
+          <DialogTitle class="flex items-center gap-2 text-base">
+            <span
+              v-if="lightboxEntry"
+              :class="[
+                'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                SOURCE_BADGE_CLASSES[lightboxEntry.source],
+              ]"
+            >
+              {{ SOURCE_LABELS[lightboxEntry.source] }}
+            </span>
+            <span class="truncate">
+              {{ lightboxEntry?.title || lightboxEntry?.prompt || 'Rendu IA' }}
+            </span>
+          </DialogTitle>
+          <DialogDescription v-if="lightboxEntry" class="text-xs">
+            {{ formatDate(lightboxEntry.createdAt) }}
+            <template v-if="lightboxEntry.styleHint">
+              · style : {{ lightboxEntry.styleHint }}
+            </template>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div class="bg-muted/40 flex items-center justify-center max-h-[70vh] overflow-hidden">
+          <img
+            v-if="lightboxEntry"
+            :src="lightboxEntry.imageUrl"
+            :alt="lightboxEntry.title || 'Rendu IA agrandi'"
+            class="max-h-[70vh] w-auto max-w-full object-contain"
+          />
+        </div>
+
+        <DialogFooter class="px-4 py-3 border-t flex-row justify-end gap-2">
+          <Button variant="ghost" size="sm" @click="lightboxOpen = false">
+            Fermer
+          </Button>
+          <Button
+            v-if="lightboxEntry"
+            variant="outline"
+            size="sm"
+            @click="downloadEntry(lightboxEntry)"
+          >
+            <Download data-icon="inline-start" />
+            Télécharger
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
@@ -201,6 +259,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import type { GallerySource, GalleryEntry } from '~/composables/useGallery'
 
 definePageMeta({ layout: 'app', middleware: 'auth' })
@@ -257,6 +323,15 @@ const formatDate = (ts: number) => {
     month: 'short',
     year: '2-digit',
   })
+}
+
+// ─── Lightbox ─────────────────────────────────────────────────────────────────
+const lightboxOpen = ref(false)
+const lightboxEntry = ref<GalleryEntry | null>(null)
+
+const openLightbox = (entry: GalleryEntry) => {
+  lightboxEntry.value = entry
+  lightboxOpen.value = true
 }
 
 // ─── Téléchargement ───────────────────────────────────────────────────────────

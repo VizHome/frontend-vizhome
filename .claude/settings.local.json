@@ -208,7 +208,10 @@
       "Bash(file public/images/logo/*.png)",
       "Bash(grep -lE \"getQuery\\\\\\\\\\(event\\\\\\\\\\)\" node_modules/@ztl-uwu/nuxt-content/dist/runtime/ -r)",
       "Bash(python -c \"import urllib.parse as u; p=u.urlparse\\('redis://redis:6379/0'\\); print\\('host=%s port=%s' % \\(p.hostname, p.port\\)\\)\")",
-      "Bash(python -c \"import urllib.parse as u; p=u.urlparse\\('redis://:secret@redis:6379/0'\\); print\\('host=%s port=%s' % \\(p.hostname, p.port\\)\\)\")"
+      "Bash(python -c \"import urllib.parse as u; p=u.urlparse\\('redis://:secret@redis:6379/0'\\); print\\('host=%s port=%s' % \\(p.hostname, p.port\\)\\)\")",
+      "Bash(ruff check *)",
+      "Bash(ruff format *)",
+      "Bash(python -c \"import sys; sys.path.insert\\(0, 'src'\\)\")"
     ]
   }
 }

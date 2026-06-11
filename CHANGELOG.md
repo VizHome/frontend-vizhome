@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.4.0](https://github.com/VizHome/frontend-vizhome/compare/v0.3.0...v0.4.0) (2026-06-11)
+
+
+### ✨ Features
+
+* add Bash commands and improve UI with SEO enhancements ([7d89373](https://github.com/VizHome/frontend-vizhome/commit/7d893734245aec86d0e0f9658e7356097ff45dad))
+
+
+### 🐛 Bug fixes
+
+* ajouter des balises SEO pour améliorer le référencement des pages et ajuster les styles de rendu ([78863bb](https://github.com/VizHome/frontend-vizhome/commit/78863bb434800d3a4e20b1a009124051fde7c036))
+* ajouter des commandes Bash pour exécuter des tests et récupérer des données depuis GitHub ([5412ece](https://github.com/VizHome/frontend-vizhome/commit/5412ece61b3b7b8ef1f8ff3073388b610362083f))
+* ajouter des commandes Bash pour parser les URL Redis et inclure 'event-source-polyfill' dans les dépendances ([e5bc0b2](https://github.com/VizHome/frontend-vizhome/commit/e5bc0b298a1b642890ed6783409b673b8b019ebf))
+* ajouter des commandes Bash pour récupérer des informations sur les dépendances et mettre à jour npm ([f2b2776](https://github.com/VizHome/frontend-vizhome/commit/f2b2776422271533c61a13d79a1fabcf11283848))
+* ajouter une commande Bash pour exécuter des conteneurs Docker ([9844ca5](https://github.com/VizHome/frontend-vizhome/commit/9844ca5757ddd81de256d4fed894f4b3dca3a2d6))
+* améliorer l'interface utilisateur avec un bouton de téléchargement et une lightbox pour les rendus agrandis ([2309fd5](https://github.com/VizHome/frontend-vizhome/commit/2309fd5875339e02dc38d695b4d57c4dba6926b4))
+* corriger la version de trivy-action et ajouter '@lucide/vue' aux dépendances optimisées ([c79a37f](https://github.com/VizHome/frontend-vizhome/commit/c79a37f1fa697211915309791518fe1b6700dafd))
+
 ## [0.3.0](https://github.com/VizHome/frontend-vizhome/compare/v0.2.0...v0.3.0) (2026-06-09)
 
 
